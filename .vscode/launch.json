@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Flutter Web (port 7000)",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--web-port",
+        "7000"
+      ],
+      "flutterMode": "debug",
+    }
+  ]
+}
