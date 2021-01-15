@@ -27,8 +27,8 @@ class UserWalletService with ReactiveServiceMixin {
   Future updateBalancesLocal(String uid) async {
     var result = await _usersCollectionReference.doc(uid).get();
     if (result is String) {
-      print("An error occured when updating the balance!");
-      print("Details: $result");
+      print("ERROR: An error occured when updating the balance, see below:");
+      print("ERROR: $result");
       // TODO: Throw exception
     } else {
       _balance.value = result.data()["balance"];

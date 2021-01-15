@@ -1,21 +1,8 @@
 const functions = require('firebase-functions');
-const express = require('express');
-const cors = require('cors');
-
-// Logging
-const { Logging } = require('@google-cloud/logging');
-const logging = new Logging({
-  projectId: process.env.GCLOUD_PROJECT,
-});
 
 const admin = require('firebase-admin');
 admin.initializeApp();
 const db = admin.firestore();
-
-// app (Probably not needed anymore!)
-const app = express();
-app.use(cors({ origin: true }));
-
 
 /* -------------- Stripe Payment ------------------ */
 const { Stripe } = require('stripe');
@@ -67,19 +54,16 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
         },
       ],
       mode: 'payment',
-      //successUrl: 'localhost:7000/#/transfer-view',
-      //cancelUrl: 'localhost:7000/#/home-view',
-      success_url: 'https://example.com/success',
-      cancel_url: 'https://example.com/cancel',
+      success_url: 'http://localhost:7000/#/payment-success-view',
+      cancel_url: 'http://localhost:7000/#/payment-cancel-view',
     });
     data.createdAt = admin.firestore.FieldValue.serverTimestamp();
     data.sessionId = session.id;
     data.status = "initialized";
     // add payment in firebase
-    await db.collection('payments').add(
-      data
-    );
-    return { sessionId: session.id };
+    const docRef = db.collection('payments').doc();
+    await docRef.set( data , { merge: true });
+    return { sessionId: session.id, transactionID: docRef.id };
   } catch (error) {
     // We want to capture errors and render them in a user-friendly way, while
     // still logging an exception with StackDriver
@@ -96,7 +80,7 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
 
 /* This needs to be changed to onUpdate after the entire stripe transaction has been dealt with! */
 exports.updateGoodWallet = functions.firestore
-  .document('/payments/{payId}')
+  .document('payments/{payId}')
   .onUpdate(async (change, context) => {
     if (change.after.data().status === 'success') {
       try {
@@ -104,17 +88,20 @@ exports.updateGoodWallet = functions.firestore
         const { amount, currency, recipientUID, senderUID } = change.after.data();
 
         const increment = admin.firestore.FieldValue.increment(amount);
-        // update recipient balance
         await db.collection("users").doc(recipientUID).update({
-          "balance": increment,
+          balance: increment
         });
         await db.collection("users").doc(senderUID).update({
-          "implicitDonations": increment,
+          implicitDonations: increment
         });
+
         return;
       } catch (error) {
-        await change.ref.set({ error: userFacingMessage(error) }, { merge: true });
+        await change.after.ref.set({ error: userFacingMessage(error) }, { merge: true });
         reportError(error, { transactionID: context.params.payId });
+        reportError(error.message, { transactionID: context.params.payId });
+        reportError(error.data, { transactionID: context.params.payId });
+
       }
     }
   }

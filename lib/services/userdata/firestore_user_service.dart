@@ -4,29 +4,32 @@
 
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
-import 'package:good_wallet/models/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:good_wallet/datamodels/user.dart';
 
 class FirestoreUserService {
   final CollectionReference _usersCollectionReference =
       FirebaseFirestore.instance.collection("users");
 
-  dynamic getUserData(String uid) {
-    return _usersCollectionReference
-        .doc(uid)
-        .snapshots()
-        .map((snap) => snap.data);
-  }
-
   // User ------------------------------------------------->>
-  Future createUser(MyUser user) async {
+  Future createUser(User user, [String fullName]) async {
+    // create a new user profile on firestore`
+    num balance = 0;
+    num implicitDonations = 0;
+    num donations = 0;
+    MyUser myuser = MyUser(
+      id: user.uid,
+      email: user.email,
+      fullName: fullName != null ? fullName : user.displayName,
+      balance: balance,
+      implicitDonations: implicitDonations,
+      donations: donations,
+    );
     try {
-      await _usersCollectionReference.doc(user.id).set(user.toJson(true));
+      await _usersCollectionReference.doc(user.uid).set(myuser.toJson(true));
+      return myuser;
     } catch (e) {
-      // TODO: Find or create a way to repeat error handling without so much repeated code
-      if (e is PlatformException) {
-        return e.message;
-      }
+      print("ERROR: ${e.toString()}");
       return e.toString();
     }
   }
@@ -38,10 +41,7 @@ class FirestoreUserService {
       print("INFO: Found user with name: ${user.fullName}");
       return user;
     } catch (e) {
-      if (e is PlatformException) {
-        return e.message;
-      }
-      print("return error sting: ${e.toString()}");
+      print("ERROR: ${e.toString()}");
       return e.toString();
     }
   }

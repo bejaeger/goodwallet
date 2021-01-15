@@ -4,7 +4,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:good_wallet/app/locator.dart';
-import 'package:good_wallet/models/user.dart';
+import 'package:good_wallet/datamodels/user.dart';
 import 'package:good_wallet/services/userdata/firestore_user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
@@ -20,6 +20,11 @@ class AuthenticationService {
   MyUser _currentUser;
   MyUser get currentUser => _currentUser;
 
+  // Stream<User> user; // firebase user
+  // AuthenticationService() {
+  //   user = FirebaseAuth.instance.authStateChanges();
+  // }
+
   Future loginWithGoogle() async {
     // FIXME: Handle errors!
     GoogleSignInAccount googleUser = await _googleSignIn.signIn();
@@ -34,10 +39,19 @@ class AuthenticationService {
     final UserCredential userCredential =
         await _firebaseAuth.signInWithCredential(credential);
     User user = userCredential.user;
-    await _prepareUserData(user);
-    // Done
-    print("signed in " + user.displayName);
-    //return user != null;
+    var result = await _prepareUserData(user);
+    if (result is String || (result is bool && !result)) {
+      // need to create user in firestore!
+      // create a new user profile on firestore
+      var resultUser = await _firestoreService.createUser(user);
+      if (resultUser is String) {
+        return resultUser;
+      } else {
+        _currentUser = resultUser;
+      }
+    }
+    // successfully signed in and set _currentUser
+    return true;
   }
 
   Future loginWithEmail({
@@ -53,6 +67,7 @@ class AuthenticationService {
       await _prepareUserData(authResult.user);
       return authResult.user != null;
     } catch (e) {
+      print("ERROR: ${e.toString()}");
       return e.toString();
     }
   }
@@ -68,21 +83,13 @@ class AuthenticationService {
         password: password,
       );
 
-      // create a new user profile on firestore`
-      num balance = 0;
-      num implicitDonations = 0;
-      num donations = 0;
-      _currentUser = MyUser(
-        id: authResult.user.uid,
-        email: email,
-        fullName: fullName,
-        balance: balance,
-        implicitDonations: implicitDonations,
-        donations: donations,
-      );
-      var result = await _firestoreService.createUser(_currentUser);
+      // create a new user profile on firestore
+      var result =
+          await _firestoreService.createUser(authResult.user, fullName);
       if (result is String) {
         return result;
+      } else {
+        _currentUser = result;
       }
 
       return authResult.user != null;
@@ -92,33 +99,43 @@ class AuthenticationService {
   }
 
   Future<bool> isUserLoggedIn() async {
-    // TODO: Use dartxs package here
+    // TODO: Use dartxs package here to handle currentUser
     // @see: https://fireship.io/lessons/flutter-firebase-google-oauth-firestore/
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(seconds: 1));
     var user = _firebaseAuth.currentUser;
     await _prepareUserData(user);
-    print("User object: ");
-    print(user);
     return user != null;
   }
 
   Future _populateCurrentUser(User user) async {
     if (user != null) {
-      _currentUser = await _firestoreService.getUser(user.uid);
+      var result = await _firestoreService.getUser(user.uid);
+      if (result is String) {
+        // In case no profile is available yet!
+        return result;
+      } else {
+        _currentUser = result;
+        return true;
+      }
     }
+    return false;
   }
 
   Future _prepareUserData(User user) async {
     if (user != null) {
       print("INFO: Populating current user");
-      await _populateCurrentUser(user);
+      var result = await _populateCurrentUser(user);
+      if (result is String) {
+        // no user present yet!
+        return result;
+      } else if (!result) {
+        return false;
+      }
+      // updating the state of the app
       await _userWalletService.updateBalancesLocal(user.uid);
+      return true;
     }
-  }
-
-  Future updateCurrentUser() async {
-    var user = _firebaseAuth.currentUser;
-    await _populateCurrentUser(user);
+    return false;
   }
 
   Future logout() async {

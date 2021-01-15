@@ -4,21 +4,24 @@ import 'package:good_wallet/services/authentification/authentification_service.d
 import 'package:stacked_services/stacked_services.dart';
 import 'base_model.dart';
 
-class HomeViewModel extends BaseModel {
+class NavigationViewModel extends BaseModel {
   final AuthenticationService _authenticationService =
       locator<AuthenticationService>();
   final DialogService _dialogService = locator<DialogService>();
+  final NavigationService _navigationService = locator<NavigationService>();
 
   Future loginWithGoogle() async {
+    setBusy(true);
     final result = await _authenticationService.loginWithGoogle();
     if (result) {
-      print("User succesfully logged in!");
+      print("INFO: User succesfully logged in!");
     } else {
-      print("Failed logging in user!");
+      print("INFO: Failed logging in user!");
     }
+    setBusy(false);
   }
 
-  Future login({
+  Future loginWithEmail({
     @required String email,
     @required String password,
   }) async {
@@ -33,7 +36,7 @@ class HomeViewModel extends BaseModel {
 
     if (result is bool) {
       if (result) {
-        print("User is logged in!");
+        print("INFO: User is logged in!");
       } else {
         await _dialogService.showDialog(
           title: 'Login Failure',
@@ -75,5 +78,24 @@ class HomeViewModel extends BaseModel {
         description: result,
       );
     }
+  }
+
+  Future handleStartUpLogic() async {
+    print("INFO: Check if user is logged in");
+    var hasLoggedInUser = await _authenticationService.isUserLoggedIn();
+    if (hasLoggedInUser) {
+      print(
+          "INFO: User ${_authenticationService.currentUser.fullName} logged in");
+    } else {
+      print("INFO: No user is logged in");
+    }
+    notifyListeners();
+  }
+
+  Future logout() async {
+    setBusy(true);
+    await _authenticationService.logout();
+    setBusy(false);
+    notifyListeners();
   }
 }
