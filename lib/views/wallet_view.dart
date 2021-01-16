@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/viewmodels/wallet_view_model.dart';
 import 'package:good_wallet/views/utils/ui_helpers.dart';
+import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 
 class WalletView extends StatelessWidget {
@@ -9,11 +10,14 @@ class WalletView extends StatelessWidget {
     Size screenSize = MediaQuery.of(context).size;
     return ViewModelBuilder<WalletViewModel>.reactive(
       viewModelBuilder: () => WalletViewModel(),
-      onModelReady: (model) => model.updateBalances(),
-      builder: (context, model, child) => CenteredView(
-        maxWidth: 500,
-        child: model.currentUser != null
-            ? Column(
+      onModelReady: (model) {
+        model.updateBalances();
+        model.listenToTransactions();
+      },
+      builder: (context, model, child) => model.currentUser != null
+          ? CenteredView(
+              maxWidth: 400,
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: screenSize.height / 12),
@@ -24,12 +28,15 @@ class WalletView extends StatelessWidget {
                   verticalSpace(10),
                   _buildStatView(model),
                   verticalSpace(20),
-                  _buildTransferButton(model),
+                  //_buildTransferButton(model),
+                  verticalSpace(20),
+                  Text("Transaction History", style: TextStyle(fontSize: 25)),
+                  _buildTransactionHistoryView(model),
                   //_buildRecentActivities(model.currentUser),
                 ],
-              )
-            : _loginButton(model.loginWithGoogle),
-      ),
+              ),
+            )
+          : _loginButton(model.loginWithGoogle),
     );
   }
 
@@ -105,6 +112,49 @@ class WalletView extends StatelessWidget {
         ),
         Text("Login to see your wallet"),
       ],
+    );
+  }
+
+  _buildTransactionHistoryView(dynamic model) {
+    return Expanded(
+      child: model.transactions != null
+          ? ListView.builder(
+              itemBuilder: (context, index) {
+                var hist = model.transactions[index];
+                var incoming =
+                    (hist.recipientName == model.currentUser.fullName);
+                var color = incoming ? Colors.lightGreen : Colors.redAccent;
+                var amountFormatted = incoming
+                    ? "\$ ${hist.amount * 0.01}"
+                    : "- \$ ${hist.amount * 0.01}";
+                return Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                  child: Card(
+                    elevation: 2,
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: color,
+                        child: Text('${hist.recipientName[0]}',
+                            style: TextStyle(color: Colors.white)),
+                      ),
+                      // FlutterLogo(),
+                      title: incoming
+                          ? Text(hist.senderName)
+                          : Text(hist.recipientName),
+                      subtitle: hist.createdAt != null
+                          ? Text(
+                              DateFormat.MMMd().format(hist.createdAt.toDate()))
+                          : Text(""),
+                      trailing:
+                          Text(amountFormatted, style: TextStyle(color: color)),
+                    ),
+                  ),
+                );
+              },
+              itemCount: model.transactions.length)
+          : model.isBusy
+              ? Center(child: CircularProgressIndicator())
+              : Center(child: Text("No transactions on record!")),
     );
   }
 }

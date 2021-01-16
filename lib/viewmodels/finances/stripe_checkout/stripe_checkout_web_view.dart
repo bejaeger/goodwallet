@@ -15,7 +15,6 @@ Future redirectToCheckout(String sessionId) async {
   print("INFO: Current URL $url");
   await stripe.redirectToCheckout(CheckoutOptions(sessionId: sessionId)).then(
     (result) {
-      print("In checkout session");
       // If `redirectToCheckout` fails due to a browser or network
       // error, you should display the localized error message to your
       // customer using `error.message`.
@@ -24,10 +23,6 @@ Future redirectToCheckout(String sessionId) async {
       }
     },
   );
-  print("INFO: Returning from function!");
-  // check if this url is success or not!
-  var afterurl = window.location.href;
-  print("INF: url when returning is ${afterurl}");
 }
 
 @JS()

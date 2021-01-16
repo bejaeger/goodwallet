@@ -101,8 +101,22 @@ class AuthenticationService {
   Future<bool> isUserLoggedIn() async {
     // TODO: Use dartxs package here to handle currentUser
     // @see: https://fireship.io/lessons/flutter-firebase-google-oauth-firestore/
-    await Future.delayed(Duration(seconds: 1));
-    var user = _firebaseAuth.currentUser;
+    // THIS NEEDS TO BE IMPROVED!
+    bool loop = true;
+    var user;
+    var counter = 0;
+    while (loop) {
+      await Future.delayed(Duration(milliseconds: 200));
+      try {
+        user = _firebaseAuth.currentUser;
+        var uid = user.uid;
+        loop = false;
+      } catch (e) {
+        print("INFO: Trying to get current user again after 0.5 seconds!");
+        counter = counter + 1;
+        if (counter > 20) break;
+      }
+    }
     await _prepareUserData(user);
     return user != null;
   }

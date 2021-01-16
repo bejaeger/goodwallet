@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/viewmodels/navigation_view_model.dart';
 import 'package:good_wallet/views/donation/donation_view.dart';
 import 'package:good_wallet/views/send_money_view.dart';
@@ -19,6 +20,7 @@ class NavigationView extends StatelessWidget {
       viewModelBuilder: () => NavigationViewModel(),
       onModelReady: (model) {
         model.setIndex(pageIndex);
+        print("pageIndex: $pageIndex");
         model.handleStartUpLogic();
         return null;
       },

@@ -2,50 +2,66 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class TransactionModel {
-  final String recipientUID;
+  final String recipientUid;
   final String recipientName;
-  final String senderUID;
+  final String senderUid;
   final String senderName;
   final num amount;
   final String currency;
-  final String message;
-  final FieldValue createdAt;
-  final Timestamp timestamp;
+  String message;
+  Timestamp createdAt;
+  String transactionId;
+  String status;
 
-  TransactionModel(
-      {@required this.recipientUID,
-      @required this.recipientName,
-      @required this.senderUID,
-      @required this.senderName,
-      @required this.amount,
-      @required this.currency,
-      this.message,
-      this.timestamp,
-      this.createdAt});
+  TransactionModel({
+    @required this.recipientUid,
+    @required this.recipientName,
+    @required this.senderUid,
+    @required this.senderName,
+    @required this.amount,
+    @required this.currency,
+    this.transactionId,
+    this.message,
+    this.createdAt,
+    this.status,
+  });
 
   Map<String, dynamic> toJson() {
     var returnJson = {
-      'recipientUID': recipientUID,
+      'recipientUid': recipientUid,
       'recipientName': recipientName,
-      'senderUID': senderUID,
+      'senderUid': senderUid,
       'senderName': senderName,
       'amount': amount,
       'currency': currency,
+      'transactionId': transactionId,
       'message': message,
       'createdAt': createdAt,
-      'timestamp': timestamp,
+      'status': status,
     };
     return returnJson;
   }
 
   static TransactionModel fromMap(Map<String, dynamic> map) {
-    return TransactionModel(
-        recipientUID: map['recipienUID'],
+    var data = TransactionModel(
+        recipientUid: map['recipientUid'],
         recipientName: map['recipientName'],
-        senderUID: map['senderUID'],
+        senderUid: map['senderUid'],
         senderName: map['senderName'],
         amount: map['amount'],
-        currency: map['currency'],
-        timestamp: map['createdAt']);
+        currency: map['currency']);
+    if (map.containsKey("transactionId")) {
+      data.transactionId = map["transactionId"];
+    }
+    if (map.containsKey("message")) {
+      data.message = map["message"];
+    }
+    if (map.containsKey("createdAt")) {
+      data.createdAt = map["createdAt"];
+    }
+    if (map.containsKey("status")) {
+      data.status = map["status"];
+    }
+    return data;
   }
 }

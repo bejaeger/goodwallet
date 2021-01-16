@@ -17,6 +17,8 @@ class SendMoneyView extends StatelessWidget {
     return ViewModelBuilder<SendMoneyViewModel>.reactive(
       viewModelBuilder: () => SendMoneyViewModel(),
       onModelReady: (model) {
+        model.setPaymentReady(false);
+        model.addListenersToControllers();
         if (userInfoMap != null) {
           model.selectUser(userInfoMap);
         }
@@ -32,13 +34,27 @@ class SendMoneyView extends StatelessWidget {
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      verticalSpace(70),
+                      verticalSpace(50),
                       _selectUserView(model),
                       _selectValueView(model),
                       _optionalMessageView(model),
-                      verticalSpace(70),
-                      _payButtonView(model, context),
+                      verticalSpace(50),
+                      model.errorMessage != null
+                          ? Text(model.errorMessage,
+                              style: TextStyle(color: Colors.red))
+                          : Container(),
+                      model.isBusy
+                          ? Center(child: CircularProgressIndicator())
+                          : Column(children: [
+                              model.currentUser != null
+                                  ? _payButtonView(model)
+                                  : Container(),
+                              model.currentUser != null
+                                  ? _testPayButtonView(model)
+                                  : Container(),
+                            ]),
                     ],
                   ),
                   _buildFloatingSearchBar(context, model),
@@ -109,7 +125,8 @@ class SendMoneyView extends StatelessWidget {
                 model.selectedUserInfoMap != null
                     ? Center(
                         child: Text(model.selectedUserInfoMap["name"],
-                            style: TextStyle(fontSize: 18)))
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w600)))
                     : Container(),
               ],
             ),
@@ -123,7 +140,7 @@ class SendMoneyView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(left: 40.0, right: 40.0),
       child: TextField(
-        decoration: new InputDecoration(labelText: "Amount"),
+        decoration: new InputDecoration(labelText: "Amount in CAD"),
         keyboardType: TextInputType.number,
         controller: model.transferValueController,
         inputFormatters: <TextInputFormatter>[
@@ -144,21 +161,35 @@ class SendMoneyView extends StatelessWidget {
     );
   }
 
-  _payButtonView(dynamic model, BuildContext context) {
-    return model.isBusy
-        ? Center(child: CircularProgressIndicator())
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              RaisedButton(
-                color: Colors.lightBlue,
-                child: Text("Make Dummy Payment \$7 to Hans",
-                    style: TextStyle(color: Colors.white)),
-                onPressed: () async {
-                  await model.makeDummyPayment(context);
-                },
-              ),
-            ],
-          );
+  _payButtonView(dynamic model) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        RaisedButton(
+          color: model.isPaymentReady ? Colors.lightBlue : Colors.grey,
+          child: Text("       Checkout       ",
+              style: TextStyle(color: Colors.white)),
+          onPressed: model.isPaymentReady
+              ? () async => await model.makePayment()
+              : null,
+        ),
+      ],
+    );
+  }
+
+  _testPayButtonView(dynamic model) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        RaisedButton(
+          color: Colors.lightBlue,
+          child: Text("Make Dummy Payment \$7 to Hans",
+              style: TextStyle(color: Colors.white)),
+          onPressed: () async {
+            await model.makeTestPayment();
+          },
+        ),
+      ],
+    );
   }
 }

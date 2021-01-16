@@ -54,16 +54,10 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
         },
       ],
       mode: 'payment',
-      success_url: 'http://localhost:7000/#/payment-success-view',
-      cancel_url: 'http://localhost:7000/#/payment-cancel-view',
+      success_url: data.domain.concat('payment-success-view'),
+      cancel_url: data.domain.concat('payment-cancel-view'),
     });
-    data.createdAt = admin.firestore.FieldValue.serverTimestamp();
-    data.sessionId = session.id;
-    data.status = "initialized";
-    // add payment in firebase
-    const docRef = db.collection('payments').doc();
-    await docRef.set( data , { merge: true });
-    return { sessionId: session.id, transactionID: docRef.id };
+    return { sessionId: session.id };
   } catch (error) {
     // We want to capture errors and render them in a user-friendly way, while
     // still logging an exception with StackDriver
@@ -81,29 +75,27 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
 /* This needs to be changed to onUpdate after the entire stripe transaction has been dealt with! */
 exports.updateGoodWallet = functions.firestore
   .document('payments/{payId}')
-  .onUpdate(async (change, context) => {
-    if (change.after.data().status === 'success') {
-      try {
-        // Add payment_method here and so to transaction model!
-        const { amount, currency, recipientUID, senderUID } = change.after.data();
+  .onCreate(async (snap, context) => {
+    try {
+      // Add payment_method here and so to transaction model!
+      const { amount, currency, recipientUid, senderUid } = snap.data();
 
-        const increment = admin.firestore.FieldValue.increment(amount);
-        await db.collection("users").doc(recipientUID).update({
-          balance: increment
-        });
-        await db.collection("users").doc(senderUID).update({
-          implicitDonations: increment
-        });
+      const increment = admin.firestore.FieldValue.increment(amount);
+      await db.collection("users").doc(recipientUid).update({
+        balance: increment
+      });
+      await db.collection("users").doc(senderUid).update({
+        implicitDonations: increment
+      });
 
-        return;
-      } catch (error) {
-        await change.after.ref.set({ error: userFacingMessage(error) }, { merge: true });
-        reportError(error, { transactionID: context.params.payId });
-        reportError(error.message, { transactionID: context.params.payId });
-        reportError(error.data, { transactionID: context.params.payId });
-
-      }
+      return;
+    } catch (error) {
+      await snap.ref.set({ error: userFacingMessage(error) }, { merge: true });
+      reportError(error, { transactionID: context.params.payId });
+      reportError(error.message, { transactionID: context.params.payId });
+      reportError(error.data, { transactionID: context.params.payId });
     }
+
   }
   );
 

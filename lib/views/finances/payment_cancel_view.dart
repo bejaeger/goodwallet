@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/viewmodels/finances/send_money_view_model.dart';
 import 'package:good_wallet/views/utils/ui_helpers.dart';
+import 'package:stacked/stacked.dart';
 
 class PaymentCancelView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CenteredView(
-          maxWidth: 600,
-          child: Text("Cancelled payment!"),
+    return ViewModelBuilder<SendMoneyViewModel>.reactive(
+      viewModelBuilder: () => SendMoneyViewModel(),
+      onModelReady: (model) {
+        model.handlePaymentFailure();
+      },
+      builder: (context, model, child) => CenteredView(
+        maxWidth: 600,
+        child: Column(
+          children: [
+            Text("Cancelled payment!", style: TextStyle(fontSize: 16)),
+            FlatButton(
+                onPressed: model.navigateToHomeView, child: Text("Go back.")),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

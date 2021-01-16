@@ -1,8 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
+import 'package:good_wallet/app/router.gr.dart';
 import 'package:good_wallet/datamodels/transaction_model.dart';
+import 'package:good_wallet/services/finances/firestore_payment_data_service.dart';
+import 'package:good_wallet/services/finances/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
 import 'package:good_wallet/viewmodels/base_model.dart';
 import 'package:stacked/stacked.dart';
@@ -19,8 +22,9 @@ class SendMoneyViewModel extends BaseModel {
   final NavigationService _navigationService = locator<NavigationService>();
   final transferValueController = TextEditingController();
   final optionalMessageController = TextEditingController();
-  final CollectionReference _paymentsCollectionReference =
-      FirebaseFirestore.instance.collection("payments");
+  final FirestorePaymentDataService _firestorePaymentDataService =
+      locator<FirestorePaymentDataService>();
+  final _stripePaymentService = locator<StripePaymentService>();
 
   // take from https://stripe.com/docs/testing#international-cards
   final CreditCard testCard = CreditCard(
@@ -39,55 +43,196 @@ class SendMoneyViewModel extends BaseModel {
 
   List<String> _nameList = [];
   List<String> get nameList => _nameList;
-  TransactionModel _transaction;
 
-  Future makeStripeCheckoutPayment() async {
-    setBusy(true);
+  bool _paymentReady = false;
+  bool get isPaymentReady => _paymentReady;
+  void setPaymentReady(bool ready) {
+    _paymentReady = ready;
   }
 
-  Future makeDummyPayment(BuildContext context) async {
-    setBusy(true);
+  String _errorMessage;
+  String get errorMessage => _errorMessage;
 
-    var transaction = TransactionModel(
-      recipientUID: "3QrVvwOmrraFMl3EaSzn6byLpFu2",
+  void addListenersToControllers() {
+    transferValueController.addListener(() {
+      _errorMessage = "";
+      notifyListeners();
+    });
+  }
+
+  num _getAmount() {
+    try {
+      var amount = double.parse(transferValueController.text);
+      return amount;
+    } catch (error) {
+      print("ERROR: Amount not valid!");
+      _errorMessage = "Please enter valid amount.";
+      setPaymentReady(false);
+      notifyListeners();
+      return -1;
+    }
+  }
+
+  Future fillTransactionModel() async {
+    var recipientUid, recipientName, amount, msg, currency;
+    TransactionModel data;
+    try {
+      recipientUid = selectedUserInfoMap["id"];
+      recipientName = selectedUserInfoMap["name"];
+      amount = _getAmount();
+      msg = optionalMessageController.text;
+      data = TransactionModel(
+        recipientUid: recipientUid,
+        recipientName: recipientName,
+        senderUid: currentUser.id,
+        senderName: currentUser.fullName,
+        amount: amount * 100,
+        currency: "cad",
+        message: msg,
+        status: 'initialized',
+      );
+    } catch (e) {
+      print("ERROR: Could not fill transaction model!");
+      print(e.toString());
+      return false;
+    }
+    return data;
+  }
+
+  Future getTestPaymentData() async {
+    var data = TransactionModel(
+      recipientUid: "3QrVvwOmrraFMl3EaSzn6byLpFu2",
       recipientName: "Hans",
-      senderUID: currentUser.id,
+      senderUid: currentUser.id,
       senderName: currentUser.fullName,
       amount: 700,
       currency: "cad",
       message: "Test Transfer",
+      status: 'initialized',
     );
-    // firebase functions service!
-    try {
-      HttpsCallable callable = FirebaseFunctions.instance
-          .httpsCallable('createStripeCheckoutSession');
-      final result = await callable(transaction.toJson());
-      var sessionId = result.data["sessionId"];
-      var transactionID = result.data["transactionID"];
-      print("INFO: TRANSACTIONID = $transactionID");
-      print("INFO: Redirecting to stripe checkout");
-      if (kIsWeb) {
-        // Maybe create a fake route for this??
-        await navigateToCheckoutWebView(sessionId);
-      } else {
-        await navigateToCheckoutMobileView(sessionId);
+    return data;
+  }
+
+  Future makeTestPayment() async {
+    await processPayment(await getTestPaymentData());
+  }
+
+  Future makePayment() async {
+    var data = await fillTransactionModel();
+    if (data is TransactionModel) {
+      if (isPaymentReady) {
+        await processPayment(data);
       }
+    }
+    setPaymentReady(true);
+  }
 
-      print("waiting...");
-      await _paymentsCollectionReference
-          .doc(transactionID)
-          .update({"status": "success"});
-      //await Future.delayed(Duration(seconds: 3));wall
+  Future processPayment(TransactionModel data) async {
+    setBusy(true);
+    var resultCreatePaymentIntent = await _firestorePaymentDataService
+        .createPaymentIntent(data, currentUser.id);
 
-      print("continuing!");
-    } catch (error) {
-      print("ERROR: ${error.toString()}");
+    if (resultCreatePaymentIntent is String) {
+      // string is document id which is payId, so
+      // let's get started
+      var sessionId = await _stripePaymentService.createStripeSessionId(data);
+      if (sessionId is String) {
+        print("INFO: Redirecting to stripe checkout");
+        if (kIsWeb) {
+          // Maybe create a fake route for this??
+          await navigateToCheckoutWebView(sessionId);
+        } else {
+          await navigateToCheckoutMobileView(sessionId);
+        }
+      } else if (sessionId is bool) {
+        if (!sessionId) {
+          await _dialogService.showDialog(
+            title: "Error! Stripe payment couldn't be processed",
+            description: "",
+          );
+        }
+      }
+    } else if (resultCreatePaymentIntent is bool) {
+      if (!resultCreatePaymentIntent) {
+        await _dialogService.showDialog(
+          title: "Error! Payment couldn't be processed",
+          description: "",
+        );
+      }
     }
 
-    await _userWalletService.updateBalancesLocal(currentUser.id);
-    super.notifyListeners();
     setBusy(false);
     return true;
+  }
+
+  void handlePaymentSuccess() async {
+    print("INFO: Stripe payment successfull. Handling it");
+    var uid = await waitForUID();
+    if (uid is bool) {
+      if (!uid) {
+        await _dialogService.showDialog(
+          title: "Error! Could not process Good Dollars",
+          description: "Please contact support!",
+        );
+        // If that's the case it's bad, because the paymentIntent document is still present!
+        return;
+      }
+    }
+    var data = await _firestorePaymentDataService.handlePaymentSuccess(uid);
+    if (data is bool) {
+      if (!data) {
+        await _dialogService.showDialog(
+          title: "Error! Could not process Good Dollars",
+          description: "Please contact support!",
+        );
+      }
+    } else {
+      await _dialogService.showDialog(
+        title:
+            "You successfully send ${data.amount * 0.01} Good Dollars to ${data.recipientName}",
+        description: "You're awesome",
+      );
+    }
+    await _userWalletService.updateBalancesLocal(currentUser.id);
+    super.notifyListeners();
+  }
+
+  Future waitForUID() async {
+    bool loop = true;
+    var uid;
+    var counter = 0;
+    while (loop) {
+      await Future.delayed(Duration(milliseconds: 500));
+      try {
+        uid = currentUser.id;
+        loop = false;
+      } catch (e) {
+        print("INFO: Trying to get user uid again 0.5 seconds!");
+        counter = counter + 1;
+        if (counter > 10) break;
+      }
+    }
+    if (uid == null) {
+      return false;
+    } else {
+      return uid;
+    }
+  }
+
+  void handlePaymentFailure() async {
+    print("INFO: Stripe payment cancelled. Handling it");
+    var uid = await waitForUID();
+    if (uid is bool) {
+      if (!uid) {
+        await _dialogService.showDialog(
+          title: "Error! Could not process Good Dollars",
+          description: "Please contact support!",
+        );
+        // If that's the case it's bad, because the paymentIntent document is still present!
+        return;
+      }
+    }
+    await _firestorePaymentDataService.handlePaymentFailure(uid);
   }
 
 // TODO: Put in service!
@@ -104,6 +249,7 @@ class SendMoneyViewModel extends BaseModel {
 
   void selectUser(Map<String, String> userMap) {
     _selectedUserInfoMap = userMap;
+    setPaymentReady(true);
     notifyListeners();
   }
 
@@ -115,5 +261,10 @@ class SendMoneyViewModel extends BaseModel {
 
   Future navigateToCheckoutWebView(String sessionId) async {
     redirectToCheckout(sessionId);
+  }
+
+  Future navigateToHomeView([num pageIndex = 2]) async {
+    await _navigationService.navigateTo(Routes.navigationView,
+        arguments: NavigationViewArguments(pageIndex: pageIndex));
   }
 }
