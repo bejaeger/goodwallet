@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
@@ -264,7 +263,6 @@ class SendMoneyViewModel extends BaseModel {
   }
 
   Future navigateToHomeView([num pageIndex = 2]) async {
-    await _navigationService.navigateTo(Routes.navigationView,
-        arguments: NavigationViewArguments(pageIndex: pageIndex));
+    await _navigationService.navigateTo(Routes.welcomeView);
   }
 }

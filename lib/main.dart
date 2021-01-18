@@ -1,7 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
-import 'package:good_wallet/views/navigation_view.dart';
+import 'package:good_wallet/views/layout/layout_template_view.dart';
+import 'package:good_wallet/views/wallet_view.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'app/router.gr.dart' as auto_router;
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    print("INFO: Building MaterialApp...");
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'The Good Dollars Marketplace',
@@ -28,7 +30,8 @@ class MyApp extends StatelessWidget {
               fontFamily: 'Open Sans',
             ),
       ),
-      home: NavigationView(pageIndex: 0),
+      initialRoute: auto_router.Routes.walletView,
+      builder: (context, child) => LayoutTemplate(child: child),
     );
   }
 }

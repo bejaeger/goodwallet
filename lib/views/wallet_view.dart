@@ -28,7 +28,7 @@ class WalletView extends StatelessWidget {
                   verticalSpace(10),
                   _buildStatView(model),
                   verticalSpace(20),
-                  //_buildTransferButton(model),
+                  _buildTransferButton(model),
                   verticalSpace(20),
                   Text("Transaction History", style: TextStyle(fontSize: 25)),
                   _buildTransactionHistoryView(model),
@@ -80,8 +80,7 @@ class WalletView extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       color: Colors.lightBlue,
       elevation: 10.0,
-      onPressed: () => model.navigateToTransferView(),
-      //model.navigateToTransferView(),
+      onPressed: () => model.navigateToSendMoneyView(),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text("Send Money",
@@ -142,8 +141,10 @@ class WalletView extends StatelessWidget {
                           ? Text(hist.senderName)
                           : Text(hist.recipientName),
                       subtitle: hist.createdAt != null
-                          ? Text(
-                              DateFormat.MMMd().format(hist.createdAt.toDate()))
+                          //https://api.flutter.dev/flutter/intl/DateFormat-class.html
+                          ? Text(DateFormat.MMMEd()
+                              .add_jm()
+                              .format(hist.createdAt.toDate()))
                           : Text(""),
                       trailing:
                           Text(amountFormatted, style: TextStyle(color: color)),

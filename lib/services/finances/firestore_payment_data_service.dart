@@ -118,6 +118,7 @@ class FirestorePaymentDataService {
     // Register the handler for when the posts data changes
     _paymentsCollectionReference
         .where("senderUid", isEqualTo: uid)
+        .orderBy("createdAt", descending: true)
         .snapshots()
         .listen((transactionsSnapshot) {
       if (transactionsSnapshot.docs.isNotEmpty) {

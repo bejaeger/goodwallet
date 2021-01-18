@@ -1,14 +1,31 @@
-import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
+import 'package:good_wallet/app/router.gr.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
+import 'package:good_wallet/viewmodels/base_model.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'base_model.dart';
+import 'package:flutter/material.dart';
 
-class NavigationViewModel extends BaseModel {
+class NavigationBarViewModel extends BaseModel {
+  final NavigationService _navigationService = locator<NavigationService>();
   final AuthenticationService _authenticationService =
       locator<AuthenticationService>();
   final DialogService _dialogService = locator<DialogService>();
-  final NavigationService _navigationService = locator<NavigationService>();
+
+  Future navigateToWelcomeView() async {
+    await _navigationService.navigateTo(Routes.welcomeView);
+  }
+
+  Future navigateToWalletView() async {
+    await _navigationService.navigateTo(Routes.walletView);
+  }
+
+  Future navigateToSendMoneyView() async {
+    await _navigationService.navigateTo(Routes.sendMoneyView);
+  }
+
+  Future navigateToDonationView() async {
+    await _navigationService.navigateTo(Routes.donationView);
+  }
 
   Future loginWithGoogle() async {
     setBusy(true);
@@ -80,6 +97,7 @@ class NavigationViewModel extends BaseModel {
     }
   }
 
+  //  TODO put in some proper initializer!
   Future handleStartUpLogic() async {
     print("INFO: Check if user is logged in");
     var hasLoggedInUser = await _authenticationService.isUserLoggedIn();

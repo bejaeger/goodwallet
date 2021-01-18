@@ -20,20 +20,22 @@ class WalletViewModel extends BaseModel {
   List<TransactionModel> get transactions => _transactions;
 
   void listenToTransactions() {
-    setBusy(true);
-    _firestorePaymentDataService
-        .listenToTransactionsRealTime(currentUser.id)
-        .listen((transactionsData) {
-      List<TransactionModel> updatedTransactions = transactionsData;
-      if (updatedTransactions != null && updatedTransactions.length > 0) {
-        _transactions = updatedTransactions;
-        notifyListeners();
-      }
-    });
-    setBusy(false);
+    if (currentUser != null) {
+      setBusy(true);
+      _firestorePaymentDataService
+          .listenToTransactionsRealTime(currentUser.id)
+          .listen((transactionsData) {
+        List<TransactionModel> updatedTransactions = transactionsData;
+        if (updatedTransactions != null && updatedTransactions.length > 0) {
+          _transactions = updatedTransactions;
+          notifyListeners();
+        }
+      });
+      setBusy(false);
+    }
   }
 
-  Future navigateToTransferView() async {
+  Future navigateToSendMoneyView() async {
     await _navigationService.navigateTo(Routes.sendMoneyView);
   }
 

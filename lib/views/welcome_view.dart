@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/views/utils/ui_helpers.dart';
 
 class WelcomeView extends StatelessWidget {
   const WelcomeView({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 600,
+    return CenteredView(
+      maxWidth: 600,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,

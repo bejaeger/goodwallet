@@ -9,6 +9,23 @@ import 'package:good_wallet/services/userdata/firestore_user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rxdart/rxdart.dart';
+
+enum UserStatus { Unknown, SignedIn, SignedOut }
+
+class UserState {
+  UserStatus status;
+  dynamic value;
+
+  UserState({this.value}) {
+    this.status = value == "undefined"
+        ? UserStatus.Unknown
+        : value == null
+            ? UserStatus.SignedOut
+            : UserStatus.SignedIn;
+    this.value = value;
+  }
+}
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -20,10 +37,23 @@ class AuthenticationService {
   MyUser _currentUser;
   MyUser get currentUser => _currentUser;
 
+  var _userState = BehaviorSubject<UserState>();
+  UserStatus get userStatus => _userState.value.status;
+  Stream<User> userStream;
+
   // Stream<User> user; // firebase user
-  // AuthenticationService() {
-  //   user = FirebaseAuth.instance.authStateChanges();
-  // }
+  AuthenticationService() {
+    // ! Very important to initialize this !
+    _userState.add(UserState(value: "undefined"));
+    userStream = FirebaseAuth.instance.authStateChanges();
+    userStream.listen((user) {
+      if (user != null) {
+        _userState.add(UserState(value: user));
+      } else {
+        _userState.add(UserState(value: null));
+      }
+    });
+  }
 
   Future loginWithGoogle() async {
     // FIXME: Handle errors!
@@ -105,18 +135,30 @@ class AuthenticationService {
     bool loop = true;
     var user;
     var counter = 0;
+    //print(userStream.done);
+    //print("Before loop $userState.status");
+
+    print("status: ${_userState.value.status}");
+
     while (loop) {
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(Duration(milliseconds: 100));
       try {
         user = _firebaseAuth.currentUser;
         var uid = user.uid;
         loop = false;
       } catch (e) {
-        print("INFO: Trying to get current user again after 0.5 seconds!");
+        print("In loop $userStream");
+        print("INFO: Trying to get current user again after 0.1 seconds!");
         counter = counter + 1;
         if (counter > 20) break;
       }
     }
+    //return user.done();
+    print("After loop");
+    //print(userStream.done);
+    print("has value: ${_userState.hasValue}");
+    print("status: ${_userState.value.status}");
+
     await _prepareUserData(user);
     return user != null;
   }
