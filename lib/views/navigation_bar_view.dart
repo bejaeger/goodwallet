@@ -13,46 +13,49 @@ class NavigationBar extends StatelessWidget {
       onModelReady: (model) {
         model.handleStartUpLogic();
       },
-      builder: (context, model, child) => Container(
-        height: 80,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Container(
-              height: 150,
-              width: 100,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/wallet_icon.png"),
-                  fit: BoxFit.contain,
+      builder: (context, model, child) => Padding(
+        padding: const EdgeInsets.only(top: 60, left: 30, right: 30, bottom: 0),
+        child: Container(
+          height: 80,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                height: 150,
+                width: 100,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/wallet_icon.png"),
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                _NavBarItem(
-                    label: 'Home',
-                    onPressed: () => model.navigateToWelcomeView()),
-                _NavBarItem(
-                    label: 'Wallet',
-                    onPressed: () => model.navigateToWalletView()),
-                _NavBarItem(
-                    label: 'Send Money',
-                    onPressed: () => model.navigateToSendMoneyView()),
-                _NavBarItem(
-                    label: 'Donation Options',
-                    onPressed: () => model.navigateToDonationView()),
-                model.currentUser != null
-                    ? _NavBarItem(
-                        label: 'Logout ${model.currentUser.fullName[0]}.',
-                        onPressed: () => model.logout())
-                    : _NavBarItem(
-                        label: 'Login with Google',
-                        onPressed: () => model.loginWithGoogle()),
-              ],
-            )
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  _NavBarItem(
+                      label: 'Home',
+                      onPressed: () => model.navigateToWelcomeView()),
+                  _NavBarItem(
+                      label: 'Wallet',
+                      onPressed: () => model.navigateToWalletView()),
+                  _NavBarItem(
+                      label: 'Send Money',
+                      onPressed: () => model.navigateToSendMoneyView()),
+                  _NavBarItem(
+                      label: 'Donation Options',
+                      onPressed: () => model.navigateToDonationView()),
+                  model.currentUser != null
+                      ? _NavBarItem(
+                          label: 'Logout ${model.currentUser.fullName[0]}.',
+                          onPressed: () => model.logout())
+                      : _NavBarItem(
+                          label: 'Login with Google',
+                          onPressed: () => model.loginWithGoogle()),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

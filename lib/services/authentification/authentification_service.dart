@@ -5,27 +5,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/datamodels/user.dart';
+import 'package:good_wallet/datamodels/user_state.dart';
+import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/userdata/firestore_user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
-
-enum UserStatus { Unknown, SignedIn, SignedOut }
-
-class UserState {
-  UserStatus status;
-  dynamic value;
-
-  UserState({this.value}) {
-    this.status = value == "undefined"
-        ? UserStatus.Unknown
-        : value == null
-            ? UserStatus.SignedOut
-            : UserStatus.SignedIn;
-    this.value = value;
-  }
-}
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -41,14 +27,16 @@ class AuthenticationService {
   UserStatus get userStatus => _userState.value.status;
   Stream<User> userStream;
 
-  // Stream<User> user; // firebase user
   AuthenticationService() {
     // ! Very important to initialize this !
     _userState.add(UserState(value: "undefined"));
     userStream = FirebaseAuth.instance.authStateChanges();
-    userStream.listen((user) {
+    userStream.listen((user) async {
       if (user != null) {
-        _userState.add(UserState(value: user));
+        var result = await _prepareUserData(user);
+        if (result) {
+          _userState.add(UserState(value: user));
+        }
       } else {
         _userState.add(UserState(value: null));
       }

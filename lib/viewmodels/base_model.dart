@@ -4,9 +4,9 @@
 
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/datamodels/user.dart';
+import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
-import 'package:rxdart/subjects.dart';
 import 'package:stacked/stacked.dart';
 
 // TODO: I think a ReactiveViewModel is enough here

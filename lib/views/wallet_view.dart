@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/viewmodels/wallet_view_model.dart';
 import 'package:good_wallet/views/utils/ui_helpers.dart';
 import 'package:intl/intl.dart';
@@ -14,11 +15,13 @@ class WalletView extends StatelessWidget {
         model.updateBalances();
         model.listenToTransactions();
       },
-      builder: (context, model, child) => model.currentUser != null
+      builder: (context, model, child) => model.userStatus ==
+              UserStatus.SignedIn
           ? CenteredView(
               maxWidth: 400,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: ListView(
+                //crossAxisAlignment: CrossAxisAlignment.center,
+                //mainAxisSize: MainAxisSize.max,
                 children: [
                   SizedBox(height: screenSize.height / 12),
                   _buildFullName(model.currentUser.fullName),
@@ -28,7 +31,7 @@ class WalletView extends StatelessWidget {
                   verticalSpace(10),
                   _buildStatView(model),
                   verticalSpace(20),
-                  _buildTransferButton(model),
+                  //_buildTransferButton(model),
                   verticalSpace(20),
                   Text("Transaction History", style: TextStyle(fontSize: 25)),
                   _buildTransactionHistoryView(model),
@@ -47,9 +50,11 @@ class WalletView extends StatelessWidget {
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
     );
-    return Text(
-      "Hi, ${name}",
-      style: _nameTextStyle,
+    return Center(
+      child: Text(
+        "Hi, ${name}",
+        style: _nameTextStyle,
+      ),
     );
   }
 
@@ -115,47 +120,46 @@ class WalletView extends StatelessWidget {
   }
 
   _buildTransactionHistoryView(dynamic model) {
-    return Expanded(
-      child: model.transactions != null
-          ? ListView.builder(
-              itemBuilder: (context, index) {
-                var hist = model.transactions[index];
-                var incoming =
-                    (hist.recipientName == model.currentUser.fullName);
-                var color = incoming ? Colors.lightGreen : Colors.redAccent;
-                var amountFormatted = incoming
-                    ? "\$ ${hist.amount * 0.01}"
-                    : "- \$ ${hist.amount * 0.01}";
-                return Padding(
-                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: Card(
-                    elevation: 2,
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: color,
-                        child: Text('${hist.recipientName[0]}',
-                            style: TextStyle(color: Colors.white)),
-                      ),
-                      // FlutterLogo(),
-                      title: incoming
-                          ? Text(hist.senderName)
-                          : Text(hist.recipientName),
-                      subtitle: hist.createdAt != null
-                          //https://api.flutter.dev/flutter/intl/DateFormat-class.html
-                          ? Text(DateFormat.MMMEd()
-                              .add_jm()
-                              .format(hist.createdAt.toDate()))
-                          : Text(""),
-                      trailing:
-                          Text(amountFormatted, style: TextStyle(color: color)),
+    return model.transactions != null
+        ? ListView.builder(
+            shrinkWrap: true,
+            physics: ScrollPhysics(),
+            itemBuilder: (context, index) {
+              var hist = model.transactions[index];
+              var incoming = (hist.recipientName == model.currentUser.fullName);
+              var color = incoming ? Colors.lightGreen : Colors.redAccent;
+              var amountFormatted = incoming
+                  ? "\$ ${hist.amount * 0.01}"
+                  : "- \$ ${hist.amount * 0.01}";
+              return Padding(
+                padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                child: Card(
+                  elevation: 2,
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: color,
+                      child: Text('${hist.recipientName[0]}',
+                          style: TextStyle(color: Colors.white)),
                     ),
+                    // FlutterLogo(),
+                    title: incoming
+                        ? Text(hist.senderName)
+                        : Text(hist.recipientName),
+                    subtitle: hist.createdAt != null
+                        //https://api.flutter.dev/flutter/intl/DateFormat-class.html
+                        ? Text(DateFormat.MMMEd()
+                            .add_jm()
+                            .format(hist.createdAt.toDate()))
+                        : Text(""),
+                    trailing:
+                        Text(amountFormatted, style: TextStyle(color: color)),
                   ),
-                );
-              },
-              itemCount: model.transactions.length)
-          : model.isBusy
-              ? Center(child: CircularProgressIndicator())
-              : Center(child: Text("No transactions on record!")),
-    );
+                ),
+              );
+            },
+            itemCount: model.transactions.length)
+        : model.isBusy
+            ? Center(child: CircularProgressIndicator())
+            : Center(child: Text("No transactions on record!"));
   }
 }

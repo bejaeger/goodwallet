@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/app/router.gr.dart';
 import 'package:good_wallet/datamodels/transaction_model.dart';
+import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/services/finances/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
@@ -20,7 +21,7 @@ class WalletViewModel extends BaseModel {
   List<TransactionModel> get transactions => _transactions;
 
   void listenToTransactions() {
-    if (currentUser != null) {
+    if (userStatus == UserStatus.SignedIn) {
       setBusy(true);
       _firestorePaymentDataService
           .listenToTransactionsRealTime(currentUser.id)
@@ -35,9 +36,9 @@ class WalletViewModel extends BaseModel {
     }
   }
 
-  Future navigateToSendMoneyView() async {
-    await _navigationService.navigateTo(Routes.sendMoneyView);
-  }
+  // Future navigateToSendMoneyView() async {
+  //   await _navigationService.navigateTo(Routes.sendMoneyView);
+  // }
 
   Future updateBalances() async {
     if (currentUser.id != null) {

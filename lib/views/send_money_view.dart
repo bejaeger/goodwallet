@@ -25,41 +25,38 @@ class SendMoneyView extends StatelessWidget {
       },
       builder: (context, model, child) => WillPopScope(
         onWillPop: () async => true,
-        child: Scaffold(
-          body: CenteredView(
-            maxWidth: 500,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Stack(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      verticalSpace(50),
-                      _selectUserView(model),
-                      _selectValueView(model),
-                      _optionalMessageView(model),
-                      verticalSpace(50),
-                      model.errorMessage != null
-                          ? Text(model.errorMessage,
-                              style: TextStyle(color: Colors.red))
-                          : Container(),
-                      model.isBusy
-                          ? Center(child: CircularProgressIndicator())
-                          : Column(children: [
-                              model.currentUser != null
-                                  ? _payButtonView(model)
-                                  : Container(),
-                              model.currentUser != null
-                                  ? _testPayButtonView(model)
-                                  : Container(),
-                            ]),
-                    ],
-                  ),
-                  _buildFloatingSearchBar(context, model),
-                ],
-              ),
+        child: CenteredView(
+          maxWidth: 500,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Stack(
+              children: [
+                ListView(
+                  padding: const EdgeInsets.all(20.0),
+                  children: [
+                    verticalSpace(50),
+                    _selectUserView(model),
+                    _selectValueView(model),
+                    _optionalMessageView(model),
+                    verticalSpace(50),
+                    model.errorMessage != null
+                        ? Text(model.errorMessage,
+                            style: TextStyle(color: Colors.red))
+                        : Container(height: 0, width: 0),
+                    model.isBusy
+                        ? Center(child: CircularProgressIndicator())
+                        : Column(children: [
+                            model.currentUser != null
+                                ? _payButtonView(model)
+                                : Container(),
+                            model.currentUser != null
+                                ? _testPayButtonView(model)
+                                : Container(),
+                          ]),
+                  ],
+                ),
+                _buildFloatingSearchBar(context, model),
+              ],
             ),
           ),
         ),
@@ -70,43 +67,47 @@ class SendMoneyView extends StatelessWidget {
   _buildFloatingSearchBar(BuildContext context, dynamic model) {
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
-    return FloatingSearchBar(
-      hint: 'Search for users...',
-      scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
-      transitionDuration: const Duration(milliseconds: 800),
-      transitionCurve: Curves.easeInOut,
-      physics: const BouncingScrollPhysics(),
-      axisAlignment: isPortrait ? 0.0 : -1.0,
-      openAxisAlignment: 0.0,
-      maxWidth: isPortrait ? 600 : 500,
-      debounceDelay: const Duration(milliseconds: 500),
-      onQueryChanged: (query) {
-        model.searchFor(query);
-      },
-      // Specify a custom transition to be used for
-      // animating between opened and closed stated.
-      transition: CircularFloatingSearchBarTransition(),
-      builder: (context, transition) {
-        return (model.userInfoMaps.length > 0)
-            ? Container(
-                color: Colors.white,
-                height: 300,
-                child: ListView.separated(
-                    itemCount: model.userInfoMaps.length,
-                    separatorBuilder: (context, index) =>
-                        const Divider(thickness: 1),
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                          title: Text(
-                              'Username: ${model.userInfoMaps[index]["name"]}'),
-                          onTap: () {
-                            FloatingSearchBar.of(context).close();
-                            model.selectUser(model.userInfoMaps[index]);
-                          });
-                    }),
-              )
-            : Container();
-      },
+    return Container(
+      height: 400,
+      child: FloatingSearchBar(
+        hint: 'Search for users...',
+        scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
+        transitionDuration: const Duration(milliseconds: 800),
+        transitionCurve: Curves.easeInOut,
+        physics: const BouncingScrollPhysics(),
+        axisAlignment: isPortrait ? 0.0 : -1.0,
+        openAxisAlignment: 0.0,
+        maxWidth: isPortrait ? 600 : 500,
+        debounceDelay: const Duration(milliseconds: 500),
+        onQueryChanged: (query) {
+          model.searchFor(query);
+        },
+        // Specify a custom transition to be used for
+        // animating between opened and closed stated.
+        transition: CircularFloatingSearchBarTransition(),
+        builder: (context, transition) {
+          return (model.userInfoMaps.length > 0)
+              ? Container(
+                  color: Colors.white,
+                  height: 300,
+                  child: ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: model.userInfoMaps.length,
+                      separatorBuilder: (context, index) =>
+                          const Divider(thickness: 1),
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                            title: Text(
+                                'Username: ${model.userInfoMaps[index]["name"]}'),
+                            onTap: () {
+                              FloatingSearchBar.of(context).close();
+                              model.selectUser(model.userInfoMaps[index]);
+                            });
+                      }),
+                )
+              : Container(width: 0, height: 0);
+        },
+      ),
     );
   }
 

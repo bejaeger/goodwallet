@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/views/layout/layout_template_view.dart';
+import 'package:good_wallet/views/send_money_view.dart';
 import 'package:good_wallet/views/wallet_view.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'app/router.gr.dart' as auto_router;
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
             ),
       ),
       initialRoute: auto_router.Routes.walletView,
-      builder: (context, child) => LayoutTemplate(child: child),
+      builder: (context, child) => LayoutTemplate(childView: child),
     );
   }
 }
