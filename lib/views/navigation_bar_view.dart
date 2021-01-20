@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/viewmodels/navigation_bar_view_model.dart';
 import 'package:stacked/stacked.dart';
 
@@ -10,9 +11,6 @@ class NavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<NavigationBarViewModel>.reactive(
       viewModelBuilder: () => NavigationBarViewModel(),
-      onModelReady: (model) {
-        model.handleStartUpLogic();
-      },
       builder: (context, model, child) => Padding(
         padding: const EdgeInsets.only(top: 60, left: 30, right: 30, bottom: 0),
         child: Container(
@@ -45,13 +43,13 @@ class NavigationBar extends StatelessWidget {
                   _NavBarItem(
                       label: 'Donation Options',
                       onPressed: () => model.navigateToDonationView()),
-                  model.currentUser != null
+                  model.userStatus == UserStatus.SignedIn
                       ? _NavBarItem(
                           label: 'Logout ${model.currentUser.fullName[0]}.',
-                          onPressed: () => model.logout())
+                          onPressed: () async => await model.logout())
                       : _NavBarItem(
                           label: 'Login with Google',
-                          onPressed: () => model.loginWithGoogle()),
+                          onPressed: () async => await model.loginWithGoogle()),
                 ],
               )
             ],

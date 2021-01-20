@@ -16,10 +16,7 @@ class PaymentSuccessView extends StatelessWidget {
       onModelReady: (model) {
         model.handlePaymentSuccess();
       },
-      builder: (context, model, child) =>
-          //Container(height: 10, width: 10),
-
-          CenteredView(
+      builder: (context, model, child) => CenteredView(
         maxWidth: 600,
         child: Column(
           children: [

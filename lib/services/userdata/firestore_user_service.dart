@@ -38,7 +38,6 @@ class FirestoreUserService {
     try {
       var userData = await _usersCollectionReference.doc(uid).get();
       MyUser user = MyUser.fromData(userData.data());
-      print("INFO: Found user with name: ${user.fullName}");
       return user;
     } catch (e) {
       print("ERROR: ${e.toString()}");

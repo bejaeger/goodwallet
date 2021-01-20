@@ -23,23 +23,40 @@ class AuthenticationService {
   MyUser _currentUser;
   MyUser get currentUser => _currentUser;
 
+  // bool to keep track of initialization
+  bool _isInitializedCurrentUser;
+
   var _userState = BehaviorSubject<UserState>();
-  UserStatus get userStatus => _userState.value.status;
+
+  UserStatus _userStatus;
+  UserStatus get userStatus => _userStatus;
+
+  BehaviorSubject<UserState> get userState => _userState;
   Stream<User> userStream;
 
   AuthenticationService() {
-    // ! Very important to initialize this !
+    // ! Initialize AuthentificationService at the start of the app !
+    // TODO: Proper error handling!
+    _isInitializedCurrentUser = false;
     _userState.add(UserState(value: "undefined"));
-    userStream = FirebaseAuth.instance.authStateChanges();
+    _userStatus = UserStatus.Unknown;
+    userStream = _firebaseAuth.authStateChanges();
     userStream.listen((user) async {
       if (user != null) {
-        var result = await _prepareUserData(user);
+        // only initialize if not already initialized!
+        var result = await _initializeCurrentUser(user);
         if (result) {
           _userState.add(UserState(value: user));
         }
+        print(
+            "INFO: Initialized current user, user status = ${_userState.value.status}");
       } else {
+        _isInitializedCurrentUser = false;
         _userState.add(UserState(value: null));
+        _currentUser = null;
+        print("INFO: User status changed to ${_userState.value.status}");
       }
+      _userStatus = _userState.value.status;
     });
   }
 
@@ -57,7 +74,7 @@ class AuthenticationService {
     final UserCredential userCredential =
         await _firebaseAuth.signInWithCredential(credential);
     User user = userCredential.user;
-    var result = await _prepareUserData(user);
+    var result = await _initializeCurrentUser(user);
     if (result is String || (result is bool && !result)) {
       // need to create user in firestore!
       // create a new user profile on firestore
@@ -68,6 +85,7 @@ class AuthenticationService {
         _currentUser = resultUser;
       }
     }
+
     // successfully signed in and set _currentUser
     return true;
   }
@@ -82,7 +100,7 @@ class AuthenticationService {
         password: password,
       );
       print("INFO: Prepare user data");
-      await _prepareUserData(authResult.user);
+      await _initializeCurrentUser(authResult.user);
       return authResult.user != null;
     } catch (e) {
       print("ERROR: ${e.toString()}");
@@ -117,38 +135,8 @@ class AuthenticationService {
   }
 
   Future<bool> isUserLoggedIn() async {
-    // TODO: Use dartxs package here to handle currentUser
-    // @see: https://fireship.io/lessons/flutter-firebase-google-oauth-firestore/
-    // THIS NEEDS TO BE IMPROVED!
-    bool loop = true;
-    var user;
-    var counter = 0;
-    //print(userStream.done);
-    //print("Before loop $userState.status");
-
-    print("status: ${_userState.value.status}");
-
-    while (loop) {
-      await Future.delayed(Duration(milliseconds: 100));
-      try {
-        user = _firebaseAuth.currentUser;
-        var uid = user.uid;
-        loop = false;
-      } catch (e) {
-        print("In loop $userStream");
-        print("INFO: Trying to get current user again after 0.1 seconds!");
-        counter = counter + 1;
-        if (counter > 20) break;
-      }
-    }
-    //return user.done();
-    print("After loop");
-    //print(userStream.done);
-    print("has value: ${_userState.hasValue}");
-    print("status: ${_userState.value.status}");
-
-    await _prepareUserData(user);
-    return user != null;
+    bool loggedIn = userStatus == UserStatus.SignedIn ? true : false;
+    return loggedIn;
   }
 
   Future _populateCurrentUser(User user) async {
@@ -165,8 +153,9 @@ class AuthenticationService {
     return false;
   }
 
-  Future _prepareUserData(User user) async {
-    if (user != null) {
+  Future _initializeCurrentUser(User user) async {
+    // return currentUser here!?
+    if (user != null && !_isInitializedCurrentUser) {
       print("INFO: Populating current user");
       var result = await _populateCurrentUser(user);
       if (result is String) {
@@ -177,13 +166,14 @@ class AuthenticationService {
       }
       // updating the state of the app
       await _userWalletService.updateBalancesLocal(user.uid);
+      _isInitializedCurrentUser = true;
       return true;
     }
     return false;
   }
 
   Future logout() async {
-    _currentUser = null;
+    // just need to logout, the rest is handled by listeners
     _firebaseAuth.signOut();
   }
 }

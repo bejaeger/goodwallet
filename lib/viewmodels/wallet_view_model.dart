@@ -41,7 +41,7 @@ class WalletViewModel extends BaseModel {
   // }
 
   Future updateBalances() async {
-    if (currentUser.id != null) {
+    if (userStatus == UserStatus.SignedIn) {
       _userWalletService.updateBalancesLocal(currentUser.id);
       super.notifyListeners();
     }
@@ -49,12 +49,9 @@ class WalletViewModel extends BaseModel {
 
   Future loginWithGoogle() async {
     setBusy(true);
-    final result = await _authenticationService.loginWithGoogle();
-    if (result) {
-      print("INFO: User succesfully logged in!");
-    } else {
-      print("INFO: Failed logging in user!");
-    }
+    var result = await _authenticationService.loginWithGoogle();
+    if (!result) print("WARNING: Failed logging in user!");
+    notifyListeners();
     setBusy(false);
   }
 }

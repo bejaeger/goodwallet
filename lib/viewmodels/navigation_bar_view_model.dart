@@ -29,12 +29,9 @@ class NavigationBarViewModel extends BaseModel {
 
   Future loginWithGoogle() async {
     setBusy(true);
-    final result = await _authenticationService.loginWithGoogle();
-    if (result) {
-      print("INFO: User succesfully logged in!");
-    } else {
-      print("INFO: Failed logging in user!");
-    }
+    var result = await _authenticationService.loginWithGoogle();
+    if (!result) print("WARNING: Failed logging in user!");
+    notifyListeners();
     setBusy(false);
   }
 
@@ -95,19 +92,6 @@ class NavigationBarViewModel extends BaseModel {
         description: result,
       );
     }
-  }
-
-  //  TODO put in some proper initializer!
-  Future handleStartUpLogic() async {
-    print("INFO: Check if user is logged in");
-    var hasLoggedInUser = await _authenticationService.isUserLoggedIn();
-    if (hasLoggedInUser) {
-      print(
-          "INFO: User ${_authenticationService.currentUser.fullName} logged in");
-    } else {
-      print("INFO: No user is logged in");
-    }
-    notifyListeners();
   }
 
   Future logout() async {

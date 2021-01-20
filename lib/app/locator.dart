@@ -10,13 +10,18 @@ import 'package:stacked_services/stacked_services.dart';
 GetIt locator = GetIt.instance;
 
 void setupLocator() {
+  // Registers all singletons
+  locator.registerLazySingleton(() => UserWalletService());
+  locator.registerLazySingleton(() => FirestoreUserService());
   locator.registerLazySingleton(() => NavigationService());
   locator.registerLazySingleton(() => DialogService());
   locator.registerLazySingleton(() => BottomSheetService());
-  locator.registerLazySingleton(() => AuthenticationService());
-  locator.registerLazySingleton(() => FirestoreUserService());
   locator.registerLazySingleton(() => NavigationBarViewModel());
-  locator.registerLazySingleton(() => UserWalletService());
   locator.registerLazySingleton(() => FirestorePaymentDataService());
   locator.registerLazySingleton(() => StripePaymentService());
+  // don't register the auth service lazily because we want it
+  // to be initialized at the start of the app. This needs
+  // to happen after all the services that are used inside
+  // authentification service are registered.
+  locator.registerSingleton(AuthenticationService());
 }

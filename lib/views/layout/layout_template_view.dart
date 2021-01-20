@@ -25,7 +25,7 @@ class LayoutTemplate extends StatelessWidget {
       builder: (context, model, child) => Scaffold(
         body: CenteredView(
           maxWidth: screenSize.width,
-          child: model.userStatus != UserStatus.SignedIn
+          child: model.userStatus == UserStatus.Unknown
               ? LinearProgressIndicator()
               : Column(
                   mainAxisSize: MainAxisSize.min,

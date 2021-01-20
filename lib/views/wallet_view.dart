@@ -39,7 +39,7 @@ class WalletView extends StatelessWidget {
                 ],
               ),
             )
-          : _loginButton(model.loginWithGoogle),
+          : _loginButton(() async => await model.loginWithGoogle()),
     );
   }
 
