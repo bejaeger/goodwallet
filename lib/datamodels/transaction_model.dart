@@ -12,6 +12,7 @@ class TransactionModel {
   Timestamp createdAt;
   String transactionId;
   String status;
+  bool topUp; // if topping up own Good Wallet
 
   TransactionModel({
     @required this.recipientUid,
@@ -24,6 +25,7 @@ class TransactionModel {
     this.message,
     this.createdAt,
     this.status,
+    this.topUp,
   });
 
   Map<String, dynamic> toJson() {
@@ -38,6 +40,7 @@ class TransactionModel {
       'message': message,
       'createdAt': createdAt,
       'status': status,
+      'topUp': topUp,
     };
     return returnJson;
   }
@@ -61,6 +64,9 @@ class TransactionModel {
     }
     if (map.containsKey("status")) {
       data.status = map["status"];
+    }
+    if (map.containsKey("topUp")) {
+      data.topUp = map["topUp"];
     }
     return data;
   }

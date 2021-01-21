@@ -10,7 +10,8 @@ class StripePaymentService {
       HttpsCallable callable = FirebaseFunctions.instance
           .httpsCallable('createStripeCheckoutSession');
       var dataToServer = data.toJson();
-      dataToServer["domain"] = window.location.href;
+      dataToServer["domain"] = "http://localhost:7000/#/";
+      // window.location.href;
       final result = await callable(dataToServer);
       var sessionId = result.data["sessionId"];
       return sessionId;

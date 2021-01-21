@@ -4,12 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/datamodels/transaction_model.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
+import 'package:rxdart/rxdart.dart';
 
 class FirestorePaymentDataService {
   final CollectionReference _paymentsCollectionReference =
       FirebaseFirestore.instance.collection("payments");
-  final StreamController<List<TransactionModel>> _transactionsController =
-      StreamController<List<TransactionModel>>.broadcast();
+  final StreamController<List<dynamic>> _transactionsController =
+      StreamController<List<dynamic>>.broadcast();
 
   CollectionReference getPaymentIntentCollectionRef(var uid) {
     return FirebaseFirestore.instance
@@ -115,22 +116,57 @@ class FirestorePaymentDataService {
   }
 
   Stream listenToTransactionsRealTime(var uid) {
-    // Register the handler for when the posts data changes
-    _paymentsCollectionReference
+    // TODO: Add limit to this query and only load more
+    // when user asks for it!
+
+    // no OR query for different fields in firebase
+    // Get single streams and combine later
+    Stream<QuerySnapshot> outgoing = _paymentsCollectionReference
         .where("senderUid", isEqualTo: uid)
+        .orderBy("createdAt",
+            descending: true) // already added because needed with limit!
+        .snapshots();
+    Stream<QuerySnapshot> incoming = _paymentsCollectionReference
+        .where("recipientUid", isEqualTo: uid)
         .orderBy("createdAt", descending: true)
-        .snapshots()
-        .listen((transactionsSnapshot) {
-      if (transactionsSnapshot.docs.isNotEmpty) {
-        var transactions = transactionsSnapshot.docs
+        .snapshots();
+
+    // combine streams with rxdart
+    Stream<List<dynamic>> transactionStream =
+        Rx.combineLatest2(outgoing, incoming, (outSnapshot, inSnapshot) {
+      List<dynamic> transactions = <dynamic>[];
+      if (outSnapshot.docs.isNotEmpty) {
+        transactions.addAll(outSnapshot.docs
+            .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
+            .toList());
+      }
+      if (inSnapshot.docs.isNotEmpty) {
+        // Add logic to find top ups (transactions to own account!)
+        // Can be deprecated once data is already stored accordingly with topUp = true!
+        List<dynamic> inTransactions = inSnapshot.docs
             .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
             .toList();
-
-        // Add the posts onto the controller
-        _transactionsController.add(transactions);
+        List<dynamic> transactionIds =
+            transactions.map((element) => element.transactionId).toList();
+        inTransactions.forEach((element) {
+          if (!transactionIds.contains(element.transactionId)) {
+            transactions.add(element);
+          } else {
+            element.topUp = true;
+            transactions.removeWhere(
+                (el2) => el2.transactionId == element.transactionId);
+            transactions.add(element);
+          }
+        });
       }
-    });
 
+      return transactions;
+    });
+    // listen to combined stream and add transactions to controller
+    transactionStream.listen((transactions) {
+      _transactionsController.add(transactions);
+    });
+    // return stream from controller
     return _transactionsController.stream;
   }
 }

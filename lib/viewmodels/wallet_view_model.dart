@@ -17,21 +17,26 @@ class WalletViewModel extends BaseModel {
   final FirestorePaymentDataService _firestorePaymentDataService =
       locator<FirestorePaymentDataService>();
 
-  List<TransactionModel> _transactions;
-  List<TransactionModel> get transactions => _transactions;
+  List<dynamic> _transactions;
+  List<dynamic> get transactions => _transactions;
 
   void listenToTransactions() {
+    // Sort transactions and add them to _transactions
     if (userStatus == UserStatus.SignedIn) {
       setBusy(true);
       _firestorePaymentDataService
           .listenToTransactionsRealTime(currentUser.id)
           .listen((transactionsData) {
-        List<TransactionModel> updatedTransactions = transactionsData;
+        List<dynamic> updatedTransactions = transactionsData;
         if (updatedTransactions != null && updatedTransactions.length > 0) {
+          // sort with date
+          updatedTransactions
+              .sort((a, b) => b.createdAt.compareTo(a.createdAt));
           _transactions = updatedTransactions;
           notifyListeners();
         }
       });
+
       setBusy(false);
     }
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/datamodels/transaction_model.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/viewmodels/wallet_view_model.dart';
 import 'package:good_wallet/views/utils/ui_helpers.dart';
@@ -131,6 +132,13 @@ class WalletView extends StatelessWidget {
               var amountFormatted = incoming
                   ? "\$ ${hist.amount * 0.01}"
                   : "- \$ ${hist.amount * 0.01}";
+              var nameToDisplay =
+                  incoming ? hist.senderName : hist.recipientName;
+              if (hist.topUp != null) {
+                if (hist.topUp) {
+                  nameToDisplay = "Committed for good";
+                }
+              }
               return Padding(
                 padding: EdgeInsets.only(left: 10.0, right: 10.0),
                 child: Card(
@@ -142,9 +150,7 @@ class WalletView extends StatelessWidget {
                           style: TextStyle(color: Colors.white)),
                     ),
                     // FlutterLogo(),
-                    title: incoming
-                        ? Text(hist.senderName)
-                        : Text(hist.recipientName),
+                    title: Text(nameToDisplay),
                     subtitle: hist.createdAt != null
                         //https://api.flutter.dev/flutter/intl/DateFormat-class.html
                         ? Text(DateFormat.MMMEd()
