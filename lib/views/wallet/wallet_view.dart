@@ -36,7 +36,46 @@ class WalletView extends StatelessWidget {
                   verticalSpace(20),
                   //_buildTransferButton(model),
                   verticalSpace(20),
-                  Text("Transaction History", style: TextStyle(fontSize: 25)),
+                  Text("Recently Payed", style: TextStyle(fontSize: 22)),
+                  model.transactions != null
+                      ? Container(
+                          height: 120,
+                          child: ListView.separated(
+                            physics: ScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: model.transactions.length,
+                            separatorBuilder:
+                                (BuildContext context, int index) =>
+                                    Container(width: 20),
+                            itemBuilder: (context, index) {
+                              dynamic hist = model.transactions[index];
+                              return SizedBox(
+                                width: 64,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: CircleAvatar(
+                                          radius: 32,
+                                          backgroundColor: Colors.blue[200],
+                                          child: Text(hist.recipientName[0])),
+                                    ),
+                                    Expanded(
+                                      child: Text(hist.recipientName,
+                                          overflow: TextOverflow.clip,
+                                          style: TextStyle(fontSize: 12)),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      : Container(),
+                  Text("Transaction History", style: TextStyle(fontSize: 22)),
                   _buildTransactionHistoryView(model),
                   //_buildRecentActivities(model.currentUser),
                 ],

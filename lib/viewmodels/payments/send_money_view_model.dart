@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/app/router.gr.dart';
 import 'package:good_wallet/datamodels/transaction_model.dart';
+import 'package:good_wallet/enums/user_status.dart';
+import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
@@ -13,7 +15,7 @@ import 'package:stripe_payment/stripe_payment.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:good_wallet/viewmodels/payments/stripe_checkout/stripe_checkout_stub.dart'
-    if (dart.library.js) 'package:good_wallet/viewmodels/finances/stripe_checkout/stripe_checkout_web_view.dart';
+    if (dart.library.js) 'package:good_wallet/viewmodels/payments/stripe_checkout/stripe_checkout_web_view.dart';
 
 class SendMoneyViewModel extends BaseModel {
   final DialogService _dialogService = locator<DialogService>();
@@ -24,6 +26,8 @@ class SendMoneyViewModel extends BaseModel {
   final FirestorePaymentDataService _firestorePaymentDataService =
       locator<FirestorePaymentDataService>();
   final _stripePaymentService = locator<StripePaymentService>();
+  final AuthenticationService _authenticationService =
+      locator<AuthenticationService>();
 
   // take from https://stripe.com/docs/testing#international-cards
   final CreditCard testCard = CreditCard(
@@ -48,6 +52,9 @@ class SendMoneyViewModel extends BaseModel {
   void setPaymentReady(bool ready) {
     _paymentReady = ready;
   }
+
+  String _paymentStatus = "unknown";
+  String get paymentStatus => _paymentStatus;
 
   String _errorMessage;
   String get errorMessage => _errorMessage;
@@ -166,75 +173,36 @@ class SendMoneyViewModel extends BaseModel {
 
   void handlePaymentSuccess() async {
     print("INFO: Stripe payment successfull. Handling it");
-    var uid = await waitForUID();
-    if (uid is bool) {
-      if (!uid) {
-        await _dialogService.showDialog(
-          title: "Error! Could not process Good Dollars",
-          description: "Please contact support!",
-        );
-        // If that's the case it's bad, because the paymentIntent document is still present!
-        return;
+    _authenticationService.userStateSubject.listen((state) async {
+      if (state.status == UserStatus.SignedIn) {
+        bool result = await _firestorePaymentDataService
+            .handlePaymentSuccess(currentUser.id);
+        await _userWalletService.updateBalancesLocal(currentUser.id);
+        if (result)
+          _paymentStatus = "success";
+        else
+          _paymentStatus = "expired";
+        notifyListeners();
+      } else if (state.status == UserStatus.SignedOut) {
+        // Something went terribly wrong! We should never end up here!
+        _paymentStatus = "pending";
+        notifyListeners();
       }
-    }
-    var data = await _firestorePaymentDataService.handlePaymentSuccess(uid);
-    if (data is bool) {
-      if (!data) {
-        await _dialogService.showDialog(
-          title: "Error! Could not process Good Dollars",
-          description: "Please contact support!",
-        );
-      }
-    } else {
-      await _dialogService.showDialog(
-        title:
-            "You successfully send ${data.amount * 0.01} Good Dollars to ${data.recipientName}",
-        description: "You're awesome",
-      );
-    }
-    await _userWalletService.updateBalancesLocal(currentUser.id);
-    super.notifyListeners();
-  }
-
-  Future waitForUID() async {
-    bool loop = true;
-    var uid;
-    var counter = 0;
-    while (loop) {
-      await Future.delayed(Duration(milliseconds: 500));
-      try {
-        uid = currentUser.id;
-        loop = false;
-      } catch (e) {
-        print("INFO: Trying to get user uid again 0.5 seconds!");
-        counter = counter + 1;
-        if (counter > 10) break;
-      }
-    }
-    if (uid == null) {
-      return false;
-    } else {
-      return uid;
-    }
+    });
   }
 
   void handlePaymentFailure() async {
     print("INFO: Stripe payment cancelled. Handling it");
-    var uid = await waitForUID();
-    if (uid is bool) {
-      if (!uid) {
-        await _dialogService.showDialog(
-          title: "Error! Could not process Good Dollars",
-          description: "Please contact support!",
-        );
-        // If that's the case it's bad, because the paymentIntent document is still present!
-        return;
+    _authenticationService.userStateSubject.listen((state) async {
+      if (state.status == UserStatus.SignedIn) {
+        await _firestorePaymentDataService.handlePaymentFailure(currentUser.id);
+        _paymentStatus = "failure";
+        notifyListeners();
       }
-    }
-    await _firestorePaymentDataService.handlePaymentFailure(uid);
+    });
   }
 
-// TODO: Put in service!
+  // TODO: Put in service!
   void searchFor(String query) async {
     QuerySnapshot foundUsers = await FirebaseFirestore.instance
         .collection("users")
@@ -278,6 +246,6 @@ class SendMoneyViewModel extends BaseModel {
   }
 
   Future navigateToHomeView([num pageIndex = 2]) async {
-    await _navigationService.navigateTo(Routes.welcomeView);
+    await _navigationService.navigateTo(Routes.walletView);
   }
 }

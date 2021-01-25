@@ -16,7 +16,7 @@ class StripePaymentService {
       var sessionId = result.data["sessionId"];
       return sessionId;
     } catch (error) {
-      print("ERROR! stripe session Id could not created!");
+      print("ERROR! stripe session Id could not be created!");
       return false;
     }
   }

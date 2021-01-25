@@ -53,6 +53,7 @@ class FirestorePaymentDataService {
       return docRef.id;
     } catch (error) {
       print("ERROR: payment intent couldn't be created in firestore!");
+      print("DETAILS: ${error.toString()}");
       return false;
     }
   }
@@ -82,7 +83,8 @@ class FirestorePaymentDataService {
   }
 
   Future handlePaymentSuccess(var uid) async {
-    // reads payment intent and deltes it after writing new document
+    // reads payment intent and deletes it after writing
+    // new document to payments collection
     QuerySnapshot documentsSnapshot =
         await getLatestPaymentIntentDocSnapshot(uid);
     if (documentsSnapshot.size == 1) {
@@ -96,7 +98,7 @@ class FirestorePaymentDataService {
       return data;
     } else {
       print(
-          "WARNING: There is none more than one payment Intent present! Cannot handle payment success.");
+          "WARNING: There is none or more than one payment Intent present! Cannot handle payment success.");
       return false;
     }
   }

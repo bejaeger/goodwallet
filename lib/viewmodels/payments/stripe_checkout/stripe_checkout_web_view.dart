@@ -7,7 +7,6 @@ import 'dart:html';
 
 const apiKey =
     'pk_test_51HsIjGKMG1WPogVfkBOAiW59LeE9tjOleUdOAShJjTavXqj16ionV9t3pJrhzSML1UDEqQ0xqfNYKLxlqC3J9Jvq00Mm2DkWjz';
-const vacuumPriceId = 'price_1I7PYZKMG1WPogVf9YbqU0Xj';
 
 Future redirectToCheckout(String sessionId) async {
   final stripe = Stripe(apiKey);
