@@ -26,19 +26,19 @@ class AuthenticationService {
   // bool to keep track of initialization
   bool _isInitializedCurrentUser;
 
-  var _userState = BehaviorSubject<UserState>();
+  var _userStateSubject = BehaviorSubject<UserState>();
 
   UserStatus _userStatus;
   UserStatus get userStatus => _userStatus;
 
-  BehaviorSubject<UserState> get userState => _userState;
+  BehaviorSubject<UserState> get userStateSubject => _userStateSubject;
   Stream<User> userStream;
 
   AuthenticationService() {
     // ! Initialize AuthentificationService at the start of the app !
     // TODO: Proper error handling!
     _isInitializedCurrentUser = false;
-    _userState.add(UserState(value: "undefined"));
+    _userStateSubject.add(UserState(value: "undefined"));
     _userStatus = UserStatus.Unknown;
     userStream = _firebaseAuth.authStateChanges();
     userStream.listen((user) async {
@@ -46,17 +46,18 @@ class AuthenticationService {
         // only initialize if not already initialized!
         var result = await _initializeCurrentUser(user);
         if (result) {
-          _userState.add(UserState(value: user));
+          _userStatus = UserStatus.SignedIn;
+          _userStateSubject.add(UserState(value: user));
         }
         print(
-            "INFO: Initialized current user, user status = ${_userState.value.status}");
+            "INFO: Initialized current user, user status = ${_userStateSubject.value.status}");
       } else {
         _isInitializedCurrentUser = false;
-        _userState.add(UserState(value: null));
+        _userStatus = UserStatus.SignedOut;
+        _userStateSubject.add(UserState(value: null));
         _currentUser = null;
-        print("INFO: User status changed to ${_userState.value.status}");
+        print("INFO: User status changed to ${_userStateSubject.value.status}");
       }
-      _userStatus = _userState.value.status;
     });
   }
 

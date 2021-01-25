@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/viewmodels/finances/send_money_view_model.dart';
-import 'package:good_wallet/views/utils/ui_helpers.dart';
+import 'package:good_wallet/utils/ui_helpers.dart';
+import 'package:good_wallet/viewmodels/payments/send_money_view_model.dart';
 import 'package:stacked/stacked.dart';
 
 class PaymentCancelView extends StatelessWidget {

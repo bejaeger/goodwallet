@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:good_wallet/viewmodels/finances/send_money_view_model.dart';
-import 'package:good_wallet/views/utils/ui_helpers.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:good_wallet/utils/ui_helpers.dart';
+import 'package:good_wallet/viewmodels/payments/send_money_view_model.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:stacked/stacked.dart';
 
@@ -36,7 +37,8 @@ class SendMoneyView extends StatelessWidget {
                   children: [
                     verticalSpace(50),
                     _selectUserView(model),
-                    _selectValueView(model),
+                    _buildSearchTextWidget(context, model),
+                    _selectValueView(context, model),
                     _optionalMessageView(model),
                     verticalSpace(50),
                     model.errorMessage != null
@@ -55,13 +57,54 @@ class SendMoneyView extends StatelessWidget {
                           ]),
                   ],
                 ),
-                _buildFloatingSearchBar(context, model),
+                //_buildFloatingSearchBar(context, model),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  _buildSearchTextWidget(BuildContext context, dynamic model) {
+    final List<String> items = List.generate(5, (index) => "Item $index");
+
+    return ListView(shrinkWrap: true, children: [
+      //SizedBox(height: 200),
+      TypeAheadField<String>(
+        //hideOnEmpty: true,
+        hideOnLoading: true,
+        noItemsFoundBuilder: (context) =>
+            Text("No user found", style: TextStyle(fontSize: 18)),
+        getImmediateSuggestions: true,
+        textFieldConfiguration: TextFieldConfiguration(
+          decoration: InputDecoration(hintText: 'Search by Username'),
+        ),
+        suggestionsCallback: (String pattern) async {
+          return ["hi", "h", "1", "2", "3", "4", "4"];
+          //return await model.getSearchedNames(pattern);
+        },
+        suggestionsBoxDecoration: SuggestionsBoxDecoration(
+            constraints: BoxConstraints(
+          maxHeight: 280,
+        )),
+        itemBuilder: (context, String suggestion) {
+          return ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.blue,
+              child: Text('${suggestion[0]}',
+                  style: TextStyle(color: Colors.white)),
+            ),
+            title: Text(suggestion),
+            subtitle: Text("Rookie"),
+          );
+        },
+        onSuggestionSelected: (String suggestion) {
+          print("Suggestion selected");
+        },
+      ),
+      //SizedBox(height: 500),
+    ]);
   }
 
   _buildFloatingSearchBar(BuildContext context, dynamic model) {
@@ -137,10 +180,9 @@ class SendMoneyView extends StatelessWidget {
     );
   }
 
-  _selectValueView(var model) {
+  _selectValueView(dynamic context, var model) {
     return Container(
-      padding: const EdgeInsets.only(left: 40.0, right: 40.0),
-      child: TextField(
+      child: TextFormField(
         decoration: new InputDecoration(labelText: "Amount in CAD"),
         keyboardType: TextInputType.number,
         controller: model.transferValueController,
@@ -153,7 +195,6 @@ class SendMoneyView extends StatelessWidget {
 
   _optionalMessageView(model) {
     return Container(
-      padding: const EdgeInsets.only(left: 40.0, right: 40.0),
       child: TextField(
         decoration: new InputDecoration(labelText: "Message (optional)"),
         controller:

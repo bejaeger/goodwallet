@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/transaction_model.dart';
+import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/enums/user_status.dart';
+import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:good_wallet/viewmodels/wallet_view_model.dart';
-import 'package:good_wallet/views/utils/ui_helpers.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 
@@ -11,11 +11,13 @@ class WalletView extends StatelessWidget {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return ViewModelBuilder<WalletViewModel>.reactive(
-      viewModelBuilder: () => WalletViewModel(),
-      onModelReady: (model) {
-        model.updateBalances();
-        model.listenToTransactions();
+      viewModelBuilder: () => locator<WalletViewModel>(),
+      onModelReady: (model) async {
+        await model.updateBalances();
+        await model.listenToTransactions();
       },
+      fireOnModelReadyOnce: true,
+      disposeViewModel: false,
       builder: (context, model, child) => model.userStatus ==
               UserStatus.SignedIn
           ? CenteredView(

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
-import 'package:good_wallet/viewmodels/finances/send_money_view_model.dart';
-import 'package:good_wallet/views/utils/ui_helpers.dart';
+import 'package:good_wallet/utils/ui_helpers.dart';
+import 'package:good_wallet/viewmodels/payments/send_money_view_model.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_services/stacked_services.dart';
 
 class PaymentSuccessView extends StatelessWidget {
   final UserWalletService _userWalletService = locator<UserWalletService>();

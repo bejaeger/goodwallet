@@ -19,12 +19,10 @@ class BaseModel extends ReactiveViewModel {
   @override
   List<ReactiveServiceMixin> get reactiveServices => [_userWalletService];
 
-  //BehaviorSubject<MyUser> currentUserSubj
-
   MyUser get currentUser => _authenticationService.currentUser;
   UserStatus get userStatus => _authenticationService.userStatus;
   BehaviorSubject<UserState> get userStateSubject =>
-      _authenticationService.userState;
+      _authenticationService.userStateSubject;
 
   num get balance => _userWalletService.balance;
   num get implicitDonations => _userWalletService.implicitDonations;
@@ -32,8 +30,8 @@ class BaseModel extends ReactiveViewModel {
 
   // TODO: When is this initialized!?
   BaseModel() {
-    print("Initialize BaseModel!");
-    _authenticationService.userState.listen((state) {
+    print("INFO: Initialize BaseModel!");
+    _authenticationService.userStateSubject.listen((state) {
       notifyListeners();
     });
   }

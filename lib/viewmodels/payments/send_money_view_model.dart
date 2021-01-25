@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/app/router.gr.dart';
 import 'package:good_wallet/datamodels/transaction_model.dart';
-import 'package:good_wallet/services/finances/firestore_payment_data_service.dart';
-import 'package:good_wallet/services/finances/stripe_payment_service.dart';
+import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
+import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
 import 'package:good_wallet/viewmodels/base_model.dart';
 import 'package:stacked/stacked.dart';
@@ -12,7 +12,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-import 'package:good_wallet/viewmodels/finances/stripe_checkout/stripe_checkout_stub.dart'
+import 'package:good_wallet/viewmodels/payments/stripe_checkout/stripe_checkout_stub.dart'
     if (dart.library.js) 'package:good_wallet/viewmodels/finances/stripe_checkout/stripe_checkout_web_view.dart';
 
 class SendMoneyViewModel extends BaseModel {
@@ -241,9 +241,24 @@ class SendMoneyViewModel extends BaseModel {
         .where("searchKeywords", arrayContains: query.toLowerCase())
         .get();
     _userInfoMaps = foundUsers.docs.map((DocumentSnapshot doc) {
-      return {"name": doc["fullName"] as String, "id": doc["id"] as String};
+      return {
+        "name": doc.get("fullName") as String,
+        "id": doc.get("id") as String,
+      };
     }).toList();
     notifyListeners();
+  }
+
+  Future<List<String>> getSearchedNames(String query) async {
+    // TODO: Error catching!
+    QuerySnapshot foundUsers = await FirebaseFirestore.instance
+        .collection("users")
+        .where("searchKeywords", arrayContains: query.toLowerCase())
+        .get();
+    List<String> returnValue = foundUsers.docs.map((DocumentSnapshot doc) {
+      return doc.get("fullName") as String;
+    }).toList();
+    return returnValue;
   }
 
   void selectUser(Map<String, String> userMap) {

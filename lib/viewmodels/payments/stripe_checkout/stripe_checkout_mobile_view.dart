@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:good_wallet/viewmodels/finances/stripe_checkout/stripe_checkout_mobile_view_model.dart';
+import 'package:good_wallet/viewmodels/payments/stripe_checkout/stripe_checkout_mobile_view_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 

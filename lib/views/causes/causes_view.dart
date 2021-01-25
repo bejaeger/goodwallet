@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/views/utils/ui_helpers.dart';
+import 'package:good_wallet/utils/ui_helpers.dart';
 
 class DonationView extends StatelessWidget {
   @override
