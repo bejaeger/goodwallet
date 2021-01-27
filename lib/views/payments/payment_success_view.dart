@@ -15,15 +15,22 @@ class PaymentSuccessView extends StatelessWidget {
       onModelReady: (model) {
         model.handlePaymentSuccess();
       },
-      builder: (context, model, child) => CenteredView(
-          maxWidth: 600,
-          child: model.paymentStatus == "unknown"
-              ? LinearProgressIndicator()
-              : model.paymentStatus == "success"
-                  ? _statusSuccessMessage(model)
-                  : model.paymentStatus == "expired"
-                      ? _statusExpiredMessage(model)
-                      : _statusPendingMessage(model)),
+      builder: (context, model, child) => WillPopScope(
+        onWillPop: () async {
+          model.setShowNavigationBar(true);
+          model.navigateToHomeView();
+          return true;
+        },
+        child: CenteredView(
+            maxWidth: 600,
+            child: model.paymentStatus == "unknown"
+                ? LinearProgressIndicator()
+                : model.paymentStatus == "success"
+                    ? _statusSuccessMessage(model)
+                    : model.paymentStatus == "expired"
+                        ? _statusExpiredMessage(model)
+                        : _statusPendingMessage(model)),
+      ),
     );
   }
 
@@ -34,7 +41,10 @@ class PaymentSuccessView extends StatelessWidget {
         Text("Successfully transferred Good Dollars!",
             style: TextStyle(fontSize: 20)),
         FlatButton(
-            onPressed: () => model.navigateToHomeView(2),
+            onPressed: () {
+              model.setShowNavigationBar(true);
+              model.navigateToHomeView();
+            },
             child: Text("Go back.")),
       ],
     );
@@ -47,7 +57,10 @@ class PaymentSuccessView extends StatelessWidget {
         Text("This payment processing link has expired.",
             style: TextStyle(fontSize: 20)),
         FlatButton(
-            onPressed: () => model.navigateToHomeView(2),
+            onPressed: () {
+              model.setShowNavigationBar(true);
+              model.navigateToHomeView();
+            },
             child: Text("Go back.")),
       ],
     );
@@ -61,7 +74,7 @@ class PaymentSuccessView extends StatelessWidget {
             "Something went terribly wrong! Please contact support immediately",
             style: TextStyle(fontSize: 20)),
         FlatButton(
-            onPressed: () => model.navigateToHomeView(2),
+            onPressed: () => model.navigateToHomeView(),
             child: Text("Go back.")),
       ],
     );

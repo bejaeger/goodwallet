@@ -12,65 +12,73 @@ class NavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<NavigationBarViewModel>.reactive(
       viewModelBuilder: () => NavigationBarViewModel(),
-      builder: (context, model, child) => Card(
-        margin: EdgeInsets.only(bottom: 1),
-        color: Colors.blue[100],
-        elevation: 10,
-        child: Padding(
-          padding:
-              const EdgeInsets.only(top: 10, left: 30, right: 30, bottom: 10),
-          child: Container(
-            height: 50,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  height: 150,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/wallet_icon.png"),
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-                Expanded(
+      builder: (context, model, child) => model.showNavigationBar
+          ? Card(
+              margin: EdgeInsets.only(bottom: 1),
+              color: Colors.blue[100],
+              elevation: 10,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 10, left: 30, right: 30, bottom: 10),
+                child: Container(
+                  height: 50,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      _NavBarItem(
-                          label: 'Home',
-                          onPressed: () => model.navigateToWelcomeView()),
-                      horizontalSpaceMedium,
-                      _NavBarItem(
-                          label: 'Wallet',
-                          onPressed: () => model.navigateToWalletView()),
-                      horizontalSpaceMedium,
-                      _NavBarItem(
-                          label: 'Send Money',
-                          onPressed: () => model.navigateToSendMoneyView()),
-                      horizontalSpaceMedium,
-                      _NavBarItem(
-                          label: 'Give',
-                          onPressed: () => model.navigateToDonationView()),
-                      horizontalSpaceMedium,
-                      model.userStatus == UserStatus.SignedIn
-                          ? _NavBarItem(
-                              label: 'Logout',
-                              onPressed: () async => await model.logout())
-                          : _NavBarItem(
-                              label: 'Login with Google',
-                              onPressed: () async =>
-                                  await model.loginWithGoogle()),
+                      Container(
+                        height: 150,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/wallet_icon.png"),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            _NavBarItem(
+                                label: 'Home',
+                                onPressed: () => model.navigateToWelcomeView()),
+                            horizontalSpaceMedium,
+                            _NavBarItem(
+                                label: 'Wallet',
+                                onPressed: () => model.navigateToWalletView()),
+                            horizontalSpaceMedium,
+                            _NavBarItem(
+                                label: 'Send Money',
+                                onPressed: () =>
+                                    model.navigateToSendMoneyView()),
+                            horizontalSpaceMedium,
+                            _NavBarItem(
+                                label: 'Give',
+                                onPressed: () =>
+                                    model.navigateToDonationView()),
+                            horizontalSpaceMedium,
+                            _NavBarItem(
+                                label: 'Login Screen',
+                                onPressed: () async =>
+                                    await model.navigateToLoginScreen()),
+                            model.userStatus == UserStatus.SignedIn
+                                ? _NavBarItem(
+                                    label: 'Logout',
+                                    onPressed: () async => await model.logout())
+                                : _NavBarItem(
+                                    label: 'Login with Google',
+                                    onPressed: () async =>
+                                        await model.loginWithGoogle()),
+                          ],
+                        ),
+                      )
                     ],
                   ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
+                ),
+              ),
+            )
+          : Container(),
     );
   }
 }

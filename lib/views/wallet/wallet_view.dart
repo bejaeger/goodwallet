@@ -65,7 +65,7 @@ class WalletView extends StatelessWidget {
                                     ),
                                     Expanded(
                                       child: Text(hist.recipientName,
-                                          overflow: TextOverflow.clip,
+                                          overflow: TextOverflow.ellipsis,
                                           style: TextStyle(fontSize: 12)),
                                     ),
                                   ],

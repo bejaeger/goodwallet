@@ -245,7 +245,7 @@ class SendMoneyViewModel extends BaseModel {
     redirectToCheckout(sessionId);
   }
 
-  Future navigateToHomeView([num pageIndex = 2]) async {
+  Future navigateToHomeView() async {
     await _navigationService.navigateTo(Routes.walletView);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
+import 'package:good_wallet/services/layout/layout_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/firestore_user_service.dart';
@@ -21,6 +22,7 @@ void setupLocator() {
   locator.registerLazySingleton(() => FirestorePaymentDataService());
   locator.registerLazySingleton(() => StripePaymentService());
   locator.registerLazySingleton(() => WalletViewModel());
+  locator.registerLazySingleton(() => LayoutService());
 
   // don't register the auth service lazily because we want it
   // to be initialized at the start of the app. This needs

@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route_annotations.dart';
 import 'package:good_wallet/views/causes/causes_view.dart';
+import 'package:good_wallet/views/layout/layout_template_view.dart';
 import 'package:good_wallet/views/payments/payment_cancel_view.dart';
 import 'package:good_wallet/views/payments/payment_success_view.dart';
 import 'package:good_wallet/views/payments/send_money_view.dart';
@@ -13,5 +14,6 @@ import 'package:good_wallet/views/welcome_view.dart';
   MaterialRoute(page: DonationView),
   MaterialRoute(page: PaymentSuccessView),
   MaterialRoute(page: PaymentCancelView),
+  MaterialRoute(page: LayoutTemplate),
 ])
 class $Router {}

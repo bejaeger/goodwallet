@@ -23,7 +23,7 @@ class LayoutTemplate extends StatelessWidget {
               : Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    NavigationBar(),
+                    model.showNavigationBar ? NavigationBar() : Container(),
                     Expanded(
                       child: SizedBox.expand(
                         child: Container(

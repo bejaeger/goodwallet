@@ -1,6 +1,7 @@
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/app/router.gr.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
+import 'package:good_wallet/services/layout_service.dart';
 import 'package:good_wallet/viewmodels/base_model.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,11 @@ class NavigationBarViewModel extends BaseModel {
 
   Future navigateToDonationView() async {
     await _navigationService.navigateTo(Routes.donationView);
+  }
+
+  Future navigateToLoginScreen() async {
+    setShowNavigationBar(false);
+    await _navigationService.navigateTo(Routes.paymentSuccessView);
   }
 
   Future loginWithGoogle() async {

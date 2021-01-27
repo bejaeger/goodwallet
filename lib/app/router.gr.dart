@@ -10,6 +10,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import '../views/causes/causes_view.dart';
+import '../views/layout/layout_template_view.dart';
 import '../views/payments/payment_cancel_view.dart';
 import '../views/payments/payment_success_view.dart';
 import '../views/payments/send_money_view.dart';
@@ -23,6 +24,7 @@ class Routes {
   static const String donationView = '/donation-view';
   static const String paymentSuccessView = '/payment-success-view';
   static const String paymentCancelView = '/payment-cancel-view';
+  static const String layoutTemplate = '/layout-template';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -30,6 +32,7 @@ class Routes {
     donationView,
     paymentSuccessView,
     paymentCancelView,
+    layoutTemplate,
   };
 }
 
@@ -43,6 +46,7 @@ class Router extends RouterBase {
     RouteDef(Routes.donationView, page: DonationView),
     RouteDef(Routes.paymentSuccessView, page: PaymentSuccessView),
     RouteDef(Routes.paymentCancelView, page: PaymentCancelView),
+    RouteDef(Routes.layoutTemplate, page: LayoutTemplate),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -90,6 +94,16 @@ class Router extends RouterBase {
         settings: data,
       );
     },
+    LayoutTemplate: (data) {
+      final args = data.getArgs<LayoutTemplateArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => LayoutTemplate(
+          key: args.key,
+          childView: args.childView,
+        ),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -104,4 +118,11 @@ class SendMoneyViewArguments {
   final dynamic openSearchBarOnBuild;
   SendMoneyViewArguments(
       {this.key, this.userInfoMap, this.openSearchBarOnBuild = false});
+}
+
+/// LayoutTemplate arguments holder class
+class LayoutTemplateArguments {
+  final Key key;
+  final Widget childView;
+  LayoutTemplateArguments({this.key, @required this.childView});
 }
