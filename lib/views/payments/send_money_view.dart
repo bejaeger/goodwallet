@@ -25,40 +25,45 @@ class SendMoneyView extends StatelessWidget {
         }
       },
       builder: (context, model, child) => WillPopScope(
-        onWillPop: () async => true,
-        child: CenteredView(
-          maxWidth: 500,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Stack(
-              children: [
-                ListView(
-                  padding: const EdgeInsets.all(20.0),
-                  children: [
-                    verticalSpace(50),
-                    _selectUserView(model),
-                    _buildSearchTextWidget(context, model),
-                    _selectValueView(context, model),
-                    _optionalMessageView(model),
-                    verticalSpace(50),
-                    model.errorMessage != null
-                        ? Text(model.errorMessage,
-                            style: TextStyle(color: Colors.red))
-                        : Container(height: 0, width: 0),
-                    model.isBusy
-                        ? Center(child: CircularProgressIndicator())
-                        : Column(children: [
-                            model.currentUser != null
-                                ? _payButtonView(model)
-                                : Container(),
-                            model.currentUser != null
-                                ? _testPayButtonView(model)
-                                : Container(),
-                          ]),
-                  ],
-                ),
-                //_buildFloatingSearchBar(context, model),
-              ],
+        onWillPop: () async {
+          await model.navigateToWalletView();
+          return true;
+        },
+        child: Scaffold(
+          body: CenteredView(
+            maxWidth: 500,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Stack(
+                children: [
+                  ListView(
+                    padding: const EdgeInsets.all(20.0),
+                    children: [
+                      verticalSpace(50),
+                      _selectUserView(model),
+                      _buildSearchTextWidget(context, model),
+                      _selectValueView(context, model),
+                      _optionalMessageView(model),
+                      verticalSpace(50),
+                      model.errorMessage != null
+                          ? Text(model.errorMessage,
+                              style: TextStyle(color: Colors.red))
+                          : Container(height: 0, width: 0),
+                      model.isBusy
+                          ? Center(child: CircularProgressIndicator())
+                          : Column(children: [
+                              model.currentUser != null
+                                  ? _payButtonView(model)
+                                  : Container(),
+                              model.currentUser != null
+                                  ? _testPayButtonView(model)
+                                  : Container(),
+                            ]),
+                    ],
+                  ),
+                  //_buildFloatingSearchBar(context, model),
+                ],
+              ),
             ),
           ),
         ),

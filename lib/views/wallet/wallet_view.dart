@@ -20,65 +20,68 @@ class WalletView extends StatelessWidget {
       disposeViewModel: false,
       builder: (context, model, child) => model.userStatus ==
               UserStatus.SignedIn
-          ? CenteredView(
-              maxWidth: 400,
-              child: ListView(
-                //crossAxisAlignment: CrossAxisAlignment.center,
-                //mainAxisSize: MainAxisSize.max,
-                children: [
-                  SizedBox(height: screenSize.height / 12),
-                  _buildFullName(model.currentUser.fullName),
-                  //_buildMemberSinceText(context),
-                  verticalSpace(10),
-                  _buildSeparator(screenSize),
-                  verticalSpace(10),
-                  _buildStatView(model),
-                  verticalSpace(20),
-                  //_buildTransferButton(model),
-                  verticalSpace(20),
-                  Text("Recently Payed", style: TextStyle(fontSize: 22)),
-                  model.transactions != null
-                      ? Container(
-                          height: 120,
-                          child: ListView.separated(
-                            physics: ScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: model.transactions.length,
-                            separatorBuilder:
-                                (BuildContext context, int index) =>
-                                    Container(width: 20),
-                            itemBuilder: (context, index) {
-                              dynamic hist = model.transactions[index];
-                              return SizedBox(
-                                width: 64,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: CircleAvatar(
-                                          radius: 32,
-                                          backgroundColor: Colors.blue[200],
-                                          child: Text(hist.recipientName[0])),
-                                    ),
-                                    Expanded(
-                                      child: Text(hist.recipientName,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 12)),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        )
-                      : Container(),
-                  Text("Transaction History", style: TextStyle(fontSize: 22)),
-                  _buildTransactionHistoryView(model),
-                  //_buildRecentActivities(model.currentUser),
-                ],
+          ? Scaffold(
+              body: CenteredView(
+                maxWidth: 400,
+                child: ListView(
+                  //crossAxisAlignment: CrossAxisAlignment.center,
+                  //mainAxisSize: MainAxisSize.max,
+                  children: [
+                    SizedBox(height: screenSize.height / 12),
+                    _buildFullName(model.currentUser.fullName),
+                    //_buildMemberSinceText(context),
+                    verticalSpace(10),
+                    _buildSeparator(screenSize),
+                    verticalSpace(10),
+                    _buildStatView(model),
+                    verticalSpace(20),
+                    _buildTransferButton(model),
+                    verticalSpace(20),
+                    Text("Recently Payed", style: TextStyle(fontSize: 22)),
+                    model.transactions != null
+                        ? Container(
+                            height: 120,
+                            child: ListView.separated(
+                              physics: ScrollPhysics(),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: model.transactions.length,
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                                      Container(width: 20),
+                              itemBuilder: (context, index) {
+                                dynamic hist = model.transactions[index];
+                                return SizedBox(
+                                  width: 64,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: CircleAvatar(
+                                            radius: 32,
+                                            backgroundColor: Colors.blue[200],
+                                            child: Text(hist.recipientName[0])),
+                                      ),
+                                      Expanded(
+                                        child: Text(hist.recipientName,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(fontSize: 12)),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                        : Container(),
+                    Text("Transaction History", style: TextStyle(fontSize: 22)),
+                    _buildTransactionHistoryView(model),
+                    //_buildRecentActivities(model.currentUser),
+                  ],
+                ),
               ),
             )
           : _loginButton(() async => await model.loginWithGoogle()),
@@ -127,7 +130,7 @@ class WalletView extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       color: Colors.lightBlue,
       elevation: 10.0,
-      onPressed: () => model.navigateToSendMoneyView(),
+      onPressed: () => model.navigateToWelcomeView(),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text("Send Money",

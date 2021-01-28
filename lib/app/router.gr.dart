@@ -11,11 +11,13 @@ import 'package:flutter/material.dart';
 
 import '../views/causes/causes_view.dart';
 import '../views/layout/layout_template_view.dart';
+import '../views/login/login_view.dart';
 import '../views/payments/payment_cancel_view.dart';
 import '../views/payments/payment_success_view.dart';
 import '../views/payments/send_money_view.dart';
 import '../views/wallet/wallet_view.dart';
 import '../views/welcome_view.dart';
+import 'router.dart';
 
 class Routes {
   static const String welcomeView = '/welcome-view';
@@ -25,6 +27,7 @@ class Routes {
   static const String paymentSuccessView = '/payment-success-view';
   static const String paymentCancelView = '/payment-cancel-view';
   static const String layoutTemplate = '/layout-template';
+  static const String loginView = '/login-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -33,6 +36,7 @@ class Routes {
     paymentSuccessView,
     paymentCancelView,
     layoutTemplate,
+    loginView,
   };
 }
 
@@ -47,28 +51,32 @@ class Router extends RouterBase {
     RouteDef(Routes.paymentSuccessView, page: PaymentSuccessView),
     RouteDef(Routes.paymentCancelView, page: PaymentCancelView),
     RouteDef(Routes.layoutTemplate, page: LayoutTemplate),
+    RouteDef(Routes.loginView, page: LoginView),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
   final _pagesMap = <Type, AutoRouteFactory>{
     WelcomeView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => const WelcomeView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const WelcomeView(),
         settings: data,
+        transitionsBuilder: customTransition,
       );
     },
     WalletView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => WalletView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => WalletView(),
         settings: data,
+        transitionsBuilder: customTransition,
       );
     },
     SendMoneyView: (data) {
       final args = data.getArgs<SendMoneyViewArguments>(
         orElse: () => SendMoneyViewArguments(),
       );
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => SendMoneyView(
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => SendMoneyView(
           key: args.key,
           userInfoMap: args.userInfoMap,
           openSearchBarOnBuild: args.openSearchBarOnBuild,
@@ -77,30 +85,38 @@ class Router extends RouterBase {
       );
     },
     DonationView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => DonationView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => DonationView(),
         settings: data,
       );
     },
     PaymentSuccessView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => PaymentSuccessView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            PaymentSuccessView(),
         settings: data,
       );
     },
     PaymentCancelView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => PaymentCancelView(),
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            PaymentCancelView(),
         settings: data,
       );
     },
     LayoutTemplate: (data) {
       final args = data.getArgs<LayoutTemplateArguments>(nullOk: false);
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => LayoutTemplate(
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => LayoutTemplate(
           key: args.key,
           childView: args.childView,
         ),
+        settings: data,
+      );
+    },
+    LoginView: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => LoginView(),
         settings: data,
       );
     },

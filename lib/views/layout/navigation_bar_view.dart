@@ -60,8 +60,7 @@ class NavigationBar extends StatelessWidget {
                             horizontalSpaceMedium,
                             _NavBarItem(
                                 label: 'Login Screen',
-                                onPressed: () async =>
-                                    await model.navigateToLoginScreen()),
+                                onPressed: () => model.navigateToLoginScreen()),
                             model.userStatus == UserStatus.SignedIn
                                 ? _NavBarItem(
                                     label: 'Logout',

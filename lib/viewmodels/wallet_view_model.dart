@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:good_wallet/app/locator.dart';
+import 'package:good_wallet/app/router.gr.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
@@ -51,9 +52,13 @@ class WalletViewModel extends BaseModel {
     );
   }
 
-  // Future navigateToSendMoneyView() async {
-  //   await _navigationService.navigateTo(Routes.sendMoneyView);
-  // }
+  Future navigateToSendMoneyView() async {
+    await _navigationService.navigateTo(Routes.sendMoneyView);
+  }
+
+  Future navigateToWelcomeView() async {
+    await _navigationService.navigateTo(Routes.welcomeView);
+  }
 
   Future updateBalances() async {
     if (userStatus == UserStatus.SignedIn) {

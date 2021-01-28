@@ -23,17 +23,21 @@ class LayoutTemplate extends StatelessWidget {
               : Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    model.showNavigationBar ? NavigationBar() : Container(),
+                    NavigationBar(),
                     Expanded(
                       child: SizedBox.expand(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.blue[50],
-                            // image: DecorationImage(
-                            //   image: AssetImage(
-                            //       "assets/images/woman-holding-flower.jpg"),
-                            //   fit: BoxFit.cover,
-                            // ),
+                            gradient: LinearGradient(
+                                colors: [
+                                  Color(0xFFDDDDDD),
+                                  Colors.white,
+                                  Colors.white,
+                                  Color(0xFFDDDDDD)
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                stops: [0, 0.3, 0.7, 1]),
                           ),
                           child: childView,
                         ),
