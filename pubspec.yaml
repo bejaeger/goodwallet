@@ -79,11 +79,14 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/images/hand-with-heart.jpg
+    - assets/images/hand-shake-on-yellow.jpg
     - assets/images/G_icon.png
     - assets/images/vancouver_seawall.jpg
     - assets/images/woman-holding-flower.jpg
     - assets/images/vacuum.png
     - assets/images/wallet_icon.png
+    - assets/images/btn_google_signin_light_normal_web.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

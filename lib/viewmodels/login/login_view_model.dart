@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/app/router.gr.dart';
 import 'package:good_wallet/enums/auth_mode.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/viewmodels/base_model.dart';
+import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class LoginViewModel extends BaseModel {
@@ -10,17 +12,73 @@ class LoginViewModel extends BaseModel {
       locator<AuthenticationService>();
   final NavigationService _navigationService = locator<NavigationService>();
 
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  GlobalKey<FormState> get formKey => _formKey;
+
+  final Map<String, String> _authData = {
+    'email': '',
+    'password': '',
+    'name': '',
+  };
+  Map<String, String> get authData => _authData;
+
+  void setName(String name) {
+    _authData["name"] = name;
+  }
+
+  void setPassword(String password) {
+    _authData["password"] = password;
+  }
+
+  void setEmail(String email) {
+    _authData["email"] = email;
+  }
+
+  Future<void> submit() async {
+    if (!_formKey.currentState.validate()) {
+      print('Form data invalid!');
+      return;
+    }
+    _formKey.currentState.save();
+    setBusy(true);
+    try {
+      if (_authMode == AuthMode.Login) {
+        await loginWithEmail(_authData['email'], _authData['password']);
+      } else {
+        await signUpWithEmail(
+            _authData['email'], _authData['password'], _authData['name']);
+      }
+      if (_authData['email'] == null || _authData['password'] == null) {
+        throw ("EMPTY_ERROR: Please enter e-mail and password");
+      }
+      if (_authenticationService.currentUser != null) {
+        await navigateToWalletView();
+      }
+    } catch (error) {
+      _errorMessage = 'Authentication failed.';
+      if (error.message == 'EMAIL_EXISTS') {
+        _errorMessage = 'This email address is already in use.';
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        _errorMessage = 'This is not a valid email address';
+      } else if (error.toString().contains('WEAK_PASSWORD')) {
+        _errorMessage = 'This password is too weak.';
+      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+        _errorMessage = 'The email is not found';
+      } else if (error.toString().contains('INVALID_PASSWORD')) {
+        _errorMessage = 'Invalid password';
+      } else if (error.toString().contains('EMPTY_ERROR')) {
+        _errorMessage = error.toString();
+      } else
+        _errorMessage = 'Couldnt authenticate. Please try again later.';
+    }
+    setBusy(false);
+    notifyListeners();
+  }
+
   AuthMode _authMode = AuthMode.Login;
   AuthMode get authMode => _authMode;
   setAuthMode(AuthMode authMode) {
     _authMode = authMode;
-    notifyListeners();
-  }
-
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
-  setIsLoading(bool isLoading) {
-    _isLoading = isLoading;
     notifyListeners();
   }
 
@@ -56,14 +114,21 @@ class LoginViewModel extends BaseModel {
         email: email, password: password);
   }
 
-  Future signUpWithEmail(String email, String password,
-      [String fullName]) async {
+  Future signUpWithEmail(String email, String password, String name) async {
     await _authenticationService.signUpWithEmail(
-        email: email, password: password, fullName: "NewName");
+        email: email, password: password, fullName: name);
   }
 
   Future navigateToWalletView() async {
-    setShowNavigationBar(true);
+    //setShowNavigationBar(true);
     await _navigationService.navigateTo(Routes.walletView);
+  }
+
+  Future loginWithGoogle() async {
+    setBusy(true);
+    var result = await _authenticationService.loginWithGoogle();
+    if (!result) print("WARNING: Failed logging in user!");
+    setBusy(false);
+    navigateToWalletView();
   }
 }

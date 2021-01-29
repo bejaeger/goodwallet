@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
+import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/utils/unfocuser.dart';
 import 'package:good_wallet/views/layout/layout_template_view.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: auto_router.Router().onGenerateRoute,
         theme: ThemeData(
           primaryColor: Colors.blue,
-          backgroundColor: Colors.white70,
+          backgroundColor: backgroundColor,
           // textTheme: TextTheme(bodyText2: TextStyle(color: Colors.white)),
           textTheme: Theme.of(context).textTheme.apply(
                 fontFamily: 'Open Sans',

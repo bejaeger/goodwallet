@@ -5,6 +5,7 @@ import 'package:good_wallet/app/router.gr.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
+import 'package:good_wallet/services/userdata/firestore_user_service.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
 import 'package:good_wallet/viewmodels/base_model.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -16,11 +17,17 @@ class WalletViewModel extends BaseModel {
       locator<AuthenticationService>();
   final FirestorePaymentDataService _firestorePaymentDataService =
       locator<FirestorePaymentDataService>();
+  final FirestoreUserService _firestoreUserService =
+      locator<FirestoreUserService>();
 
   StreamSubscription _transactionSubscription;
+  StreamSubscription _balanceSubscription;
 
   List<dynamic> _transactions;
   List<dynamic> get transactions => _transactions;
+
+  double _balance = 0.0;
+  double get thisbalance => _balance;
 
   Future listenToTransactions() async {
     _authenticationService.userStateSubject.listen(
@@ -52,6 +59,32 @@ class WalletViewModel extends BaseModel {
     );
   }
 
+  Future listenToBalance() async {
+    _authenticationService.userStateSubject.listen(
+      (state) {
+        if (state.status == UserStatus.SignedIn) {
+          setBusy(true);
+          _balanceSubscription = _firestoreUserService
+              .listenToBalanceRealTime(currentUser.id)
+              .listen(
+            (balance) {
+              print("INFO: Listen to balance");
+              if (balance != null) {
+                print("Balance: $balance");
+                _balance = balance;
+                notifyListeners();
+              }
+            },
+          );
+          setBusy(false);
+        } else {
+          print("INFO: Cancelling balance subscription");
+          _balanceSubscription?.cancel();
+        }
+      },
+    );
+  }
+
   Future navigateToSendMoneyView() async {
     await _navigationService.navigateTo(Routes.sendMoneyView);
   }
@@ -63,7 +96,7 @@ class WalletViewModel extends BaseModel {
   Future updateBalances() async {
     if (userStatus == UserStatus.SignedIn) {
       _userWalletService.updateBalancesLocal(currentUser.id);
-      super.notifyListeners();
+      notifyListeners();
     }
   }
 

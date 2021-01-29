@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/app/router.gr.dart';
+import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -12,10 +13,10 @@ class WelcomeView extends StatelessWidget {
     final NavigationService _navigationService = locator<NavigationService>();
     return WillPopScope(
       onWillPop: () async {
-        await _navigationService.navigateTo(Routes.walletView);
         return true;
       },
       child: Scaffold(
+        backgroundColor: backgroundColor,
         body: Padding(
           padding: const EdgeInsets.all(100.0),
           child: CenteredView(
@@ -43,20 +44,6 @@ class WelcomeView extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 21,
                     height: 1.7,
-                  ),
-                ),
-                RaisedButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
-                  color: Colors.lightBlue,
-                  elevation: 10.0,
-                  onPressed: () =>
-                      _navigationService.navigateTo(Routes.walletView),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Wallet View",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
                   ),
                 ),
               ],

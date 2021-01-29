@@ -10,6 +10,8 @@ import 'package:good_wallet/datamodels/user.dart';
 class FirestoreUserService {
   final CollectionReference _usersCollectionReference =
       FirebaseFirestore.instance.collection("users");
+  final StreamController<double> _balanceStreamController =
+      StreamController<double>.broadcast();
 
   // User ------------------------------------------------->>
   Future createUser(User user, [String fullName]) async {
@@ -43,5 +45,15 @@ class FirestoreUserService {
       print("ERROR: ${e.toString()}");
       return e.toString();
     }
+  }
+
+  Stream listenToBalanceRealTime(var uid) {
+    Stream<DocumentSnapshot> docSnapshot =
+        _usersCollectionReference.doc(uid).snapshots();
+    docSnapshot.listen((userData) {
+      if (userData != null) {}
+      _balanceStreamController.add(userData["balance"]);
+    });
+    return _balanceStreamController.stream;
   }
 }

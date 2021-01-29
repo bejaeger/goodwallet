@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/enums/user_status.dart';
+import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:good_wallet/viewmodels/layout/navigation_bar_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -14,12 +15,14 @@ class NavigationBar extends StatelessWidget {
       viewModelBuilder: () => NavigationBarViewModel(),
       builder: (context, model, child) => model.showNavigationBar
           ? Card(
-              margin: EdgeInsets.only(bottom: 1),
-              color: Colors.blue[100],
-              elevation: 10,
+              margin: EdgeInsets.only(bottom: 3),
+              color: ATLASblue, //Colors.blue[100],
+              // Color(0xFF0290FF)
+              //Color(0xFF0b80c3) ATLAS blue
+              elevation: 5,
               child: Padding(
                 padding: const EdgeInsets.only(
-                    top: 10, left: 30, right: 30, bottom: 10),
+                    top: 10, left: 80, right: 80, bottom: 10),
                 child: Container(
                   height: 50,
                   child: Row(
@@ -31,7 +34,7 @@ class NavigationBar extends StatelessWidget {
                         width: 100,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage("assets/images/wallet_icon.png"),
+                            image: AssetImage("assets/images/vacuum.png"),
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -58,17 +61,14 @@ class NavigationBar extends StatelessWidget {
                                 onPressed: () =>
                                     model.navigateToDonationView()),
                             horizontalSpaceMedium,
-                            _NavBarItem(
-                                label: 'Login Screen',
-                                onPressed: () => model.navigateToLoginScreen()),
                             model.userStatus == UserStatus.SignedIn
                                 ? _NavBarItem(
                                     label: 'Logout',
                                     onPressed: () async => await model.logout())
                                 : _NavBarItem(
-                                    label: 'Login with Google',
+                                    label: 'Login',
                                     onPressed: () async =>
-                                        await model.loginWithGoogle()),
+                                        await model.navigateToLoginScreen()),
                           ],
                         ),
                       )
@@ -93,7 +93,8 @@ class _NavBarItem extends StatelessWidget {
       onPressed: onPressed,
       child: Text(
         label,
-        style: TextStyle(fontSize: 17),
+        style: TextStyle(
+            fontSize: 16, color: Colors.grey[100]), //Colors.grey[100]),
       ),
     );
   }

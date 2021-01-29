@@ -32,14 +32,6 @@ class NavigationBarViewModel extends BaseModel {
     await _navigationService.navigateTo(Routes.loginView);
   }
 
-  Future loginWithGoogle() async {
-    setBusy(true);
-    var result = await _authenticationService.loginWithGoogle();
-    if (!result) print("WARNING: Failed logging in user!");
-    notifyListeners();
-    setBusy(false);
-  }
-
   Future loginWithEmail({
     @required String email,
     @required String password,
@@ -103,6 +95,7 @@ class NavigationBarViewModel extends BaseModel {
     setBusy(true);
     await _authenticationService.logout();
     setBusy(false);
+    navigateToWelcomeView();
     notifyListeners();
   }
 }

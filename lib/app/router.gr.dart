@@ -9,6 +9,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
+import '../style/page_transitions.dart';
 import '../views/causes/causes_view.dart';
 import '../views/layout/layout_template_view.dart';
 import '../views/login/login_view.dart';
@@ -17,7 +18,6 @@ import '../views/payments/payment_success_view.dart';
 import '../views/payments/send_money_view.dart';
 import '../views/wallet/wallet_view.dart';
 import '../views/welcome_view.dart';
-import 'router.dart';
 
 class Routes {
   static const String welcomeView = '/welcome-view';
@@ -82,12 +82,14 @@ class Router extends RouterBase {
           openSearchBarOnBuild: args.openSearchBarOnBuild,
         ),
         settings: data,
+        transitionsBuilder: customTransition,
       );
     },
     DonationView: (data) {
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) => DonationView(),
         settings: data,
+        transitionsBuilder: customTransition,
       );
     },
     PaymentSuccessView: (data) {
@@ -95,6 +97,7 @@ class Router extends RouterBase {
         pageBuilder: (context, animation, secondaryAnimation) =>
             PaymentSuccessView(),
         settings: data,
+        transitionsBuilder: customTransition,
       );
     },
     PaymentCancelView: (data) {
@@ -102,6 +105,7 @@ class Router extends RouterBase {
         pageBuilder: (context, animation, secondaryAnimation) =>
             PaymentCancelView(),
         settings: data,
+        transitionsBuilder: customTransition,
       );
     },
     LayoutTemplate: (data) {
@@ -112,12 +116,14 @@ class Router extends RouterBase {
           childView: args.childView,
         ),
         settings: data,
+        transitionsBuilder: customTransition,
       );
     },
     LoginView: (data) {
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) => LoginView(),
         settings: data,
+        transitionsBuilder: customTransition,
       );
     },
   };
