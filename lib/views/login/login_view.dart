@@ -89,7 +89,7 @@ class LoginView extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage(
-                        "images/btn_google_signin_light_normal_web.png"),
+                        "assets/images/btn_google_signin_light_normal_web.png"),
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -307,6 +307,16 @@ class AuthCard extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                         color: mainColor),
+                  ),
+                ),
+                Container(
+                  child: Text(
+                    "Forgot Password?",
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[800].withOpacity(0.3),
+                    ),
                   ),
                 ),
               ],

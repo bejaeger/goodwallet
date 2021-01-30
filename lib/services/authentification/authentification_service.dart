@@ -4,8 +4,8 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:good_wallet/app/locator.dart';
-import 'package:good_wallet/datamodels/user.dart';
-import 'package:good_wallet/datamodels/user_state.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
+import 'package:good_wallet/datamodels/user/user_state.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/userdata/firestore_user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';

@@ -5,13 +5,14 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:good_wallet/datamodels/user.dart';
+import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
 
 class FirestoreUserService {
   final CollectionReference _usersCollectionReference =
       FirebaseFirestore.instance.collection("users");
-  final StreamController<double> _balanceStreamController =
-      StreamController<double>.broadcast();
+  final StreamController<WalletBalancesModel> _balancesStreamController =
+      StreamController<WalletBalancesModel>.broadcast();
 
   // User ------------------------------------------------->>
   Future createUser(User user, [String fullName]) async {
@@ -51,9 +52,14 @@ class FirestoreUserService {
     Stream<DocumentSnapshot> docSnapshot =
         _usersCollectionReference.doc(uid).snapshots();
     docSnapshot.listen((userData) {
-      if (userData != null) {}
-      _balanceStreamController.add(userData["balance"]);
+      if (userData != null) {
+        _balancesStreamController.add(WalletBalancesModel.fromMap({
+          'currentBalance': userData["balance"],
+          'donated': userData["donations"],
+          'sentToPeer': userData["implicitDonations"],
+        }));
+      }
     });
-    return _balanceStreamController.stream;
+    return _balancesStreamController.stream;
   }
 }

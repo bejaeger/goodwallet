@@ -38,32 +38,47 @@ class SendMoneyView extends StatelessWidget {
               : CenteredView(
                   maxWidth: 500,
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Stack(
-                      children: [
-                        ListView(
-                          padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(30.0),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      elevation: 2,
+                      child: Container(
+                        height: 600, // 25 = safearea
+                        child: Stack(
                           children: [
-                            verticalSpace(50),
-                            _selectUserView(model),
-                            _buildSearchTextWidget(context, model),
-                            _selectValueView(context, model),
-                            _optionalMessageView(model),
-                            verticalSpace(50),
-                            model.errorMessage != null
-                                ? Text(model.errorMessage,
-                                    style: TextStyle(color: Colors.red))
-                                : Container(height: 0, width: 0),
-                            model.isBusy
-                                ? Center(child: LinearProgressIndicator())
-                                : Column(children: [
-                                    _payButtonView(model),
-                                    _testPayButtonView(model),
-                                  ]),
+                            ListView(
+                              padding: const EdgeInsets.all(20.0),
+                              children: [
+                                verticalSpace(30),
+                                _selectUserView(model),
+                                verticalSpace(30),
+                                _buildSearchTextWidget(context, model),
+                                verticalSpace(10),
+                                _selectValueView(context, model),
+                                verticalSpace(10),
+                                _optionalMessageView(model),
+                                verticalSpace(30),
+                                model.errorMessage != null
+                                    ? Text(model.errorMessage,
+                                        style: TextStyle(color: Colors.red))
+                                    : Container(height: 0, width: 0),
+                                model.isBusy
+                                    ? Center(child: LinearProgressIndicator())
+                                    : Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                            _payButtonView(model),
+                                            _testPayButtonView(model),
+                                          ]),
+                              ],
+                            ),
+                            //_buildFloatingSearchBar(context, model),
                           ],
                         ),
-                        //_buildFloatingSearchBar(context, model),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -84,11 +99,13 @@ class SendMoneyView extends StatelessWidget {
             Text("No user found", style: TextStyle(fontSize: 18)),
         getImmediateSuggestions: true,
         textFieldConfiguration: TextFieldConfiguration(
-          decoration: InputDecoration(hintText: 'Search by username'),
+          decoration: InputDecoration(hintText: 'Select user'),
+          controller: model.userSelectionController,
         ),
         suggestionsCallback: (String pattern) async {
-          //return ["hi", "h", "1", "2", "3", "4", "4"];
-          return await model.getSearchedNames(pattern);
+          var names = await model.getQueriedUserNames(pattern);
+          //names = ["hi", "next", "hi", "next", "hi", "next", "hi", "next"];
+          return names;
         },
         suggestionsBoxDecoration: SuggestionsBoxDecoration(
             constraints: BoxConstraints(
@@ -97,16 +114,18 @@ class SendMoneyView extends StatelessWidget {
         itemBuilder: (context, String suggestion) {
           return ListTile(
             leading: CircleAvatar(
+              radius: 20,
               backgroundColor: Colors.blue,
               child: Text('${suggestion[0]}',
-                  style: TextStyle(color: Colors.white)),
+                  style: TextStyle(color: Colors.white, fontSize: 14)),
             ),
-            title: Text(suggestion),
-            subtitle: Text("Rookie"),
+            title: Text(suggestion, style: TextStyle(fontSize: 14)),
+            subtitle: Text("Rookie", style: TextStyle(fontSize: 12)),
           );
         },
         onSuggestionSelected: (String suggestion) {
-          print("Suggestion selected");
+          model.setUser(suggestion);
+          print("INFO: User selected");
         },
       ),
       //SizedBox(height: 500),
@@ -114,35 +133,28 @@ class SendMoneyView extends StatelessWidget {
   }
 
   _selectUserView(dynamic model) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 30.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text("Transfer Good Dollars to: ",
-                    style: TextStyle(fontSize: 18)),
-                model.selectedUserInfoMap != null
-                    ? Center(
-                        child: Text(model.selectedUserInfoMap["name"],
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w600)))
-                    : Container(),
-              ],
-            ),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text("Send Money to: ", style: TextStyle(fontSize: 18)),
+            model.selectedUserInfoMap != null
+                ? Center(
+                    child: Text(model.selectedUserInfoMap["name"],
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w600)))
+                : Container(),
+          ],
+        ),
+      ],
     );
   }
 
   _selectValueView(dynamic context, var model) {
     return Container(
       child: TextFormField(
-        decoration: new InputDecoration(labelText: "Amount in CAD"),
+        decoration: new InputDecoration(labelText: "Amount"),
         keyboardType: TextInputType.number,
         controller: model.transferValueController,
         inputFormatters: <TextInputFormatter>[
@@ -164,12 +176,20 @@ class SendMoneyView extends StatelessWidget {
 
   _payButtonView(dynamic model) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         RaisedButton(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           color: model.isPaymentReady ? Colors.lightBlue : Colors.grey,
-          child: Text("       Checkout       ",
-              style: TextStyle(color: Colors.white)),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                "       Checkout       ",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
+          ),
           onPressed: model.isPaymentReady
               ? () async => await model.makePayment()
               : null,
@@ -179,18 +199,24 @@ class SendMoneyView extends StatelessWidget {
   }
 
   _testPayButtonView(dynamic model) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        RaisedButton(
-          color: Colors.lightBlue,
-          child: Text("Make Dummy Payment \$7 to Hans",
-              style: TextStyle(color: Colors.white)),
-          onPressed: () async {
-            await model.makeTestPayment();
-          },
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            RaisedButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              color: Colors.lightBlue,
+              child: Text("DUMMY", style: TextStyle(color: Colors.white)),
+              onPressed: () async {
+                await model.makeTestPayment();
+              },
+            ),
+            Text("Pay 7\$ to Hans", style: TextStyle(fontSize: 8)),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

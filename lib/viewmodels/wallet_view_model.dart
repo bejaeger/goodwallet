@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/app/router.gr.dart';
+import 'package:good_wallet/datamodels/goodcauses/global_giving_project_model.dart';
+import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
+import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/userdata/firestore_user_service.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
@@ -19,6 +22,8 @@ class WalletViewModel extends BaseModel {
       locator<FirestorePaymentDataService>();
   final FirestoreUserService _firestoreUserService =
       locator<FirestoreUserService>();
+  final GlobalGivingAPIService _ggApiService =
+      locator<GlobalGivingAPIService>();
 
   StreamSubscription _transactionSubscription;
   StreamSubscription _balanceSubscription;
@@ -26,8 +31,11 @@ class WalletViewModel extends BaseModel {
   List<dynamic> _transactions;
   List<dynamic> get transactions => _transactions;
 
-  double _balance = 0.0;
-  double get thisbalance => _balance;
+  WalletBalancesModel _wallet = WalletBalancesModel.empty();
+  WalletBalancesModel get wallet => _wallet;
+
+  List<GlobalGivingProjectModel> _projects;
+  List<GlobalGivingProjectModel> get projects => _projects;
 
   Future listenToTransactions() async {
     _authenticationService.userStateSubject.listen(
@@ -59,7 +67,7 @@ class WalletViewModel extends BaseModel {
     );
   }
 
-  Future listenToBalance() async {
+  Future listenToBalances() async {
     _authenticationService.userStateSubject.listen(
       (state) {
         if (state.status == UserStatus.SignedIn) {
@@ -67,11 +75,10 @@ class WalletViewModel extends BaseModel {
           _balanceSubscription = _firestoreUserService
               .listenToBalanceRealTime(currentUser.id)
               .listen(
-            (balance) {
+            (walletData) {
               print("INFO: Listen to balance");
-              if (balance != null) {
-                print("Balance: $balance");
-                _balance = balance;
+              if (walletData != null) {
+                _wallet = walletData;
                 notifyListeners();
               }
             },
@@ -85,12 +92,31 @@ class WalletViewModel extends BaseModel {
     );
   }
 
+  // Make a stream listening to projects!
+  Future getProjects() async {
+    List<GlobalGivingProjectModel> newProjects = [];
+    var newProject = await _ggApiService.getRandomProject();
+    if (newProject != null) {
+      newProjects.add(newProject);
+    }
+    var newProject2 = await _ggApiService.getRandomProject();
+    if (newProject2 != null) {
+      newProjects.add(newProject2);
+    }
+    _projects = newProjects;
+    notifyListeners();
+  }
+
   Future navigateToSendMoneyView() async {
     await _navigationService.navigateTo(Routes.sendMoneyView);
   }
 
   Future navigateToWelcomeView() async {
     await _navigationService.navigateTo(Routes.welcomeView);
+  }
+
+  Future navigateToDonationView() async {
+    await _navigationService.navigateTo(Routes.donationView);
   }
 
   Future updateBalances() async {

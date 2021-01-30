@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:good_wallet/utils/datamodel_helpers.dart';
 
 class TransactionModel {
   final String recipientUid;
@@ -53,21 +54,11 @@ class TransactionModel {
         senderName: map['senderName'],
         amount: map['amount'],
         currency: map['currency']);
-    if (map.containsKey("transactionId")) {
-      data.transactionId = map["transactionId"];
-    }
-    if (map.containsKey("message")) {
-      data.message = map["message"];
-    }
-    if (map.containsKey("createdAt")) {
-      data.createdAt = map["createdAt"];
-    }
-    if (map.containsKey("status")) {
-      data.status = map["status"];
-    }
-    if (map.containsKey("topUp")) {
-      data.topUp = map["topUp"];
-    }
+    data.transactionId = returnIfAvailable(map, "transactionId");
+    data.message = returnIfAvailable(map, "message");
+    data.createdAt = returnIfAvailable(map, "createdAt");
+    data.status = returnIfAvailable(map, "status");
+    data.topUp = returnIfAvailable(map, "topUp");
     return data;
   }
 }

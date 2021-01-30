@@ -21,58 +21,64 @@ class NavigationBar extends StatelessWidget {
               //Color(0xFF0b80c3) ATLAS blue
               elevation: 5,
               child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 10, left: 80, right: 80, bottom: 10),
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: Container(
                   height: 50,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        height: 150,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/images/vacuum.png"),
-                            fit: BoxFit.contain,
+                  child: CenteredView(
+                    maxWidth: MediaQuery.of(context).size.width > 1000
+                        ? 1000
+                        : MediaQuery.of(context).size.width / 1.1,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          height: 50,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/vacuum.png"),
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            _NavBarItem(
-                                label: 'Home',
-                                onPressed: () => model.navigateToWelcomeView()),
-                            horizontalSpaceMedium,
-                            _NavBarItem(
-                                label: 'Wallet',
-                                onPressed: () => model.navigateToWalletView()),
-                            horizontalSpaceMedium,
-                            _NavBarItem(
-                                label: 'Send Money',
-                                onPressed: () =>
-                                    model.navigateToSendMoneyView()),
-                            horizontalSpaceMedium,
-                            _NavBarItem(
-                                label: 'Give',
-                                onPressed: () =>
-                                    model.navigateToDonationView()),
-                            horizontalSpaceMedium,
-                            model.userStatus == UserStatus.SignedIn
-                                ? _NavBarItem(
-                                    label: 'Logout',
-                                    onPressed: () async => await model.logout())
-                                : _NavBarItem(
-                                    label: 'Login',
-                                    onPressed: () async =>
-                                        await model.navigateToLoginScreen()),
-                          ],
-                        ),
-                      )
-                    ],
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              _NavBarItem(
+                                  label: 'Home',
+                                  onPressed: () =>
+                                      model.navigateToWelcomeView()),
+                              horizontalSpaceMedium,
+                              _NavBarItem(
+                                  label: 'Wallet',
+                                  onPressed: () =>
+                                      model.navigateToWalletView()),
+                              // _NavBarItem(
+                              //     label: 'Send Money',
+                              //     onPressed: () =>
+                              //         model.navigateToSendMoneyView()),
+                              horizontalSpaceMedium,
+                              _NavBarItem(
+                                  label: 'Give',
+                                  onPressed: () =>
+                                      model.navigateToDonationView()),
+                              horizontalSpaceMedium,
+                              model.userStatus == UserStatus.SignedIn
+                                  ? _NavBarItem(
+                                      label: 'Logout',
+                                      onPressed: () async =>
+                                          await model.logout())
+                                  : _NavBarItem(
+                                      label: 'Login',
+                                      onPressed: () async =>
+                                          await model.navigateToLoginScreen()),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/app/router.gr.dart';
-import 'package:good_wallet/datamodels/transaction_model.dart';
+import 'package:good_wallet/datamodels/payments/transaction_model.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
@@ -28,6 +28,24 @@ class SendMoneyViewModel extends BaseModel {
   final _stripePaymentService = locator<StripePaymentService>();
   final AuthenticationService _authenticationService =
       locator<AuthenticationService>();
+
+  final TextEditingController _userSelectionController =
+      TextEditingController();
+  TextEditingController get userSelectionController => _userSelectionController;
+
+  void setUser(String selection) {
+    _userSelectionController.text = selection;
+    _selectedUserInfoMap =
+        _userInfoMaps.where((element) => element["name"] == selection).first;
+    setPaymentReady(true);
+    notifyListeners();
+  }
+
+  void selectUser(Map<String, String> userMap) {
+    _selectedUserInfoMap = userMap;
+    setPaymentReady(true);
+    notifyListeners();
+  }
 
   // take from https://stripe.com/docs/testing#international-cards
   final CreditCard testCard = CreditCard(
@@ -185,7 +203,8 @@ class SendMoneyViewModel extends BaseModel {
         notifyListeners();
       } else if (state.status == UserStatus.SignedOut) {
         // Something went terribly wrong! We should never end up here!
-        _paymentStatus = "pending";
+        print("INFO: User signed out!?");
+        //_paymentStatus = "pending";
         notifyListeners();
       }
     });
@@ -203,7 +222,7 @@ class SendMoneyViewModel extends BaseModel {
   }
 
   // TODO: Put in service!
-  void searchFor(String query) async {
+  Future queryUsers(String query) async {
     QuerySnapshot foundUsers = await FirebaseFirestore.instance
         .collection("users")
         .where("searchKeywords", arrayContains: query.toLowerCase())
@@ -214,25 +233,21 @@ class SendMoneyViewModel extends BaseModel {
         "id": doc.get("id") as String,
       };
     }).toList();
-    notifyListeners();
   }
 
-  Future<List<String>> getSearchedNames(String query) async {
-    // TODO: Error catching!
-    QuerySnapshot foundUsers = await FirebaseFirestore.instance
-        .collection("users")
-        .where("searchKeywords", arrayContains: query.toLowerCase())
-        .get();
-    List<String> returnValue = foundUsers.docs.map((DocumentSnapshot doc) {
-      return doc.get("fullName") as String;
+  // TODO: Put in service and catch errors
+  List<String> getNamesFromUserMap() {
+    List<String> returnValue =
+        _userInfoMaps.map((Map<String, dynamic> userInfo) {
+      return userInfo["name"] as String;
     }).toList();
     return returnValue;
   }
 
-  void selectUser(Map<String, String> userMap) {
-    _selectedUserInfoMap = userMap;
-    setPaymentReady(true);
-    notifyListeners();
+  // TODO: Put in service and catch errors
+  Future<List<String>> getQueriedUserNames(String pattern) async {
+    await queryUsers(pattern);
+    return getNamesFromUserMap();
   }
 
   Future navigateToCheckoutMobileView(String sessionId) async {

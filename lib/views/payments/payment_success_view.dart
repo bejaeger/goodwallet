@@ -43,7 +43,7 @@ class PaymentSuccessView extends StatelessWidget {
         FlatButton(
             onPressed: () {
               model.setShowNavigationBar(true);
-              model.navigateToHomeView();
+              model.navigateToWalletView();
             },
             child: Text("Go back.")),
       ],

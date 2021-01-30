@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/app/locator.dart';
-import 'package:good_wallet/datamodels/transaction_model.dart';
+import 'package:good_wallet/datamodels/payments/transaction_model.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -95,7 +95,7 @@ class FirestorePaymentDataService {
       await docRef.set(data.toJson());
       print("INFO: Deleting payment intent document.");
       await documentsSnapshot.docs[0].reference.delete();
-      return data;
+      return true;
     } else {
       print(
           "WARNING: There is none or more than one payment Intent present! Cannot handle payment success.");

@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
                 fontFamily: 'Open Sans',
               ),
         ),
-        initialRoute: auto_router.Routes.walletView,
+        initialRoute: auto_router.Routes.welcomeView,
         builder: (context, child) => LayoutTemplate(childView: child),
       ),
     );
