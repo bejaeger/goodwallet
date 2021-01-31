@@ -1,11 +1,3 @@
-# good_wallet
-
-# Checkout the code
-Either use your IDE or just execute the following in the terminal (after navigating to your preferred directory)
-```
-git clone https://github.com/bejaeger/goodwallet.git
-```
-
 # Development Considerations
 ## App architecture / State Management Solution
 - We use the stacked package by FilledStacks which provides an incredibly clean solutions for state management and realizing an MVVM architecture in flutter [[stacked](https://pub.dev/packages/stacked)]
