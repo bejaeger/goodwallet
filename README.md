@@ -2,7 +2,7 @@
 ## App architecture / State Management Solution
 - We use the stacked package by FilledStacks which provides an incredibly clean solutions for state management and realizing an MVVM architecture in flutter [[stacked](https://pub.dev/packages/stacked)]
 - [This blog post](https://medium.com/flutter-community/a-beginners-guide-to-architecting-a-flutter-app-1e9053211a74) provides a nice introduction to the stacked architecture
-- Highly recommended to watch the architecture tutorials [[here](https://github.com/FilledStacks/flutter-tutorials)] (especially the tutorials 48, 49, 50). I basically set up the code like explained there. Having views separate from viewmodels and services allows the code to be incredibly clean and maintainable, so let's try that! :)
+- Highly recommended to watch the architecture tutorials summarized [[FilledStack's github repo](https://github.com/FilledStacks/flutter-tutorials)] (especially the tutorials 48, 49, 50). I basically set up the code like explained there. Having views separate from viewmodels and services allows the code to be incredibly clean and maintainable, so let's try that! :)
 - From the FilledStacks I can additionally recommend the tutorials starting from number 38. They helped me a ton!
 
 ## Git workflow
