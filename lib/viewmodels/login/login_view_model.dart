@@ -112,11 +112,13 @@ class LoginViewModel extends BaseModel {
   Future loginWithEmail(String email, String password) async {
     await _authenticationService.loginWithEmail(
         email: email, password: password);
+    navigateToWalletView();
   }
 
   Future signUpWithEmail(String email, String password, String name) async {
     await _authenticationService.signUpWithEmail(
         email: email, password: password, fullName: name);
+    navigateToWalletView();
   }
 
   Future navigateToWalletView() async {

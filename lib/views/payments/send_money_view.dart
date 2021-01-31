@@ -28,7 +28,6 @@ class SendMoneyView extends StatelessWidget {
       },
       builder: (context, model, child) => WillPopScope(
         onWillPop: () async {
-          await model.navigateToWalletView();
           return true;
         },
         child: Scaffold(

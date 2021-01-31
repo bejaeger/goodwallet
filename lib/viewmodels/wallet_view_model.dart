@@ -103,6 +103,10 @@ class WalletViewModel extends BaseModel {
     if (newProject2 != null) {
       newProjects.add(newProject2);
     }
+    var newProject3 = await _ggApiService.getRandomProject();
+    if (newProject3 != null) {
+      newProjects.add(newProject3);
+    }
     _projects = newProjects;
     notifyListeners();
   }

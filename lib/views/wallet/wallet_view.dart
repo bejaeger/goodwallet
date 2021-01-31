@@ -35,51 +35,68 @@ class WalletView extends StatelessWidget {
                   //mainAxisSize: MainAxisSize.max,
                   children: [
                     SizedBox(height: screenSize.height / 14),
-                    Row(
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          flex: 6,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildFullName(model.currentUser.fullName),
-                              verticalSpace(25),
-                              _buildDonationBalanceView(model),
-                              verticalSpace(15),
-                              _buildStatView(model),
-                              verticalSpace(30),
-                              _buildProjectView(model),
-                              _buildSeparator(screenSize),
-                              _buildFeed(model),
-                            ],
-                          ),
-                        ),
-                        Spacer(flex: 1),
-                        Expanded(
-                          flex: 4,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildTransferButton(model),
-                              verticalSpace(30),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 15.0, bottom: 20.0),
-                                child: Text("Send again",
-                                    style: TextStyle(fontSize: 20)),
+                        _buildFullName(model.currentUser.fullName),
+                        verticalSpace(25),
+                        _buildDonationBalanceView(model),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 6,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  verticalSpace(15),
+                                  _buildStatView(model),
+                                  verticalSpace(30),
+                                  _buildFeed(model),
+                                ],
                               ),
-                              _buildSendAgain(model),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 15.0, bottom: 20.0),
-                                child: Text("Transaction history",
-                                    style: TextStyle(fontSize: 20)),
+                            ),
+                            Spacer(flex: 1),
+                            Expanded(
+                              flex: 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //_buildTransferButton(model),
+                                  verticalSpace(15),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 15.0, bottom: 20.0),
+                                    child: Text("Send again",
+                                        style: TextStyle(fontSize: 20)),
+                                  ),
+                                  _buildSendAgain(model),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 15.0, bottom: 20.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("Transaction history",
+                                            style: TextStyle(fontSize: 20)),
+                                        Text("See all",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.grey[800])),
+                                      ],
+                                    ),
+                                  ),
+                                  _buildTransactionHistoryView(model),
+                                ],
                               ),
-                              _buildTransactionHistoryView(model),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
+                        _buildSeparator(screenSize),
+                        _buildProjectView(context, model),
+                        _buildSeparator(screenSize),
                       ],
                     ),
                     //_buildMemberSinceText(context),
@@ -107,7 +124,7 @@ class WalletView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 40),
       child: Center(
         child: Container(
-            width: 450,
+            width: 6000,
             height: 1.0,
             color: Colors.grey[600],
             margin: EdgeInsets.only(top: 4.0)),
@@ -176,19 +193,20 @@ class WalletView extends StatelessWidget {
     );
   }
 
-  _buildProjectView(dynamic model) {
+  _buildProjectView(BuildContext context, dynamic model) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Grow your impact",
+              Text("Featured projects",
                   style: TextStyle(fontSize: 24, color: Colors.grey[800])),
               GestureDetector(
                 onTap: model.navigateToDonationView,
-                child: Text("See all projects",
+                child: Text("See all",
                     style: TextStyle(fontSize: 16, color: Colors.grey[800])),
               ),
             ],
@@ -196,17 +214,24 @@ class WalletView extends StatelessWidget {
         ),
         model.projects == null
             ? Center(child: LinearProgressIndicator())
-            : Row(
-                children: [
-                  Expanded(
+            : Container(
+                height: 350,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: model.projects.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width > 1000
+                          ? 1000 / 3
+                          : MediaQuery.of(context).size.width / 1.1 / 3,
                       child: GlobalGivingProjectCard(
-                          project: model.projects[0],
-                          onTap: model.navigateToDonationView)),
-                  Expanded(
-                      child: GlobalGivingProjectCard(
-                          project: model.projects[1],
-                          onTap: model.navigateToDonationView))
-                ],
+                          project: model.projects[index],
+                          onTap: model.navigateToDonationView),
+                    );
+                  },
+                ),
               ),
       ],
     );
@@ -238,74 +263,74 @@ class WalletView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Your social impact",
+                  "That's your social footprint",
                   style: TextStyle(
                     fontSize: 24,
                     color: Colors.grey[800],
                   ),
                 ),
-                verticalSpace(10),
-                // Text(
-                //   "You gave",
-                //   style: TextStyle(
-                //     fontSize: 16,
-                //     color: Colors.grey[800],
-                //   ),
-                // ),
-                verticalSpace(10),
+                verticalSpace(20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   //crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      height: 80,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "${model.wallet.donated * 0.01}.00 \$",
-                            style: TextStyle(
-                              fontSize: 35,
-                              color: Colors.grey[800],
-                            ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "invested in good causes ",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[800],
                           ),
-                          Text(
-                            "to good causes ",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[800],
-                            ),
+                        ),
+                        verticalSpace(10),
+                        Text(
+                          "${model.wallet.donated * 0.01}.00 \$",
+                          style: TextStyle(
+                            fontSize: 35,
+                            color: Colors.grey[800],
                           ),
-                        ],
-                      ),
+                        ),
+                        verticalSpace(20),
+                        CallToActionButtonRound(
+                          color: ATLASred,
+                          onPressed: model.navigateToDonationView,
+                          text: "Give more",
+                          icon: Icon(Icons.favorite),
+                        ),
+                      ],
                     ),
-                    Spacer(flex: 1),
-                    SizedBox(
-                      height: 80,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Text(
-                            "${model.wallet.sentToPeer * 0.01}.00 \$",
-                            style: TextStyle(
-                              fontSize: 35,
-                              color: Colors.grey[800],
-                            ),
+                    //Spacer(flex: 1),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text(
+                          "invested in your peers' wallets",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[800],
                           ),
-                          Text(
-                            "to peers",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[800],
-                            ),
+                        ),
+                        verticalSpace(10),
+                        Text(
+                          "${model.wallet.sentToPeer * 0.01}.00 \$",
+                          style: TextStyle(
+                            fontSize: 35,
+                            color: Colors.grey[800],
                           ),
-                        ],
-                      ),
+                        ),
+                        verticalSpace(10),
+                        CallToActionButtonRound(
+                          color: Colors.blue,
+                          onPressed: model.navigateToSendMoneyView,
+                          text: "Send more",
+                          icon: Icon(Icons.send),
+                        ),
+                      ],
                     ),
-                    Expanded(flex: 2, child: Container()),
+                    //Expanded(flex: 2, child: Container()),
                   ],
                 ),
               ],
@@ -407,6 +432,8 @@ class WalletView extends StatelessWidget {
   _buildTransactionHistoryView(dynamic model) {
     return model.transactions != null
         ? ListView.builder(
+            itemCount:
+                model.transactions.length > 3 ? 3 : model.transactions.length,
             shrinkWrap: true,
             physics: ScrollPhysics(),
             itemBuilder: (context, index) {
@@ -449,7 +476,7 @@ class WalletView extends StatelessWidget {
                 ],
               );
             },
-            itemCount: model.transactions.length)
+          )
         : model.isBusy
             ? Center(child: CircularProgressIndicator())
             : Center(child: Text("No transactions on record!"));
