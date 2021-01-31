@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/datamodels/goodcauses/global_giving_project_model.dart';
 import 'package:good_wallet/style/colors.dart';
-import 'package:good_wallet/views/wallet/wallet_view.dart';
+import 'package:good_wallet/widgets/call_to_action_button.dart';
 
 class GlobalGivingProjectCard extends StatelessWidget {
   final GlobalGivingProjectModel project;

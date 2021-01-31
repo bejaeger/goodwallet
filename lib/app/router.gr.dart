@@ -11,13 +11,13 @@ import 'package:flutter/material.dart';
 
 import '../style/page_transitions.dart';
 import '../views/causes/causes_view.dart';
+import '../views/home/welcome_view.dart';
 import '../views/layout/layout_template_view.dart';
 import '../views/login/login_view.dart';
 import '../views/payments/payment_cancel_view.dart';
 import '../views/payments/payment_success_view.dart';
 import '../views/payments/send_money_view.dart';
 import '../views/wallet/wallet_view.dart';
-import '../views/welcome_view.dart';
 
 class Routes {
   static const String welcomeView = '/welcome-view';
