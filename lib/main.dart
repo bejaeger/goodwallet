@@ -2,8 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/style/colors.dart';
+import 'package:good_wallet/ui/views/layout/layout_template_view.dart';
 import 'package:good_wallet/utils/unfocuser.dart';
-import 'package:good_wallet/views/layout/layout_template_view.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'app/router.gr.dart' as auto_router;
 

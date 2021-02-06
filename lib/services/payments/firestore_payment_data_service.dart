@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
-import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:rxdart/rxdart.dart';
 
 class FirestorePaymentDataService {
@@ -35,7 +33,7 @@ class FirestorePaymentDataService {
   Future createPaymentIntent(TransactionModel data, var uid) async {
     // Create document in firestore that stands for a transaction.
     // If a document exist in the paymentIntent collection, it is
-    // first double-checked whether it's processed by the good wallet
+    // first double-checked whether it's processed already by the good wallet
     // and then deleted. Afterwards, a new paymentIntent document is written.
     try {
       CollectionReference paymentIntentCollectionRef =

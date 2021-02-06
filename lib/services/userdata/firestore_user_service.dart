@@ -6,7 +6,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
-import 'package:good_wallet/datamodels/user/user.dart';
+import 'package:good_wallet/datamodels/user/user_model.dart';
 
 class FirestoreUserService {
   final CollectionReference _usersCollectionReference =

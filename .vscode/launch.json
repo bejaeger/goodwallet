@@ -7,9 +7,17 @@
       "type": "dart",
       "args": [
         "--web-port",
-        "7000"
+        "7000",
+        "--device-id",
+        "chrome",
       ],
       "flutterMode": "debug",
+    },
+    {
+      "name": "Run all tests",
+      "request": "launch",
+      "type": "dart",
+      "program": "./test/",
     }
   ]
 }
