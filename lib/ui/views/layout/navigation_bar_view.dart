@@ -4,6 +4,7 @@ import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/ui/views/layout/navigation_bar_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
+import 'package:good_wallet/utils/extensions/hover_extension.dart';
 
 class NavigationBar extends StatelessWidget {
   final dynamic model;
@@ -16,14 +17,14 @@ class NavigationBar extends StatelessWidget {
       builder: (context, model, child) => model.showNavigationBar
           ? Card(
               margin: EdgeInsets.only(bottom: 3),
-              color: ATLASblue, //Colors.blue[100],
+              color: Colors.indigo, //Colors.blue[100],
               // Color(0xFF0290FF)
               //Color(0xFF0b80c3) ATLAS blue
               elevation: 5,
               child: Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: Container(
-                  height: 50,
+                  height: 40,
                   child: CenteredView(
                     maxWidth: MediaQuery.of(context).size.width > 1000
                         ? 1000
@@ -96,12 +97,15 @@ class _NavBarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
+      highlightColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      splashColor: Colors.transparent,
       onPressed: onPressed,
       child: Text(
         label,
         style: TextStyle(
             fontSize: 16, color: Colors.grey[100]), //Colors.grey[100]),
       ),
-    );
+    ).moveUpOnHover;
   }
 }
