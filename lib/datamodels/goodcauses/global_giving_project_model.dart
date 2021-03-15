@@ -13,6 +13,7 @@ class GlobalGivingProjectModel extends GoodWalletProjectModel {
       fundingCurrent = jsonProject["funding"];
       fundingGoal = jsonProject["goal"];
       summary = jsonProject["summary"];
+      themeName = jsonProject["themeName"];
     } catch (e) {
       print(
           "Error in GlobalGivingProjectModel.readJsonProject: ${e.toString()}");

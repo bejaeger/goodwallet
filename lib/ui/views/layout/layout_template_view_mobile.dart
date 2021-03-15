@@ -29,10 +29,12 @@ class LayoutTemplateViewMobile extends StatelessWidget {
             ),
           ],
         ),
-        body: getViewForIndex(model.currentIndex),
-        // MyPageTransitionSwitcher(
-        //   reverse: model.reverse,
-        //   child: getViewForIndex(model.currentIndex),
+        body: getViewForIndex(
+            model.currentIndex), // getViewForIndex(model.currentIndex),
+        //   MyPageTransitionSwitcher(
+        // reverse: model.reverse,
+        // child: getViewForIndex(model.currentIndex),
+        //  ),
       ),
     );
   }
