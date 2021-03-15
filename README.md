@@ -1,9 +1,25 @@
 # Development Considerations
 ## App architecture / State Management Solution
-- We use the stacked package by FilledStacks which provides an incredibly clean solutions for state management and realizing an MVVM architecture in flutter [[stacked](https://pub.dev/packages/stacked)]
+- We use the stacked package by FilledStacks which provides a very clean solutions for state management and realizing an MVVM architecture in flutter [[stacked](https://pub.dev/packages/stacked)]
 - [This blog post](https://medium.com/flutter-community/a-beginners-guide-to-architecting-a-flutter-app-1e9053211a74) provides a nice introduction to the stacked architecture
 - Highly recommended to watch the architecture tutorials summarized [[FilledStack's github repo](https://github.com/FilledStacks/flutter-tutorials)] (especially the tutorials 48, 49, 50). I basically set up the code like explained there. Having views separate from viewmodels and services allows the code to be incredibly clean and maintainable, so let's try that! :)
 - From the FilledStacks I can additionally recommend the tutorials starting from number 38. They helped me a ton!
+
+## Stacked Architecture Cheatsheet
+
+### Steps to add a new view
+- Create files for new view and viewmodel
+- Register view as route in `router.dart`
+- run auto router to generate routes `flutter pub run build_runner build --delete-conflicting-outputs`, or use script: `./runAutoRouter.sh`
+- navigate to new screen with navigation service, e.g.:
+```
+Future navigateToTransferView() async {
+   await _navigationService.navigateTo(Routes.transferView);
+}
+```
+
+### Steps to add new service
+- Create service class and register it in the `locator.dart` as a lazy singleton
 
 ## Git workflow
 See below for a long blob
@@ -15,6 +31,7 @@ See below for a long blob
 - Official flutter material
   - [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
   - [online documentation](https://flutter.dev/docs)
+  - [Performance best practies](https://flutter.dev/docs/perf/rendering/best-practices)
 
 ## Some things that I think are important or that I found useful
 
