@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "855330401923",
+    "firebase_url": "https://gooddollarsmarketplace.firebaseio.com",
+    "project_id": "gooddollarsmarketplace",
+    "storage_bucket": "gooddollarsmarketplace.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:855330401923:android:c69712d7725556fb81b5b6",
+        "android_client_info": {
+          "package_name": "com.example.gooddollarsmarketplace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "855330401923-n89celo077epl6cseeeuj8assqdc6j4d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHqU1XB78uV3_0GM2AL-DpqvccYRXfPQM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "855330401923-k5sbtnl7727hkvmgria429l408jr70ql.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -11,8 +11,10 @@ import 'package:flutter/material.dart';
 
 import '../style/page_transitions.dart';
 import '../ui/views/goodcauses/causes_view.dart';
+import '../ui/views/home/home_view_mobile.dart';
 import '../ui/views/home/welcome_view.dart';
 import '../ui/views/layout/layout_template_view.dart';
+import '../ui/views/layout/layout_template_view_mobile.dart';
 import '../ui/views/login/login_view.dart';
 import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
@@ -28,6 +30,8 @@ class Routes {
   static const String paymentCancelView = '/payment-cancel-view';
   static const String layoutTemplate = '/layout-template';
   static const String loginView = '/login-view';
+  static const String layoutTemplateViewMobile = '/layout-template-view-mobile';
+  static const String homeViewMobile = '/home-view-mobile';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -37,6 +41,8 @@ class Routes {
     paymentCancelView,
     layoutTemplate,
     loginView,
+    layoutTemplateViewMobile,
+    homeViewMobile,
   };
 }
 
@@ -52,6 +58,8 @@ class Router extends RouterBase {
     RouteDef(Routes.paymentCancelView, page: PaymentCancelView),
     RouteDef(Routes.layoutTemplate, page: LayoutTemplate),
     RouteDef(Routes.loginView, page: LoginView),
+    RouteDef(Routes.layoutTemplateViewMobile, page: LayoutTemplateViewMobile),
+    RouteDef(Routes.homeViewMobile, page: HomeViewMobile),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -124,6 +132,20 @@ class Router extends RouterBase {
         pageBuilder: (context, animation, secondaryAnimation) => LoginView(),
         settings: data,
         transitionsBuilder: customTransition,
+      );
+    },
+    LayoutTemplateViewMobile: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            LayoutTemplateViewMobile(),
+        settings: data,
+      );
+    },
+    HomeViewMobile: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            HomeViewMobile(),
+        settings: data,
       );
     },
   };

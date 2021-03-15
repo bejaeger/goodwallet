@@ -1,6 +1,7 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
-import 'dart:html';
+//import 'dart:html';
+import 'package:universal_html/html.dart';
 
 class StripePaymentService {
   Future createStripeSessionId(TransactionModel data) async {

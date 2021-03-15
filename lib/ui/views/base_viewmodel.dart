@@ -12,7 +12,7 @@ import 'package:good_wallet/services/userdata/wallet_client_service.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:stacked/stacked.dart';
 
-class BaseModel extends ReactiveViewModel {
+class BaseModel extends IndexTrackingViewModel {
   final AuthenticationService _authenticationService =
       locator<AuthenticationService>();
   final UserWalletService _userWalletService = locator<UserWalletService>();
