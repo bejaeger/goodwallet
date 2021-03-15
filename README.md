@@ -22,6 +22,7 @@ See below for a long blob
 - Use proper Flutter code formatting [[flutter formatting](https://flutter.dev/docs/development/tools/formatting)]
 - Read style guides [[official dart page](https://dart.dev/guides/language/effective-dart/style)], [[random medium article](https://medium.com/nonstopio/flutter-best-practices-c3db1c3cd694)]
 - Take your time to think about meaningful names for variables/classes/filename/...everything. Will help sooo much to understand the code later on
+- Fallback to pub.dev to read documentation about packages before starting to debug on your own 
 
 
 ## Git workflow - for everyone that has never used git
