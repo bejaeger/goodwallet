@@ -9,8 +9,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
+import '../datamodels/goodcauses/global_giving_project_model.dart';
 import '../style/page_transitions.dart';
 import '../ui/views/goodcauses/causes_view.dart';
+import '../ui/views/goodcauses/single_project_view_mobile.dart';
 import '../ui/views/home/home_view_mobile.dart';
 import '../ui/views/home/welcome_view.dart';
 import '../ui/views/layout/layout_template_view.dart';
@@ -32,6 +34,7 @@ class Routes {
   static const String loginView = '/login-view';
   static const String layoutTemplateViewMobile = '/layout-template-view-mobile';
   static const String homeViewMobile = '/home-view-mobile';
+  static const String singleProjectViewMobile = '/single-project-view-mobile';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -43,6 +46,7 @@ class Routes {
     loginView,
     layoutTemplateViewMobile,
     homeViewMobile,
+    singleProjectViewMobile,
   };
 }
 
@@ -60,6 +64,7 @@ class Router extends RouterBase {
     RouteDef(Routes.loginView, page: LoginView),
     RouteDef(Routes.layoutTemplateViewMobile, page: LayoutTemplateViewMobile),
     RouteDef(Routes.homeViewMobile, page: HomeViewMobile),
+    RouteDef(Routes.singleProjectViewMobile, page: SingleProjectViewMobile),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -148,6 +153,19 @@ class Router extends RouterBase {
         settings: data,
       );
     },
+    SingleProjectViewMobile: (data) {
+      final args = data.getArgs<SingleProjectViewMobileArguments>(
+        orElse: () => SingleProjectViewMobileArguments(),
+      );
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            SingleProjectViewMobile(
+          key: args.key,
+          project: args.project,
+        ),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -169,4 +187,11 @@ class LayoutTemplateArguments {
   final Key key;
   final Widget childView;
   LayoutTemplateArguments({this.key, @required this.childView});
+}
+
+/// SingleProjectViewMobile arguments holder class
+class SingleProjectViewMobileArguments {
+  final Key key;
+  final GlobalGivingProjectModel project;
+  SingleProjectViewMobileArguments({this.key, this.project});
 }

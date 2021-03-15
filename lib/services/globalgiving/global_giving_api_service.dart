@@ -9,14 +9,18 @@ import 'dart:math';
 class GlobalGivingAPIService {
   Future getRandomProject() async {
     // test request for specific project
-    String url =
-        "https://api.globalgiving.org/api/public/projectservice/projects/14516?api_key=578f2d27-8c47-4456-9d57-3bb0cb3f883b";
+    //String url =
+    //  "https://api.globalgiving.org/api/public/projectservice/projects/14516?api_key=578f2d27-8c47-4456-9d57-3bb0cb3f883b";
     // all projects (returns 10)
-    url =
-        "https://api.globalgiving.org/api/public/projectservice/all/projects/active?api_key=578f2d27-8c47-4456-9d57-3bb0cb3f883b&nextProjectId=14516";
+    //url =
+    //  "https://api.globalgiving.org/api/public/projectservice/all/projects/active?api_key=578f2d27-8c47-4456-9d57-3bb0cb3f883b&nextProjectId=14516";
     // featured projects (returns 10)
-    url =
-        "https://api.globalgiving.org/api/public/projectservice/featured/projects?api_key=578f2d27-8c47-4456-9d57-3bb0cb3f883b";
+    //url =
+    //  "https://api.globalgiving.org/api/public/projectservice/featured/projects?api_key=578f2d27-8c47-4456-9d57-3bb0cb3f883b";
+    Uri url = Uri.https(
+        "api.globalgiving.org",
+        "/api/public/projectservice/featured/projects",
+        {"api_key": "578f2d27-8c47-4456-9d57-3bb0cb3f883b"});
     http.Response response = await fetchProject(url);
     try {
       var jsonResponse = convert.jsonDecode(response.body);
@@ -38,9 +42,13 @@ class GlobalGivingAPIService {
 
   Future getFeaturedProjects() async {
     // test request for specific project
-    Uri url = Uri.http("api.globalgiving.org",
-        "/api/public/projectservice/featured/projects?api_key=578f2d27-8c47-4456-9d57-3bb0cb3f883b");
-    //{"api_key": "578f2d27-8c47-4456-9d57-3bb0cb3f883b"});
+    // Uri url = Uri.http("api.globalgiving.org",
+    //     "/api/public/projectservice/featured/projects", //?api_key=578f2d27-8c47-4456-9d57-3bb0cb3f883b");
+    //     {"api_key": "578f2d27-8c47-4456-9d57-3bb0cb3f883b"});
+    Uri url = Uri.https(
+        "api.globalgiving.org",
+        "/api/public/projectservice/featured/projects",
+        {"api_key": "578f2d27-8c47-4456-9d57-3bb0cb3f883b"});
     http.Response response = await fetchProject(url);
     try {
       var jsonResponse = convert.jsonDecode(response.body);
@@ -48,7 +56,7 @@ class GlobalGivingAPIService {
           jsonResponse["projects"]["project"] as List<dynamic>;
       int numberProjects = fetchedProjects.length - 1;
 
-      List<GlobalGivingProjectModel> projectList;
+      List<GlobalGivingProjectModel> projectList = [];
       for (int i = 0; i < numberProjects; i++) {
         GlobalGivingProjectModel project =
             GlobalGivingProjectModel.readJsonProject(fetchedProjects[i]);

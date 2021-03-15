@@ -6,6 +6,7 @@ import 'package:good_wallet/services/payments/firestore_payment_data_service.dar
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/firestore_user_service.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
+import 'package:good_wallet/ui/views/goodcauses/causes_viewmodel.dart';
 import 'package:good_wallet/ui/views/layout/navigation_bar_viewmodel.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -26,6 +27,7 @@ void setupLocator() {
   locator.registerLazySingleton(() => LayoutService());
   locator.registerLazySingleton(() => GlobalGivingAPIService());
 
+  locator.registerLazySingleton(() => CausesViewModel());
   // don't register the auth service lazily because we want it
   // to be initialized at the start of the app. This needs
   // to happen after all the services that are used inside
