@@ -13,6 +13,7 @@ class GoodWalletProjectModel {
 
   num fundingCurrent;
   num fundingGoal;
+  String themeName;
 
   GoodWalletProjectModel(
       {this.title,
@@ -21,7 +22,8 @@ class GoodWalletProjectModel {
       this.summary,
       this.organization,
       this.fundingCurrent,
-      this.fundingGoal});
+      this.fundingGoal,
+      this.themeName});
 
   Map<String, dynamic> toJson() {
     var returnJson = {
@@ -32,6 +34,7 @@ class GoodWalletProjectModel {
       'organization': organization.toJson(),
       'fundingCurrent': fundingCurrent,
       'fundingGoal': fundingGoal,
+      'themeName': themeName,
     };
     return returnJson;
   }

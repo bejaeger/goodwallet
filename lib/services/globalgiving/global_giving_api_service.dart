@@ -36,6 +36,31 @@ class GlobalGivingAPIService {
     }
   }
 
+  Future getFeaturedProjects() async {
+    // test request for specific project
+    Uri url = Uri.http("api.globalgiving.org",
+        "/api/public/projectservice/featured/projects?api_key=578f2d27-8c47-4456-9d57-3bb0cb3f883b");
+    //{"api_key": "578f2d27-8c47-4456-9d57-3bb0cb3f883b"});
+    http.Response response = await fetchProject(url);
+    try {
+      var jsonResponse = convert.jsonDecode(response.body);
+      var fetchedProjects =
+          jsonResponse["projects"]["project"] as List<dynamic>;
+      int numberProjects = fetchedProjects.length - 1;
+
+      List<GlobalGivingProjectModel> projectList;
+      for (int i = 0; i < numberProjects; i++) {
+        GlobalGivingProjectModel project =
+            GlobalGivingProjectModel.readJsonProject(fetchedProjects[i]);
+        projectList.add(project);
+      }
+      return projectList;
+      //return project;
+    } catch (e) {
+      print("Error: ${e.toString()}");
+    }
+  }
+
   Future<http.Response> fetchProject(dynamic url) async {
     http.Response response;
     try {
