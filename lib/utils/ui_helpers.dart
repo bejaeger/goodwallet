@@ -26,6 +26,8 @@ double screenWidth(BuildContext context) => MediaQuery.of(context).size.width;
 double screenHeight(BuildContext context) => MediaQuery.of(context).size.height;
 isDesktop(BuildContext context) => MediaQuery.of(context).size.width > 600;
 
+TextTheme textTheme(BuildContext context) => Theme.of(context).textTheme;
+
 double screenHeightFraction(BuildContext context,
         {int dividedBy = 1, double offsetBy = 0}) =>
     (screenHeight(context) - offsetBy) / dividedBy;
