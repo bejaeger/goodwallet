@@ -3,6 +3,8 @@ import 'package:good_wallet/datamodels/goodcauses/global_giving_project_model.da
 import 'package:good_wallet/ui/views/goodcauses/single_project_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
+import 'package:functional_widget_annotation/functional_widget_annotation.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SingleProjectViewMobile extends StatelessWidget {
   final GlobalGivingProjectModel project;
@@ -46,7 +48,22 @@ class SingleProjectViewMobile extends StatelessWidget {
                               decoration: InputDecoration(hintText: '\$'))),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                              // Show a basic widget
+                            Alert(
+                              context: context, title: "Confirmation", 
+                              desc: "Are you sure that you want to donate N good dollars to ${project.title}",
+                              buttons: [
+                                DialogButton(
+                                  child: Text(
+                                    "Confirm"),
+                                    ),
+                                DialogButton(child: 
+                                Text("Cancel"),
+                                onPressed: () => Navigator.pop(context),),
+                              ]
+                              ).show();
+                          },
                           child: Text('Donate'),
                         ),
                       ),
