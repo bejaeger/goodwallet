@@ -5,6 +5,7 @@ import 'package:good_wallet/enums/auth_mode.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/ui/views/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class LoginViewModel extends BaseModel {
   final AuthenticationService _authenticationService =
@@ -122,7 +123,10 @@ class LoginViewModel extends BaseModel {
 
   Future navigateToWalletView() async {
     //setShowNavigationBar(true);
-    await _navigationService.navigateTo(Routes.walletView);
+    if (kIsWeb)
+      await _navigationService.navigateTo(Routes.walletView);
+    else
+      await _navigationService.navigateTo(Routes.layoutTemplateViewMobile);
   }
 
   Future loginWithGoogle() async {
@@ -130,6 +134,13 @@ class LoginViewModel extends BaseModel {
     var result = await _authenticationService.loginWithGoogle();
     if (!result) print("WARNING: Failed logging in user!");
     setBusy(false);
+    navigateToWalletView();
+  }
+
+  Future dummyLoginHans() async {
+    setPassword("m1m1m1");
+    setEmail("test@gmail.com");
+    submit();
     navigateToWalletView();
   }
 }
