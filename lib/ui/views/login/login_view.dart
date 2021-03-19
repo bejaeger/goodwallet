@@ -14,6 +14,7 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<LoginViewModel>.reactive(
       viewModelBuilder: () => LoginViewModel(),
+      //onModelReady: (model) => model.navigateToWalletView(),
       builder: (context, model, child) => WillPopScope(
         onWillPop: () async {
           //model.setShowNavigationBar(true);
@@ -25,7 +26,7 @@ class LoginView extends StatelessWidget {
           body: ListView(
             children: [
               CenteredView(
-                maxWidth: 500,
+                maxWidth: 500.0,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 30.0),
                   child: model.isBusy
@@ -285,6 +286,30 @@ class AuthCard extends StatelessWidget {
                 ),
                 onPressed: () {
                   model.submit();
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                color: Theme.of(context).primaryColor,
+                textColor: Colors.white,
+              ),
+            ),
+            verticalSpaceSmall,
+            Container(
+              height: 42,
+              child: RaisedButton(
+                elevation: 4,
+                child: Text(
+                  'Login Hans',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () {
+                  model.dummyLoginHans();
+                  // model.submit();
                   FocusScope.of(context).requestFocus(FocusNode());
                 },
                 shape: RoundedRectangleBorder(

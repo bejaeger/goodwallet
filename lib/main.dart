@@ -34,7 +34,8 @@ class MyApp extends StatelessWidget {
           theme: MyThemeData.myTheme(),
           initialRoute: kIsWeb
               ? auto_router.Routes.welcomeView
-              : auto_router.Routes.layoutTemplateViewMobile,
+              //: auto_router.Routes.layoutTemplateViewMobile,
+              : auto_router.Routes.loginView,
           builder: (context, child) =>
               isDesktop(context) ? LayoutTemplate(childView: child) : child),
     );
@@ -45,14 +46,18 @@ class MyThemeData {
   static ThemeData myTheme() {
     return ThemeData(
       // TODO: Import google font
-      //fontFamily: 'Open-Sans',
+      fontFamily: 'Roboto',
       // colors form here https://material.io/resources/color/#!/?view.left=0&view.right=1&primary.color=941305
       primaryColor: Color(0xFF941305),
       primaryColorLight: Color(0xFFcc492f), // light red
+      primaryColorDark: Color(0xFF600000), // dark red
       backgroundColor: Colors.grey[50],
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-        primary: Color(0xFF941305), // primary red
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        primary: Color(0xFFcc492f), // primary red
       )),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -60,6 +65,11 @@ class MyThemeData {
           primary: Color(0xFF600000), // dark red
         ),
       ),
+      iconTheme: IconThemeData(
+        color: Color(0xFFcc492f),
+      ),
+      //primaryColorBrightness: Brightness.light,
+      //textTheme: Typography.whiteMountainView,
       textTheme: TextTheme(
         // headlines for sections
         headline1: TextStyle(
@@ -68,10 +78,17 @@ class MyThemeData {
             fontSize: 35, color: Colors.grey[800], fontWeight: FontWeight.w800),
 
         // sub headlines for sections?
+
         headline3: TextStyle(
             fontSize: 30, color: Colors.grey[200], fontWeight: FontWeight.w600),
         headline4: TextStyle(
             fontSize: 30, color: Colors.grey[800], fontWeight: FontWeight.w600),
+
+        // sub headlines for sections?
+        headline5: TextStyle(
+            fontSize: 22, color: Colors.grey[200], fontWeight: FontWeight.w600),
+        headline6: TextStyle(
+            fontSize: 22, color: Colors.grey[600], fontWeight: FontWeight.w600),
 
         bodyText1: TextStyle(
             fontSize: 17,
