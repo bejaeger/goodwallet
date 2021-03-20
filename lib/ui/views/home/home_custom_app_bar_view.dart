@@ -83,13 +83,16 @@ class HomeCustomAppBarView extends SliverPersistentHeaderDelegate {
                   Padding(
                     padding:
                         const EdgeInsets.only(right: leftPadding, bottom: 15.0),
-                    child: CircleAvatar(
-                      radius: 22,
-                      backgroundColor: Theme.of(context).primaryColor,
-                      child: Text(model.currentUser.getInitials(),
-                          style: textTheme(context)
-                              .bodyText1
-                              .copyWith(fontSize: 15)),
+                    child: GestureDetector(
+                      onTap: model.logout,
+                      child: CircleAvatar(
+                        radius: 22,
+                        backgroundColor: Theme.of(context).primaryColor,
+                        child: Text(model.currentUser.getInitials(),
+                            style: textTheme(context)
+                                .bodyText1
+                                .copyWith(fontSize: 15)),
+                      ),
                     ),
                   ),
                 ],

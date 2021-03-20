@@ -52,11 +52,12 @@ class LoginViewModel extends BaseModel {
         throw ("EMPTY_ERROR: Please enter e-mail and password");
       }
       if (_authenticationService.currentUser != null) {
+        setBusy(false);
         await navigateToWalletView();
       }
     } catch (error) {
       _errorMessage = 'Authentication failed.';
-      if (error.message == 'EMAIL_EXISTS') {
+      if (error.toString().contains('EMAIL_EXISTS')) {
         _errorMessage = 'This email address is already in use.';
       } else if (error.toString().contains('INVALID_EMAIL')) {
         _errorMessage = 'This is not a valid email address';
@@ -110,15 +111,30 @@ class LoginViewModel extends BaseModel {
   }
 
   Future loginWithEmail(String email, String password) async {
-    await _authenticationService.loginWithEmail(
+    final result = await _authenticationService.loginWithEmail(
         email: email, password: password);
-    navigateToWalletView();
+    if (!result is String) {
+      // Navigate to successful route
+      print("Successfully logged in!");
+      return true;
+      //navigateToWalletView();
+    } else {
+      print("Error when trying to login!");
+      print(result);
+      return false;
+    }
   }
 
   Future signUpWithEmail(String email, String password, String name) async {
-    await _authenticationService.signUpWithEmail(
+    final result = await _authenticationService.signUpWithEmail(
         email: email, password: password, fullName: name);
-    navigateToWalletView();
+    if (!result is String) {
+      // Navigate to successful route
+      print("Successfully signed-up!");
+      // navigateToWalletView();
+    } else {
+      print(result);
+    }
   }
 
   Future navigateToWalletView() async {
@@ -138,9 +154,11 @@ class LoginViewModel extends BaseModel {
   }
 
   Future dummyLoginHans() async {
-    setPassword("m1m1m1");
-    setEmail("test@gmail.com");
-    submit();
+    await loginWithEmail("test@gmail.com", "m1m1m1");
     navigateToWalletView();
+    // else {
+    //   _errorMessage = 'Login failed';
+    //   notifyListeners();
+    // }
   }
 }

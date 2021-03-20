@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/enums/auth_mode.dart';
 import 'package:good_wallet/style/colors.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/views/login/login_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 const Color darkColor = Color(0xBB353531);
 const Color redColor = Color(0xFFCF3D31);
-const Color mainColor = Colors.blue;
+const Color mainColor = ColorSettings.primaryColor;
 
 class LoginView extends StatelessWidget {
   @override
@@ -37,7 +38,7 @@ class LoginView extends StatelessWidget {
                           ),
                           elevation: 2,
                           child: Container(
-                            height: 600, // 25 = safearea
+                            height: 700, // 25 = safearea
                             child: buildAuthScreenContent(context, model),
                           ),
                         ),
@@ -206,11 +207,10 @@ class AuthCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
     return Form(
       key: model.formKey,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: deviceSize.width * 0.07),
+        padding: EdgeInsets.symmetric(horizontal: screenWidth(context) * 0.07),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -286,6 +286,7 @@ class AuthCard extends StatelessWidget {
                 ),
                 onPressed: () {
                   model.submit();
+                  model.navigateToWalletView();
                   FocusScope.of(context).requestFocus(FocusNode());
                 },
                 shape: RoundedRectangleBorder(
