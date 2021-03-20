@@ -4,9 +4,13 @@ import 'package:good_wallet/ui/views/goodcauses/single_project_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
+final _donationAmountController = TextEditingController();
+var userGoodDollarsSavings = 2000;
+
 class SingleProjectViewMobile extends StatelessWidget {
   final GlobalGivingProjectModel project;
   const SingleProjectViewMobile({Key key, this.project}) : super(key: key);
+  
 
   @override
   Widget build(BuildContext context) {
@@ -37,70 +41,80 @@ class SingleProjectViewMobile extends StatelessWidget {
               //   padding: EdgeInsets.only(top: 20.0),
               // ),
               // Flexible(
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Flexible(
-                          child: TextField(
-                              decoration: InputDecoration(hintText: '\$'))),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: ()  =>  model.showConfirmationDialog(project.title),
-                          child: Text('Donate'),
-                        ),
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Flexible(
+                      child: TextField(
+                        controller: _donationAmountController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(hintText: '\$'),
                       ),
-                      // Expanded(
-                      //   child: ElevatedButton(
-                      //       onPressed: () {
-                      //         print('Surprise Motherfucker');
-                      //       },
-                      //       child: Text("Donate")),
-                      // ),
-                      // IconButton(
-                      //   iconSize: 60.0,
-                      //   onPressed: () {
-                      //     print("Liked");
-                      //   },
-                      //   icon: Icon(
-                      //     Icons.favorite_border,
-                      //     color: Colors.red,
-                      //   ),
-                      // ),
+                    ),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () =>
+                            model.showConfirmationDialog(project.title, _donationAmountController.text),
+                        child: Text('Donate'),
+                      ),
+                    ),
+                    // Expanded(
+                    //   child: ElevatedButton(
+                    //       onPressed: () {
+                    //         print('Surprise Motherfucker');
+                    //       },
+                    //       child: Text("Donate")),
+                    // ),
+                    // IconButton(
+                    //   iconSize: 60.0,
+                    //   onPressed: () {
+                    //     print("Liked");
+                    //   },
+                    //   icon: Icon(
+                    //     Icons.favorite_border,
+                    //     color: Colors.red,
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ),
+
+              verticalSpaceMedium,
+              Flexible(
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          Icon(Icons.account_balance_wallet),
+                          Text(
+                            "\$ $userGoodDollarsSavings",
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: <Widget>[
+                          Icon(Icons.support),
+                          Text(
+                            "\$ 0",
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
-              
-              verticalSpaceMedium,
-              Flexible(
-              child: Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        Icon(Icons.account_balance_wallet),
-                        Text(
-                          "\$ 1200",
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Icon(Icons.support),
-                        Text(
-                          "\$ 0",
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),),
+              ),
               verticalSpaceMedium,
               // Container(
               //   child: Expanded(
-               // Flexible()
-              Text(project.summary, softWrap: true, style: TextStyle(),),
+              // Flexible()
+              Text(
+                project.summary,
+                softWrap: true,
+                style: TextStyle(),
+              ),
               //   ),
               // ),
             ],
