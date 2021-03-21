@@ -62,11 +62,14 @@ class DonationDashboardCard extends StatelessWidget {
                     center: icon,
                     footer: FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: Text("reach your next 100\$",
-                          style: textTheme(context)
-                              .bodyText2
-                              .copyWith(height: 1.1),
-                          textAlign: TextAlign.center),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text("reach your next 100\$",
+                            style: textTheme(context)
+                                .bodyText2
+                                .copyWith(height: 1.1),
+                            textAlign: TextAlign.center),
+                      ),
                     ),
                   ),
                 ],

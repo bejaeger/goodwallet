@@ -84,7 +84,7 @@ class HomeCustomAppBarView extends SliverPersistentHeaderDelegate {
                     padding:
                         const EdgeInsets.only(right: leftPadding, bottom: 15.0),
                     child: GestureDetector(
-                      onTap: model.logout,
+                      onTap: model.navigateToSettingsView,
                       child: CircleAvatar(
                         radius: 22,
                         backgroundColor: Theme.of(context).primaryColor,

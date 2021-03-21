@@ -45,7 +45,7 @@ class AuthenticationService {
       if (user != null) {
         // only initialize if not already initialized!
         var result = await _initializeCurrentUser(user);
-        if (result) {
+        if (result is bool && result == true) {
           _userStatus = UserStatus.SignedIn;
           _userStateSubject.add(UserState(value: user));
         }

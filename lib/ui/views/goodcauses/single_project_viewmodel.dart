@@ -7,9 +7,10 @@ import 'package:good_wallet/ui/views/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class SingleProjectViewModel extends BaseModel {
-  final _dialogService = locator<DialogService>(); 
-  
-  Future showConfirmationDialog(String projectTitle, String donationAmount) async {
+  final _dialogService = locator<DialogService>();
+
+  Future showConfirmationDialog(
+      String projectTitle, String donationAmount) async {
     DialogResponse response = await _dialogService.showConfirmationDialog(
       title: 'Confirmation',
       description:
