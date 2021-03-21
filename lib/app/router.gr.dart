@@ -21,6 +21,7 @@ import '../ui/views/login/login_view.dart';
 import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
 import '../ui/views/payments/send_money_view.dart';
+import '../ui/views/settings/settinges_view.dart';
 import '../ui/views/wallet/wallet_view.dart';
 
 class Routes {
@@ -35,6 +36,7 @@ class Routes {
   static const String layoutTemplateViewMobile = '/layout-template-view-mobile';
   static const String homeViewMobile = '/home-view-mobile';
   static const String singleProjectViewMobile = '/single-project-view-mobile';
+  static const String settingsView = '/settings-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -47,6 +49,7 @@ class Routes {
     layoutTemplateViewMobile,
     homeViewMobile,
     singleProjectViewMobile,
+    settingsView,
   };
 }
 
@@ -65,6 +68,7 @@ class Router extends RouterBase {
     RouteDef(Routes.layoutTemplateViewMobile, page: LayoutTemplateViewMobile),
     RouteDef(Routes.homeViewMobile, page: HomeViewMobile),
     RouteDef(Routes.singleProjectViewMobile, page: SingleProjectViewMobile),
+    RouteDef(Routes.settingsView, page: SettingsView),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -163,6 +167,12 @@ class Router extends RouterBase {
           key: args.key,
           project: args.project,
         ),
+        settings: data,
+      );
+    },
+    SettingsView: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) => SettingsView(),
         settings: data,
       );
     },

@@ -4,10 +4,10 @@ import 'package:good_wallet/services/authentification/authentification_service.d
 import 'package:good_wallet/ui/views/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class HomeCustomAppBarViewModel extends BaseModel {
+class SettingsViewModel extends BaseModel {
+  final NavigationService _navigationService = locator<NavigationService>();
   final AuthenticationService _authenticationService =
       locator<AuthenticationService>();
-  final NavigationService _navigationService = locator<NavigationService>();
 
   Future logout() async {
     setBusy(true);
@@ -20,7 +20,6 @@ class HomeCustomAppBarViewModel extends BaseModel {
     await _navigationService.navigateTo(Routes.loginView);
   }
 
-  Future navigateToSettingsView() async {
-    await _navigationService.navigateTo(Routes.settingsView);
-  }
+  void navigateBack() => _navigationService.back();
+
 }
