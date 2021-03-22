@@ -85,7 +85,8 @@ class HomeViewMobile extends StatelessWidget {
                                           verticalSpaceSmall,
                                           PledgeButton(
                                               title: "+ Donate",
-                                              onPressed: () => null),
+                                              onPressed:
+                                                  model.showDonateBottomSheet),
                                         ],
                                       ),
                                     ),
@@ -108,7 +109,8 @@ class HomeViewMobile extends StatelessWidget {
                                           verticalSpaceSmall,
                                           PledgeButton(
                                               title: "+ Send money",
-                                              onPressed: () => null),
+                                              onPressed: model
+                                                  .showSendMoneyBottomSheet),
                                         ],
                                       ),
                                     ),

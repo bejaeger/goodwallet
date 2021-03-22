@@ -14,8 +14,17 @@ class SettingsView extends StatelessWidget {
           child: ListView(
             children: [
               verticalSpaceMedium,
-              Row(
+              Stack(
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Settings",
+                          style: textTheme(context)
+                              .bodyText2
+                              .copyWith(fontWeight: FontWeight.w800)),
+                    ],
+                  ),
                   IconButton(
                     padding: EdgeInsets.zero,
                     alignment: Alignment.centerLeft,
@@ -25,10 +34,6 @@ class SettingsView extends StatelessWidget {
                     ),
                     onPressed: model.navigateBack,
                   ),
-                  Text("Settings",
-                      style: textTheme(context)
-                          .bodyText2
-                          .copyWith(fontWeight: FontWeight.w800)),
                 ],
               ),
               verticalSpaceLarge,

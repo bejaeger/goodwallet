@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
+
+// widget displaying a particular statistics of the good wallet
+// making it look like a dashboard
 
 class DonationDashboardCard extends StatelessWidget {
   final String subtext;
@@ -19,61 +24,57 @@ class DonationDashboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 7 / 9,
+      aspectRatio: 7 / 7,
       child: Card(
         clipBehavior: Clip.hardEdge,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),
-        color: Colors.grey[100],
-        elevation: 5.0,
+        color: Colors.white,
+        elevation: 2.0,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            //mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      "\$ " + value.toString(),
-                      style: textTheme(context).headline2.copyWith(
-                          //fontSize: 25,
-                          color: Theme.of(context).primaryColor),
-                    ),
-                  ),
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(subtext,
-                        style: textTheme(context)
-                            .bodyText2
-                            .copyWith(fontSize: 15)),
-                  ),
-                  verticalSpaceSmall,
-                  CircularPercentIndicator(
-                    //progressColor: Theme.of(context).,
-                    radius: 80.0,
-                    lineWidth: 12.0,
-                    percent: (value % 100) / 100,
-                    //header: new Text("From \$ 200"),
-                    center: icon,
-                    footer: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text("reach your next 100\$",
-                            style: textTheme(context)
-                                .bodyText2
-                                .copyWith(height: 1.1),
-                            textAlign: TextAlign.center),
-                      ),
-                    ),
-                  ),
+                  horizontalSpaceSmall,
+                  icon,
+                  //Icon(Icons.chevron_right),
                 ],
-              )
+              ),
+              verticalSpaceMedium,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  "\$ " + value.toString(),
+                  style: textTheme(context).headline2.copyWith(
+                      //fontSize: 25,
+                      color: Theme.of(context).primaryColor),
+                ),
+              ),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(subtext,
+                    style: textTheme(context).bodyText2.copyWith(fontSize: 15)),
+              ),
+              // verticalSpaceMedium,
+              // LinearPercentIndicator(
+              //   lineHeight: 12.0,
+              //   percent: (value % 100) / 100,
+              // ),
+              // FittedBox(
+              //   fit: BoxFit.scaleDown,
+              //   child: Padding(
+              //     padding: const EdgeInsets.only(top: 8.0),
+              //     child: Text("reach your next 100\$",
+              //         style: textTheme(context).bodyText2.copyWith(height: 1.1),
+              //         textAlign: TextAlign.center),
+              //   ),
+              // ),
             ],
           ),
         ),

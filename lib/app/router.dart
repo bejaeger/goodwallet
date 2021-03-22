@@ -10,7 +10,7 @@ import 'package:good_wallet/ui/views/login/login_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_cancel_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_success_view.dart';
 import 'package:good_wallet/ui/views/payments/send_money_view.dart';
-import 'package:good_wallet/ui/views/settings/settinges_view.dart';
+import 'package:good_wallet/ui/views/settings/settings_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_view.dart';
 
 @CustomAutoRouter(transitionsBuilder: customTransition, routes: [

@@ -54,6 +54,7 @@ class MyThemeData {
       backgroundColor: Colors.grey[50],
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
+        elevation: 2.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),

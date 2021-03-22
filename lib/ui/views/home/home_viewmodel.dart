@@ -29,4 +29,22 @@ class HomeViewModel extends BaseModel {
       }
     }
   }
+
+  Future showDonateBottomSheet() async {
+    var sheetResponse = await _bottomSheetService.showCustomSheet(
+      variant: BottomSheetType.donate,
+      title: 'Make a donation',
+      //description: 'scan QR code or search for user name',
+    );
+    print('confirmationResponse confirmed: ${sheetResponse?.confirmed}');
+  }
+
+  Future showSendMoneyBottomSheet() async {
+    var sheetResponse = await _bottomSheetService.showCustomSheet(
+      variant: BottomSheetType.sendMoney,
+      title: 'Send money',
+      //description: 'scan QR code or search for user name',
+    );
+    print('confirmationResponse confirmed: ${sheetResponse?.confirmed}');
+  }
 }
