@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/style/page_transiation_mobile.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/goodcauses/causes_view_mobile.dart';
@@ -9,10 +10,17 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class LayoutTemplateViewMobile extends StatelessWidget {
+  final int index;
+  const LayoutTemplateViewMobile({Key key, this.index}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<LayoutTemplateViewModel>.reactive(
       viewModelBuilder: () => LayoutTemplateViewModel(),
+      onModelReady: (model) {
+        print("Rebuild LayoutTemplateViewModel!");
+        if (index != null) model.setIndex(index);
+        return null;
+      },
       builder: (context, model, child) => SafeArea(
         child: Scaffold(
           //extendBodyBehindAppBar: true,
@@ -39,23 +47,22 @@ class LayoutTemplateViewMobile extends StatelessWidget {
           ),
           body: getViewForIndex(
               model.currentIndex), // getViewForIndex(model.currentIndex),
-          //   MyPageTransitionSwitcher(
-          // reverse: model.reverse,
-          // child: getViewForIndex(model.currentIndex),
-          //  ),
+          // body: MyPageTransitionSwitcher(
+          //   reverse: model.reverse,
+          //   child: getViewForIndex(model.currentIndex),
+          //),
         ),
       ),
     );
   }
 
   Widget getViewForIndex(int index) {
-    switch (index) {
-      case 0:
-        return HomeViewMobile();
-      case 1:
-        return GoodCausesViewMobile();
-      default:
-        return HomeViewMobile();
+    if (index == BottomNavigatorIndex.Home.index) {
+      return HomeViewMobile();
+    } else if (index == BottomNavigatorIndex.Give.index) {
+      return GoodCausesViewMobile();
+    } else {
+      return HomeViewMobile();
     }
   }
 }

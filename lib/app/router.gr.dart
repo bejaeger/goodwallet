@@ -144,9 +144,15 @@ class Router extends RouterBase {
       );
     },
     LayoutTemplateViewMobile: (data) {
+      final args = data.getArgs<LayoutTemplateViewMobileArguments>(
+        orElse: () => LayoutTemplateViewMobileArguments(),
+      );
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            LayoutTemplateViewMobile(),
+            LayoutTemplateViewMobile(
+          key: args.key,
+          index: args.index,
+        ),
         settings: data,
       );
     },
@@ -197,6 +203,13 @@ class LayoutTemplateArguments {
   final Key key;
   final Widget childView;
   LayoutTemplateArguments({this.key, @required this.childView});
+}
+
+/// LayoutTemplateViewMobile arguments holder class
+class LayoutTemplateViewMobileArguments {
+  final Key key;
+  final int index;
+  LayoutTemplateViewMobileArguments({this.key, this.index});
 }
 
 /// SingleProjectViewMobile arguments holder class

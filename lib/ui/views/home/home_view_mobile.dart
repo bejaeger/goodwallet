@@ -9,8 +9,6 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class HomeViewMobile extends StatelessWidget {
-  final padding = 20.0;
-
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
@@ -37,7 +35,7 @@ class HomeViewMobile extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          SizedBox(width: padding),
+                          SizedBox(width: LayoutSettings.horizontalPadding),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -61,8 +59,8 @@ class HomeViewMobile extends StatelessWidget {
                               verticalSpaceSmall,
                               ConstrainedBox(
                                 constraints: BoxConstraints(
-                                    maxWidth:
-                                        screenWidth(context) - 2 * padding),
+                                    maxWidth: screenWidth(context) -
+                                        2 * LayoutSettings.horizontalPadding),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -86,7 +84,7 @@ class HomeViewMobile extends StatelessWidget {
                                           PledgeButton(
                                               title: "+ Donate",
                                               onPressed:
-                                                  model.showDonateBottomSheet),
+                                                  model.navigateToDonationView),
                                         ],
                                       ),
                                     ),
@@ -118,12 +116,15 @@ class HomeViewMobile extends StatelessWidget {
                                 ),
                               ),
                               verticalSpaceLarge,
+                              Text("Featured apps",
+                                  style: textTheme(context).headline6),
+                              verticalSpaceLarge,
                               Text("Recent activities",
                                   style: textTheme(context).headline6),
                               verticalSpaceMassive,
                             ],
                           ),
-                          SizedBox(width: padding),
+                          SizedBox(width: LayoutSettings.horizontalPadding),
                         ],
                       ),
                     ],

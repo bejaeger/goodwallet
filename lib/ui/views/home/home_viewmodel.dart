@@ -1,5 +1,6 @@
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/app/router.gr.dart';
+import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/ui/views/base_viewmodel.dart';
@@ -7,44 +8,31 @@ import 'package:stacked_services/stacked_services.dart';
 
 class HomeViewModel extends BaseModel {
   final _bottomSheetService = locator<BottomSheetService>();
+  final NavigationService _navigationService = locator<NavigationService>();
+
+  Future navigateToDonationView() async {
+    await _navigationService.navigateTo(Routes.layoutTemplateViewMobile,
+        arguments: LayoutTemplateViewMobileArguments(
+            index: BottomNavigatorIndex.Give.index));
+  }
 
   Future showRaiseMoneyBottomSheet() async {
     var sheetResponse = await _bottomSheetService.showCustomSheet(
       variant: BottomSheetType.raise,
-      title: 'Raise Money',
-      //description: 'scan QR code or search for user name',
     );
-    print('confirmationResponse confirmed: ${sheetResponse?.confirmed}');
-
     if (sheetResponse != null) {
-      if (sheetResponse.responseData == "Test1") {
-        print("TEST 1 WAHNSINN!");
-        // var userInfoMap = await QRScanner.getQRCodeScan();
-        // if (userInfoMap != null) {
-        //   _navigationService.navigateTo(Routes.transferView,
-        //       arguments: TransferViewArguments(userInfoMap: userInfoMap));
-        // }
-      } else {
-        print("Not Test 1 das ist ja unfassbar!");
-      }
+      print("Response data: ${sheetResponse.responseData}");
+      if (sheetResponse.responseData is Function) sheetResponse.responseData();
     }
-  }
-
-  Future showDonateBottomSheet() async {
-    var sheetResponse = await _bottomSheetService.showCustomSheet(
-      variant: BottomSheetType.donate,
-      title: 'Make a donation',
-      //description: 'scan QR code or search for user name',
-    );
-    print('confirmationResponse confirmed: ${sheetResponse?.confirmed}');
   }
 
   Future showSendMoneyBottomSheet() async {
     var sheetResponse = await _bottomSheetService.showCustomSheet(
       variant: BottomSheetType.sendMoney,
-      title: 'Send money',
-      //description: 'scan QR code or search for user name',
     );
-    print('confirmationResponse confirmed: ${sheetResponse?.confirmed}');
+    if (sheetResponse != null) {
+      print("Response data: ${sheetResponse.responseData}");
+      if (sheetResponse.responseData is Function) sheetResponse.responseData();
+    }
   }
 }

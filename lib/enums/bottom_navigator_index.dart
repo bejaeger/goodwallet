@@ -1,0 +1,4 @@
+enum BottomNavigatorIndex {
+  Home,
+  Give,
+}
