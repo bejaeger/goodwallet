@@ -8,6 +8,7 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:good_wallet/ui/views/profile/profile_view.dart';
 
 import '../datamodels/goodcauses/global_giving_project_model.dart';
 import '../style/page_transitions.dart';
@@ -17,11 +18,11 @@ import '../ui/views/home/home_view_mobile.dart';
 import '../ui/views/home/welcome_view.dart';
 import '../ui/views/layout/layout_template_view.dart';
 import '../ui/views/layout/layout_template_view_mobile.dart';
+import '../ui/views/login/create_account_view.dart';
 import '../ui/views/login/login_view.dart';
 import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
 import '../ui/views/payments/send_money_view.dart';
-import '../ui/views/settings/settings_view.dart';
 import '../ui/views/wallet/wallet_view.dart';
 
 class Routes {
@@ -36,7 +37,8 @@ class Routes {
   static const String layoutTemplateViewMobile = '/layout-template-view-mobile';
   static const String homeViewMobile = '/home-view-mobile';
   static const String singleProjectViewMobile = '/single-project-view-mobile';
-  static const String settingsView = '/settings-view';
+  static const String profileView = '/profile-view';
+  static const String createAccountView = '/create-account-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -49,7 +51,8 @@ class Routes {
     layoutTemplateViewMobile,
     homeViewMobile,
     singleProjectViewMobile,
-    settingsView,
+    profileView,
+    createAccountView,
   };
 }
 
@@ -68,7 +71,8 @@ class Router extends RouterBase {
     RouteDef(Routes.layoutTemplateViewMobile, page: LayoutTemplateViewMobile),
     RouteDef(Routes.homeViewMobile, page: HomeViewMobile),
     RouteDef(Routes.singleProjectViewMobile, page: SingleProjectViewMobile),
-    RouteDef(Routes.settingsView, page: SettingsView),
+    RouteDef(Routes.profileView, page: ProfileView),
+    RouteDef(Routes.createAccountView, page: CreateAccountView),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -137,8 +141,12 @@ class Router extends RouterBase {
       );
     },
     LoginView: (data) {
+      final args = data.getArgs<LoginViewArguments>(
+        orElse: () => LoginViewArguments(),
+      );
       return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => LoginView(),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            LoginView(key: args.key),
         settings: data,
         transitionsBuilder: customTransition,
       );
@@ -176,9 +184,19 @@ class Router extends RouterBase {
         settings: data,
       );
     },
-    SettingsView: (data) {
+    ProfileView: (data) {
       return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => SettingsView(),
+        pageBuilder: (context, animation, secondaryAnimation) => ProfileView(),
+        settings: data,
+      );
+    },
+    CreateAccountView: (data) {
+      final args = data.getArgs<CreateAccountViewArguments>(
+        orElse: () => CreateAccountViewArguments(),
+      );
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            CreateAccountView(key: args.key),
         settings: data,
       );
     },
@@ -205,6 +223,12 @@ class LayoutTemplateArguments {
   LayoutTemplateArguments({this.key, @required this.childView});
 }
 
+/// LoginView arguments holder class
+class LoginViewArguments {
+  final Key key;
+  LoginViewArguments({this.key});
+}
+
 /// LayoutTemplateViewMobile arguments holder class
 class LayoutTemplateViewMobileArguments {
   final Key key;
@@ -217,4 +241,10 @@ class SingleProjectViewMobileArguments {
   final Key key;
   final GlobalGivingProjectModel project;
   SingleProjectViewMobileArguments({this.key, this.project});
+}
+
+/// CreateAccountView arguments holder class
+class CreateAccountViewArguments {
+  final Key key;
+  CreateAccountViewArguments({this.key});
 }

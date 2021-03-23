@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/ui/views/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class WelcomeViewModel extends BaseModel {

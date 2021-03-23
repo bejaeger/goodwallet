@@ -3,7 +3,7 @@ import 'package:good_wallet/app/router.gr.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
-import 'package:good_wallet/ui/views/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class HomeViewModel extends BaseModel {
@@ -19,6 +19,7 @@ class HomeViewModel extends BaseModel {
   Future showRaiseMoneyBottomSheet() async {
     var sheetResponse = await _bottomSheetService.showCustomSheet(
       variant: BottomSheetType.raise,
+      barrierDismissible: true,
     );
     if (sheetResponse != null) {
       print("Response data: ${sheetResponse.responseData}");
@@ -29,6 +30,7 @@ class HomeViewModel extends BaseModel {
   Future showSendMoneyBottomSheet() async {
     var sheetResponse = await _bottomSheetService.showCustomSheet(
       variant: BottomSheetType.sendMoney,
+      barrierDismissible: true,
     );
     if (sheetResponse != null) {
       print("Response data: ${sheetResponse.responseData}");

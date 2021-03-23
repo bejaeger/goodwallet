@@ -2,12 +2,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/style/colors.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/setup_bottom_sheet_ui.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_view.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_view_mobile.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:good_wallet/utils/unfocuser.dart';
+import 'package:logger/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'app/router.gr.dart' as auto_router;
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -17,6 +19,7 @@ void main() async {
   await Firebase.initializeApp();
   setupLocator();
   setupBottomSheetUi();
+  Logger.level = Level.verbose;
   runApp(MyApp());
 }
 
@@ -29,7 +32,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'The Good Dollars Marketplace',
-          navigatorKey: locator<NavigationService>().navigatorKey,
+          navigatorKey: StackedService.navigatorKey,
           onGenerateRoute: auto_router.Router().onGenerateRoute,
           theme: MyThemeData.myTheme(),
           initialRoute: kIsWeb
@@ -76,30 +79,36 @@ class MyThemeData {
         headline1: TextStyle(
             fontSize: 35, color: Colors.grey[200], fontWeight: FontWeight.w800),
         headline2: TextStyle(
-            fontSize: 35, color: Colors.grey[800], fontWeight: FontWeight.w800),
+            fontSize: 35,
+            color: ColorSettings.blackHeadlineColor,
+            fontWeight: FontWeight.w800),
 
         // sub headlines for sections?
 
         headline3: TextStyle(
             fontSize: 30, color: Colors.grey[200], fontWeight: FontWeight.w600),
         headline4: TextStyle(
-            fontSize: 30, color: Colors.grey[800], fontWeight: FontWeight.w600),
+            fontSize: 30,
+            color: ColorSettings.blackHeadlineColor,
+            fontWeight: FontWeight.w600),
 
         // sub headlines for sections?
         headline5: TextStyle(
-            fontSize: 22, color: Colors.grey[200], fontWeight: FontWeight.w600),
+            fontSize: 20, color: Colors.grey[200], fontWeight: FontWeight.w600),
         headline6: TextStyle(
-            fontSize: 22, color: Colors.grey[600], fontWeight: FontWeight.w600),
+            fontSize: 20,
+            color: ColorSettings.greyTextColor,
+            fontWeight: FontWeight.w600),
 
         bodyText1: TextStyle(
-            fontSize: 17,
+            fontSize: 15,
             fontWeight: FontWeight.w400,
             color: Colors.grey[200],
             height: 1.5),
         bodyText2: TextStyle(
-            fontSize: 17,
+            fontSize: 15,
             fontWeight: FontWeight.w400,
-            color: Colors.grey[600],
+            color: ColorSettings.lightGreyTextColor,
             height: 1.5),
       ),
     );

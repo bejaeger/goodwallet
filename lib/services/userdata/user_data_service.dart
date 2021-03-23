@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 
-class FirestoreUserService {
+class UserDataService {
   final CollectionReference _usersCollectionReference =
       FirebaseFirestore.instance.collection("users");
   final StreamController<WalletBalancesModel> _balancesStreamController =

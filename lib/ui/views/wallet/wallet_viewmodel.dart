@@ -8,9 +8,9 @@ import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
-import 'package:good_wallet/services/userdata/firestore_user_service.dart';
+import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
-import 'package:good_wallet/ui/views/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class WalletViewModel extends BaseModel {
@@ -20,8 +20,7 @@ class WalletViewModel extends BaseModel {
       locator<AuthenticationService>();
   final FirestorePaymentDataService _firestorePaymentDataService =
       locator<FirestorePaymentDataService>();
-  final FirestoreUserService _firestoreUserService =
-      locator<FirestoreUserService>();
+  final UserDataService _firestoreUserService = locator<UserDataService>();
   final GlobalGivingAPIService _ggApiService =
       locator<GlobalGivingAPIService>();
 

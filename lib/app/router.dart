@@ -6,11 +6,12 @@ import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/home/welcome_view.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_view.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_view_mobile.dart';
+import 'package:good_wallet/ui/views/login/create_account_view.dart';
 import 'package:good_wallet/ui/views/login/login_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_cancel_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_success_view.dart';
 import 'package:good_wallet/ui/views/payments/send_money_view.dart';
-import 'package:good_wallet/ui/views/settings/settings_view.dart';
+import 'package:good_wallet/ui/views/profile/profile_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_view.dart';
 
 @CustomAutoRouter(transitionsBuilder: customTransition, routes: [
@@ -27,6 +28,7 @@ import 'package:good_wallet/ui/views/wallet/wallet_view.dart';
   CustomRoute(page: LayoutTemplateViewMobile),
   CustomRoute(page: HomeViewMobile),
   CustomRoute(page: SingleProjectViewMobile),
-  CustomRoute(page: SettingsView),
+  CustomRoute(page: ProfileView),
+  CustomRoute(page: CreateAccountView),
 ])
 class $Router {}

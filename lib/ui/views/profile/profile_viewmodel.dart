@@ -1,10 +1,10 @@
 import 'package:good_wallet/app/locator.dart';
 import 'package:good_wallet/app/router.gr.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
-import 'package:good_wallet/ui/views/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class SettingsViewModel extends BaseModel {
+class ProfileViewModel extends BaseModel {
   final NavigationService _navigationService = locator<NavigationService>();
   final AuthenticationService _authenticationService =
       locator<AuthenticationService>();
@@ -21,5 +21,4 @@ class SettingsViewModel extends BaseModel {
   }
 
   void navigateBack() => _navigationService.back();
-
 }

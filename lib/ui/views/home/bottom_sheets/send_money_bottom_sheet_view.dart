@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/ui/dumb_widgets/bottom_sheet_layout.dart';
+import 'package:good_wallet/ui/layout_widgets/bottom_sheet_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/views/home/bottom_sheets/send_money_bottom_sheet_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
