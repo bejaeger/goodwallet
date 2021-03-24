@@ -3,22 +3,26 @@
 //  - Handle login/signup
 
 import 'package:flutter/foundation.dart';
-import 'package:good_wallet/app/locator.dart';
+import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/datamodels/user/user_state_model.dart';
 import 'package:good_wallet/enums/user_status.dart';
-import 'package:good_wallet/services/userdata/firestore_user_service.dart';
+import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
+import 'package:good_wallet/utils/logger.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
+
+// TODO
+// Refactor this service and use stacked authentification service instead
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final UserWalletService _userWalletService = locator<UserWalletService>();
-  final FirestoreUserService _firestoreService =
-      locator<FirestoreUserService>();
+  final UserDataService _userDataService = locator<UserDataService>();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final log = getLogger("authentification_service.dart");
 
   MyUser _currentUser;
   MyUser get currentUser => _currentUser;
@@ -30,6 +34,8 @@ class AuthenticationService {
 
   UserStatus _userStatus;
   UserStatus get userStatus => _userStatus;
+
+  bool get isSignedIn => _userStatus == UserStatus.SignedIn;
 
   BehaviorSubject<UserState> get userStateSubject => _userStateSubject;
   Stream<User> userStream;
@@ -44,25 +50,26 @@ class AuthenticationService {
     userStream.listen((user) async {
       if (user != null) {
         // only initialize if not already initialized!
-        var result = await _initializeCurrentUser(user);
+        var result = await initializeCurrentUser(user?.uid);
         if (result is bool && result == true) {
           _userStatus = UserStatus.SignedIn;
           _userStateSubject.add(UserState(value: user));
         }
-        print(
-            "INFO: Initialized current user, user status = ${_userStateSubject.value.status}");
+        log.i("Initialized current user = ${_userStateSubject.value.status}");
       } else {
         _isInitializedCurrentUser = false;
         _userStatus = UserStatus.SignedOut;
         _userStateSubject.add(UserState(value: null));
         _currentUser = null;
-        print("INFO: User status changed to ${_userStateSubject.value.status}");
+        log.i("User status changed to ${_userStateSubject.value.status}");
       }
     });
   }
 
   Future loginWithGoogle() async {
     // FIXME: Handle errors!
+    // Soon no need anymore because of awesome stacked!
+
     GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleSignInAuthentication =
         await googleUser.authentication;
@@ -75,11 +82,11 @@ class AuthenticationService {
     final UserCredential userCredential =
         await _firebaseAuth.signInWithCredential(credential);
     User user = userCredential.user;
-    var result = await _initializeCurrentUser(user);
+    var result = await initializeCurrentUser(user.uid);
     if (result is String || (result is bool && !result)) {
       // need to create user in firestore!
       // create a new user profile on firestore
-      var resultUser = await _firestoreService.createUser(user);
+      var resultUser = await _userDataService.createUser(user);
       if (resultUser is String) {
         return resultUser;
       } else {
@@ -101,7 +108,7 @@ class AuthenticationService {
         password: password,
       );
       print("INFO: Prepare user data");
-      await _initializeCurrentUser(authResult.user);
+      await initializeCurrentUser(authResult.user.uid);
       return authResult.user != null;
     } catch (e) {
       print("ERROR: ${e.toString()}");
@@ -121,8 +128,7 @@ class AuthenticationService {
       );
 
       // create a new user profile on firestore
-      var result =
-          await _firestoreService.createUser(authResult.user, fullName);
+      var result = await _userDataService.createUser(authResult.user, fullName);
       if (result is String) {
         return result;
       } else {
@@ -140,9 +146,9 @@ class AuthenticationService {
     return loggedIn;
   }
 
-  Future _populateCurrentUser(User user) async {
-    if (user != null) {
-      var result = await _firestoreService.getUser(user.uid);
+  Future _populateCurrentUser(String uid) async {
+    if (uid != null) {
+      var result = await _userDataService.getUser(uid);
       if (result is String) {
         // In case no profile is available yet!
         return result;
@@ -154,11 +160,12 @@ class AuthenticationService {
     return false;
   }
 
-  Future _initializeCurrentUser(User user) async {
+  Future initializeCurrentUser(String uid) async {
+    log.i("Initializing user data");
     // return currentUser here!?
-    if (user != null && !_isInitializedCurrentUser) {
+    if (uid != null && !_isInitializedCurrentUser) {
       print("INFO: Populating current user");
-      var result = await _populateCurrentUser(user);
+      var result = await _populateCurrentUser(uid);
       if (result is String) {
         // no user present yet!
         return result;
@@ -166,7 +173,7 @@ class AuthenticationService {
         return false;
       }
       // updating the state of the app
-      await _userWalletService.updateBalancesLocal(user.uid);
+      await _userWalletService.updateBalancesLocal(uid);
       _isInitializedCurrentUser = true;
       return true;
     }

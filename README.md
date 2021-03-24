@@ -6,11 +6,11 @@
 - From the FilledStacks I can additionally recommend the tutorials starting from number 38. They helped me a ton!
 
 ## Stacked Architecture Cheatsheet
-
+See [application setup](https://pub.flutter-io.cn/packages/stacked#application-setup) in stacked REDME.
 ### Steps to add a new view
-- Create files for new view and viewmodel
-- Register view as route in `router.dart`
-- run auto router to generate routes `flutter pub run build_runner build --delete-conflicting-outputs`, or use script: `./runAutoRouter.sh`
+- Create files for new view and viewmodel in appropriate directory
+- Register view in routes in `lib/app/app.dart`
+- run code generator to generate routes and dependencies `flutter pub run build_runner build --delete-conflicting-outputs`, or use script: `./runCodeGen.sh`
 - navigate to new screen with navigation service, e.g.:
 ```
 Future navigateToTransferView() async {
@@ -19,7 +19,8 @@ Future navigateToTransferView() async {
 ```
 
 ### Steps to add new service
-- Create service class and register it in the `locator.dart` as a lazy singleton
+- Create service class and register it as a dependency in `lib/app/app.dart` as a lazy singleton
+- run code generator (see above)
 
 ## Git workflow
 See below for a long blob

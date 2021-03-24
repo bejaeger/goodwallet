@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/app/locator.dart';
-import 'package:good_wallet/ui/views/base_viewmodel.dart';
+import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class SingleProjectViewModel extends BaseModel {

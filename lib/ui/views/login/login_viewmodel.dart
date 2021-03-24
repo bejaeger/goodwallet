@@ -1,16 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/app/locator.dart';
-import 'package:good_wallet/app/router.gr.dart';
+import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/enums/auth_mode.dart';
+import 'package:good_wallet/enums/authentication_method.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
-import 'package:good_wallet/ui/views/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/authentication_viewmodel.dart';
+import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
+import 'package:good_wallet/ui/views/login/login_view.form.dart';
 
-class LoginViewModel extends BaseModel {
+class LoginViewModel extends AuthenticationViewModel {
+  LoginViewModel()
+      : super(
+            successRoute:
+                kIsWeb ? Routes.walletView : Routes.layoutTemplateViewMobile);
+
+  final NavigationService _navigationService = locator<NavigationService>();
+  final log = getLogger("login_viewmodel.dart");
   final AuthenticationService _authenticationService =
       locator<AuthenticationService>();
-  final NavigationService _navigationService = locator<NavigationService>();
+  // stacked firebase services
+  final FirebaseAuthenticationService _firebaseAuthenticationService =
+      locator<FirebaseAuthenticationService>();
+
+  @override
+  Future<FirebaseAuthenticationResult> runAuthentication(
+      AuthenticationMethod method) {
+    if (method == AuthenticationMethod.email) {
+      log.i("Login with e-mail");
+      return _firebaseAuthenticationService.loginWithEmail(
+          email: emailValue, password: passwordValue);
+    } else if (method == AuthenticationMethod.google) {
+      log.i("Login with google");
+      return _firebaseAuthenticationService.signInWithGoogle();
+    } else if (method == AuthenticationMethod.facebook) {
+      log.i("Login with facebook");
+      return _firebaseAuthenticationService.signInWithFacebook();
+    } else if (method == AuthenticationMethod.apple) {
+      log.i("Login with apple");
+      return _firebaseAuthenticationService.signInWithApple();
+    } else if (method == AuthenticationMethod.dummy) {
+      log.i("Login with dummy account");
+      return _firebaseAuthenticationService.loginWithEmail(
+          email: "test@gmail.com", password: "m1m1m1");
+    } else {
+      log.e(
+          "The authentication method you tried to use is not implemented yet. Use E-mail, Google, Facebook, or Apple to authenticate");
+      return null;
+    }
+  }
+
+  void navigateToCreateAccount() {
+    navigationService.navigateTo(Routes.createAccountView);
+  }
+
+  bool isPwShown = false;
+  setIsPwShown(bool show) {
+    isPwShown = show;
+    notifyListeners();
+  }
+
+  // ---------------------------------------
+  // To be visited, mostly deprecated code follows
 
   final GlobalKey<FormState> _formKey = GlobalKey();
   GlobalKey<FormState> get formKey => _formKey;
@@ -83,13 +136,6 @@ class LoginViewModel extends BaseModel {
     notifyListeners();
   }
 
-  bool _isPwShown = false;
-  bool get isPwShown => _isPwShown;
-  setIsPwShown(bool isPwShown) {
-    _isPwShown = isPwShown;
-    notifyListeners();
-  }
-
   bool _hasError = false;
   bool get hasError => _hasError;
   String _errorMessage = "";
@@ -113,6 +159,9 @@ class LoginViewModel extends BaseModel {
   Future loginWithEmail(String email, String password) async {
     final result = await _authenticationService.loginWithEmail(
         email: email, password: password);
+    // // This uses the stacked service
+    // final result = await _firebaseAuthenticationService.loginWithEmail(
+    //     email: email, password: password);
     if (!result is String) {
       // Navigate to successful route
       print("Successfully logged in!");
@@ -154,11 +203,8 @@ class LoginViewModel extends BaseModel {
   }
 
   Future dummyLoginHans() async {
+    log.i("Trying to log in hans with e-mail: test\@gmail.com and pw: m1m1m1");
     await loginWithEmail("test@gmail.com", "m1m1m1");
     navigateToWalletView();
-    // else {
-    //   _errorMessage = 'Login failed';
-    //   notifyListeners();
-    // }
   }
 }

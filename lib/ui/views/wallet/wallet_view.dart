@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/app/locator.dart';
+import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_viewmodel.dart';

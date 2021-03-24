@@ -24,7 +24,7 @@ class DonationDashboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 7 / 7,
+      aspectRatio: 7 / 6,
       child: Card(
         clipBehavior: Clip.hardEdge,
         shape: RoundedRectangleBorder(
@@ -35,25 +35,24 @@ class DonationDashboardCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            //mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  horizontalSpaceSmall,
                   icon,
                   //Icon(Icons.chevron_right),
                 ],
               ),
-              verticalSpaceMedium,
+              verticalSpaceSmall,
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
                   "\$ " + value.toString(),
-                  style: textTheme(context).headline2.copyWith(
-                      //fontSize: 25,
-                      color: Theme.of(context).primaryColor),
+                  style: textTheme(context)
+                      .headline4
+                      .copyWith(color: Theme.of(context).primaryColor),
                 ),
               ),
               FittedBox(

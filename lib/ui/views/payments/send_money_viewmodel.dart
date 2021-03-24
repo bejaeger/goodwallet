@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:good_wallet/app/locator.dart';
-import 'package:good_wallet/app/router.gr.dart';
+import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/wallet_client_service.dart';
-import 'package:good_wallet/ui/views/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:stripe_payment/stripe_payment.dart';

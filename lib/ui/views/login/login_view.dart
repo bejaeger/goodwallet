@@ -1,10 +1,80 @@
+import 'package:good_wallet/enums/authentication_method.dart';
+import 'package:good_wallet/ui/layout_widgets/authentication_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:good_wallet/enums/auth_mode.dart';
-import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
-import 'package:good_wallet/ui/views/login/login_viewmodel.dart';
-import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked/stacked_annotations.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+
+import './login_viewmodel.dart';
+import 'package:good_wallet/ui/views/login/login_view.form.dart';
+
+@FormView(fields: [
+  FormTextField(name: 'email'),
+  FormTextField(name: 'password'),
+])
+class LoginView extends StatelessWidget with $LoginView {
+  LoginView({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<LoginViewModel>.reactive(
+      viewModelBuilder: () => LoginViewModel(),
+      onModelReady: (model) => listenToFormUpdated(model),
+      builder: (context, model, child) => Scaffold(
+        body: AuthenticationLayout(
+          busy: model.isBusy,
+          onCreateAccountTapped: () => model.navigateToCreateAccount(),
+          onDummyLoginTapped: () => model.saveData(AuthenticationMethod.dummy),
+          onMainButtonTapped: () => model.saveData(AuthenticationMethod.email),
+          validationMessage: model.validationMessage,
+          title: 'Welcome to the \nGood Wallet',
+          subtitle: 'The place that makes doing good simple',
+          mainButtonTitle: 'SIGN IN',
+          form: Column(
+            children: [
+              TextField(
+                decoration: InputDecoration(labelText: 'Email'),
+                controller: emailController,
+              ),
+              TextField(
+                decoration: InputDecoration(
+                    labelText: 'Password',
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        model.setIsPwShown(!model.isPwShown);
+                      },
+                      icon: (model.isPwShown)
+                          ? Icon(Icons.visibility,
+                              color: ColorSettings.primaryColor)
+                          : Icon(Icons.visibility_off,
+                              color: ColorSettings.primaryColor),
+                    )),
+                obscureText: (model.isPwShown) ? false : true,
+                controller: passwordController,
+              ),
+              // with custom text
+            ],
+          ),
+          onForgotPassword: () {},
+          onGoogleButtonTapped: () =>
+              model.saveData(AuthenticationMethod.google),
+          // onFacebookButtonTapped: () =>
+          //     model.runAuthentication(AuthenticationMethod.facebook),
+          // onAppleButtonTapped: () =>
+          //     model.runAuthentication(AuthenticationMethod.apple),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+/*
 
 const Color darkColor = Color(0xBB353531);
 const Color redColor = Color(0xFFCF3D31);
@@ -418,3 +488,4 @@ class MyTextField extends StatelessWidget {
     );
   }
 }
+*/

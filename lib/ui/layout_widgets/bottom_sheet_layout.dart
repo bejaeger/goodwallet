@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/bottom_sheets/raise_money_bottom_sheet_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
@@ -54,7 +55,7 @@ class BottomSheetLayout extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey[900],
+                    color: ColorSettings.blackTextColor,
                   ),
                 ),
                 verticalSpaceMedium,

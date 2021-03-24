@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
-// AutoRouteGenerator
+// StackedRouterGenerator
 // **************************************************************************
 
 // ignore_for_file: public_member_api_docs
 
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:stacked/stacked.dart';
 
 import '../datamodels/goodcauses/global_giving_project_model.dart';
-import '../style/page_transitions.dart';
 import '../ui/views/goodcauses/causes_view.dart';
 import '../ui/views/goodcauses/single_project_view_mobile.dart';
 import '../ui/views/home/home_view_mobile.dart';
 import '../ui/views/home/welcome_view.dart';
 import '../ui/views/layout/layout_template_view.dart';
 import '../ui/views/layout/layout_template_view_mobile.dart';
+import '../ui/views/login/create_account_view.dart';
 import '../ui/views/login/login_view.dart';
 import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
 import '../ui/views/payments/send_money_view.dart';
-import '../ui/views/settings/settings_view.dart';
+import '../ui/views/profile/profile_view.dart';
 import '../ui/views/wallet/wallet_view.dart';
 
 class Routes {
@@ -32,11 +32,12 @@ class Routes {
   static const String paymentSuccessView = '/payment-success-view';
   static const String paymentCancelView = '/payment-cancel-view';
   static const String layoutTemplate = '/layout-template';
-  static const String loginView = '/login-view';
+  static const String loginView = '/';
   static const String layoutTemplateViewMobile = '/layout-template-view-mobile';
   static const String homeViewMobile = '/home-view-mobile';
   static const String singleProjectViewMobile = '/single-project-view-mobile';
-  static const String settingsView = '/settings-view';
+  static const String profileView = '/profile-view';
+  static const String createAccountView = '/create-account-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -49,11 +50,12 @@ class Routes {
     layoutTemplateViewMobile,
     homeViewMobile,
     singleProjectViewMobile,
-    settingsView,
+    profileView,
+    createAccountView,
   };
 }
 
-class Router extends RouterBase {
+class StackedRouter extends RouterBase {
   @override
   List<RouteDef> get routes => _routes;
   final _routes = <RouteDef>[
@@ -68,28 +70,27 @@ class Router extends RouterBase {
     RouteDef(Routes.layoutTemplateViewMobile, page: LayoutTemplateViewMobile),
     RouteDef(Routes.homeViewMobile, page: HomeViewMobile),
     RouteDef(Routes.singleProjectViewMobile, page: SingleProjectViewMobile),
-    RouteDef(Routes.settingsView, page: SettingsView),
+    RouteDef(Routes.profileView, page: ProfileView),
+    RouteDef(Routes.createAccountView, page: CreateAccountView),
   ];
   @override
-  Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
-  final _pagesMap = <Type, AutoRouteFactory>{
+  Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
+  final _pagesMap = <Type, StackedRouteFactory>{
     WelcomeView: (data) {
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) =>
             const WelcomeView(),
         settings: data,
-        transitionsBuilder: customTransition,
       );
     },
     WalletView: (data) {
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) => WalletView(),
         settings: data,
-        transitionsBuilder: customTransition,
       );
     },
     SendMoneyView: (data) {
-      final args = data.getArgs<SendMoneyViewArguments>(
+      var args = data.getArgs<SendMoneyViewArguments>(
         orElse: () => SendMoneyViewArguments(),
       );
       return PageRouteBuilder<dynamic>(
@@ -99,14 +100,12 @@ class Router extends RouterBase {
           openSearchBarOnBuild: args.openSearchBarOnBuild,
         ),
         settings: data,
-        transitionsBuilder: customTransition,
       );
     },
     DonationView: (data) {
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) => DonationView(),
         settings: data,
-        transitionsBuilder: customTransition,
       );
     },
     PaymentSuccessView: (data) {
@@ -114,7 +113,6 @@ class Router extends RouterBase {
         pageBuilder: (context, animation, secondaryAnimation) =>
             PaymentSuccessView(),
         settings: data,
-        transitionsBuilder: customTransition,
       );
     },
     PaymentCancelView: (data) {
@@ -122,29 +120,30 @@ class Router extends RouterBase {
         pageBuilder: (context, animation, secondaryAnimation) =>
             PaymentCancelView(),
         settings: data,
-        transitionsBuilder: customTransition,
       );
     },
     LayoutTemplate: (data) {
-      final args = data.getArgs<LayoutTemplateArguments>(nullOk: false);
+      var args = data.getArgs<LayoutTemplateArguments>(nullOk: false);
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) => LayoutTemplate(
           key: args.key,
           childView: args.childView,
         ),
         settings: data,
-        transitionsBuilder: customTransition,
       );
     },
     LoginView: (data) {
+      var args = data.getArgs<LoginViewArguments>(
+        orElse: () => LoginViewArguments(),
+      );
       return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => LoginView(),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            LoginView(key: args.key),
         settings: data,
-        transitionsBuilder: customTransition,
       );
     },
     LayoutTemplateViewMobile: (data) {
-      final args = data.getArgs<LayoutTemplateViewMobileArguments>(
+      var args = data.getArgs<LayoutTemplateViewMobileArguments>(
         orElse: () => LayoutTemplateViewMobileArguments(),
       );
       return PageRouteBuilder<dynamic>(
@@ -164,7 +163,7 @@ class Router extends RouterBase {
       );
     },
     SingleProjectViewMobile: (data) {
-      final args = data.getArgs<SingleProjectViewMobileArguments>(
+      var args = data.getArgs<SingleProjectViewMobileArguments>(
         orElse: () => SingleProjectViewMobileArguments(),
       );
       return PageRouteBuilder<dynamic>(
@@ -176,9 +175,19 @@ class Router extends RouterBase {
         settings: data,
       );
     },
-    SettingsView: (data) {
+    ProfileView: (data) {
       return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => SettingsView(),
+        pageBuilder: (context, animation, secondaryAnimation) => ProfileView(),
+        settings: data,
+      );
+    },
+    CreateAccountView: (data) {
+      var args = data.getArgs<CreateAccountViewArguments>(
+        orElse: () => CreateAccountViewArguments(),
+      );
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            CreateAccountView(key: args.key),
         settings: data,
       );
     },
@@ -205,6 +214,12 @@ class LayoutTemplateArguments {
   LayoutTemplateArguments({this.key, @required this.childView});
 }
 
+/// LoginView arguments holder class
+class LoginViewArguments {
+  final Key key;
+  LoginViewArguments({this.key});
+}
+
 /// LayoutTemplateViewMobile arguments holder class
 class LayoutTemplateViewMobileArguments {
   final Key key;
@@ -217,4 +232,10 @@ class SingleProjectViewMobileArguments {
   final Key key;
   final GlobalGivingProjectModel project;
   SingleProjectViewMobileArguments({this.key, this.project});
+}
+
+/// CreateAccountView arguments holder class
+class CreateAccountViewArguments {
+  final Key key;
+  CreateAccountViewArguments({this.key});
 }

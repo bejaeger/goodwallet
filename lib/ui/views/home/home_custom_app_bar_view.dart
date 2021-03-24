@@ -43,7 +43,9 @@ class HomeCustomAppBarView extends SliverPersistentHeaderDelegate {
               ),
             ),
           ),
-          Container(color: Colors.white.withOpacity(0.5)),
+          Container(
+              color: Colors.white
+                  .withOpacity((0.4 + 0.6 * shrinkPercentage).clamp(0.0, 1.0))),
           Positioned(
             left: leftPadding,
             bottom: (10.0 - shrinkOffset * 0.2).clamp(0.0, 35.0),
@@ -81,19 +83,21 @@ class HomeCustomAppBarView extends SliverPersistentHeaderDelegate {
                     ],
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.only(right: leftPadding, bottom: 15.0),
+                    padding: EdgeInsets.only(
+                        right: leftPadding,
+                        bottom: shrinkPercentage > 0.9 ? 20.0 : 0.0),
                     child: GestureDetector(
-                      onTap: model.navigateToSettingsView,
-                      child: CircleAvatar(
-                        radius: 22,
-                        backgroundColor: Theme.of(context).primaryColor,
-                        child: Text(model.currentUser.getInitials(),
-                            style: textTheme(context)
-                                .bodyText1
-                                .copyWith(fontSize: 15)),
-                      ),
-                    ),
+                        onTap: model.navigateToSettingsView,
+                        child: Icon(
+                          Icons.person_outline_rounded,
+                          size: 30,
+                        )
+                        // CircleAvatar(
+                        //     radius: 22,
+                        //     backgroundColor:
+                        //         Theme.of(context).primaryColor.withOpacity(0.1),
+                        //     child: Icon(Icons.person_outline_rounded)),
+                        ),
                   ),
                 ],
               ),
@@ -103,14 +107,14 @@ class HomeCustomAppBarView extends SliverPersistentHeaderDelegate {
             left: leftPadding,
             bottom: maxExtent *
                 0.5 *
-                (1 - 0.8 * shrinkPercentage), // * (1 - shrinkPercentage),
+                (1 - 0.85 * shrinkPercentage), // * (1 - shrinkPercentage),
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   color: getBkgColor(context).withOpacity(0.0)),
               child: Text('The Good Wallet',
                   style: Theme.of(context).textTheme.headline2.copyWith(
-                      color: Colors.black87,
+                      color: ColorSettings.blackHeadlineColor,
                       fontSize: (30.0 * (1.0 - shrinkPercentage * 0.15))
                           .clamp(25.0, 30.0))),
             ),
