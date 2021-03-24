@@ -1,5 +1,5 @@
-import 'package:good_wallet/app/locator.dart';
-import 'package:good_wallet/app/router.gr.dart';
+import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';

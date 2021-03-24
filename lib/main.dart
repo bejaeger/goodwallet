@@ -1,17 +1,19 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:good_wallet/app/locator.dart';
+import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/setup_bottom_sheet_ui.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_view.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_view_mobile.dart';
+import 'package:good_wallet/utils/logger.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:good_wallet/utils/unfocuser.dart';
 import 'package:logger/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'app/router.gr.dart' as auto_router;
+import 'app/app.router.dart' as auto_router;
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
@@ -25,15 +27,16 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  final log = getLogger("MyApp");
   @override
   Widget build(BuildContext context) {
-    print("INFO: Building MaterialApp...");
+    log.i("Building MaterialApp...");
     return Unfocuser(
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'The Good Dollars Marketplace',
           navigatorKey: StackedService.navigatorKey,
-          onGenerateRoute: auto_router.Router().onGenerateRoute,
+          onGenerateRoute: StackedRouter().onGenerateRoute,
           theme: MyThemeData.myTheme(),
           initialRoute: kIsWeb
               ? auto_router.Routes.welcomeView

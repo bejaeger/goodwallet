@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/app/locator.dart';
-import 'package:good_wallet/app/router.gr.dart';
+import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/enums/auth_mode.dart';
 import 'package:good_wallet/enums/authentication_method.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
@@ -12,7 +12,10 @@ import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 import 'package:good_wallet/ui/views/login/login_view.form.dart';
 
 class LoginViewModel extends AuthenticationViewModel {
-  LoginViewModel() : super(successRoute: Routes.layoutTemplateViewMobile);
+  LoginViewModel()
+      : super(
+            successRoute:
+                kIsWeb ? Routes.walletView : Routes.layoutTemplateViewMobile);
 
   final NavigationService _navigationService = locator<NavigationService>();
   final log = getLogger("LoginViewModel");

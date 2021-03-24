@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/app/locator.dart';
+import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/ui/views/goodcauses/causes_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/goodcauses/global_giving_project_card.dart';
 import 'package:stacked/stacked.dart';

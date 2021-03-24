@@ -3,7 +3,7 @@
 //  - Handle login/signup
 
 import 'package:flutter/foundation.dart';
-import 'package:good_wallet/app/locator.dart';
+import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/datamodels/user/user_state_model.dart';
 import 'package:good_wallet/enums/user_status.dart';

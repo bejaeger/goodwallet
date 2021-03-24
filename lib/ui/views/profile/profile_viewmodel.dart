@@ -1,5 +1,5 @@
-import 'package:good_wallet/app/locator.dart';
-import 'package:good_wallet/app/router.gr.dart';
+import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -16,8 +16,8 @@ class ProfileViewModel extends BaseModel {
     navigateToLoginView();
   }
 
-  Future navigateToLoginView() async {
-    await _navigationService.navigateTo(Routes.loginView);
+  void navigateToLoginView() {
+    _navigationService.replaceWith(Routes.loginView);
   }
 
   void navigateBack() => _navigationService.back();

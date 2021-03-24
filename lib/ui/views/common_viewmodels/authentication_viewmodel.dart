@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:good_wallet/app/locator.dart';
+import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/enums/authentication_method.dart';
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:stacked/stacked.dart';

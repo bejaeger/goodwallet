@@ -3,7 +3,7 @@
 // readable.
 
 import 'package:good_wallet/services/authentification/authentification_service.dart';
-import 'package:good_wallet/app/locator.dart';
+import 'package:good_wallet/app/app.locator.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 AuthenticationService getAndRegisterAuthentificationService() {

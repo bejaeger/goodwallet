@@ -1,5 +1,5 @@
-import 'package:good_wallet/app/locator.dart';
-import 'package:good_wallet/app/router.gr.dart';
+import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/goodcauses/global_giving_project_model.dart';
 import 'package:good_wallet/datamodels/goodcauses/good_wallet_project_model.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
