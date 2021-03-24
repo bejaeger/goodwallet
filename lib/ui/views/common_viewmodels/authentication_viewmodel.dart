@@ -6,6 +6,7 @@ import 'package:good_wallet/services/authentification/authentification_service.d
 import 'package:stacked/stacked.dart';
 import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'package:good_wallet/utils/logger.dart';
 
 abstract class AuthenticationViewModel extends FormViewModel {
   final navigationService = locator<NavigationService>();
@@ -13,6 +14,7 @@ abstract class AuthenticationViewModel extends FormViewModel {
       locator<AuthenticationService>();
   final String successRoute;
   AuthenticationViewModel({@required this.successRoute});
+  final log = getLogger("authentication_viewmodel.dart");
 
   @override
   void setFormStatus() {}
@@ -24,8 +26,8 @@ abstract class AuthenticationViewModel extends FormViewModel {
 
     // Check result
     if (!result.hasError) {
-      // initialize user data here?
-      // Get User
+      log.i("Authentication successful, now initializing user data");
+      // initialize user
       await runBusyFuture(initializeUser(result.uid));
 
       // add error handling
@@ -39,6 +41,9 @@ abstract class AuthenticationViewModel extends FormViewModel {
       // setValidationMessage(result.errorMessage);
 
     } else {
+      log.w("User could not be logged in, error thrown:");
+      log.w(result.errorMessage);
+
       // set validation message if we have an error
       setValidationMessage(result.errorMessage);
     }

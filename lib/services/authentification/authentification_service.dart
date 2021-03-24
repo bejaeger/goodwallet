@@ -22,7 +22,7 @@ class AuthenticationService {
   final UserWalletService _userWalletService = locator<UserWalletService>();
   final UserDataService _userDataService = locator<UserDataService>();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  final log = getLogger("AuthenticationService");
+  final log = getLogger("authentification_service.dart");
 
   MyUser _currentUser;
   MyUser get currentUser => _currentUser;
@@ -34,6 +34,8 @@ class AuthenticationService {
 
   UserStatus _userStatus;
   UserStatus get userStatus => _userStatus;
+
+  bool get isSignedIn => _userStatus == UserStatus.SignedIn;
 
   BehaviorSubject<UserState> get userStateSubject => _userStateSubject;
   Stream<User> userStream;
@@ -53,14 +55,13 @@ class AuthenticationService {
           _userStatus = UserStatus.SignedIn;
           _userStateSubject.add(UserState(value: user));
         }
-        print(
-            "INFO: Initialized current user, user status = ${_userStateSubject.value.status}");
+        log.i("Initialized current user = ${_userStateSubject.value.status}");
       } else {
         _isInitializedCurrentUser = false;
         _userStatus = UserStatus.SignedOut;
         _userStateSubject.add(UserState(value: null));
         _currentUser = null;
-        print("INFO: User status changed to ${_userStateSubject.value.status}");
+        log.i("User status changed to ${_userStateSubject.value.status}");
       }
     });
   }

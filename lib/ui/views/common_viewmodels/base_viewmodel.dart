@@ -27,6 +27,8 @@ class BaseModel extends IndexTrackingViewModel {
 
   MyUser get currentUser => _authenticationService.currentUser;
   UserStatus get userStatus => _authenticationService.userStatus;
+  bool get isSignedIn => _authenticationService.isSignedIn;
+
   BehaviorSubject<UserState> get userStateSubject =>
       _authenticationService.userStateSubject;
 

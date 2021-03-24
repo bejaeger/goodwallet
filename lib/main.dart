@@ -27,7 +27,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  final log = getLogger("MyApp");
+  final log = getLogger("main.dart");
   @override
   Widget build(BuildContext context) {
     log.i("Building MaterialApp...");

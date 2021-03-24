@@ -65,6 +65,7 @@ dependencies:
   universal_html: ^2.0.2
   percent_indicator: ^2.1.9+1
   logger: ^0.9.0  
+  flutter_signin_button: ^2.0.0-nullsafety.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

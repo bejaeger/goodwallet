@@ -12,11 +12,10 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProfileViewModel>.reactive(
       viewModelBuilder: () => ProfileViewModel(),
-      builder: (context, model, child) => model.userStatus !=
-              UserStatus.SignedIn
-          ? Center(child: CircularProgressIndicator())
-          : Scaffold(
-              body: Padding(
+      builder: (context, model, child) => Scaffold(
+        body: !model.isSignedIn
+            ? Center(child: CircularProgressIndicator())
+            : Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: ListView(
                   children: [
@@ -139,7 +138,7 @@ class ProfileView extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
+      ),
     );
   }
 }

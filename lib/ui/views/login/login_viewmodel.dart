@@ -18,7 +18,7 @@ class LoginViewModel extends AuthenticationViewModel {
                 kIsWeb ? Routes.walletView : Routes.layoutTemplateViewMobile);
 
   final NavigationService _navigationService = locator<NavigationService>();
-  final log = getLogger("LoginViewModel");
+  final log = getLogger("login_viewmodel.dart");
   final AuthenticationService _authenticationService =
       locator<AuthenticationService>();
   // stacked firebase services
@@ -55,6 +55,15 @@ class LoginViewModel extends AuthenticationViewModel {
   void navigateToCreateAccount() {
     navigationService.navigateTo(Routes.createAccountView);
   }
+
+  bool isPwShown = false;
+  setIsPwShown(bool show) {
+    isPwShown = show;
+    notifyListeners();
+  }
+
+  // ---------------------------------------
+  // To be visited, mostly deprecated code follows
 
   final GlobalKey<FormState> _formKey = GlobalKey();
   GlobalKey<FormState> get formKey => _formKey;
@@ -124,13 +133,6 @@ class LoginViewModel extends AuthenticationViewModel {
   AuthMode get authMode => _authMode;
   setAuthMode(AuthMode authMode) {
     _authMode = authMode;
-    notifyListeners();
-  }
-
-  bool _isPwShown = false;
-  bool get isPwShown => _isPwShown;
-  setIsPwShown(bool isPwShown) {
-    _isPwShown = isPwShown;
     notifyListeners();
   }
 

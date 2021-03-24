@@ -1,8 +1,10 @@
 import 'package:good_wallet/enums/authentication_method.dart';
 import 'package:good_wallet/ui/layout_widgets/authentication_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 import './login_viewmodel.dart';
 import 'package:good_wallet/ui/views/login/login_view.form.dart';
@@ -33,17 +35,34 @@ class LoginView extends StatelessWidget with $LoginView {
             children: [
               TextField(
                 decoration: InputDecoration(labelText: 'Email'),
-                // #4a: Set the controller on the intended text field
                 controller: emailController,
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Password'),
-                // #4b: Set the controller on the intended text field
+                decoration: InputDecoration(
+                    labelText: 'Password',
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        model.setIsPwShown(!model.isPwShown);
+                      },
+                      icon: (model.isPwShown)
+                          ? Icon(Icons.visibility,
+                              color: ColorSettings.primaryColor)
+                          : Icon(Icons.visibility_off,
+                              color: ColorSettings.primaryColor),
+                    )),
+                obscureText: (model.isPwShown) ? false : true,
                 controller: passwordController,
               ),
+              // with custom text
             ],
           ),
           onForgotPassword: () {},
+          onGoogleButtonTapped: () =>
+              model.saveData(AuthenticationMethod.google),
+          // onFacebookButtonTapped: () =>
+          //     model.runAuthentication(AuthenticationMethod.facebook),
+          // onAppleButtonTapped: () =>
+          //     model.runAuthentication(AuthenticationMethod.apple),
         ),
       ),
     );

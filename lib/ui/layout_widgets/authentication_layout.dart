@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
@@ -13,6 +14,9 @@ class AuthenticationLayout extends StatelessWidget {
   final Function onForgotPassword;
   final Function onBackPressed;
   final Function onDummyLoginTapped;
+  final Function onGoogleButtonTapped;
+  final Function onFacebookButtonTapped;
+  final Function onAppleButtonTapped;
   final String validationMessage;
   final bool busy;
 
@@ -30,6 +34,9 @@ class AuthenticationLayout extends StatelessWidget {
     this.showTermsText = false,
     this.busy = false,
     this.onDummyLoginTapped,
+    this.onGoogleButtonTapped,
+    this.onFacebookButtonTapped,
+    this.onAppleButtonTapped,
   }) : super(key: key);
 
   @override
@@ -93,7 +100,7 @@ class AuthenticationLayout extends StatelessWidget {
             onTap: onMainButtonTapped,
             child: Container(
               width: double.infinity,
-              height: 50,
+              height: 40,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: ColorSettings.primaryColor,
@@ -118,7 +125,7 @@ class AuthenticationLayout extends StatelessWidget {
               onTap: onDummyLoginTapped,
               child: Container(
                 width: double.infinity,
-                height: 50,
+                height: 40,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: ColorSettings.primaryColor,
@@ -159,7 +166,35 @@ class AuthenticationLayout extends StatelessWidget {
             Text(
               'By signing up you agree to our terms, conditions and privacy policy.',
               textAlign: TextAlign.center,
-            )
+            ),
+          if (onGoogleButtonTapped != null ||
+              onFacebookButtonTapped != null ||
+              onAppleButtonTapped != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 20, bottom: 20),
+              child: Center(
+                child: Text("OR"),
+              ),
+            ),
+          if (onGoogleButtonTapped != null)
+            SignInButton(
+              Buttons.Google,
+              text: "SIGN IN WITH GOOGLE",
+              onPressed: onGoogleButtonTapped,
+            ),
+          if (onFacebookButtonTapped != null)
+            SignInButton(
+              Buttons.Facebook,
+              text: "SIGN IN WITH FACEBOOK",
+              onPressed: onFacebookButtonTapped,
+            ),
+          if (onAppleButtonTapped != null)
+            SignInButton(
+              Buttons.Apple,
+              text: "SIGN IN WITH APPLE",
+              onPressed: onAppleButtonTapped,
+            ),
+          verticalSpaceLarge,
         ],
       ),
     );
