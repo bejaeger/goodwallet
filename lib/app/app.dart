@@ -1,6 +1,6 @@
 import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
-import 'package:good_wallet/services/layout/layout_service.dart';
+import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
@@ -56,12 +56,12 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(classType: FirestorePaymentDataService),
     LazySingleton(classType: StripePaymentService),
     LazySingleton(classType: WalletViewModel),
-    LazySingleton(classType: LayoutService),
     LazySingleton(classType: GlobalGivingAPIService),
     LazySingleton(classType: CausesViewModel),
     LazySingleton(
       classType: FirebaseAuthenticationService,
     ),
+    LazySingleton(classType: DummyPaymentService),
 
     // don't register the auth service lazily because we want it
     // to be initialized at the start of the app. This needs

@@ -12,7 +12,7 @@ import 'package:stacked_services/stacked_services.dart';
 
 import '../services/authentification/authentification_service.dart';
 import '../services/globalgiving/global_giving_api_service.dart';
-import '../services/layout/layout_service.dart';
+import '../services/payments/dummy_payment_service.dart';
 import '../services/payments/firestore_payment_data_service.dart';
 import '../services/payments/stripe_payment_service.dart';
 import '../services/userdata/user_data_service.dart';
@@ -33,9 +33,9 @@ void setupLocator() {
   locator.registerLazySingleton(() => FirestorePaymentDataService());
   locator.registerLazySingleton(() => StripePaymentService());
   locator.registerLazySingleton(() => WalletViewModel());
-  locator.registerLazySingleton(() => LayoutService());
   locator.registerLazySingleton(() => GlobalGivingAPIService());
   locator.registerLazySingleton(() => CausesViewModel());
   locator.registerLazySingleton(() => FirebaseAuthenticationService());
+  locator.registerLazySingleton(() => DummyPaymentService());
   locator.registerSingleton(AuthenticationService());
 }

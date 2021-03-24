@@ -13,7 +13,6 @@ class PaymentSuccessView extends StatelessWidget {
       },
       builder: (context, model, child) => WillPopScope(
         onWillPop: () async {
-          model.setShowNavigationBar(true);
           model.navigateToHomeView();
           return true;
         },
