@@ -67,7 +67,7 @@ import 'package:stacked_services/stacked_services.dart';
     // to be initialized at the start of the app. This needs
     // to happen after all the services that are used inside
     // authentification service are registered.
-    Singleton(classType: AuthenticationService),
+    LazySingleton(classType: AuthenticationService),
   ],
 )
 class AppSetup {

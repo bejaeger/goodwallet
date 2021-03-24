@@ -128,12 +128,4 @@ class WalletViewModel extends BaseModel {
       notifyListeners();
     }
   }
-
-  Future loginWithGoogle() async {
-    setBusy(true);
-    var result = await _authenticationService.loginWithGoogle();
-    if (!result) print("WARNING: Failed logging in user!");
-    notifyListeners();
-    setBusy(false);
-  }
 }

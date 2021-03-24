@@ -16,15 +16,23 @@ class CreateAccountViewModel extends AuthenticationViewModel {
   Future<FirebaseAuthenticationResult> runAuthentication(
       AuthenticationMethod method) {
     if (method == AuthenticationMethod.email) {
+      log.i("Creating account with e-mail");
       _firebaseAuthenticationService.createAccountWithEmail(
         email: emailValue,
         password: passwordValue,
       );
+      log.w(
+          "User data is not created yet! Please wait for development updates!");
+      // TODO: Initialization procedure
+      // - Create user and so on!!!
+
     } else {
       log.e(
           "The authentication method you tried to use is not implemented yet. Use E-mail, Google, Facebook, or Apple to authenticate");
-      return null;
+      return Future.value(FirebaseAuthenticationResult.error(
+          errorMessage: "Authentication method not valid!"));
     }
+    return null;
   }
 
   void navigateBack() => navigationService.back();

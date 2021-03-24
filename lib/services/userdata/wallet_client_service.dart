@@ -3,6 +3,9 @@
 //  - Retrieving current balances
 //  - TODO: Keeping track of transactions/donations
 
+// TODO
+// Will be deprecated!
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:observable_ish/value/value.dart';
 import 'package:stacked/stacked.dart';

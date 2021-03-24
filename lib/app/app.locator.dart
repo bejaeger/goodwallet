@@ -37,5 +37,5 @@ void setupLocator() {
   locator.registerLazySingleton(() => CausesViewModel());
   locator.registerLazySingleton(() => FirebaseAuthenticationService());
   locator.registerLazySingleton(() => DummyPaymentService());
-  locator.registerSingleton(AuthenticationService());
+  locator.registerLazySingleton(() => AuthenticationService());
 }

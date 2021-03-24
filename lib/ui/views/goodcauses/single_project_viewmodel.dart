@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class SingleProjectViewModel extends BaseModel {
   final _dialogService = locator<DialogService>();
+  final _dummyPaymentService = locator<DummyPaymentService>();
 
   Future showConfirmationDialog(
       String projectTitle, String donationAmount) async {

@@ -6,10 +6,14 @@
 // - exposing stream of wallet balances
 
 import 'dart:async';
+import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
+import 'package:good_wallet/services/authentification/authentification_service.dart';
+import 'package:good_wallet/services/userdata/wallet_client_service.dart';
 import 'package:good_wallet/utils/logger.dart';
 
 class UserDataService {
@@ -17,9 +21,16 @@ class UserDataService {
       FirebaseFirestore.instance.collection("users");
   final StreamController<WalletBalancesModel> _balancesStreamController =
       StreamController<WalletBalancesModel>.broadcast();
+  final UserWalletService _userWalletService = locator<UserWalletService>();
   final log = getLogger("user_data_service.dart");
 
   bool _isInitializedCurrentUser = false;
+
+  MyUser _currentUser;
+  MyUser get currentUser => _currentUser;
+  void setCurrentUser(MyUser user) {
+    _currentUser = user;
+  }
 
   Future<UserDataServiceResult> initializeCurrentUser(String uid) async {
     log.i("Initializing user data");
@@ -33,15 +44,16 @@ class UserDataService {
       var result = await _populateCurrentUser(uid);
       if (result is String) {
         // no user present yet!
-        return result;
-      } else if (!result) {
-        return false;
+        return UserDataServiceResult.error(
+            errorMessage:
+                "populating current user failed with message: $result");
       }
+      // User is initialized successfully
 
+      // TODO: Is this needed? should happen automatically with exposed streams
+      // UPDATE
       // updating the state of the app
-      // TODO: Is this needed? should happen automatically
       await _userWalletService.updateBalancesLocal(uid);
-
       _isInitializedCurrentUser = true;
     } else {
       log.w(
@@ -56,8 +68,7 @@ class UserDataService {
       // In case no profile is available yet!
       return result;
     } else {
-      // successful
-      // TODO: Set current user in new userstatusservice
+      // successful, set current user!
       _currentUser = result;
       return true;
     }
@@ -111,6 +122,12 @@ class UserDataService {
       }
     });
     return _balancesStreamController.stream;
+  }
+
+  void handleLogoutEvent() {
+    // TODO: Clear current MyUser!
+    _currentUser = null;
+    _isInitializedCurrentUser = false;
   }
 }
 
