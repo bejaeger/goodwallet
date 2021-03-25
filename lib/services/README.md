@@ -2,10 +2,10 @@
 
 
 ## UserDataService
-Interacting with Cloud Firestore API to handle user data. Out of many other things it does:
-- Initialize and expose current User to `BaseModel`
-- Expose a stream of wallet listened to in `BaseModel`
-  - This allows to access the wallet balances in any model with `model.userWallet`
+Interacts with Cloud Firestore to handle user data. Out of many other things it does:
+- Initialize and expose `currentUser` to `BaseModel`
+- Exposes a stream of the wallet class (a `WalletBalancesModel`) listened to in `BaseModel`
+  - This allows to access the users' balances everywhere throughout the app with `model.userWallet`
   - Balances are called: `currentBalance`, `donations`, `transferredToPeers`
 
 ## GlobalGivingAPIService
