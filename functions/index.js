@@ -99,7 +99,29 @@ exports.updateGoodWallet = functions.firestore
   }
   );
 
-/* Make function updateGoodWallet and add two firebase hooks to add and deduct Good Dollars */
+/* Update user's Good Wallet if a donation has been made */
+exports.updateGoodWalletAfterDonation = functions.firestore
+  .document('users/{userId}/donations/{donationId}')
+  .onCreate(async (snap, context) => {
+    try {
+      const { amount } = snap.data();
+
+      const increment = admin.firestore.FieldValue.increment(-amount);
+      await db.collection("users").doc(context.params.userId).update({
+        balance: increment
+      });
+
+      return;
+    } catch (error) {
+      await snap.ref.set({ error: userFacingMessage(error) }, { merge: true });
+      reportError(error, { userId: context.params.donationId });
+      reportError(error.message, { userId: context.params.donationId });
+      reportError(error.data, { userId: context.params.donationId });
+    }
+
+  }
+  );
+
 
 
 /* ------------------ Helpers ------------------ */
