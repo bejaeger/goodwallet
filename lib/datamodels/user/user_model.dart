@@ -9,6 +9,7 @@ class MyUser {
   final num balance;
   final num implicitDonations;
   final num donations;
+  final String documentId;
 
   MyUser(
       {this.implicitDonations,
@@ -16,7 +17,8 @@ class MyUser {
       this.id,
       this.fullName,
       this.email,
-      this.balance});
+      this.balance,
+      this.documentId});
 
   MyUser.fromData(Map<String, dynamic> data)
       : id = data['id'],
@@ -24,7 +26,8 @@ class MyUser {
         email = data['email'],
         balance = data['balance'],
         implicitDonations = data['implicitDonations'],
-        donations = data['donations'];
+        donations = data['donations'],
+        documentId = data['documentId'];
 
   Map<String, dynamic> toJson([bool addSearchKeywords = false]) {
     var returnJson = {
@@ -34,6 +37,7 @@ class MyUser {
       'balance': balance,
       'implicitDonations': implicitDonations,
       'donations': donations,
+      'documentId': documentId,
     };
     // create search keywords for user
     if (addSearchKeywords) {

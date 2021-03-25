@@ -86,7 +86,7 @@ class UserDataService {
       fullName: fullName != null ? fullName : user.displayName,
       balance: balance,
       implicitDonations: implicitDonations,
-      donations: donations,
+      donations: donations
     );
     try {
       await _usersCollectionReference.doc(user.uid).set(myuser.toJson(true));
@@ -129,6 +129,15 @@ class UserDataService {
     _currentUser = null;
     _isInitializedCurrentUser = false;
   }
+  
+  // Future updateBalance(User user) async {
+  //   try{
+  //     await _usersCollectionReference.doc(user.uid)
+  //     .updateData
+
+  //   }
+  // }
+
 }
 
 // Helper class returned from public function of UserDataService
@@ -146,3 +155,5 @@ class UserDataServiceResult {
   /// Returns true if the response has an error associated with it
   bool get hasError => errorMessage != null && errorMessage.isNotEmpty;
 }
+
+

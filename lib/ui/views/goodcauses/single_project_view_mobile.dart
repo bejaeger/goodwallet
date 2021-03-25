@@ -5,7 +5,6 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 final _donationAmountController = TextEditingController();
-var userGoodDollarsSavings = 2000;
 
 class SingleProjectViewMobile extends StatelessWidget {
   final GlobalGivingProjectModel project;
@@ -55,7 +54,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () =>
-                            model.showConfirmationDialog(project.title, _donationAmountController.text),
+                            model.confirmationOrCancellationDistributor(project.title, int.parse(_donationAmountController.text)),
                         child: Text('Donate'),
                       ),
                     ),
@@ -90,7 +89,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                         children: <Widget>[
                           Icon(Icons.account_balance_wallet),
                           Text(
-                            "\$ $userGoodDollarsSavings",
+                            "\$ ${model.balance}",
                           ),
                         ],
                       ),

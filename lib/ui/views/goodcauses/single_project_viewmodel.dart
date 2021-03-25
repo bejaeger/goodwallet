@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -7,7 +8,6 @@ import 'package:stacked_services/stacked_services.dart';
 class SingleProjectViewModel extends BaseModel {
   final _dialogService = locator<DialogService>();
   final _dummyPaymentService = locator<DummyPaymentService>();
-
   Future showConfirmationDialog(
       String projectTitle, String donationAmount) async {
     DialogResponse response = await _dialogService.showConfirmationDialog(
@@ -22,10 +22,21 @@ class SingleProjectViewModel extends BaseModel {
     print('DialogResponse: ${response?.confirmed}');
   }
 
-  // Future showAmountTooHighDialog() async{
-  //   await _dialogService.showAmountTooHighDialog(
-  //     title: 'Title',
-  //     description: 'description',
-  //   );
-  // }
+  Future showAmountTooHighDialog(String donationAmount) async{
+    await _dialogService.showConfirmationDialog(
+      title: 'Donation Amount Too High',
+      description: 'You cannot pay \$ ${donationAmount} with just \$ $balance',
+
+    );
+  }
+
+  Future confirmationOrCancellationDistributor(String projectTitle, int donationAmount)  {
+    if ((balance - donationAmount) < 0){
+      showAmountTooHighDialog(donationAmount.toString());
+    }
+    else{
+      showConfirmationDialog(projectTitle, donationAmount.toString());
+    }
+  }
+
 }

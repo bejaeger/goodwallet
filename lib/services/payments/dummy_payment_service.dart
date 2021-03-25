@@ -6,8 +6,12 @@ class DummyPaymentService {
 
   // We only need one function which I suggest we call
 
-  // incremendGoodWalletBalance(double delta) {
-  //  implement it!
-  // }
+  //  Future incrementGoodWalletBalance(double deltaBalance) async {
+  //    try{
+  //      await _usersCollectionReference.document()
+  //         .document(MyUser)
+  //    }
+    
+  //  }
 
 }
