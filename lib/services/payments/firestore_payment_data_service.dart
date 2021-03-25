@@ -7,8 +7,6 @@ import 'package:rxdart/rxdart.dart';
 class FirestorePaymentDataService {
   final CollectionReference _paymentsCollectionReference =
       FirebaseFirestore.instance.collection("payments");
-  final StreamController<List<dynamic>> _transactionsController =
-      StreamController<List<dynamic>>.broadcast();
 
   CollectionReference getPaymentIntentCollectionRef(var uid) {
     return FirebaseFirestore.instance

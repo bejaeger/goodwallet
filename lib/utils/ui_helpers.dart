@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/ui/shared/layout_settings.dart';
 
 const Widget horizontalSpaceTiny = SizedBox(width: 5.0);
 const Widget horizontalSpaceSmall = SizedBox(width: 10.0);
@@ -46,6 +47,9 @@ double screenHeightPercentage(BuildContext context, {double percentage = 1}) =>
 
 double screenWidthPercentage(BuildContext context, {double percentage = 1}) =>
     screenWidth(context) * percentage;
+
+double screenWidthWithoutPadding(BuildContext context) =>
+    screenWidth(context) - 2 * LayoutSettings.horizontalPadding;
 
 isDesktop(BuildContext context) => MediaQuery.of(context).size.width > 600;
 TextTheme textTheme(BuildContext context) => Theme.of(context).textTheme;

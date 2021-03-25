@@ -43,16 +43,38 @@ class HomeViewMobile extends StatelessWidget {
                                 Text("Hi " + model.currentUser.fullName,
                                     style: textTheme(context).headline4),
                                 verticalSpaceSmall,
-                                Text(
-                                    "\$ " +
-                                        (model.userWallet.currentBalance / 100)
-                                            .toString(),
-                                    style: textTheme(context).headline2),
-                                Text("Your current balance to be donated"),
+                                Card(
+                                  elevation: 2.0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  color: Colors.white,
+                                  child: Container(
+                                    padding: const EdgeInsets.only(
+                                        top: 15.0, bottom: 15.0, left: 10.0),
+                                    width: screenWidthWithoutPadding(context) -
+                                        8.0,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            "\$ " +
+                                                (model.userWallet
+                                                            .currentBalance /
+                                                        100)
+                                                    .toString(),
+                                            style:
+                                                textTheme(context).headline2),
+                                        Text(
+                                            "Your current balance to be donated"),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                                 verticalSpaceMedium,
                                 SizedBox(
-                                  width: screenWidth(context) -
-                                      2 * LayoutSettings.horizontalPadding,
+                                  width: screenWidthWithoutPadding(context),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
@@ -61,6 +83,8 @@ class HomeViewMobile extends StatelessWidget {
                                         title: "Raise money",
                                         onPressed:
                                             model.showRaiseMoneyBottomSheet,
+                                        buttonColor: MyColors.paletteBlue
+                                            .withOpacity(0.90),
                                         icon: Icon(Icons.add,
                                             color:
                                                 ColorSettings.whiteTextColor),
@@ -68,6 +92,8 @@ class HomeViewMobile extends StatelessWidget {
                                       PledgeCircularButton(
                                         title: "Donate",
                                         onPressed: model.navigateToDonationView,
+                                        buttonColor: ColorSettings.primaryColor
+                                            .withOpacity(1.0),
                                         icon: Icon(Icons.favorite,
                                             color:
                                                 ColorSettings.whiteTextColor),
@@ -76,6 +102,9 @@ class HomeViewMobile extends StatelessWidget {
                                         title: "Send money",
                                         onPressed:
                                             model.showSendMoneyBottomSheet,
+                                        buttonColor: ColorSettings
+                                            .primaryColorLight
+                                            .withOpacity(1.0),
                                         icon: Icon(Icons.send,
                                             color:
                                                 ColorSettings.whiteTextColor),

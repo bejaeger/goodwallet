@@ -11,8 +11,13 @@ class PledgeCircularButton extends StatelessWidget {
   final String title;
   final Function onPressed;
   final Widget icon;
+  final Color buttonColor;
   const PledgeCircularButton(
-      {Key key, @required this.title, @required this.onPressed, this.icon})
+      {Key key,
+      @required this.title,
+      @required this.onPressed,
+      this.icon,
+      this.buttonColor})
       : super(key: key);
 
   @override
@@ -26,7 +31,7 @@ class PledgeCircularButton extends StatelessWidget {
           children: [
             CircleAvatar(
                 child: icon,
-                backgroundColor: ColorSettings.primaryColorLight,
+                backgroundColor: buttonColor ?? ColorSettings.primaryColorLight,
                 radius: 30),
             verticalSpaceTiny,
             Text(title,

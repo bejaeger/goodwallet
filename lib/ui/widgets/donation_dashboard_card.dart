@@ -28,7 +28,7 @@ class DonationDashboardCard extends StatelessWidget {
       child: Card(
         clipBehavior: Clip.hardEdge,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(10.0),
         ),
         color: Colors.white,
         elevation: 2.0,
@@ -41,6 +41,11 @@ class DonationDashboardCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  //CircleAvatar(
+                  //backgroundColor:
+                  //    ColorSettings.primaryColorLight.withOpacity(0.3),
+                  //child: icon,
+                  //)
                   icon,
                   //Icon(Icons.chevron_right),
                 ],
@@ -52,7 +57,7 @@ class DonationDashboardCard extends StatelessWidget {
                   "\$ " + value.toString(),
                   style: textTheme(context)
                       .headline4
-                      .copyWith(color: Theme.of(context).primaryColor),
+                      .copyWith(color: ColorSettings.blackHeadlineColor),
                 ),
               ),
               FittedBox(
