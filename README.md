@@ -23,6 +23,11 @@ Future navigateToTransferView() async {
 - Create service class and register it as a dependency in `lib/app/app.dart` as a lazy singleton
 - run code generator (see above)
 
+## Documentation and logs
+Documentation of classes and functions is very useful and is desired. 
+Sometimes a well chosen naming is good enough, however, to describe what is happening. 
+What is very important and useful is to add reasonable log outputs to your code, especially in the service classes. You can instantiate a logger with `getLogger("<name of code piece>")` where we follow the convention to name the logger after the file it is used in. Please consider these [guidelines](https://www.filledstacks.com/post/flutter-logging-a-guide-to-use-it-effectively/) to write logs and also see [logger on pub.dev](https://pub.dev/packages/logger).
+
 ## Git workflow
 See below for a long blob
 
