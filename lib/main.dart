@@ -21,7 +21,7 @@ void main() async {
   await Firebase.initializeApp();
   setupLocator();
   setupBottomSheetUi();
-  Logger.level = Level.verbose;
+  Logger.level = Level.info;
   runApp(MyApp());
 }
 

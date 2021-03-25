@@ -2,31 +2,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class WalletBalancesModel {
-  final double currentBalance;
-  final double donated;
-  final double sentToPeer;
+  final num currentBalance;
+  final num donations;
+  final num transferredToPeers;
 
-  WalletBalancesModel({this.currentBalance, this.donated, this.sentToPeer});
+  WalletBalancesModel(
+      {this.currentBalance, this.donations, this.transferredToPeers});
 
   WalletBalancesModel.empty()
       : this.currentBalance = 0,
-        this.donated = 0,
-        this.sentToPeer = 0;
+        this.donations = 0,
+        this.transferredToPeers = 0;
 
   Map<String, dynamic> toJson() {
     var returnJson = {
       'currentBalance': currentBalance,
-      'donated': donated,
-      'sentToPeer': sentToPeer,
+      'donations': donations,
+      'transferredToPeers': transferredToPeers,
     };
     return returnJson;
   }
 
-  static WalletBalancesModel fromMap(Map<String, dynamic> map) {
+  static WalletBalancesModel fromData(Map<String, dynamic> map) {
     var data = WalletBalancesModel(
       currentBalance: map['currentBalance'],
-      donated: map['donated'],
-      sentToPeer: map['sentToPeer'],
+      donations: map['donations'],
+      transferredToPeers: map['transferredToPeers'],
     );
     return data;
   }

@@ -13,7 +13,7 @@ class ProfileView extends StatelessWidget {
     return ViewModelBuilder<ProfileViewModel>.reactive(
       viewModelBuilder: () => ProfileViewModel(),
       builder: (context, model, child) => Scaffold(
-        body: !model.isSignedIn
+        body: !model.isUserSignedIn
             ? Center(child: CircularProgressIndicator())
             : Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -73,7 +73,7 @@ class ProfileView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 DonationDashboardCard(
-                                  value: model.donations / 100,
+                                  value: model.userWallet.donations / 100,
                                   subtext: "Given to good causes",
                                   icon: Icon(
                                     Icons.favorite,
@@ -95,7 +95,8 @@ class ProfileView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 DonationDashboardCard(
-                                  value: model.implicitDonations / 100,
+                                  value:
+                                      model.userWallet.transferredToPeers / 100,
                                   subtext: "Pledged for friends",
                                   icon: Icon(
                                     Icons.people,

@@ -17,7 +17,6 @@ class LayoutTemplateViewMobile extends StatelessWidget {
     return ViewModelBuilder<LayoutTemplateViewModel>.reactive(
       viewModelBuilder: () => LayoutTemplateViewModel(),
       onModelReady: (model) {
-        print("Rebuild LayoutTemplateViewModel!");
         if (index != null) model.setIndex(index);
         return null;
       },

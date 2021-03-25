@@ -4,88 +4,58 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/goodcauses/global_giving_project_model.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
-import 'package:good_wallet/enums/user_status.dart';
-import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
-import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
-import 'package:good_wallet/services/userdata/wallet_client_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class WalletViewModel extends BaseModel {
   final NavigationService _navigationService = locator<NavigationService>();
-  final UserWalletService _userWalletService = locator<UserWalletService>();
-  final AuthenticationService _authenticationService =
-      locator<AuthenticationService>();
-  final FirestorePaymentDataService _firestorePaymentDataService =
-      locator<FirestorePaymentDataService>();
-  final UserDataService _firestoreUserService = locator<UserDataService>();
+  final UserDataService _userDataService = locator<UserDataService>();
   final GlobalGivingAPIService _ggApiService =
       locator<GlobalGivingAPIService>();
 
+  // subscriptions to listen to wallet data and transaction history
   StreamSubscription _transactionSubscription;
-  StreamSubscription _balanceSubscription;
 
+  // objects to be exposed
   List<dynamic> _transactions;
   List<dynamic> get transactions => _transactions;
-
   WalletBalancesModel _wallet = WalletBalancesModel.empty();
   WalletBalancesModel get wallet => _wallet;
 
+  // projects to be exposed
   List<GlobalGivingProjectModel> _projects;
   List<GlobalGivingProjectModel> get projects => _projects;
 
-  Future listenToTransactions() async {
-    _authenticationService.userStateSubject.listen(
+  void listenToTransactions() {
+    // Listen to transaction collection if user is logged in otherwise cancel
+    // subscription
+    // Function to be called in initialization of viewmodel or on onModelReady
+    _userDataService.userStateSubject.listen(
       (state) {
-        if (state.status == UserStatus.SignedIn) {
-          setBusy(true);
-          _transactionSubscription = _firestorePaymentDataService
-              .listenToTransactionsRealTime(currentUser.id)
-              .listen(
+        if (isUserSignedIn) {
+          _transactionSubscription =
+              _userDataService.listenToTransactionsRealTime().listen(
             (transactionsData) {
-              print("INFO: Listen to transactions");
               List<dynamic> updatedTransactions = transactionsData;
               if (updatedTransactions != null &&
                   updatedTransactions.length > 0) {
+                log.i("Start listening to user wallet data");
                 // sort with date
                 updatedTransactions
                     .sort((a, b) => b.createdAt.compareTo(a.createdAt));
                 _transactions = updatedTransactions;
                 notifyListeners();
+              } else {
+                log.w(
+                    "Not able to listen to transaction data. Maybe there are no transactions for that user recorded yet?");
               }
             },
           );
-          setBusy(false);
         } else {
-          print("INFO: Cancelling transaction subscription");
+          log.i("Cancelling subsciption to listen to user transactions");
           _transactionSubscription?.cancel();
-        }
-      },
-    );
-  }
-
-  Future listenToBalances() async {
-    _authenticationService.userStateSubject.listen(
-      (state) {
-        if (state.status == UserStatus.SignedIn) {
-          setBusy(true);
-          _balanceSubscription = _firestoreUserService
-              .listenToBalanceRealTime(currentUser.id)
-              .listen(
-            (walletData) {
-              print("INFO: Listen to balance");
-              if (walletData != null) {
-                _wallet = walletData;
-                notifyListeners();
-              }
-            },
-          );
-          setBusy(false);
-        } else {
-          print("INFO: Cancelling balance subscription");
-          _balanceSubscription?.cancel();
         }
       },
     );
@@ -120,12 +90,5 @@ class WalletViewModel extends BaseModel {
 
   Future navigateToDonationView() async {
     await _navigationService.navigateTo(Routes.donationView);
-  }
-
-  Future updateBalances() async {
-    if (userStatus == UserStatus.SignedIn) {
-      _userWalletService.updateBalancesLocal(currentUser.id);
-      notifyListeners();
-    }
   }
 }

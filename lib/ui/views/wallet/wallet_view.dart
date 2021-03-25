@@ -19,15 +19,13 @@ class WalletView extends StatelessWidget {
       viewModelBuilder: () => locator<WalletViewModel>(),
       onModelReady: (model) async {
         model.getProjects();
-        model.updateBalances();
-        model.listenToBalances();
         model.listenToTransactions();
       },
       fireOnModelReadyOnce: true,
       disposeViewModel: false,
       builder: (context, model, child) => Scaffold(
         backgroundColor: backgroundColor,
-        body: model.userStatus != UserStatus.SignedIn
+        body: !model.isUserInitialized
             ? Container()
             : CenteredView(
                 maxWidth: MediaQuery.of(context).size.width > 1000

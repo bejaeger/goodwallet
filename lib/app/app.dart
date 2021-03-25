@@ -1,11 +1,10 @@
-import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
-import 'package:good_wallet/services/userdata/wallet_client_service.dart';
 import 'package:good_wallet/style/page_transitions.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/ui/views/goodcauses/causes_view.dart';
 import 'package:good_wallet/ui/views/goodcauses/causes_viewmodel.dart';
 import 'package:good_wallet/ui/views/goodcauses/single_project_view_mobile.dart';
@@ -47,8 +46,6 @@ import 'package:stacked_services/stacked_services.dart';
   ],
   dependencies: [
     // Registers all singletons
-    LazySingleton(classType: UserWalletService),
-    LazySingleton(classType: UserDataService),
     LazySingleton(classType: NavigationService),
     LazySingleton(classType: DialogService),
     LazySingleton(classType: BottomSheetService),
@@ -62,12 +59,12 @@ import 'package:stacked_services/stacked_services.dart';
       classType: FirebaseAuthenticationService,
     ),
     LazySingleton(classType: DummyPaymentService),
+    Singleton(classType: UserDataService),
 
     // don't register the auth service lazily because we want it
     // to be initialized at the start of the app. This needs
     // to happen after all the services that are used inside
     // authentification service are registered.
-    LazySingleton(classType: AuthenticationService),
   ],
 )
 class AppSetup {

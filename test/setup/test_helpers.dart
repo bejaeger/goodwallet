@@ -2,13 +2,14 @@
 // to remove duplicate code from tests and make them more
 // readable.
 
-import 'package:good_wallet/services/authentification/authentification_service.dart';
+import 'package:good_wallet/services/authentification/user_auth_status_listener_service.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-AuthenticationService getAndRegisterAuthentificationService() {
-  var authentificationService = AuthenticationService();
-  locator.registerSingleton<AuthenticationService>(authentificationService);
+UserAuthStatusListenerService getAndRegisterAuthentificationService() {
+  var authentificationService = UserAuthStatusListenerService();
+  locator.registerSingleton<UserAuthStatusListenerService>(
+      authentificationService);
   return authentificationService;
 }
 

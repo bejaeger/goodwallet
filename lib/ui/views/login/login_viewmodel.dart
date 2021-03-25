@@ -3,7 +3,6 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/enums/auth_mode.dart';
 import 'package:good_wallet/enums/authentication_method.dart';
-import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/authentication_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -19,8 +18,6 @@ class LoginViewModel extends AuthenticationViewModel {
 
   final NavigationService _navigationService = locator<NavigationService>();
   final log = getLogger("login_viewmodel.dart");
-  final AuthenticationService _authenticationService =
-      locator<AuthenticationService>();
   // stacked firebase services
   final FirebaseAuthenticationService _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();

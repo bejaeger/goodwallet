@@ -1,1 +1,1 @@
-enum UserStatus { Unknown, SignedIn, SignedOut }
+enum UserStatus { Unknown, SignedIn, SignedOut, Initialized }

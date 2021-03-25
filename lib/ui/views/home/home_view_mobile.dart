@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/enums/user_status.dart';
-import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/home_viewmodel.dart';
@@ -15,8 +13,7 @@ class HomeViewMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
       viewModelBuilder: () => HomeViewModel(),
-      builder: (context, model, child) => model.userStatus !=
-              UserStatus.SignedIn
+      builder: (context, model, child) => !model.isUserInitialized
           ? Center(child: CircularProgressIndicator())
           : Scaffold(
               body: CustomScrollView(
@@ -46,7 +43,10 @@ class HomeViewMobile extends StatelessWidget {
                                 Text("Hi " + model.currentUser.fullName,
                                     style: textTheme(context).headline4),
                                 verticalSpaceSmall,
-                                Text("\$ " + (model.balance / 100).toString(),
+                                Text(
+                                    "\$ " +
+                                        (model.userWallet.currentBalance / 100)
+                                            .toString(),
                                     style: textTheme(context).headline2),
                                 Text("Your current balance to be donated"),
                                 verticalSpaceMedium,
@@ -104,7 +104,9 @@ class HomeViewMobile extends StatelessWidget {
                                               CrossAxisAlignment.stretch,
                                           children: [
                                             DonationDashboardCard(
-                                              value: model.donations / 100,
+                                              value:
+                                                  model.userWallet.donations /
+                                                      100,
                                               subtext: "Given to good causes",
                                               icon: Icon(
                                                 Icons.favorite,
@@ -127,8 +129,9 @@ class HomeViewMobile extends StatelessWidget {
                                               CrossAxisAlignment.stretch,
                                           children: [
                                             DonationDashboardCard(
-                                              value:
-                                                  model.implicitDonations / 100,
+                                              value: model.userWallet
+                                                      .transferredToPeers /
+                                                  100,
                                               subtext: "Pledged for friends",
                                               icon: Icon(
                                                 Icons.people,

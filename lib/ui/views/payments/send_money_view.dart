@@ -31,7 +31,7 @@ class SendMoneyView extends StatelessWidget {
         },
         child: Scaffold(
           backgroundColor: backgroundColor,
-          body: model.userStatus != UserStatus.SignedIn
+          body: !model.isUserInitialized
               ? Container()
               : CenteredView(
                   maxWidth: 500,

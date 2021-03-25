@@ -4,12 +4,10 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
 import 'package:good_wallet/enums/user_status.dart';
-import 'package:good_wallet/services/authentification/authentification_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
-import 'package:good_wallet/services/userdata/wallet_client_service.dart';
+import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
-import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -19,15 +17,13 @@ import 'package:good_wallet/ui/views/payments/stripe_checkout/stripe_checkout_st
 
 class SendMoneyViewModel extends BaseModel {
   final DialogService _dialogService = locator<DialogService>();
-  final UserWalletService _userWalletService = locator<UserWalletService>();
   final NavigationService _navigationService = locator<NavigationService>();
   final transferValueController = TextEditingController();
   final optionalMessageController = TextEditingController();
   final FirestorePaymentDataService _firestorePaymentDataService =
       locator<FirestorePaymentDataService>();
   final _stripePaymentService = locator<StripePaymentService>();
-  final AuthenticationService _authenticationService =
-      locator<AuthenticationService>();
+  final _userDataService = locator<UserDataService>();
 
   final TextEditingController _userSelectionController =
       TextEditingController();
@@ -55,7 +51,6 @@ class SendMoneyViewModel extends BaseModel {
   );
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [_userWalletService];
   List<Map<String, String>> _userInfoMaps = [];
   List<Map<String, String>> get userInfoMaps => _userInfoMaps;
 
@@ -191,17 +186,16 @@ class SendMoneyViewModel extends BaseModel {
 
   void handlePaymentSuccess() async {
     print("INFO: Stripe payment successfull. Handling it");
-    _authenticationService.userStateSubject.listen((state) async {
-      if (state.status == UserStatus.SignedIn) {
+    _userDataService.userStateSubject.listen((state) async {
+      if (state == UserStatus.SignedIn) {
         bool result = await _firestorePaymentDataService
             .handlePaymentSuccess(currentUser.id);
-        await _userWalletService.updateBalancesLocal(currentUser.id);
         if (result)
           _paymentStatus = "success";
         else
           _paymentStatus = "expired";
         notifyListeners();
-      } else if (state.status == UserStatus.SignedOut) {
+      } else if (state == UserStatus.SignedOut) {
         // Something went terribly wrong! We should never end up here!
         print("INFO: User signed out!?");
         //_paymentStatus = "pending";
@@ -212,8 +206,8 @@ class SendMoneyViewModel extends BaseModel {
 
   void handlePaymentFailure() async {
     print("INFO: Stripe payment cancelled. Handling it");
-    _authenticationService.userStateSubject.listen((state) async {
-      if (state.status == UserStatus.SignedIn) {
+    _userDataService.userStateSubject.listen((state) async {
+      if (state == UserStatus.SignedIn) {
         await _firestorePaymentDataService.handlePaymentFailure(currentUser.id);
         _paymentStatus = "failure";
         notifyListeners();

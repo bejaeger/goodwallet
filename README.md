@@ -1,4 +1,5 @@
 # Development Considerations
+
 ## App architecture / State Management Solution
 - We use the stacked package by FilledStacks which provides a very clean solutions for state management and realizing an MVVM architecture in flutter [[stacked](https://pub.dev/packages/stacked)]
 - [This blog post](https://medium.com/flutter-community/a-beginners-guide-to-architecting-a-flutter-app-1e9053211a74) provides a nice introduction to the stacked architecture
@@ -6,7 +7,7 @@
 - From the FilledStacks I can additionally recommend the tutorials starting from number 38. They helped me a ton!
 
 ## Stacked Architecture Cheatsheet
-See [application setup](https://pub.flutter-io.cn/packages/stacked#application-setup) in stacked REDME.
+See [application setup](https://pub.flutter-io.cn/packages/stacked#application-setup) in stacked README.
 ### Steps to add a new view
 - Create files for new view and viewmodel in appropriate directory
 - Register view in routes in `lib/app/app.dart`

@@ -62,7 +62,7 @@ class NavigationBar extends StatelessWidget {
                             label: 'Give',
                             onPressed: () => model.navigateToDonationView()),
                         horizontalSpaceMedium,
-                        model.userStatus == UserStatus.SignedIn
+                        model.isUserSignedIn
                             ? _NavBarItem(
                                 label: 'Logout',
                                 onPressed: () async => await model.logout())
