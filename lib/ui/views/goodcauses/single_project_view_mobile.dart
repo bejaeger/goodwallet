@@ -55,7 +55,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () =>
-                            model.showConfirmationDialog(project.title, _donationAmountController.text),
+                            model.confirmationOrCancellationDistributor(project.title, int.parse(_donationAmountController.text)),
                         child: Text('Donate'),
                       ),
                     ),
@@ -90,7 +90,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                         children: <Widget>[
                           Icon(Icons.account_balance_wallet),
                           Text(
-                            "\$ $userGoodDollarsSavings",
+                            "\$ ${model.userWallet.currentBalance}",
                           ),
                         ],
                       ),
