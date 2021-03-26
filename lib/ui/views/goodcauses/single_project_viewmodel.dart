@@ -22,10 +22,20 @@ class SingleProjectViewModel extends BaseModel {
     print('DialogResponse: ${response?.confirmed}');
   }
 
-  // Future showAmountTooHighDialog() async{
-  //   await _dialogService.showAmountTooHighDialog(
-  //     title: 'Title',
-  //     description: 'description',
-  //   );
-  // }
+  Future showAmountTooHighDialog(String donationAmount) async{
+    await _dialogService.showConfirmationDialog(
+      title: 'Donation Amount Too High',
+      description: 'You cannot pay \$ ${donationAmount} with just \$ ${userWallet.currentBalance}',
+
+    );
+  }
+
+  Future confirmationOrCancellationDistributor(String projectTitle, int donationAmount)  {
+    if ((userWallet.currentBalance - donationAmount) < 0){
+      showAmountTooHighDialog(donationAmount.toString());
+    }
+    else{
+      showConfirmationDialog(projectTitle, donationAmount.toString());
+    }
+  }
 }
