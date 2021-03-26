@@ -24,23 +24,25 @@ class PledgeCircularButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 90,
-      child: GestureDetector(
-        onTap: onPressed,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CircleAvatar(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ElevatedButton(
+            style:
+                ElevatedButton.styleFrom(shape: CircleBorder(), elevation: 2.0),
+            onPressed: onPressed,
+            child: CircleAvatar(
                 child: icon,
                 backgroundColor: buttonColor ?? ColorSettings.primaryColorLight,
                 radius: 30),
-            verticalSpaceTiny,
-            Text(title,
-                style: textTheme(context).bodyText2.copyWith(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: ColorSettings.blackHeadlineColor))
-          ],
-        ),
+          ),
+          verticalSpaceTiny,
+          Text(title,
+              style: textTheme(context).bodyText2.copyWith(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: ColorSettings.blackHeadlineColor))
+        ],
       ),
     );
   }

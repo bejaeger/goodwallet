@@ -15,7 +15,6 @@ import '../services/payments/dummy_payment_service.dart';
 import '../services/payments/firestore_payment_data_service.dart';
 import '../services/payments/stripe_payment_service.dart';
 import '../services/userdata/user_data_service.dart';
-import '../ui/views/common_viewmodels/base_viewmodel.dart';
 import '../ui/views/goodcauses/causes_viewmodel.dart';
 import '../ui/views/layout/navigation_bar_viewmodel.dart';
 import '../ui/views/wallet/wallet_viewmodel.dart';
@@ -35,5 +34,4 @@ void setupLocator() {
   locator.registerLazySingleton(() => FirebaseAuthenticationService());
   locator.registerLazySingleton(() => DummyPaymentService());
   locator.registerSingleton(UserDataService());
-  locator.registerSingleton(BaseModel());
 }

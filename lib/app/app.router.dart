@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 import '../datamodels/goodcauses/global_giving_project_model.dart';
+import '../enums/featured_app_type.dart';
+import '../ui/views/featured_applications/single_featured_app_view.dart';
 import '../ui/views/goodcauses/causes_view.dart';
 import '../ui/views/goodcauses/single_project_view_mobile.dart';
 import '../ui/views/home/home_view_mobile.dart';
@@ -38,6 +40,7 @@ class Routes {
   static const String singleProjectViewMobile = '/single-project-view-mobile';
   static const String profileView = '/profile-view';
   static const String createAccountView = '/create-account-view';
+  static const String singleFeaturedAppView = '/single-featured-app-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -52,6 +55,7 @@ class Routes {
     singleProjectViewMobile,
     profileView,
     createAccountView,
+    singleFeaturedAppView,
   };
 }
 
@@ -72,6 +76,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.singleProjectViewMobile, page: SingleProjectViewMobile),
     RouteDef(Routes.profileView, page: ProfileView),
     RouteDef(Routes.createAccountView, page: CreateAccountView),
+    RouteDef(Routes.singleFeaturedAppView, page: SingleFeaturedAppView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -191,6 +196,17 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    SingleFeaturedAppView: (data) {
+      var args = data.getArgs<SingleFeaturedAppViewArguments>(nullOk: false);
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            SingleFeaturedAppView(
+          key: args.key,
+          type: args.type,
+        ),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -238,4 +254,11 @@ class SingleProjectViewMobileArguments {
 class CreateAccountViewArguments {
   final Key key;
   CreateAccountViewArguments({this.key});
+}
+
+/// SingleFeaturedAppView arguments holder class
+class SingleFeaturedAppViewArguments {
+  final Key key;
+  final FeaturedAppType type;
+  SingleFeaturedAppViewArguments({this.key, @required this.type});
 }

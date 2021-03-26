@@ -43,9 +43,6 @@ class UserDataService {
   BehaviorSubject<WalletBalancesModel> userWalletSubject =
       BehaviorSubject<WalletBalancesModel>.seeded(WalletBalancesModel.empty());
 
-  // bool to keep track of whether a user is initialized or not
-  bool _isInitializedCurrentUser = false;
-
   // current user with all our custom data attached to it
   MyUser _currentUser;
   MyUser get currentUser => _currentUser;
@@ -85,12 +82,11 @@ class UserDataService {
       return UserDataServiceResult.error(errorMessage: "No user specified!");
     }
 
-    if (!_isInitializedCurrentUser) {
+    if (userStateSubject.value != UserStatus.Initialized) {
       log.i("Populating current user");
       try {
         await _populateCurrentUser(uid);
         userWalletSubject.add(await updateWallet(uid));
-        _isInitializedCurrentUser = true;
         userStateSubject.add(UserStatus.Initialized);
       } catch (e) {
         return UserDataServiceResult.error(
@@ -107,6 +103,17 @@ class UserDataService {
   Future _populateCurrentUser(String uid) async {
     try {
       var userData = await _usersCollectionReference.doc(uid).get();
+      if (userData == null) {
+        // This means no user has been created yet in cloud firestore
+        // This happens for example when loggin in with google, facebook, ...
+        // We first have to create a user and then
+
+        log.w(
+            "Create user because this seems to be the first time a user is logging in with third-party authentification");
+        //createUser(uid);
+        // We NEED the actual user here!
+        log.e("This is not yet implemented!");
+      }
       MyUser user = MyUser.fromData(userData.data());
       _currentUser = user;
     } catch (e) {
@@ -117,24 +124,31 @@ class UserDataService {
 
   // User ------------------------------------------------->>
   Future createUser(User user, [String fullName]) async {
+    if (user == null) {
+      UserDataServiceResult.error(
+          errorMessage: "Could not create user, user is null");
+    }
     // create a new user profile on firestore`
     num balance = 0;
     num implicitDonations = 0;
     num donations = 0;
+    String name = fullName ?? (user.displayName ?? "");
     MyUser myuser = MyUser(
       id: user.uid,
       email: user.email,
-      fullName: fullName != null ? fullName : user.displayName,
+      fullName: name,
       balance: balance,
       implicitDonations: implicitDonations,
       donations: donations,
     );
     try {
       await _usersCollectionReference.doc(user.uid).set(myuser.toJson(true));
-      return myuser;
+      return UserDataServiceResult();
     } catch (e) {
       log.e("Error in createUser(): ${e.toString()}");
-      return e.toString();
+      return UserDataServiceResult.error(
+          errorMessage:
+              "Creating user data failed with message: ${e.toString()}");
     }
   }
 
@@ -189,7 +203,7 @@ class UserDataService {
     // keyword: pagination
     // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
 
-    if (!_isInitializedCurrentUser)
+    if (userStateSubject.value != UserStatus.Initialized)
       log.i("User not initialized, the following code will break");
 
     // There is no OR query for different fields in firebase
@@ -250,8 +264,6 @@ class UserDataService {
     userWalletSubject.add(WalletBalancesModel.empty());
     // set current user to null
     _currentUser = null;
-    // set init flag to false
-    _isInitializedCurrentUser = false;
     // actually log out from firebase
     await _firebaseAuthenticationService.logout();
     // set auth state to signed out

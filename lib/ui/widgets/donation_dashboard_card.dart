@@ -24,7 +24,7 @@ class DonationDashboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 7 / 6,
+      aspectRatio: 7 / 5.5,
       child: Card(
         clipBehavior: Clip.hardEdge,
         shape: RoundedRectangleBorder(

@@ -5,6 +5,7 @@ import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/style/page_transitions.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/featured_applications/single_featured_app_view.dart';
 import 'package:good_wallet/ui/views/goodcauses/causes_view.dart';
 import 'package:good_wallet/ui/views/goodcauses/causes_viewmodel.dart';
 import 'package:good_wallet/ui/views/goodcauses/single_project_view_mobile.dart';
@@ -43,6 +44,7 @@ import 'package:stacked_services/stacked_services.dart';
     CustomRoute(page: SingleProjectViewMobile),
     CustomRoute(page: ProfileView),
     CustomRoute(page: CreateAccountView),
+    CustomRoute(page: SingleFeaturedAppView),
   ],
   dependencies: [
     // Registers all singletons

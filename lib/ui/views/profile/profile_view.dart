@@ -68,7 +68,7 @@ class ProfileView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            flex: 5,
+                            flex: 10,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
@@ -90,7 +90,7 @@ class ProfileView extends StatelessWidget {
                           ),
                           Spacer(flex: 1),
                           Expanded(
-                            flex: 5,
+                            flex: 10,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
@@ -130,6 +130,8 @@ class ProfileView extends StatelessWidget {
                       ),
                     ),
                     spacedDivider,
+                    Text("Settings", style: textTheme(context).headline4),
+                    verticalSpaceMediumLarge,
                     ListTile(
                       title: Text("Logout",
                           style: textTheme(context).headline6.copyWith(

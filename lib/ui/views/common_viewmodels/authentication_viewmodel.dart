@@ -38,7 +38,7 @@ abstract class AuthenticationViewModel extends FormViewModel {
             "Authentication successful but initiliazation failed due to an internal problem. Please, try again later or contact our support.");
       }
     } else {
-      log.w("User could not be logged in, error thrown:");
+      log.w("User could not be logged in or signed-up, error thrown:");
       log.w(result.errorMessage);
 
       // set validation message if we have an error

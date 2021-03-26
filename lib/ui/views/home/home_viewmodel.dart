@@ -2,6 +2,7 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
+import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -35,5 +36,11 @@ class HomeViewModel extends BaseModel {
       print("Response data: ${sheetResponse.responseData}");
       if (sheetResponse.responseData is Function) sheetResponse.responseData();
     }
+  }
+
+  Future navigateToSingleFeaturedAppView(FeaturedAppType type) async {
+    log.i("Navigating to single featured app view");
+    await _navigationService.navigateTo(Routes.singleFeaturedAppView,
+        arguments: SingleFeaturedAppViewArguments(type: type));
   }
 }
