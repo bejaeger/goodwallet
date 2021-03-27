@@ -106,9 +106,11 @@ exports.updateGoodWalletAfterDonation = functions.firestore
     try {
       const { amount } = snap.data();
 
-      const increment = admin.firestore.FieldValue.increment(-amount);
+      const deduct = admin.firestore.FieldValue.increment(-amount);
+      const add = admin.firestore.FieldValue.increment(amount);
       await db.collection("users").doc(context.params.userId).update({
-        balance: increment
+        balance: deduct,
+        donations: add
       });
 
       return;
