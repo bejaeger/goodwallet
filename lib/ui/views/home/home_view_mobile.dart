@@ -22,12 +22,42 @@ class HomeViewMobile extends StatelessWidget {
                 physics: AlwaysScrollableScrollPhysics(),
                 slivers: [
                   // Todo: create custom SliverAppPersistentHeader
-                  SliverPersistentHeader(
-                    delegate: HomeCustomAppBarView(
-                      maxExtent: screenHeight(context) * 0.3,
-                      minExtent: LayoutSettings.minAppBarHeight,
-                      //minExtentCustom: LayoutSettings.minAppBarHeight,
+                  // SliverPersistentHeader(
+                  //   delegate: HomeCustomAppBarView(
+                  //     maxExtent: screenHeight(context) * 0.3,
+                  //     minExtent: LayoutSettings.minAppBarHeight,
+                  //     //minExtentCustom: LayoutSettings.minAppBarHeight,
+                  //   ),
+                  //   pinned: true,
+                  // ),
+                  SliverAppBar(
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Home",
+                                style: textTheme(context)
+                                    .headline3
+                                    .copyWith(fontSize: 25)),
+                            GestureDetector(
+                                onTap: model.navigateToSettingsView,
+                                child: Icon(
+                                  Icons.person_outline_rounded,
+                                  color: ColorSettings.whiteTextColor,
+                                  size: 25,
+                                ))
+                          ],
+                        ),
+                      ],
                     ),
+                    titleSpacing: 20,
+                    expandedHeight: LayoutSettings.minAppBarHeight * 1,
+                    collapsedHeight: LayoutSettings.minAppBarHeight,
+                    backgroundColor: ColorSettings.primaryColor, //Colors.white,
+                    elevation: 2.0,
+                    toolbarHeight: LayoutSettings.minAppBarHeight,
                     pinned: true,
                   ),
                   SliverList(
@@ -40,7 +70,7 @@ class HomeViewMobile extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                verticalSpaceLarge,
+                                verticalSpaceMedium,
                                 Text("Hi " + model.currentUser.fullName,
                                     style: textTheme(context).headline4),
                                 verticalSpaceSmall,
@@ -73,7 +103,7 @@ class HomeViewMobile extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                verticalSpaceMedium,
+                                verticalSpaceRegular,
                                 SizedBox(
                                   width: screenWidthWithoutPadding(context),
                                   child: Row(
@@ -113,80 +143,84 @@ class HomeViewMobile extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                verticalSpaceMediumLarge,
-                                Text("Your contributions",
-                                    style: textTheme(context).headline6),
-                                verticalSpaceSmall,
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                      maxWidth: screenWidth(context) -
-                                          2 * LayoutSettings.horizontalPadding),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        flex: 10,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
-                                          children: [
-                                            DonationDashboardCard(
-                                              value:
-                                                  model.userWallet.donations /
-                                                      100,
-                                              subtext: "Given to good causes",
-                                              icon: Icon(
-                                                Icons.favorite,
-                                                color:
-                                                    ColorSettings.primaryColor,
-                                                size: 30,
-                                              ),
-                                            ),
-                                            // verticalSpaceSmall,
-                                            // PledgeButton(
-                                            //     title: "+ Donate",
-                                            //     onPressed: model
-                                            //         .navigateToDonationView),
-                                          ],
-                                        ),
-                                      ),
-                                      Spacer(flex: 1),
-                                      Expanded(
-                                        flex: 10,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
-                                          children: [
-                                            DonationDashboardCard(
-                                              value: model.userWallet
-                                                      .transferredToPeers /
-                                                  100,
-                                              subtext: "Pledged for friends",
-                                              icon: Icon(
-                                                Icons.send_rounded,
-                                                size: 30,
-                                              ),
-                                            ),
-                                            // verticalSpaceSmall,
-                                            // PledgeButton(
-                                            //     title: "+ Send money",
-                                            //     onPressed: model
-                                            //         .showSendMoneyBottomSheet),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
                               ],
                             ),
                             SizedBox(width: LayoutSettings.horizontalPadding),
                           ],
                         ),
-                        verticalSpaceMediumLarge,
+                        verticalSpaceMedium,
+                        _goodometerDisplay(context, model),
+                        verticalSpaceMedium,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: LayoutSettings.horizontalPadding),
+                          child: Text("Your contributions",
+                              style: textTheme(context).headline6),
+                        ),
+                        verticalSpaceSmall,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: LayoutSettings.horizontalPadding),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                                maxWidth: screenWidthWithoutPadding(context)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 10,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      DonationDashboardCard(
+                                        value: model.userWallet.donations / 100,
+                                        subtext: "Given to good causes",
+                                        icon: Icon(
+                                          Icons.favorite,
+                                          color: ColorSettings.primaryColor,
+                                          size: 30,
+                                        ),
+                                      ),
+                                      // verticalSpaceSmall,
+                                      // PledgeButton(
+                                      //     title: "+ Donate",
+                                      //     onPressed: model
+                                      //         .navigateToDonationView),
+                                    ],
+                                  ),
+                                ),
+                                Spacer(flex: 1),
+                                Expanded(
+                                  flex: 10,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      DonationDashboardCard(
+                                        value: model
+                                                .userWallet.transferredToPeers /
+                                            100,
+                                        subtext: "Pledged for friends",
+                                        icon: Icon(
+                                          Icons.send_rounded,
+                                          size: 30,
+                                        ),
+                                      ),
+                                      // verticalSpaceSmall,
+                                      // PledgeButton(
+                                      //     title: "+ Send money",
+                                      //     onPressed: model
+                                      //         .showSendMoneyBottomSheet),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        verticalSpaceMedium,
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: LayoutSettings.horizontalPadding),
@@ -195,7 +229,7 @@ class HomeViewMobile extends StatelessWidget {
                         ),
                         verticalSpaceSmall,
                         FeaturedAppsCarousel(model: model),
-                        verticalSpaceMediumLarge,
+                        verticalSpaceMedium,
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: LayoutSettings.horizontalPadding),
@@ -209,6 +243,29 @@ class HomeViewMobile extends StatelessWidget {
                 ],
               ),
             ),
+    );
+  }
+
+  Container _goodometerDisplay(BuildContext context, HomeViewModel model) {
+    return Container(
+      width: screenWidth(context),
+      color: ColorSettings.primaryColorLight.withOpacity(0.9),
+      child: Padding(
+        padding: const EdgeInsets.only(
+            top: 8.0,
+            left: LayoutSettings.horizontalPadding,
+            bottom: 8.0,
+            right: LayoutSettings.horizontalPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Goodometer: \$ 10789",
+                style: textTheme(context).headline1.copyWith(fontSize: 20)),
+            Text("Total raised by our community",
+                style: textTheme(context).bodyText1),
+          ],
+        ),
+      ),
     );
   }
 }

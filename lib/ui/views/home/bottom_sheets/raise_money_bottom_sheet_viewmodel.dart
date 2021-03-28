@@ -9,8 +9,12 @@ class RaiseMoneyBottomSheetViewModel extends BaseModel {
   final NavigationService _navigationService = locator<NavigationService>();
   final log = getLogger("RaiseMoneyBottomSheetViewModel");
 
-  Future navigateToSettingsView() async {
-    log.i("Navigating to SettingsView");
+  Future navigateToAcceptPaymentsView() async {
+    log.i("Clicked navigating to accept payments view (not yet implemented!)");
     //await _navigationService.navigateTo(Routes.settingsView);
+  }
+
+  Future navigateToManageMoneyPoolsView() async {
+    await _navigationService.navigateTo(Routes.manageMoneyPoolsView);
   }
 }

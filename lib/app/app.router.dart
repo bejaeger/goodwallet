@@ -20,6 +20,7 @@ import '../ui/views/layout/layout_template_view.dart';
 import '../ui/views/layout/layout_template_view_mobile.dart';
 import '../ui/views/login/create_account_view.dart';
 import '../ui/views/login/login_view.dart';
+import '../ui/views/money_pools/manage_money_pools_view.dart';
 import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
 import '../ui/views/payments/send_money_view.dart';
@@ -41,6 +42,7 @@ class Routes {
   static const String profileView = '/profile-view';
   static const String createAccountView = '/create-account-view';
   static const String singleFeaturedAppView = '/single-featured-app-view';
+  static const String manageMoneyPoolsView = '/manage-money-pools-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -56,6 +58,7 @@ class Routes {
     profileView,
     createAccountView,
     singleFeaturedAppView,
+    manageMoneyPoolsView,
   };
 }
 
@@ -77,6 +80,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.profileView, page: ProfileView),
     RouteDef(Routes.createAccountView, page: CreateAccountView),
     RouteDef(Routes.singleFeaturedAppView, page: SingleFeaturedAppView),
+    RouteDef(Routes.manageMoneyPoolsView, page: ManageMoneyPoolsView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -204,6 +208,13 @@ class StackedRouter extends RouterBase {
           key: args.key,
           type: args.type,
         ),
+        settings: data,
+      );
+    },
+    ManageMoneyPoolsView: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const ManageMoneyPoolsView(),
         settings: data,
       );
     },

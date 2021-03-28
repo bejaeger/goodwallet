@@ -48,7 +48,7 @@ class HomeViewModel extends BaseModel {
   }
 
   Future fetchUsers() async {
-    setBusy(true);s
+    setBusy(true);
     var usersResults = await _userDataService.getUsersOnceOff();
     setBusy(false);
 
@@ -73,5 +73,9 @@ class HomeViewModel extends BaseModel {
     log.i("Navigating to single featured app view");
     await _navigationService.navigateTo(Routes.singleFeaturedAppView,
         arguments: SingleFeaturedAppViewArguments(type: type));
+  }
+
+  Future navigateToSettingsView() async {
+    await _navigationService.navigateTo(Routes.profileView);
   }
 }
