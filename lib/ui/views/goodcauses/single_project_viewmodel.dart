@@ -22,7 +22,7 @@ class SingleProjectViewModel extends BaseModel {
       cancelTitle: 'No',
     );
     if (response.confirmed) {
-      _dummyPaymentService.processDonation(_userDataService.currentUser.id, projectTitle, int.parse(donationAmount));
+      _dummyPaymentService.processDonation(_userDataService.currentUser.id, projectTitle, int.parse(donationAmount)*100);
     }
     print('DialogResponse: ${response.confirmed}');
       }  catch (e) {

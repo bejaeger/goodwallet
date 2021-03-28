@@ -90,7 +90,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                         children: <Widget>[
                           Icon(Icons.account_balance_wallet),
                           Text(
-                            "\$ ${model.userWallet.currentBalance}",
+                            "\$ ${model.userWallet.currentBalance/100}",
                           ),
                         ],
                       ),

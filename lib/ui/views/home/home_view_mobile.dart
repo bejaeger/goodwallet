@@ -102,7 +102,7 @@ class HomeViewMobile extends StatelessWidget {
                                       PledgeCircularButton(
                                         title: "Send money",
                                         onPressed:
-                                            model.showSendMoneyBottomSheet,
+                                            model.fetchUsers,
                                         buttonColor: ColorSettings
                                             .primaryColorLight
                                             .withOpacity(1.0),
