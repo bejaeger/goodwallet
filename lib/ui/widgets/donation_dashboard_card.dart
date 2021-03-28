@@ -24,7 +24,7 @@ class DonationDashboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 7 / 5.5,
+      aspectRatio: 7 / 5,
       child: Card(
         clipBehavior: Clip.hardEdge,
         shape: RoundedRectangleBorder(
@@ -55,9 +55,8 @@ class DonationDashboardCard extends StatelessWidget {
                 fit: BoxFit.scaleDown,
                 child: Text(
                   "\$ " + value.toString(),
-                  style: textTheme(context)
-                      .headline4
-                      .copyWith(color: ColorSettings.blackHeadlineColor),
+                  style: textTheme(context).headline4.copyWith(
+                      fontSize: 25, color: ColorSettings.blackHeadlineColor),
                 ),
               ),
               FittedBox(

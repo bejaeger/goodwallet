@@ -43,4 +43,8 @@ class HomeViewModel extends BaseModel {
     await _navigationService.navigateTo(Routes.singleFeaturedAppView,
         arguments: SingleFeaturedAppViewArguments(type: type));
   }
+
+  Future navigateToSettingsView() async {
+    await _navigationService.navigateTo(Routes.profileView);
+  }
 }

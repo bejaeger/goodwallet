@@ -49,8 +49,11 @@ double screenHeightPercentage(BuildContext context, {double percentage = 1}) =>
 double screenWidthPercentage(BuildContext context, {double percentage = 1}) =>
     screenWidth(context) * percentage;
 
-double screenWidthWithoutPadding(BuildContext context) =>
-    screenWidth(context) - 2 * LayoutSettings.horizontalPadding;
+double screenWidthWithoutPadding(BuildContext context, {double percentage}) =>
+    percentage != null
+        ? (screenWidth(context) - 2 * LayoutSettings.horizontalPadding) *
+            percentage
+        : screenWidth(context) - 2 * LayoutSettings.horizontalPadding;
 
 isDesktop(BuildContext context) => MediaQuery.of(context).size.width > 600;
 TextTheme textTheme(BuildContext context) => Theme.of(context).textTheme;
