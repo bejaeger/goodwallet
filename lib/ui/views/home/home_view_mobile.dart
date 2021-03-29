@@ -41,13 +41,13 @@ class HomeViewMobile extends StatelessWidget {
                                 style: textTheme(context)
                                     .headline3
                                     .copyWith(fontSize: 25)),
-                            GestureDetector(
-                                onTap: model.navigateToSettingsView,
-                                child: Icon(
-                                  Icons.person_outline_rounded,
-                                  color: ColorSettings.whiteTextColor,
-                                  size: 25,
-                                ))
+                            // GestureDetector(
+                            //     onTap: model.navigateToSettingsView,
+                            //     child: Icon(
+                            //       Icons.settings,
+                            //       color: ColorSettings.whiteTextColor,
+                            //       size: 25,
+                            //     ),),
                           ],
                         ),
                       ],
@@ -95,8 +95,9 @@ class HomeViewMobile extends StatelessWidget {
                                                             .currentBalance /
                                                         100)
                                                     .toString(),
-                                            style:
-                                                textTheme(context).headline2),
+                                            style: textTheme(context)
+                                                .headline2
+                                                .copyWith(fontSize: 28)),
                                         Text(
                                             "Your current balance to be donated"),
                                       ],
@@ -154,72 +155,11 @@ class HomeViewMobile extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: LayoutSettings.horizontalPadding),
-                          child: Text("Your contributions",
+                          child: Text("Favorite projects",
                               style: textTheme(context).headline6),
                         ),
                         verticalSpaceSmall,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: LayoutSettings.horizontalPadding),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                                maxWidth: screenWidthWithoutPadding(context)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  flex: 10,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      DonationDashboardCard(
-                                        value: model.userWallet.donations / 100,
-                                        subtext: "Given to good causes",
-                                        icon: Icon(
-                                          Icons.favorite,
-                                          color: ColorSettings.primaryColor,
-                                          size: 30,
-                                        ),
-                                      ),
-                                      // verticalSpaceSmall,
-                                      // PledgeButton(
-                                      //     title: "+ Donate",
-                                      //     onPressed: model
-                                      //         .navigateToDonationView),
-                                    ],
-                                  ),
-                                ),
-                                Spacer(flex: 1),
-                                Expanded(
-                                  flex: 10,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      DonationDashboardCard(
-                                        value: model
-                                                .userWallet.transferredToPeers /
-                                            100,
-                                        subtext: "Pledged for friends",
-                                        icon: Icon(
-                                          Icons.send_rounded,
-                                          size: 30,
-                                        ),
-                                      ),
-                                      // verticalSpaceSmall,
-                                      // PledgeButton(
-                                      //     title: "+ Send money",
-                                      //     onPressed: model
-                                      //         .showSendMoneyBottomSheet),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        FeaturedProjectsCarousel(model: model),
                         verticalSpaceMedium,
                         Padding(
                           padding: const EdgeInsets.symmetric(
@@ -230,12 +170,6 @@ class HomeViewMobile extends StatelessWidget {
                         verticalSpaceSmall,
                         FeaturedAppsCarousel(model: model),
                         verticalSpaceMedium,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: LayoutSettings.horizontalPadding),
-                          child: Text("Recent activities",
-                              style: textTheme(context).headline6),
-                        ),
                         verticalSpaceMassive,
                       ],
                     ),
@@ -300,6 +234,44 @@ class FeaturedAppsCarousel extends StatelessWidget {
               title: "Your Application",
               explanation:
                   "This could be your application that leverages the Good Wallet to do good",
+              onTap: () => null,
+              backgroundColor: MyColors.palettePurple,
+            ),
+            SizedBox(width: LayoutSettings.horizontalPadding),
+          ],
+        ));
+  }
+}
+
+class FeaturedProjectsCarousel extends StatelessWidget {
+  final dynamic model;
+
+  const FeaturedProjectsCarousel({Key key, this.model}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        height: 200,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: [
+            SizedBox(width: LayoutSettings.horizontalPadding),
+            CarouselCard(
+              title: "Health and Development",
+              explanation: "Have an impact and change the world for the better",
+              onTap: () => model
+                  .navigateToSingleFeaturedAppView(FeaturedAppType.Marketplace),
+            ),
+            SizedBox(width: LayoutSettings.horizontalPadding),
+            CarouselCard(
+              title: "Climate Action",
+              explanation: "Help turning the wheels and fight climate change",
+              onTap: () => null,
+              backgroundColor: MyColors.paletteTurquoise,
+            ),
+            SizedBox(width: LayoutSettings.horizontalPadding),
+            CarouselCard(
+              title: "Poverty",
+              explanation: "Help people in need",
               onTap: () => null,
               backgroundColor: MyColors.palettePurple,
             ),

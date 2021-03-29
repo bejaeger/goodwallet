@@ -45,6 +45,6 @@ class HomeViewModel extends BaseModel {
   }
 
   Future navigateToSettingsView() async {
-    await _navigationService.navigateTo(Routes.profileView);
+    log.e("Not yet implemented");
   }
 }

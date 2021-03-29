@@ -87,7 +87,7 @@ class HomeCustomAppBarView extends SliverPersistentHeaderDelegate {
                         right: leftPadding,
                         bottom: shrinkPercentage > 0.9 ? 20.0 : 0.0),
                     child: GestureDetector(
-                        onTap: model.navigateToSettingsView,
+                        onTap: () => null,
                         child: Icon(
                           Icons.person_outline_rounded,
                           size: 30,

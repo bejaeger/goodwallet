@@ -7,6 +7,8 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 // widget displaying a particular statistics of the good wallet
 // making it look like a dashboard
 
+// Not used at the moment
+
 class DonationDashboardCard extends StatelessWidget {
   final String subtext;
   final double value;

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
@@ -17,6 +19,14 @@ class ProfileViewModel extends BaseModel {
 
   Future navigateToLoginView() async {
     _navigationService.replaceWith(Routes.loginView);
+  }
+
+  Future navigateToTransactionsHistoryView() async {
+    _navigationService.navigateTo(Routes.transactionHistoryView);
+  }
+
+  Future navigateToManageMoneyPoolsView() async {
+    _navigationService.navigateTo(Routes.manageMoneyPoolsView);
   }
 
   void navigateBack() => _navigationService.back();

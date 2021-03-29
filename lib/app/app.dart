@@ -20,7 +20,8 @@ import 'package:good_wallet/ui/views/money_pools/manage_money_pools_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_cancel_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_success_view.dart';
 import 'package:good_wallet/ui/views/payments/send_money_view.dart';
-import 'package:good_wallet/ui/views/profile/profile_view.dart';
+import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
+import 'package:good_wallet/ui/views/profile/transaction_history_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_viewmodel.dart';
 import 'package:stacked/stacked_annotations.dart';
@@ -43,10 +44,11 @@ import 'package:stacked_services/stacked_services.dart';
     CustomRoute(page: LayoutTemplateViewMobile),
     CustomRoute(page: HomeViewMobile),
     CustomRoute(page: SingleProjectViewMobile),
-    CustomRoute(page: ProfileView),
+    CustomRoute(page: ProfileViewMobile),
     CustomRoute(page: CreateAccountView),
     CustomRoute(page: SingleFeaturedAppView),
     CustomRoute(page: ManageMoneyPoolsView),
+    CustomRoute(page: TransactionHistoryView),
   ],
   dependencies: [
     // Registers all singletons
