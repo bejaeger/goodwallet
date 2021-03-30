@@ -14,6 +14,7 @@ class GoodCausesViewMobile extends StatelessWidget {
       onModelReady: (model) async => await model.fetchProjects(),
       builder: (context, model, child) => Scaffold(
         appBar: AppBar(
+          //backwardsCompatibility: false,
           title: Text("Give you dumbass"),
         ),
         body: model.isBusy

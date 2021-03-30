@@ -224,6 +224,12 @@ class ProfileViewMobile extends StatelessWidget {
                               title: "Donations History",
                               onPressed:
                                   model.navigateToTransactionsHistoryView),
+                          verticalSpaceSmall,
+                          ProfileListItem(
+                              title: "Invite Friends", onPressed: () => null),
+                          verticalSpaceSmall,
+                          ProfileListItem(
+                              title: "Achievements", onPressed: () => null),
                           verticalSpaceMedium,
                           spacedDivider,
                           Center(
@@ -242,6 +248,7 @@ class ProfileViewMobile extends StatelessWidget {
                         ],
                       ),
                     ),
+                    verticalSpaceLarge,
                   ],
                 ),
         );

@@ -11,10 +11,8 @@ import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 import 'package:good_wallet/ui/views/login/login_view.form.dart';
 
 class LoginViewModel extends AuthenticationViewModel {
-  LoginViewModel()
-      : super(
-            successRoute:
-                kIsWeb ? Routes.walletView : Routes.layoutTemplateViewMobile);
+  LoginViewModel() : super(successRoute: Routes.layoutTemplateViewMobile);
+  //    kIsWeb ? Routes.walletView : Routes.layoutTemplateViewMobile);
 
   final NavigationService _navigationService = locator<NavigationService>();
   final log = getLogger("login_viewmodel.dart");

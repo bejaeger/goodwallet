@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/layout_widgets/bottom_sheet_layout.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
+import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/views/home/bottom_sheets/raise_money_bottom_sheet_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -25,22 +27,30 @@ class RaiseMoneyBottomSheetView extends StatelessWidget {
           BottomSheetListEntry(
               completer: completer,
               responseData: model.navigateToAcceptPaymentsView,
-              title: "Accept payments",
-              icon: Icon(Icons.qr_code, size: 28),
+              title: "Get payed into your Good Wallet",
+              icon: Image.asset(ImageIconPaths.handAcceptingMoney,
+                  color: MyColors.paletteBlue),
               description: "Create payment link or QR code"),
           BottomSheetListEntry(
             completer: completer,
             responseData: model.navigateToManageMoneyPoolsView,
-            title: "Manage your money pools",
-            description: "Invite people and raise together",
-            icon: Icon(Icons.people, size: 28),
+            title: "Create money pool",
+            description: "Raise together as a community",
+            icon: Image.asset(ImageIconPaths.circleOfPeople),
           ),
           BottomSheetListEntry(
             completer: completer,
             responseData: "Clicked checkout featured apps",
             title: "Checkout our featured apps",
-            description: "Raise money effortlessly",
-            icon: Icon(Icons.apps, size: 28),
+            description: "Raise effortlessly",
+            icon: Image.asset(ImageIconPaths.appsAroundGlobus),
+          ),
+          BottomSheetListEntry(
+            completer: completer,
+            responseData: "Clicked invite friends",
+            title: "Invite friends",
+            description: "Raise through the Good Wallet referral fund",
+            icon: Image.asset(ImageIconPaths.huggingPeople),
           ),
         ],
       ),

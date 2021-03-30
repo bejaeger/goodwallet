@@ -48,7 +48,14 @@ class LayoutTemplate extends StatelessWidget {
                       ),
               ),
             )
-          : LayoutTemplateViewMobile(),
+          : Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: screenWidth(context),
+                  ),
+                  child: LayoutTemplateViewMobile()),
+            ),
     );
   }
 }

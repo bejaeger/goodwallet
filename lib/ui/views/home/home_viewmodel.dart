@@ -11,7 +11,7 @@ class HomeViewModel extends BaseModel {
   final NavigationService _navigationService = locator<NavigationService>();
 
   Future navigateToDonationView() async {
-    await _navigationService.navigateTo(Routes.layoutTemplateViewMobile,
+    await _navigationService.replaceWith(Routes.layoutTemplateViewMobile,
         arguments: LayoutTemplateViewMobileArguments(
             index: BottomNavigatorIndex.Give.index));
   }

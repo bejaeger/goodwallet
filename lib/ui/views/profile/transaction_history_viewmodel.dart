@@ -22,6 +22,7 @@ class TransactionHistoryViewModel extends BaseModel {
   List<dynamic> walletTransactions;
 
   Future listenToTransactions() async {
+    setBusy(true);
     // Listen to transaction collection if user is logged in otherwise cancel
     // subscription
     // Function to be called in initialization of viewmodel or on onModelReady
@@ -53,9 +54,12 @@ class TransactionHistoryViewModel extends BaseModel {
         }
       },
     );
+    setBusy(false);
   }
 
   Future listenToWalletTransactions() async {
+    setBusy(true);
+
     // Listen to transaction collection if user is logged in otherwise cancel
     // subscription
     // Function to be called in initialization of viewmodel or on onModelReady
@@ -87,6 +91,7 @@ class TransactionHistoryViewModel extends BaseModel {
         }
       },
     );
+    setBusy(false);
   }
 
   void navigateBack() => _navigationService.back();
