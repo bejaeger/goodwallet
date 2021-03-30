@@ -26,7 +26,7 @@ import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
 import '../ui/views/payments/send_money_view.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
-import '../ui/views/profile/transaction_history_view.dart';
+import '../ui/views/transaction_history/transaction_history_view.dart';
 import '../ui/views/wallet/wallet_view.dart';
 
 class Routes {

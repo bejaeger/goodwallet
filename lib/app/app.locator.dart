@@ -17,7 +17,7 @@ import '../services/payments/stripe_payment_service.dart';
 import '../services/userdata/user_data_service.dart';
 import '../ui/views/goodcauses/causes_viewmodel.dart';
 import '../ui/views/layout/navigation_bar_viewmodel.dart';
-import '../ui/views/profile/transaction_history_viewmodel.dart';
+import '../ui/views/transaction_history/transaction_history_viewmodel.dart';
 import '../ui/views/wallet/wallet_viewmodel.dart';
 
 final locator = StackedLocator.instance;

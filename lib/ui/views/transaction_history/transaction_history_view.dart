@@ -4,7 +4,7 @@ import 'package:good_wallet/enums/transaction_type.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/shared/transactions_history_entry_style.dart';
-import 'package:good_wallet/ui/views/profile/transaction_history_viewmodel.dart';
+import 'package:good_wallet/ui/views/transaction_history/transaction_history_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -92,62 +92,59 @@ class _TransactionHistoryViewState extends State<TransactionHistoryView>
                   ),
                 ),
               ),
-              body: RefreshIndicator(
-                onRefresh: () async => await model.initialize(),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: LayoutSettings.horizontalPadding),
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      TransactionsHistoryLayout(
-                        type: TransactionType.InOrOut,
-                        listOfTransactions: model.listOfWalletTransactions,
-                        description: Text(
-                            "Your Good Wallet's incoming and outgoing transactions"),
-                        mainStatisticDisplay: Text(
-                            "Balance: \$ " +
-                                (model.userWallet.currentBalance / 100)
-                                    .toString(),
-                            style: textTheme(context)
-                                .headline2
-                                .copyWith(fontSize: 28)),
-                      ),
-                      TransactionsHistoryLayout(
-                        type: TransactionType.TransferredToPeers,
-                        listOfTransactions: model.listOfTransactionsToPeers,
-                        description: Text("Money you gifted to friends"),
-                        mainStatisticDisplay: Text(
-                            "Total gifted: \$ " +
-                                (model.userWallet.transferredToPeers / 100)
-                                    .toString(),
-                            style: textTheme(context)
-                                .headline2
-                                .copyWith(fontSize: 28)),
-                      ),
-                      TransactionsHistoryLayout(
-                        type: TransactionType.Donation,
-                        listOfTransactions: model.listOfDonations,
-                        description: Text("History of your charitable givings"),
-                        mainStatisticDisplay: Text(
-                            "Total donations: \$ " +
-                                (model.userWallet.donations / 100).toString(),
-                            style: textTheme(context)
-                                .headline2
-                                .copyWith(fontSize: 28)),
-                      ),
-                      TransactionsHistoryLayout(
-                        type: TransactionType.Incoming,
-                        listOfTransactions: model.listOfIncomingTransactions,
-                        description:
-                            Text("Money you raised into your Good Wallet"),
-                        mainStatisticDisplay: Text("Total raised: \$ TBI",
-                            style: textTheme(context)
-                                .headline2
-                                .copyWith(fontSize: 28)),
-                      ),
-                    ],
-                  ),
+              body: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: LayoutSettings.horizontalPadding),
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    TransactionsHistoryLayout(
+                      type: TransactionType.InOrOut,
+                      listOfTransactions: model.listOfWalletTransactions,
+                      description: Text(
+                          "Your Good Wallet's incoming and outgoing transactions"),
+                      mainStatisticDisplay: Text(
+                          "Balance: \$ " +
+                              (model.userWallet.currentBalance / 100)
+                                  .toString(),
+                          style: textTheme(context)
+                              .headline2
+                              .copyWith(fontSize: 28)),
+                    ),
+                    TransactionsHistoryLayout(
+                      type: TransactionType.TransferredToPeers,
+                      listOfTransactions: model.listOfTransactionsToPeers,
+                      description: Text("Money you gifted to friends"),
+                      mainStatisticDisplay: Text(
+                          "Total gifted: \$ " +
+                              (model.userWallet.transferredToPeers / 100)
+                                  .toString(),
+                          style: textTheme(context)
+                              .headline2
+                              .copyWith(fontSize: 28)),
+                    ),
+                    TransactionsHistoryLayout(
+                      type: TransactionType.Donation,
+                      listOfTransactions: model.listOfDonations,
+                      description: Text("History of your charitable givings"),
+                      mainStatisticDisplay: Text(
+                          "Total donations: \$ " +
+                              (model.userWallet.donations / 100).toString(),
+                          style: textTheme(context)
+                              .headline2
+                              .copyWith(fontSize: 28)),
+                    ),
+                    TransactionsHistoryLayout(
+                      type: TransactionType.Incoming,
+                      listOfTransactions: model.listOfIncomingTransactions,
+                      description:
+                          Text("Money you raised into your Good Wallet"),
+                      mainStatisticDisplay: Text("Total raised: \$ TBI",
+                          style: textTheme(context)
+                              .headline2
+                              .copyWith(fontSize: 28)),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -185,49 +182,52 @@ class TransactionsHistoryLayout extends StatelessWidget {
               : Center(child: Text("No transactions on record!"))
           : Shimmer(
               interval: Duration(hours: 1),
-              child: ListView(
-                children: [
-                  verticalSpaceRegular,
-                  Card(
-                    margin: const EdgeInsets.all(0.0),
-                    elevation: 2.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+              child: RefreshIndicator(
+                onRefresh: () => model.initialize(type),
+                child: ListView(
+                  children: [
+                    verticalSpaceRegular,
+                    Card(
+                      margin: const EdgeInsets.all(0.0),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      color: Colors.white,
+                      child: Container(
+                        padding: const EdgeInsets.only(
+                            top: 15.0, bottom: 15.0, left: 10.0),
+                        width: screenWidthWithoutPadding(context),
+                        child: mainStatisticDisplay ?? Container(),
+                      ),
                     ),
-                    color: Colors.white,
-                    child: Container(
-                      padding: const EdgeInsets.only(
-                          top: 15.0, bottom: 15.0, left: 10.0),
-                      width: screenWidthWithoutPadding(context),
-                      child: mainStatisticDisplay ?? Container(),
+                    verticalSpaceRegular,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: screenWidthPercentage(context, percentage: 0.7),
+                        child: description ?? Container(),
+                      ),
                     ),
-                  ),
-                  verticalSpaceRegular,
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: SizedBox(
-                      width: screenWidthPercentage(context, percentage: 0.7),
-                      child: description ?? Container(),
-                    ),
-                  ),
-                  verticalSpaceMediumLarge,
-                  listOfTransactions == null
-                      ? Center(child: CircularProgressIndicator())
-                      : ListView.builder(
-                          itemCount: listOfTransactions.length > maximumLength
-                              ? maximumLength
-                              : listOfTransactions.length,
-                          shrinkWrap: true,
-                          physics: ScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return TransactionListTile(
-                              transactionData: listOfTransactions[index],
-                              style: model.getTransactionsHistoryEntryStyle(
-                                  listOfTransactions[index]),
-                            );
-                          },
-                        ),
-                ],
+                    verticalSpaceMediumLarge,
+                    listOfTransactions == null
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                            itemCount: listOfTransactions.length > maximumLength
+                                ? maximumLength
+                                : listOfTransactions.length,
+                            shrinkWrap: true,
+                            physics: ScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return TransactionListTile(
+                                transactionData: listOfTransactions[index],
+                                style: model.getTransactionsHistoryEntryStyle(
+                                    listOfTransactions[index]),
+                              );
+                            },
+                          ),
+                  ],
+                ),
               ),
             ),
     );

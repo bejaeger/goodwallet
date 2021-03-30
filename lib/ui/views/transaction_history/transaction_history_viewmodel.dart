@@ -37,13 +37,23 @@ class TransactionHistoryViewModel extends BaseModel {
     super.dispose();
   }
 
-  Future<void> initialize() async {
+  Future<void> initialize([TransactionType type]) async {
     setBusy(true);
-    await listenToWalletTransactions();
-    await fetchListOfDonations();
-    await fetchListOfTransactionsToPeers();
-    await fetchListOfIncomingTransactions();
-    await buildListOfWalletTransactions();
+    if (type == null) {
+      await listenToWalletTransactions();
+      await fetchListOfDonations();
+      await fetchListOfTransactionsToPeers();
+      await fetchListOfIncomingTransactions();
+      await buildListOfWalletTransactions();
+    } else if (type == TransactionType.Donation) {
+      fetchListOfDonations();
+    } else if (type == TransactionType.TransferredToPeers) {
+      fetchListOfTransactionsToPeers();
+    } else if (type == TransactionType.Incoming) {
+      fetchListOfIncomingTransactions();
+    } else if (type == TransactionType.InOrOut) {
+      buildListOfWalletTransactions();
+    }
     notifyListeners();
     setBusy(false);
   }
@@ -62,20 +72,15 @@ class TransactionHistoryViewModel extends BaseModel {
   }
 
   Future fetchListOfDonations() async {
-    if (listOfDonations.isEmpty) {
-      listOfDonations = await _userDataService.getListOfDonations();
-      log.i(
-          "Fetched list of donations with length = ${listOfDonations.length}");
-    }
+    listOfDonations = await _userDataService.getListOfDonations();
+    log.i("Fetched list of donations with length = ${listOfDonations.length}");
   }
 
   Future fetchListOfIncomingTransactions() async {
-    if (listOfIncomingTransactions.isEmpty) {
-      listOfIncomingTransactions =
-          await _userDataService.getListOfIncomingTransactions();
-      log.i(
-          "Fetched list of incoming transfers with length = ${listOfIncomingTransactions.length}");
-    }
+    listOfIncomingTransactions =
+        await _userDataService.getListOfIncomingTransactions();
+    log.i(
+        "Fetched list of incoming transfers with length = ${listOfIncomingTransactions.length}");
   }
 
   Future fetchListOfTransactionsToPeers() async {
