@@ -74,33 +74,38 @@ class HomeViewMobile extends StatelessWidget {
                                 Text("Hi " + model.currentUser.fullName,
                                     style: textTheme(context).headline4),
                                 verticalSpaceSmall,
-                                Card(
-                                  elevation: 2.0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  color: Colors.white,
-                                  child: Container(
-                                    padding: const EdgeInsets.only(
-                                        top: 15.0, bottom: 15.0, left: 10.0),
-                                    width: screenWidthWithoutPadding(context) -
-                                        8.0,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                            "\$ " +
-                                                (model.userWallet
-                                                            .currentBalance /
-                                                        100)
-                                                    .toString(),
-                                            style: textTheme(context)
-                                                .headline2
-                                                .copyWith(fontSize: 28)),
-                                        Text(
-                                            "Your current balance to be donated"),
-                                      ],
+                                GestureDetector(
+                                  onTap:
+                                      model.navigateToTransactionsHistoryView,
+                                  child: Card(
+                                    elevation: 2.0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    color: Colors.white,
+                                    child: Container(
+                                      padding: const EdgeInsets.only(
+                                          top: 15.0, bottom: 15.0, left: 10.0),
+                                      width:
+                                          screenWidthWithoutPadding(context) -
+                                              8.0,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              "\$ " +
+                                                  (model.userWallet
+                                                              .currentBalance /
+                                                          100)
+                                                      .toString(),
+                                              style: textTheme(context)
+                                                  .headline2
+                                                  .copyWith(fontSize: 28)),
+                                          Text(
+                                              "Your current balance to be donated"),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

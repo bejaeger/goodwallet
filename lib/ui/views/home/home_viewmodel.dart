@@ -47,4 +47,8 @@ class HomeViewModel extends BaseModel {
   Future navigateToSettingsView() async {
     log.e("Not yet implemented");
   }
+
+  Future navigateToTransactionsHistoryView() async {
+    _navigationService.navigateTo(Routes.transactionHistoryView);
+  }
 }

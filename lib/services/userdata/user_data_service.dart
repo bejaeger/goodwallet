@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/datamodels/payments/donation_model.dart';
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
@@ -29,10 +30,10 @@ class UserDataService {
   final FirebaseAuthenticationService _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
 
-  // controller to expose stream of wallet data and transactions
-  final StreamController<WalletBalancesModel> _balancesStreamController =
-      StreamController<WalletBalancesModel>.broadcast();
+  // controller to expose stream of wallet transactions and payments
   final StreamController<List<dynamic>> _transactionsController =
+      StreamController<List<dynamic>>.broadcast();
+  final StreamController<List<dynamic>> _walletTransactionsController =
       StreamController<List<dynamic>>.broadcast();
 
   // subject to keep track of initialization of user
@@ -175,25 +176,6 @@ class UserDataService {
     }
   }
 
-  // This function is deprecated
-  // Listen to wallet in base_viewmodel instead
-  // Also, easier to use BehaviorSubject
-  Stream listenToBalanceRealTime(var uid) {
-    log.i("Start listening to wallet balances");
-    Stream<DocumentSnapshot> docSnapshot =
-        _usersCollectionReference.doc(uid).snapshots();
-    docSnapshot.listen((userData) {
-      if (userData != null) {
-        _balancesStreamController.add(WalletBalancesModel.fromData({
-          'currentBalance': userData["balance"] as double,
-          'donations': userData["donations"] as double,
-          'transferredToPeers': userData["implicitDonations"] as double,
-        }));
-      }
-    });
-    return _balancesStreamController.stream;
-  }
-
   Stream listenToTransactionsRealTime() {
     // Function listening to payments collections
     // where user is found in senderUid or recipientUid
@@ -208,6 +190,7 @@ class UserDataService {
 
     // There is no OR query for different fields in firebase
     // Get single streams and combine later with rxDart
+
     Stream<QuerySnapshot> outgoing = _paymentsCollectionReference
         .where("senderUid", isEqualTo: currentUser.id)
         .orderBy("createdAt",
@@ -257,6 +240,74 @@ class UserDataService {
     });
     // return stream from controller
     return _transactionsController.stream;
+  }
+
+  Stream listenToWalletTransactionsRealTime() {
+    // Function listening to collections to fetch
+    // incoming and outgoing (donations) money of the Good Wallet
+
+    // TODO: Add limit to this query and only load more
+    // when user asks for it!
+    // keyword: pagination
+    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
+
+    if (userStateSubject.value != UserStatus.Initialized)
+      log.i("User not initialized, the following code will break");
+
+    // There is no OR query for different fields in firebase
+    // Get single streams and combine later with rxDart
+
+    // outgoing = donations
+    Stream<QuerySnapshot> outgoing = _usersCollectionReference
+        .doc(_currentUser.id)
+        .collection("donations")
+        .orderBy("createdAt",
+            descending: true) // already added because needed with limit!
+        .snapshots();
+    Stream<QuerySnapshot> incoming = _paymentsCollectionReference
+        .where("recipientUid", isEqualTo: currentUser.id)
+        .orderBy("createdAt", descending: true)
+        .snapshots();
+
+    // combine streams with rxdart
+    Stream<List<dynamic>> transactionStream =
+        Rx.combineLatest2(outgoing, incoming, (outSnapshot, inSnapshot) {
+      // list of transactions to be returned
+      List<dynamic> transactions = <dynamic>[];
+
+      if (outSnapshot.docs.isNotEmpty) {
+        transactions.addAll(outSnapshot.docs
+            .map((snapshot) => DonationModel.fromMap(snapshot.data()))
+            .toList());
+      }
+      if (inSnapshot.docs.isNotEmpty) {
+        List<dynamic> inTransactions = inSnapshot.docs
+            .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
+            .toList();
+        List<dynamic> transactionIds =
+            transactions.map((element) => element.transactionId).toList();
+        inTransactions.forEach((element) {
+          // Add logic to find top ups (transactions to own account!)
+          // Can be deprecated once data is already stored accordingly with topUp = true!
+          if (!transactionIds.contains(element.transactionId)) {
+            transactions.add(element);
+          } else {
+            element.topUp = true;
+            transactions.removeWhere(
+                (el2) => el2.transactionId == element.transactionId);
+            transactions.add(element);
+          }
+        });
+      }
+
+      return transactions;
+    });
+    // listen to combined stream and add transactions to controller
+    transactionStream.listen((transactions) {
+      _walletTransactionsController.add(transactions);
+    });
+    // return stream from controller
+    return _walletTransactionsController.stream;
   }
 
   Future handleLogoutEvent() async {

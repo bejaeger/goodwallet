@@ -47,29 +47,66 @@ class ProfileViewMobile extends StatelessWidget {
   }
 
   Widget _buildStatus(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 6.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(4.0),
-      ),
-      child: Text(
-        "Member since 7/21",
+    return Text(
+      "Member since 7/21",
+    );
+  }
+
+  Widget _buildWallet(BuildContext context) {
+    return GestureDetector(
+      onTap: _model.navigateToTransactionsHistoryView,
+      child: Card(
+        color: Colors.white,
+        elevation: 2.0,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        child: Container(
+          padding: const EdgeInsets.all(8.0),
+          width: 125,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.account_balance_wallet,
+                      color: ColorSettings.blackTextColor),
+                  // Text("Balance:",
+                  //     style: textTheme(context)
+                  //         .bodyText2
+                  //         .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+                  horizontalSpaceSmall,
+                  Text(
+                    "\$ " + (_model.userWallet.currentBalance / 100).toString(),
+                    style: textTheme(context)
+                        .bodyText2
+                        .copyWith(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                ],
+              ),
+              //Text("Current balance"),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildStatItem(BuildContext context, String label, String count) {
+  Widget _buildStatItem(
+      BuildContext context, String label, String count, Color color) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      //crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
           count,
-          style: textTheme(context)
-              .bodyText2
-              .copyWith(fontWeight: FontWeight.bold, fontSize: 20),
+          style: textTheme(context).bodyText2.copyWith(
+              fontWeight: FontWeight.bold, fontSize: 18, color: color),
         ),
-        Text(label),
+        Text(
+          label,
+          style: textTheme(context).bodyText2.copyWith(color: color),
+        ),
       ],
     );
   }
@@ -82,20 +119,55 @@ class ProfileViewMobile extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
+          //stops: [0.0, 0.5, 1.0],
           colors: [
-            MyColors.paletteBlue.withOpacity(0.10),
-            MyColors.paletteBlue.withOpacity(0.10)
+            MyColors.lightRed.withOpacity(0.15),
+            //MyColors.paletteBlue.withOpacity(0.20),
+            MyColors.lightRed.withOpacity(0.15)
           ],
         ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          _buildStatItem(context, "Total donations",
-              "\$ " + (_model.userWallet.donations / 100).toString()),
-          _buildStatItem(context, "Total gifted",
-              "\$ " + (_model.userWallet.transferredToPeers / 100).toString()),
-          //_buildStatItem("", _scores),
+          _buildStatItem(
+              context,
+              "Total donations",
+              "\$ " + (_model.userWallet.donations / 100).toString(),
+              ColorSettings.primaryColor),
+          // _buildStatItem(
+          //     context,
+          //     "Current balance",
+          //     "\$ " + (_model.userWallet.currentBalance / 100).toString(),
+          //     ColorSettings.blackTextColor),
+          _buildStatItem(
+              context,
+              "Total gifted",
+              "\$ " + (_model.userWallet.transferredToPeers / 100).toString(),
+              ColorSettings.primaryColor),
+
+          // Row(
+          //   mainAxisSize: MainAxisSize.min,
+          //   children: [
+          //     Icon(Icons.favorite, size: 30),
+          //     horizontalSpaceSmall,
+          //     _buildStatItem(context, "Total donations",
+          //         "\$ " + (_model.userWallet.donations / 100).toString()),
+          //   ],
+          // ),
+          // Row(
+          //   mainAxisSize: MainAxisSize.min,
+          //   children: [
+          //     Icon(Icons.send_rounded, size: 30),
+          //     horizontalSpaceSmall,
+          //     _buildStatItem(
+          //         context,
+          //         "Total gifted",
+          //         "\$ " +
+          //             (_model.userWallet.transferredToPeers / 100).toString()),
+          //     //_buildStatItem("", _scores),
+          //   ],
+          // ),
         ],
       ),
     );
@@ -133,6 +205,7 @@ class ProfileViewMobile extends StatelessWidget {
                             _buildProfileImage(),
                             _buildFullName(context),
                             _buildStatus(context),
+                            _buildWallet(context),
                             _buildStatContainer(context),
                           ],
                         ),
@@ -144,18 +217,13 @@ class ProfileViewMobile extends StatelessWidget {
                       child: Column(
                         children: [
                           ProfileListItem(
-                              title: "Donation History",
-                              onPressed:
-                                  model.navigateToTransactionsHistoryView),
-                          verticalSpaceSmall,
-                          ProfileListItem(
-                              title: "Transaction History",
-                              onPressed:
-                                  model.navigateToTransactionsHistoryView),
-                          verticalSpaceSmall,
-                          ProfileListItem(
-                              title: "Manage Money Pools",
+                              title: "Your Money Pools",
                               onPressed: model.navigateToManageMoneyPoolsView),
+                          verticalSpaceSmall,
+                          ProfileListItem(
+                              title: "Donations History",
+                              onPressed:
+                                  model.navigateToTransactionsHistoryView),
                           verticalSpaceMedium,
                           spacedDivider,
                           Center(
@@ -192,8 +260,9 @@ class ProfileListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          border: Border.all(width: 0.5),
-          borderRadius: BorderRadius.circular(10.0)),
+        border: Border.all(width: 0.5),
+        borderRadius: BorderRadius.circular(10.0),
+      ),
       child: ListTile(
         title: Text(title,
             style: textTheme(context).headline6.copyWith(fontSize: 20)),

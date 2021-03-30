@@ -226,7 +226,7 @@ class StackedRouter extends RouterBase {
     TransactionHistoryView: (data) {
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            const TransactionHistoryView(),
+            TransactionHistoryView(),
         settings: data,
       );
     },
