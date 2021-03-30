@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/enums/transaction_type.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
+import 'package:good_wallet/ui/shared/transactions_history_entry_style.dart';
 import 'package:good_wallet/ui/views/profile/transaction_history_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +11,10 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:stacked/stacked.dart';
 
 class TransactionHistoryView extends StatefulWidget {
+  final TransactionType historyType; // used for initial value of tab controller
+  const TransactionHistoryView(
+      {Key key, this.historyType = TransactionType.InOrOut})
+      : super(key: key); //
   @override
   _TransactionHistoryViewState createState() => _TransactionHistoryViewState();
 }
@@ -20,25 +26,30 @@ class _TransactionHistoryViewState extends State<TransactionHistoryView>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(
+        length: 4, vsync: this, initialIndex: widget.historyType.index);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<TransactionHistoryViewModel>.reactive(
-      viewModelBuilder: () => TransactionHistoryViewModel(),
+      viewModelBuilder: () => locator<TransactionHistoryViewModel>(),
+      disposeViewModel: false,
+      fireOnModelReadyOnce: true,
       onModelReady: (model) async {
-        model.setBusy(true);
-        await model.listenToTransactions();
-        await model.listenToWalletTransactions();
-        model.setBusy(false);
-        return null;
+        await model.initialize();
       },
       builder: (context, model, child) => model.isBusy
           ? Center(child: CircularProgressIndicator())
           : Scaffold(
               appBar: AppBar(
-                title: Text("Donations & Transactions"),
+                title: Text("Donations & Transactions History"),
                 bottom: PreferredSize(
                   preferredSize: Size(screenWidth(context), 60.0),
                   child: Container(
@@ -49,6 +60,9 @@ class _TransactionHistoryViewState extends State<TransactionHistoryView>
                         Container(
                             width: screenWidth(context) * 0.2,
                             child: Tab(text: "Good Wallet")),
+                        Container(
+                            width: screenWidth(context) * 0.2,
+                            child: Tab(text: "Gifted")),
                         Container(
                           width: screenWidth(context) * 0.2,
                           child: Row(
@@ -72,207 +86,203 @@ class _TransactionHistoryViewState extends State<TransactionHistoryView>
                         ),
                         Container(
                             width: screenWidth(context) * 0.2,
-                            child: Tab(text: "Raised & Pledged")),
-                        // Container(
-                        //     width: screenWidth(context) * 0.2,
-                        //     child: Tab(text: "Pledged")),
+                            child: Tab(text: "Raised")),
                       ],
                     ),
                   ),
                 ),
               ),
-              body: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: LayoutSettings.horizontalPadding),
-                child: model.transactions == null
-                    ? model.isBusy
-                        ? Center(child: CircularProgressIndicator())
-                        : Center(child: Text("No transactions on record!"))
-                    : //formattedListOfTransactions(model),
-                    TabBarView(
-                        controller: _tabController,
-                        children: [
-                          formattedListOfTransactions(
-                              context, model, TransactionType.InOrOut),
-                          formattedListOfTransactions(
-                              context, model, TransactionType.Outgoing),
-                          formattedListOfTransactions(
-                              context, model, TransactionType.InOrTransferred),
-                          // formattedListOfTransactions(
-                          //     model, TransactionType.TransferredToPeers),
-                        ],
+              body: RefreshIndicator(
+                onRefresh: () async => await model.initialize(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: LayoutSettings.horizontalPadding),
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      TransactionsHistoryLayout(
+                        type: TransactionType.InOrOut,
+                        listOfTransactions: model.listOfWalletTransactions,
+                        description: Text(
+                            "Your Good Wallet's incoming and outgoing transactions"),
+                        mainStatisticDisplay: Text(
+                            "Balance: \$ " +
+                                (model.userWallet.currentBalance / 100)
+                                    .toString(),
+                            style: textTheme(context)
+                                .headline2
+                                .copyWith(fontSize: 28)),
                       ),
+                      TransactionsHistoryLayout(
+                        type: TransactionType.TransferredToPeers,
+                        listOfTransactions: model.listOfTransactionsToPeers,
+                        description: Text("Money you gifted to friends"),
+                        mainStatisticDisplay: Text(
+                            "Total gifted: \$ " +
+                                (model.userWallet.transferredToPeers / 100)
+                                    .toString(),
+                            style: textTheme(context)
+                                .headline2
+                                .copyWith(fontSize: 28)),
+                      ),
+                      TransactionsHistoryLayout(
+                        type: TransactionType.Donation,
+                        listOfTransactions: model.listOfDonations,
+                        description: Text("History of your charitable givings"),
+                        mainStatisticDisplay: Text(
+                            "Total donations: \$ " +
+                                (model.userWallet.donations / 100).toString(),
+                            style: textTheme(context)
+                                .headline2
+                                .copyWith(fontSize: 28)),
+                      ),
+                      TransactionsHistoryLayout(
+                        type: TransactionType.Incoming,
+                        listOfTransactions: model.listOfIncomingTransactions,
+                        description:
+                            Text("Money you raised into your Good Wallet"),
+                        mainStatisticDisplay: Text("Total raised: \$ TBI",
+                            style: textTheme(context)
+                                .headline2
+                                .copyWith(fontSize: 28)),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
     );
   }
+}
 
-  Widget formattedListOfTransactions(BuildContext context,
-      TransactionHistoryViewModel model, TransactionType type) {
-    return Shimmer(
-      interval: Duration(hours: 1),
-      child: ListView(
-        children: [
-          verticalSpaceRegular,
-          if (type == TransactionType.InOrOut)
-            Card(
-              margin: const EdgeInsets.all(0.0),
-              elevation: 2.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              color: Colors.white,
-              child: Container(
-                padding:
-                    const EdgeInsets.only(top: 15.0, bottom: 15.0, left: 10.0),
-                width: screenWidthWithoutPadding(context) - 8.0,
-                child: Text(
-                    "Balance: \$ " +
-                        (model.userWallet.currentBalance / 100).toString(),
-                    style: textTheme(context).headline2.copyWith(fontSize: 28)),
-              ),
-            ),
-          verticalSpaceRegular,
-          if (type == TransactionType.InOrOut)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: SizedBox(
-                width: screenWidthPercentage(context, percentage: 0.7),
-                child: Text(
-                    "Your Good Wallet's incoming and outgoing transactions"),
-              ),
-            ),
-          verticalSpaceMediumLarge,
-          model.transactions == null || model.walletTransactions == null
+class TransactionsHistoryLayout extends StatelessWidget {
+  final TransactionType type;
+  final List<dynamic> listOfTransactions;
+  final Widget mainStatisticDisplay;
+  final int maximumLength;
+  final String userName;
+  final Widget description;
+
+  const TransactionsHistoryLayout(
+      {Key key,
+      @required this.type,
+      @required this.listOfTransactions,
+      this.mainStatisticDisplay,
+      this.maximumLength = 5,
+      this.userName,
+      this.description})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<TransactionHistoryViewModel>.reactive(
+      viewModelBuilder: () => locator<TransactionHistoryViewModel>(),
+      disposeViewModel: false,
+      fireOnModelReadyOnce: true,
+      builder: (context, model, child) => listOfTransactions == null
+          ? model.isBusy
               ? Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                  itemCount: model.transactions.length > 3
-                      ? 3
-                      : model.transactions.length,
-                  shrinkWrap: true,
-                  physics: ScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    if (type == TransactionType.InOrTransferred) {
-                      var hist = model.transactions[index];
-                      var incoming =
-                          (hist.recipientName == model.currentUser.fullName);
-                      var color = incoming
-                          ? MyColors.paletteTurquoise
-                          : Colors.grey[700];
-                      var amountFormatted = "\$ ${hist.amount * 0.01}";
-                      var nameToDisplay =
-                          incoming ? hist.senderName : hist.recipientName;
-                      if (hist.topUp != null) {
-                        if (hist.topUp) {
-                          nameToDisplay = "Committed for good";
-                        }
-                      }
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            leading: CircleAvatar(
-                              backgroundColor: color,
-                              child: Text('${hist.recipientName[0]}',
-                                  style: TextStyle(color: Colors.white)),
-                            ),
-                            // FlutterLogo(),
-                            title: Text(nameToDisplay),
-                            subtitle: hist.createdAt != null
-                                //https://api.flutter.dev/flutter/intl/DateFormat-class.html
-                                ? Text(DateFormat.MMMEd()
-                                    //.add_jm()
-                                    .format(hist.createdAt.toDate()))
-                                : Text(""),
-                            trailing: Text(amountFormatted,
-                                style: TextStyle(color: color)),
-                          ),
-                          Divider(
-                            color: Colors.grey[500],
-                            thickness: 0.5,
-                          ),
-                        ],
-                      );
-                    } else if (type == TransactionType.InOrOut) {
-                      var hist = model.walletTransactions[index];
-                      bool isDonation;
-                      try {
-                        var pName_tmp = hist.projectName;
-                        isDonation = true;
-                      } catch (e) {
-                        isDonation = false;
-                      }
+              : Center(child: Text("No transactions on record!"))
+          : Shimmer(
+              interval: Duration(hours: 1),
+              child: ListView(
+                children: [
+                  verticalSpaceRegular,
+                  Card(
+                    margin: const EdgeInsets.all(0.0),
+                    elevation: 2.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    color: Colors.white,
+                    child: Container(
+                      padding: const EdgeInsets.only(
+                          top: 15.0, bottom: 15.0, left: 10.0),
+                      width: screenWidthWithoutPadding(context),
+                      child: mainStatisticDisplay ?? Container(),
+                    ),
+                  ),
+                  verticalSpaceRegular,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: SizedBox(
+                      width: screenWidthPercentage(context, percentage: 0.7),
+                      child: description ?? Container(),
+                    ),
+                  ),
+                  verticalSpaceMediumLarge,
+                  listOfTransactions == null
+                      ? Center(child: CircularProgressIndicator())
+                      : ListView.builder(
+                          itemCount: listOfTransactions.length > maximumLength
+                              ? maximumLength
+                              : listOfTransactions.length,
+                          shrinkWrap: true,
+                          physics: ScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return TransactionListTile(
+                              transactionData: listOfTransactions[index],
+                              style: model.getTransactionsHistoryEntryStyle(
+                                  listOfTransactions[index]),
+                            );
+                          },
+                        ),
+                ],
+              ),
+            ),
+    );
+  }
+}
 
-                      var color = isDonation
-                          ? MyColors.primaryRed
-                          : MyColors.paletteTurquoise;
-                      var amountFormatted = "\$ ${hist.amount * 0.01}";
-                      var descriptionToDisplay =
-                          isDonation ? "Donated to" : "Received from";
-                      var nameToDisplay =
-                          isDonation ? hist.projectName : hist.senderName;
+class TransactionListTile extends StatelessWidget {
+  final dynamic transactionData;
+  final TransactionHistoryEntryStyle style;
 
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            leading: CircleAvatar(
-                              backgroundColor: color.withOpacity(0.9),
-                              child: isDonation
-                                  ? Icon(Icons.favorite,
-                                      color: ColorSettings.primaryColorLight)
-                                  : Icon(Icons.people_rounded,
-                                      color: ColorSettings.whiteTextColor),
-                            ),
-                            // FlutterLogo(),
-                            title: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (descriptionToDisplay != null)
-                                  Text(
-                                    descriptionToDisplay,
-                                    style:
-                                        textTheme(context).bodyText2.copyWith(
-                                              fontSize: 15,
-                                            ),
-                                  ),
-                                Text(nameToDisplay,
-                                    style: textTheme(context)
-                                        .headline6
-                                        .copyWith(fontSize: 16)),
-                              ],
-                            ),
-                            subtitle: hist.createdAt != null
-                                //https://api.flutter.dev/flutter/intl/DateFormat-class.html
-                                ? Text(
-                                    DateFormat.MMMEd()
-                                        //.add_jm()
-                                        .format(hist.createdAt.toDate()),
-                                    style:
-                                        textTheme(context).bodyText2.copyWith(
-                                              fontSize: 15,
-                                            ),
-                                  )
-                                : Text(""),
-                            trailing: Text(amountFormatted,
-                                style: TextStyle(color: color)),
-                          ),
-                          Divider(
-                            color: Colors.grey[500],
-                            thickness: 0.5,
-                          ),
-                        ],
-                      );
-                    }
-                    return null;
-                  },
+  const TransactionListTile(
+      {Key key, @required this.transactionData, @required this.style})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var amountFormatted = "\$ ${transactionData.amount * 0.01}";
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListTile(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          leading: CircleAvatar(
+              backgroundColor: style.color.withOpacity(0.9), child: style.icon),
+          // FlutterLogo(),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (style.descriptor != null)
+                Text(
+                  style.descriptor,
+                  style: textTheme(context).bodyText2.copyWith(
+                        fontSize: 15,
+                      ),
                 ),
-        ],
-      ),
+              Text(style.nameToDisplay,
+                  style: textTheme(context).headline6.copyWith(fontSize: 16)),
+            ],
+          ),
+          // @see https://api.flutter.dev/flutter/intl/DateFormat-class.html
+          //.add_jm()
+          subtitle: Text(
+            DateFormat.MMMEd().format(transactionData.createdAt.toDate()),
+            style: textTheme(context).bodyText2.copyWith(
+                  fontSize: 15,
+                ),
+          ),
+          trailing: Text(amountFormatted, style: TextStyle(color: style.color)),
+        ),
+        Divider(
+          color: Colors.grey[500],
+          thickness: 0.5,
+        ),
+      ],
     );
   }
 }

@@ -11,6 +11,7 @@ import 'package:stacked/stacked.dart';
 
 import '../datamodels/goodcauses/global_giving_project_model.dart';
 import '../enums/featured_app_type.dart';
+import '../enums/transaction_type.dart';
 import '../ui/views/featured_applications/single_featured_app_view.dart';
 import '../ui/views/goodcauses/causes_view.dart';
 import '../ui/views/goodcauses/single_project_view_mobile.dart';
@@ -224,9 +225,15 @@ class StackedRouter extends RouterBase {
       );
     },
     TransactionHistoryView: (data) {
+      var args = data.getArgs<TransactionHistoryViewArguments>(
+        orElse: () => TransactionHistoryViewArguments(),
+      );
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            TransactionHistoryView(),
+            TransactionHistoryView(
+          key: args.key,
+          historyType: args.historyType,
+        ),
         settings: data,
       );
     },
@@ -284,4 +291,12 @@ class SingleFeaturedAppViewArguments {
   final Key key;
   final FeaturedAppType type;
   SingleFeaturedAppViewArguments({this.key, @required this.type});
+}
+
+/// TransactionHistoryView arguments holder class
+class TransactionHistoryViewArguments {
+  final Key key;
+  final TransactionType historyType;
+  TransactionHistoryViewArguments(
+      {this.key, this.historyType = TransactionType.InOrOut});
 }

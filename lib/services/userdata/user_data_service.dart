@@ -164,12 +164,6 @@ class UserDataService {
           }));
         }
       });
-      // var userData = await _usersCollectionReference.doc(uid).get();
-      // userWalletSubject.add(WalletBalancesModel.fromData({
-      //   'currentBalance': userData["balance"] as num,
-      //   'donations': userData["donations"] as num,
-      //   'transferredToPeers': userData["implicitDonations"] as num,
-      // }));
     } catch (e) {
       log.e("Error updating user wallet: ${e.toString()}");
       rethrow;
@@ -308,6 +302,108 @@ class UserDataService {
     });
     // return stream from controller
     return _walletTransactionsController.stream;
+  }
+
+  Future<List<dynamic>> getListOfDonations() async {
+    // TODO: Add limit to this query and only load more
+    // when user asks for it!
+    // keyword: pagination
+    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
+
+    if (userStateSubject.value != UserStatus.Initialized)
+      log.i("User not initialized, the following code will break!");
+
+    List<dynamic> listOfDonations = <dynamic>[];
+
+    QuerySnapshot donationsSnapshot = await _usersCollectionReference
+        .doc(_currentUser.id)
+        .collection("donations")
+        .orderBy("createdAt", descending: true)
+        .get();
+    if (donationsSnapshot != null) {
+      if (donationsSnapshot.docs.isNotEmpty) {
+        listOfDonations.addAll(donationsSnapshot.docs
+            .map((snapshot) => DonationModel.fromMap(snapshot.data()))
+            .toList());
+      } else {
+        log.e("Snapshot of donations collectoin is empty");
+      }
+    } else {
+      log.e(
+          "Donations could not be retrieved, check how you access the firestore collections");
+    }
+
+    return listOfDonations;
+  }
+
+  Future<List<dynamic>> getListOfTransactionsToPeers() async {
+    // TODO: Add limit to this query and only load more
+    // when user asks for it!
+    // keyword: pagination
+    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
+
+    if (userStateSubject.value != UserStatus.Initialized)
+      log.i("User not initialized, the following code will break!");
+
+    List<dynamic> listOfTransactionsToPeers = <dynamic>[];
+    QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
+        .where("senderUid", isEqualTo: currentUser.id)
+        .orderBy("createdAt",
+            descending: true) // already added because needed with limit!
+        .get();
+    if (transactionsSnapshot != null) {
+      if (transactionsSnapshot.docs.isNotEmpty) {
+        try {
+          listOfTransactionsToPeers.addAll(transactionsSnapshot.docs
+              .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
+              .toList());
+        } catch (e) {
+          log.e("Could not map firestore data into TransactionModel");
+        }
+      } else {
+        log.e("Snapshot of donations collecton is empty");
+      }
+    } else {
+      log.e(
+          "Donations could not be retrieved, check how you access the firestore collections");
+    }
+
+    return listOfTransactionsToPeers;
+  }
+
+  Future<List<dynamic>> getListOfIncomingTransactions() async {
+    // TODO: Add limit to this query and only load more
+    // when user asks for it!
+    // keyword: pagination
+    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
+
+    if (userStateSubject.value != UserStatus.Initialized)
+      log.i("User not initialized, the following code will break!");
+
+    List<dynamic> listOfTransactions = <dynamic>[];
+    QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
+        .where("recipientUid", isEqualTo: currentUser.id)
+        .orderBy("createdAt",
+            descending: true) // already added because needed with limit!
+        .get();
+    if (transactionsSnapshot != null) {
+      if (transactionsSnapshot.docs.isNotEmpty) {
+        try {
+          listOfTransactions.addAll(transactionsSnapshot.docs
+              .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
+              .toList());
+        } catch (e) {
+          log.e("Could not map firestore data into TransactionModel");
+        }
+      } else {
+        log.e("Snapshot of donations collectin is empty");
+      }
+    } else {
+      log.e(
+          "Donations could not be retrieved, check how you access the firestore collections");
+    }
+
+    return listOfTransactions;
   }
 
   Future handleLogoutEvent() async {

@@ -48,7 +48,8 @@ class LayoutTemplate extends StatelessWidget {
                       ),
               ),
             )
-          : Align(
+          : Scaffold(
+            body: Align(
               alignment: Alignment.topCenter,
               child: ConstrainedBox(
                   constraints: BoxConstraints(
@@ -56,6 +57,7 @@ class LayoutTemplate extends StatelessWidget {
                   ),
                   child: LayoutTemplateViewMobile()),
             ),
+          ),
     );
   }
 }

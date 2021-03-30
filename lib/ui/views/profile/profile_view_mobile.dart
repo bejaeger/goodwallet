@@ -217,13 +217,14 @@ class ProfileViewMobile extends StatelessWidget {
                       child: Column(
                         children: [
                           ProfileListItem(
-                              title: "Your Money Pools",
-                              onPressed: model.navigateToManageMoneyPoolsView),
+                            title: "Your Money Pools",
+                            onPressed: model.navigateToManageMoneyPoolsView,
+                          ),
                           verticalSpaceSmall,
                           ProfileListItem(
-                              title: "Donations History",
-                              onPressed:
-                                  model.navigateToTransactionsHistoryView),
+                            title: "Donations History",
+                            onPressed: model.navigateToDonationsHistoryView,
+                          ),
                           verticalSpaceSmall,
                           ProfileListItem(
                               title: "Invite Friends", onPressed: () => null),
@@ -239,8 +240,11 @@ class ProfileViewMobile extends StatelessWidget {
                                     percentage: 0.6),
                               ),
                               child: ElevatedButton(
-                                child: Text("Logout",
-                                    style: textTheme(context).headline5),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("Logout",
+                                      style: textTheme(context).headline5),
+                                ),
                                 onPressed: model.logout,
                               ),
                             ),

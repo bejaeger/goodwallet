@@ -22,6 +22,7 @@ import 'package:good_wallet/ui/views/payments/payment_success_view.dart';
 import 'package:good_wallet/ui/views/payments/send_money_view.dart';
 import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
 import 'package:good_wallet/ui/views/profile/transaction_history_view.dart';
+import 'package:good_wallet/ui/views/profile/transaction_history_viewmodel.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_viewmodel.dart';
 import 'package:stacked/stacked_annotations.dart';
@@ -55,12 +56,17 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(classType: NavigationService),
     LazySingleton(classType: DialogService),
     LazySingleton(classType: BottomSheetService),
-    LazySingleton(classType: NavigationBarViewModel),
     LazySingleton(classType: FirestorePaymentDataService),
     LazySingleton(classType: StripePaymentService),
-    LazySingleton(classType: WalletViewModel),
     LazySingleton(classType: GlobalGivingAPIService),
+
+    // viewmodels
+    LazySingleton(classType: WalletViewModel),
     LazySingleton(classType: CausesViewModel),
+    LazySingleton(classType: TransactionHistoryViewModel),
+    // TODO: Check whether this is deprecated
+    LazySingleton(classType: NavigationBarViewModel),
+
     LazySingleton(
       classType: FirebaseAuthenticationService,
     ),

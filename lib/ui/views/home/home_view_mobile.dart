@@ -32,6 +32,7 @@ class HomeViewMobile extends StatelessWidget {
                   //   pinned: true,
                   // ),
                   SliverAppBar(
+                    automaticallyImplyLeading: false,
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

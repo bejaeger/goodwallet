@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/enums/transaction_type.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -19,6 +20,12 @@ class ProfileViewModel extends BaseModel {
 
   Future navigateToLoginView() async {
     _navigationService.replaceWith(Routes.loginView);
+  }
+
+  Future navigateToDonationsHistoryView() async {
+    _navigationService.navigateTo(Routes.transactionHistoryView,
+        arguments: TransactionHistoryViewArguments(
+            historyType: TransactionType.Donation));
   }
 
   Future navigateToTransactionsHistoryView() async {
