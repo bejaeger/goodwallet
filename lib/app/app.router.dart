@@ -24,6 +24,7 @@ import '../ui/views/money_pools/manage_money_pools_view.dart';
 import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
 import '../ui/views/payments/send_money_view.dart';
+import '../ui/views/payments/send_money_view_mobile.dart';
 import '../ui/views/profile/profile_view.dart';
 import '../ui/views/wallet/wallet_view.dart';
 
@@ -43,6 +44,7 @@ class Routes {
   static const String createAccountView = '/create-account-view';
   static const String singleFeaturedAppView = '/single-featured-app-view';
   static const String manageMoneyPoolsView = '/manage-money-pools-view';
+  static const String sendMoneyViewMobile = '/send-money-view-mobile';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -59,6 +61,7 @@ class Routes {
     createAccountView,
     singleFeaturedAppView,
     manageMoneyPoolsView,
+    sendMoneyViewMobile,
   };
 }
 
@@ -81,6 +84,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.createAccountView, page: CreateAccountView),
     RouteDef(Routes.singleFeaturedAppView, page: SingleFeaturedAppView),
     RouteDef(Routes.manageMoneyPoolsView, page: ManageMoneyPoolsView),
+    RouteDef(Routes.sendMoneyViewMobile, page: SendMoneyViewMobile),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -218,10 +222,17 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    SendMoneyViewMobile: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            SendMoneyViewMobile(),
+        settings: data,
+      );
+    },
   };
 }
 
-/// ************************************************************************
+/// ******************x******************************************************
 /// Arguments holder classes
 /// *************************************************************************
 

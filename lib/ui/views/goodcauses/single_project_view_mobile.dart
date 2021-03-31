@@ -5,7 +5,6 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 final _donationAmountController = TextEditingController();
-var userGoodDollarsSavings = 2000;
 
 class SingleProjectViewMobile extends StatelessWidget {
   final GlobalGivingProjectModel project;
