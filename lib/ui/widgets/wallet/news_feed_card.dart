@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/style/colors.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 
 class FeedCard extends StatelessWidget {
   final String title;
@@ -49,7 +49,7 @@ class FeedCard extends StatelessWidget {
             alignment: MainAxisAlignment.spaceBetween,
             children: [
               FlatButton(
-                textColor: ATLASblue,
+                textColor: MyColors.paletteBlue,
                 onPressed: () {
                   // Perform some action
                 },

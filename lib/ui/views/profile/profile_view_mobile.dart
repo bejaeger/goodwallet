@@ -230,6 +230,9 @@ class ProfileViewMobile extends StatelessWidget {
                               title: "Invite Friends", onPressed: () => null),
                           verticalSpaceSmall,
                           ProfileListItem(
+                              title: "Contacts", onPressed: () => null),
+                          verticalSpaceSmall,
+                          ProfileListItem(
                               title: "Achievements", onPressed: () => null),
                           verticalSpaceMedium,
                           spacedDivider,

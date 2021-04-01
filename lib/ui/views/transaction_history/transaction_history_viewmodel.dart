@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/enums/transaction_type.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
-import 'package:good_wallet/ui/shared/color_settings.dart';
+import 'package:good_wallet/style/transactions_history_entry_style.dart';
 import 'package:good_wallet/ui/shared/transactions_history_entry_style.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -93,6 +92,9 @@ class TransactionHistoryViewModel extends BaseModel {
   TransactionType inferTransactionType(dynamic transactionData) {
     // helper function that figures out transaction
     // type based on transaction data
+
+    // TODO: Add logic for top-up
+
     TransactionType type;
     var tmpVar;
     try {
@@ -117,32 +119,20 @@ class TransactionHistoryViewModel extends BaseModel {
   void navigateBack() => _navigationService.back();
 
   TransactionHistoryEntryStyle getTransactionsHistoryEntryStyle(dynamic data) {
+    // function that retrieves the style for an entry in a transactions history
+    // First, it figures out the type of transaction, then the style is retrieved
+
     TransactionType type = inferTransactionType(data);
-    if (type == TransactionType.Donation) {
-      return TransactionHistoryEntryStyle(
-          color: ColorSettings.primaryColor,
-          descriptor: "Donated to",
-          nameToDisplay: data.projectName,
-          icon: Icon(Icons.favorite, color: ColorSettings.primaryColorLight));
-    } else if (type == TransactionType.Incoming) {
-      return TransactionHistoryEntryStyle(
-          color: MyColors.paletteTurquoise,
-          descriptor: "Reveiced from",
-          nameToDisplay: data.senderName,
-          icon:
-              Icon(Icons.people_rounded, color: ColorSettings.whiteTextColor));
-    } else if (type == TransactionType.TransferredToPeers) {
-      return TransactionHistoryEntryStyle(
-          color: ColorSettings.primaryColorLight,
-          descriptor: "Gifted to",
-          nameToDisplay: data.recipientName,
-          icon: Icon(Icons.person, color: ColorSettings.whiteTextColor));
+    // top-level function to get style (to avoid defining styles in viewmodels)
+    TransactionHistoryEntryStyle style =
+        getTransactionsHistoryEntryStyleFromType(type, data);
+    if (style == null) {
+      log.e("Could not find proper style for transaction list tile!");
     }
-    log.e("Could not find proper style for transaction list tile!");
-    return null;
+    return style;
   }
 
-  //======================================
+  //===================================================
   // The following is deprecated for now, we don't use streams
   // but fetch the transaction info once! To be revisited
   // when adding pagination!

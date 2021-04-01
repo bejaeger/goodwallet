@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:good_wallet/enums/user_status.dart';
-import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/ui/views/payments/send_money_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -30,7 +29,7 @@ class SendMoneyView extends StatelessWidget {
           return true;
         },
         child: Scaffold(
-          backgroundColor: backgroundColor,
+          backgroundColor: Theme.of(context).backgroundColor,
           body: !model.isUserInitialized
               ? Container()
               : CenteredView(

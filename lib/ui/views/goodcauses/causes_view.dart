@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/ui/views/goodcauses/causes_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -14,7 +13,7 @@ class DonationView extends StatelessWidget {
           return true;
         },
         child: Scaffold(
-          backgroundColor: backgroundColor,
+          backgroundColor: Theme.of(context).backgroundColor,
           body: CenteredView(
             maxWidth: 600,
             child: Center(child: Text("It's coming Bro, relax...")),

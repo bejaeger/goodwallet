@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/datamodels/goodcauses/global_giving_project_model.dart';
-import 'package:good_wallet/style/colors.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 
 class GlobalGivingProjectCard extends StatelessWidget {
@@ -38,7 +38,7 @@ class GlobalGivingProjectCard extends StatelessWidget {
             alignment: MainAxisAlignment.spaceBetween,
             children: [
               CallToActionButton(
-                color: ATLASred,
+                color: ColorSettings.primaryColor,
                 onTap: onTap,
                 text: "Give",
                 //icon: Icon(Icons.arrow_circle_up, color: ATLASred),
@@ -52,7 +52,7 @@ class GlobalGivingProjectCard extends StatelessWidget {
               //   Text("Give"),
               // ),
               IconButton(
-                icon: Icon(Icons.favorite, color: ATLASred),
+                icon: Icon(Icons.favorite, color: ColorSettings.primaryColor),
                 onPressed: () {
                   // Perform some action
                 },

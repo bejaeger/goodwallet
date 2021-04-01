@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
-import 'package:good_wallet/enums/user_status.dart';
-import 'package:good_wallet/style/colors.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/ui/widgets/goodcauses/global_giving_project_card.dart';
@@ -24,7 +23,7 @@ class WalletView extends StatelessWidget {
       fireOnModelReadyOnce: true,
       disposeViewModel: false,
       builder: (context, model, child) => Scaffold(
-        backgroundColor: backgroundColor,
+        backgroundColor: Theme.of(context).backgroundColor,
         body: !model.isUserInitialized
             ? Container()
             : CenteredView(
@@ -259,7 +258,7 @@ class WalletView extends StatelessWidget {
                         ),
                         verticalSpace(20),
                         CallToActionButtonRound(
-                          color: ATLASred,
+                          color: ColorSettings.primaryColor,
                           onPressed: model.navigateToDonationView,
                           text: "Give more",
                           icon: Icon(Icons.favorite),
@@ -403,7 +402,8 @@ class WalletView extends StatelessWidget {
                   var hist = model.transactions[index];
                   var incoming =
                       (hist.recipientName == model.currentUser.fullName);
-                  var color = incoming ? ATLASgreen : Colors.grey[700];
+                  var color =
+                      incoming ? MyColors.paletteTurquoise : Colors.grey[700];
                   var amountFormatted = "\$ ${hist.amount * 0.01}";
                   var nameToDisplay =
                       incoming ? hist.senderName : hist.recipientName;
