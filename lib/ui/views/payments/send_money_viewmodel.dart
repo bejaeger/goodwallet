@@ -4,6 +4,7 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
 import 'package:good_wallet/enums/user_status.dart';
+import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
@@ -28,6 +29,7 @@ class SendMoneyViewModel extends BaseModel {
   final TextEditingController _userSelectionController =
       TextEditingController();
   TextEditingController get userSelectionController => _userSelectionController;
+  final DummyPaymentService _dummyPaymentService = locator<DummyPaymentService>();
 
   void setUser(String selection) {
     _userSelectionController.text = selection;
@@ -144,6 +146,16 @@ class SendMoneyViewModel extends BaseModel {
       }
     }
     setPaymentReady(true);
+  }
+
+  Future makeDummyPayment() async {
+    try {
+      var data = await fillTransactionModel();
+      await _dummyPaymentService.processTransaction(data);
+    } catch (e){
+      log.e("Couldn't get fill transaction model or process dummy transaction: ${e.toString()}");
+      rethrow;
+    }
   }
 
   Future processPayment(TransactionModel data) async {

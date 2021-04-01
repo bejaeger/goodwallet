@@ -36,25 +36,26 @@ class DummyPaymentService {
     }
   }
 
-  Future processTransaction() async {
+  Future processTransaction(_transactionModelDummy) async {
     // to be implemented
     // similar to processDonation above but use add TransactionModel to firestore
     // collection 'payments' not 'users/<userId>/donations/{donationId}' as above
     try {
-      TransactionModel _transactionModelDummyofDummy =
-          TransactionModel.fromMap({
-        "recipientUid": "PNgziB8BJtTOcniZCO6Yp2JagYx1",
-        "recipientName": "Patrick Mayerhofer",
-        // TO BE ADDED from function arguments I guess??
-        "senderUid": "",
-        "senderName": "",
-        "amount": 777,
-        "currency": "cad",
-        "status": "dummy",
-      });
-      _paymentsCollectionReference.add(_transactionModelDummyofDummy.toJson());
+      // TransactionModel _transactionModelDummyofDummy =
+      //     TransactionModel.fromMap({
+      //   "recipientUid": "PNgziB8BJtTOcniZCO6Yp2JagYx1",
+      //   "recipientName": "Patrick Mayerhofer",
+      //   // TO BE ADDED from function arguments I guess??
+      //   "senderUid": "",
+      //   "senderName": "",
+      //   "amount": 777,
+      //   "currency": "cad",
+      //   "status": "dummy",
+      // });
+      // _transactionModelDummy.createdAt = DateTime.now();
+      _paymentsCollectionReference.add(_transactionModelDummy.toJson());
     } catch (e) {
-      log.e("Couldn't process transaction: ${e.toString()}");
+      log.e("Couldn't process dummy transaction: ${e.toString()}");
       rethrow;
     }
   }
