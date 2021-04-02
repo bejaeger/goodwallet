@@ -9,12 +9,12 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
-import '../datamodels/goodcauses/global_giving_project_model.dart';
+import '../datamodels/causes/global_giving_project_model.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/transaction_type.dart';
+import '../ui/views/causes/causes_view.dart';
+import '../ui/views/causes/single_project_view_mobile.dart';
 import '../ui/views/featured_applications/single_featured_app_view.dart';
-import '../ui/views/goodcauses/causes_view.dart';
-import '../ui/views/goodcauses/single_project_view_mobile.dart';
 import '../ui/views/home/home_view_mobile.dart';
 import '../ui/views/home/welcome_view.dart';
 import '../ui/views/layout/layout_template_view.dart';

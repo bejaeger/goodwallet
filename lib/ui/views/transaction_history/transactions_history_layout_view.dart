@@ -69,24 +69,20 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
                       ),
                     ),
                     verticalSpaceMediumLarge,
-                    model.getTransactions(type) == null
-                        ? Center(child: CircularProgressIndicator())
-                        : ListView.builder(
-                            itemCount: model.getTransactions(type).length >
-                                    maximumLength
-                                ? maximumLength
-                                : model.getTransactions(type).length,
-                            shrinkWrap: true,
-                            physics: ScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return TransactionListTile(
-                                transactionData:
-                                    model.getTransactions(type)[index],
-                                inferEntryTypeFunction:
-                                    model.inferTransactionType,
-                              );
-                            },
-                          ),
+                    ListView.builder(
+                      itemCount:
+                          model.getTransactions(type).length > maximumLength
+                              ? maximumLength
+                              : model.getTransactions(type).length,
+                      shrinkWrap: true,
+                      physics: ScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return TransactionListTile(
+                          transactionData: model.getTransactions(type)[index],
+                          inferEntryTypeFunction: model.inferTransactionType,
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),

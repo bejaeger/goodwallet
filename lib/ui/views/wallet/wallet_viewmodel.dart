@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/goodcauses/global_giving_project_model.dart';
+import 'package:good_wallet/datamodels/causes/global_giving_project_model.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';

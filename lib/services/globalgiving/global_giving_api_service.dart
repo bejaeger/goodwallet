@@ -1,4 +1,4 @@
-import 'package:good_wallet/datamodels/goodcauses/global_giving_project_model.dart';
+import 'package:good_wallet/datamodels/causes/global_giving_project_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'dart:math';

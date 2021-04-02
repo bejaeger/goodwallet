@@ -40,7 +40,8 @@ class _TransactionsViewState extends State<TransactionsView>
       appBar: AppBar(
         title: Text("Donations & Transactions History"),
         bottom: PreferredSize(
-          preferredSize: Size(screenWidth(context), 60.0),
+          preferredSize:
+              Size(screenWidth(context), LayoutSettings.tabBarPreferredHeight),
           child: Container(
             child: TabBar(
               controller: _tabController,
