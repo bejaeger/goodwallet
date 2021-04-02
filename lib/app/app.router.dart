@@ -26,7 +26,7 @@ import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
 import '../ui/views/payments/send_money_view.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
-import '../ui/views/transaction_history/transaction_history_view.dart';
+import '../ui/views/transaction_history/transactions_view.dart';
 import '../ui/views/wallet/wallet_view.dart';
 
 class Routes {
@@ -45,7 +45,7 @@ class Routes {
   static const String createAccountView = '/create-account-view';
   static const String singleFeaturedAppView = '/single-featured-app-view';
   static const String manageMoneyPoolsView = '/manage-money-pools-view';
-  static const String transactionHistoryView = '/transaction-history-view';
+  static const String transactionsView = '/transactions-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -62,7 +62,7 @@ class Routes {
     createAccountView,
     singleFeaturedAppView,
     manageMoneyPoolsView,
-    transactionHistoryView,
+    transactionsView,
   };
 }
 
@@ -85,7 +85,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.createAccountView, page: CreateAccountView),
     RouteDef(Routes.singleFeaturedAppView, page: SingleFeaturedAppView),
     RouteDef(Routes.manageMoneyPoolsView, page: ManageMoneyPoolsView),
-    RouteDef(Routes.transactionHistoryView, page: TransactionHistoryView),
+    RouteDef(Routes.transactionsView, page: TransactionsView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -224,13 +224,13 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
-    TransactionHistoryView: (data) {
-      var args = data.getArgs<TransactionHistoryViewArguments>(
-        orElse: () => TransactionHistoryViewArguments(),
+    TransactionsView: (data) {
+      var args = data.getArgs<TransactionsViewArguments>(
+        orElse: () => TransactionsViewArguments(),
       );
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            TransactionHistoryView(
+            TransactionsView(
           key: args.key,
           historyType: args.historyType,
         ),
@@ -293,10 +293,10 @@ class SingleFeaturedAppViewArguments {
   SingleFeaturedAppViewArguments({this.key, @required this.type});
 }
 
-/// TransactionHistoryView arguments holder class
-class TransactionHistoryViewArguments {
+/// TransactionsView arguments holder class
+class TransactionsViewArguments {
   final Key key;
   final TransactionType historyType;
-  TransactionHistoryViewArguments(
+  TransactionsViewArguments(
       {this.key, this.historyType = TransactionType.InOrOut});
 }

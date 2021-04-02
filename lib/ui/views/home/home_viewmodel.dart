@@ -49,6 +49,6 @@ class HomeViewModel extends BaseModel {
   }
 
   Future navigateToTransactionsHistoryView() async {
-    _navigationService.navigateTo(Routes.transactionHistoryView);
+    _navigationService.navigateTo(Routes.transactionsView);
   }
 }

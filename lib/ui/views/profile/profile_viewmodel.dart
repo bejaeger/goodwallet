@@ -23,13 +23,13 @@ class ProfileViewModel extends BaseModel {
   }
 
   Future navigateToDonationsHistoryView() async {
-    _navigationService.navigateTo(Routes.transactionHistoryView,
-        arguments: TransactionHistoryViewArguments(
-            historyType: TransactionType.Donation));
+    _navigationService.navigateTo(Routes.transactionsView,
+        arguments:
+            TransactionsViewArguments(historyType: TransactionType.Donation));
   }
 
   Future navigateToTransactionsHistoryView() async {
-    _navigationService.navigateTo(Routes.transactionHistoryView);
+    _navigationService.navigateTo(Routes.transactionsView);
   }
 
   Future navigateToManageMoneyPoolsView() async {

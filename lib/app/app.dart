@@ -3,8 +3,6 @@ import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
-import 'package:good_wallet/style/page_transitions.dart';
-import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/ui/views/featured_applications/single_featured_app_view.dart';
 import 'package:good_wallet/ui/views/goodcauses/causes_view.dart';
 import 'package:good_wallet/ui/views/goodcauses/causes_viewmodel.dart';
@@ -21,8 +19,8 @@ import 'package:good_wallet/ui/views/payments/payment_cancel_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_success_view.dart';
 import 'package:good_wallet/ui/views/payments/send_money_view.dart';
 import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
-import 'package:good_wallet/ui/views/transaction_history/transaction_history_view.dart';
-import 'package:good_wallet/ui/views/transaction_history/transaction_history_viewmodel.dart';
+import 'package:good_wallet/ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
+import 'package:good_wallet/ui/views/transaction_history/transactions_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_viewmodel.dart';
 import 'package:stacked/stacked_annotations.dart';
@@ -49,7 +47,7 @@ import 'package:stacked_services/stacked_services.dart';
     CustomRoute(page: CreateAccountView),
     CustomRoute(page: SingleFeaturedAppView),
     CustomRoute(page: ManageMoneyPoolsView),
-    CustomRoute(page: TransactionHistoryView),
+    CustomRoute(page: TransactionsView),
   ],
   dependencies: [
     // Registers all singletons
@@ -63,7 +61,7 @@ import 'package:stacked_services/stacked_services.dart';
     // viewmodels
     LazySingleton(classType: WalletViewModel),
     LazySingleton(classType: CausesViewModel),
-    LazySingleton(classType: TransactionHistoryViewModel),
+    LazySingleton(classType: TransactionHistoryLayoutViewModel),
     // TODO: Check whether this is deprecated
     LazySingleton(classType: NavigationBarViewModel),
 

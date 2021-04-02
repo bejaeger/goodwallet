@@ -3,12 +3,10 @@ import 'dart:async';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/enums/transaction_type.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
-import 'package:good_wallet/style/transactions_history_entry_style.dart';
-import 'package:good_wallet/ui/shared/transactions_history_entry_style.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class TransactionHistoryViewModel extends BaseModel {
+class TransactionHistoryLayoutViewModel extends BaseModel {
   final NavigationService _navigationService = locator<NavigationService>();
   final UserDataService _userDataService = locator<UserDataService>();
 
@@ -123,20 +121,6 @@ class TransactionHistoryViewModel extends BaseModel {
 
   void navigateBack() => _navigationService.back();
 
-  TransactionHistoryEntryStyle getTransactionsHistoryEntryStyle(dynamic data) {
-    // function that retrieves the style for an entry in a transactions history
-    // First, it figures out the type of transaction, then the style is retrieved
-
-    TransactionType type = inferTransactionType(data);
-    // top-level function to get style (to avoid defining styles in viewmodels)
-    TransactionHistoryEntryStyle style =
-        getTransactionsHistoryEntryStyleFromType(type, data);
-    if (style == null) {
-      log.e("Could not find proper style for transaction list tile!");
-    }
-    return style;
-  }
-
   List<dynamic> getTransactions(TransactionType type) {
     if (type == TransactionType.Donation) {
       return listOfDonations;
@@ -185,6 +169,7 @@ class TransactionHistoryViewModel extends BaseModel {
                   updatedTransactions.length > 0) {
                 log.i("Start listening to user wallet data");
                 // sort with date
+                // add try/catch phrase cause this is risky
                 updatedTransactions
                     .sort((a, b) => b.createdAt.compareTo(a.createdAt));
                 transactions = updatedTransactions;

@@ -1,125 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/enums/transaction_type.dart';
-import 'package:good_wallet/ui/shared/layout_settings.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/transactions_history_entry_style.dart';
-import 'package:good_wallet/ui/views/transaction_history/transaction_history_viewmodel.dart';
+import 'package:good_wallet/ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:stacked/stacked.dart';
 
-// Setting up
-class TransactionHistoryView extends StatefulWidget {
-  final TransactionType historyType; // used for initial value of tab controller
-  const TransactionHistoryView(
-      {Key key, this.historyType = TransactionType.InOrOut})
-      : super(key: key); //
-  @override
-  _TransactionHistoryViewState createState() => _TransactionHistoryViewState();
-}
+// This is the body of transactions view with the history entries
 
-class _TransactionHistoryViewState extends State<TransactionHistoryView>
-    with TickerProviderStateMixin {
-  TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(
-        length: 4, vsync: this, initialIndex: widget.historyType.index);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Donations & Transactions History"),
-        bottom: PreferredSize(
-          preferredSize: Size(screenWidth(context), 60.0),
-          child: Container(
-            child: TabBar(
-              controller: _tabController,
-              isScrollable: true,
-              tabs: [
-                Container(
-                    width: screenWidth(context) * 0.2,
-                    child: Tab(text: "Good Wallet")),
-                Container(
-                    width: screenWidth(context) * 0.2,
-                    child: Tab(text: "Gifted")),
-                Container(
-                  width: screenWidth(context) * 0.2,
-                  child: Row(
-                    children: <Widget>[
-                      Tab(text: "Donations"),
-                      // SizedBox(width: 5),
-                      // Tab(
-                      //   icon: CircleAvatar(
-                      //     backgroundColor: Colors.white,
-                      //     child: Text(
-                      //       "2",
-                      //       style: TextStyle(
-                      //           fontSize: 10.0,
-                      //           color: Theme.of(context).primaryColor),
-                      //     ),
-                      //     radius: 10,
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                ),
-                Container(
-                    width: screenWidth(context) * 0.2,
-                    child: Tab(text: "Raised")),
-              ],
-            ),
-          ),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: LayoutSettings.horizontalPadding),
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            TransactionsHistoryLayout(
-              type: TransactionType.InOrOut,
-              description:
-                  Text("Your Good Wallet's incoming and outgoing transactions"),
-            ),
-            TransactionsHistoryLayout(
-              type: TransactionType.TransferredToPeers,
-              description: Text("Money you gifted to friends"),
-            ),
-            TransactionsHistoryLayout(
-              type: TransactionType.Donation,
-              description: Text("History of your charitable givings"),
-            ),
-            TransactionsHistoryLayout(
-              type: TransactionType.Incoming,
-              description: Text("Money you raised into your Good Wallet"),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class TransactionsHistoryLayout extends StatelessWidget {
+class TransactionsHistoryLayoutView extends StatelessWidget {
   final TransactionType type;
   final int maximumLength;
   final String userName;
   final Widget description;
 
-  const TransactionsHistoryLayout(
+  const TransactionsHistoryLayoutView(
       {Key key,
       @required this.type,
       this.maximumLength = 5,
@@ -129,8 +27,8 @@ class TransactionsHistoryLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<TransactionHistoryViewModel>.reactive(
-      viewModelBuilder: () => locator<TransactionHistoryViewModel>(),
+    return ViewModelBuilder<TransactionHistoryLayoutViewModel>.reactive(
+      viewModelBuilder: () => locator<TransactionHistoryLayoutViewModel>(),
       disposeViewModel: false,
       onModelReady: (model) async {
         model.initialize();
@@ -184,8 +82,8 @@ class TransactionsHistoryLayout extends StatelessWidget {
                               return TransactionListTile(
                                 transactionData:
                                     model.getTransactions(type)[index],
-                                style: model.getTransactionsHistoryEntryStyle(
-                                    model.getTransactions(type)[index]),
+                                inferEntryTypeFunction:
+                                    model.inferTransactionType,
                               );
                             },
                           ),
@@ -221,15 +119,19 @@ class TransactionsHistoryLayout extends StatelessWidget {
 
 class TransactionListTile extends StatelessWidget {
   final dynamic transactionData;
-  final TransactionHistoryEntryStyle style;
+  final Function inferEntryTypeFunction;
 
   const TransactionListTile(
-      {Key key, @required this.transactionData, @required this.style})
+      {Key key,
+      @required this.transactionData,
+      @required this.inferEntryTypeFunction})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var amountFormatted = "\$ ${transactionData.amount * 0.01}";
+    TransactionHistoryEntryStyle style = _getTransactionsHistoryEntryStyle(
+        inferEntryTypeFunction(transactionData));
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -269,5 +171,29 @@ class TransactionListTile extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  _getTransactionsHistoryEntryStyle(TransactionType type) {
+    if (type == TransactionType.Donation) {
+      return TransactionHistoryEntryStyle(
+          color: ColorSettings.primaryColor,
+          descriptor: "Donated to",
+          nameToDisplay: transactionData.projectName,
+          icon: Icon(Icons.favorite, color: ColorSettings.primaryColorLight));
+    } else if (type == TransactionType.Incoming) {
+      return TransactionHistoryEntryStyle(
+          color: MyColors.paletteTurquoise,
+          descriptor: "Reveiced from",
+          nameToDisplay: transactionData.senderName,
+          icon:
+              Icon(Icons.people_rounded, color: ColorSettings.whiteTextColor));
+    } else if (type == TransactionType.TransferredToPeers) {
+      return TransactionHistoryEntryStyle(
+          color: ColorSettings.primaryColorLight,
+          descriptor: "Gifted to",
+          nameToDisplay: transactionData.recipientName,
+          icon: Icon(Icons.person, color: ColorSettings.whiteTextColor));
+    }
+    return null;
   }
 }
