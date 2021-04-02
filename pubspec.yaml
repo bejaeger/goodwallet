@@ -66,6 +66,7 @@ dependencies:
   percent_indicator: ^2.1.9+1
   logger: ^0.9.0  
   flutter_signin_button: ^2.0.0-nullsafety.0
+  shimmer_animation: ^2.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -103,7 +104,11 @@ flutter:
     - assets/images/concept-text.png
     - assets/images/hand-throwing-dice-on-yellow-highres.jpg
     - assets/images/hand-throwing-dice-on-yellow.jpg
-
+    - assets/icons/hugging-people.png
+    - assets/icons/circle-of-people.png
+    - assets/icons/apps-around-globus.png
+    - assets/icons/hand-accepting-money2.png
+    - assets/images/people-holding-hands.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

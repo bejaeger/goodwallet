@@ -9,8 +9,4 @@ class HomeCustomAppBarViewModel extends BaseModel {
   Future navigateToLoginView() async {
     await _navigationService.navigateTo(Routes.loginView);
   }
-
-  Future navigateToSettingsView() async {
-    await _navigationService.navigateTo(Routes.profileView);
-  }
 }

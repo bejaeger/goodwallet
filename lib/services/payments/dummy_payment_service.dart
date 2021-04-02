@@ -27,9 +27,11 @@ class DummyPaymentService {
         "status": "dummy",
       });
 
+      var jsonData = donationModelDummyofDummy.toJson();
+      jsonData["createdAt"] = FieldValue.serverTimestamp();
       // Add new document to cloud firestore. This will trigger the server function
       // to update the good wallet!
-      docRef.add(donationModelDummyofDummy.toJson());
+      docRef.add(jsonData);
     } catch (e) {
       log.e("Couldn't process donation: ${e.toString()}");
       rethrow;

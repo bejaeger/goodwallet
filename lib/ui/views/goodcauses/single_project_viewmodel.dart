@@ -18,23 +18,23 @@ class SingleProjectViewModel extends BaseModel {
       dialogPlatform: DialogPlatform.Material,
       cancelTitle: 'No',
     );
-
+    _dummyPaymentService.processDonation(currentUser.id, "Dummy");
     print('DialogResponse: ${response?.confirmed}');
   }
 
-  Future showAmountTooHighDialog(String donationAmount) async{
+  Future showAmountTooHighDialog(String donationAmount) async {
     await _dialogService.showConfirmationDialog(
       title: 'Donation Amount Too High',
-      description: 'You cannot pay \$ ${donationAmount} with just \$ ${userWallet.currentBalance}',
-
+      description:
+          'You cannot pay \$ ${donationAmount} with just \$ ${userWallet.currentBalance}',
     );
   }
 
-  Future confirmationOrCancellationDistributor(String projectTitle, int donationAmount)  {
-    if ((userWallet.currentBalance - donationAmount) < 0){
+  Future confirmationOrCancellationDistributor(
+      String projectTitle, int donationAmount) {
+    if ((userWallet.currentBalance - donationAmount) < 0) {
       showAmountTooHighDialog(donationAmount.toString());
-    }
-    else{
+    } else {
       showConfirmationDialog(projectTitle, donationAmount.toString());
     }
   }

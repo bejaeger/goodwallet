@@ -17,6 +17,7 @@ class CausesViewModel extends BaseModel {
       projects = await _globalGivingAPIservice.getFeaturedProjects();
       setBusy(false);
       notifyListeners();
+      log.i("Fetched project list with length ${projects.length}");
     }
   }
 

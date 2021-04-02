@@ -41,16 +41,22 @@ class DonationModel {
   }
 
   static DonationModel fromMap(Map<String, dynamic> map) {
-    var data = DonationModel(
-        projectId: map['projectId'],
-        projectName: map['projectName'],
-        amount: map['amount'],
-        currency: map['currency']);
-    data.organizationName = returnIfAvailable(map, 'organizationName');
-    data.transactionId = returnIfAvailable(map, "transactionId");
-    data.message = returnIfAvailable(map, "message");
-    data.createdAt = returnIfAvailable(map, "createdAt");
-    data.status = returnIfAvailable(map, "status");
-    return data;
+    // TODO: How to catch error if map does not contain keys?
+    DonationModel returnData;
+    try {
+      returnData = DonationModel(
+          projectId: map['projectId'],
+          projectName: map['projectName'],
+          amount: map['amount'],
+          currency: map['currency']);
+      returnData.organizationName = returnIfAvailable(map, 'organizationName');
+      returnData.transactionId = returnIfAvailable(map, "transactionId");
+      returnData.message = returnIfAvailable(map, "message");
+      returnData.createdAt = returnIfAvailable(map, "createdAt");
+      returnData.status = returnIfAvailable(map, "status");
+    } catch (e) {
+      rethrow;
+    }
+    return returnData;
   }
 }
