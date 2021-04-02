@@ -39,7 +39,7 @@ class TransactionHistoryViewModel extends BaseModel {
   Future<void> initialize([TransactionType type]) async {
     setBusy(true);
     if (type == null) {
-      await listenToWalletTransactions();
+      //await listenToWalletTransactions();
       await fetchListOfDonations();
       await fetchListOfTransactionsToPeers();
       await fetchListOfIncomingTransactions();
@@ -53,8 +53,8 @@ class TransactionHistoryViewModel extends BaseModel {
     } else if (type == TransactionType.InOrOut) {
       buildListOfWalletTransactions();
     }
-    notifyListeners();
     setBusy(false);
+    notifyListeners();
   }
 
   Future buildListOfWalletTransactions() async {
@@ -63,8 +63,13 @@ class TransactionHistoryViewModel extends BaseModel {
     var incoming = await _userDataService.getListOfIncomingTransactions();
     newListOfWalletTransactions.addAll(outgoing);
     newListOfWalletTransactions.addAll(incoming);
-    newListOfWalletTransactions
-        .sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    try {
+      newListOfWalletTransactions
+          .sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    } catch (e) {
+      log.e(
+          "List of transactions could not be sorted properly! Possibly the field createdAt is missing! Check transactions in the backend!");
+    }
     listOfWalletTransactions = newListOfWalletTransactions;
     log.i(
         "Fetched list of in/out transactions with length = ${listOfWalletTransactions.length}");
@@ -130,6 +135,32 @@ class TransactionHistoryViewModel extends BaseModel {
       log.e("Could not find proper style for transaction list tile!");
     }
     return style;
+  }
+
+  List<dynamic> getTransactions(TransactionType type) {
+    if (type == TransactionType.Donation) {
+      return listOfDonations;
+    } else if (type == TransactionType.Incoming) {
+      return listOfIncomingTransactions;
+    } else if (type == TransactionType.TransferredToPeers) {
+      return listOfTransactionsToPeers;
+    } else if (type == TransactionType.InOrOut) {
+      return listOfWalletTransactions;
+    }
+    return null;
+  }
+
+  num getBalanceStringCorrespondingToType(TransactionType type) {
+    if (type == TransactionType.Donation) {
+      return userWallet.donations;
+    } else if (type == TransactionType.Incoming) {
+      return 0;
+    } else if (type == TransactionType.TransferredToPeers) {
+      return userWallet.transferredToPeers;
+    } else if (type == TransactionType.InOrOut) {
+      return userWallet.currentBalance;
+    }
+    return null;
   }
 
   //===================================================
