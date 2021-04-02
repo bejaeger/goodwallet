@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/ui/views/goodcauses/causes_viewmodel.dart';
+import 'package:good_wallet/ui/views/causes/causes_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
