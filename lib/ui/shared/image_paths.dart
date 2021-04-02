@@ -6,5 +6,6 @@ class ImagePath {
   static const String profilePicURL =
       'https://media.istockphoto.com/photos/portrait-of-a-young-woman-picture-id1227487363?k=6&m=1227487363&s=612x612&w=0&h=ERylNLmYu5qG2g2zXVzEuZo8UVMM33bFu9u7sct8dVc=';
   static const String peopleHoldingHands =
-      'assets/images/people-holding-hands.png';
+      'assets/images/people-holding-hands.jpeg';
+  static const String workNextToCreek = 'assets/images/work-next-to-creek.jpeg';
 }

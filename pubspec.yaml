@@ -108,7 +108,8 @@ flutter:
     - assets/icons/circle-of-people.png
     - assets/icons/apps-around-globus.png
     - assets/icons/hand-accepting-money2.png
-    - assets/images/people-holding-hands.png
+    - assets/images/people-holding-hands.jpeg
+    - assets/images/work-next-to-creek.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

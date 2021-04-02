@@ -10,7 +10,8 @@ class CarouselCard extends StatelessWidget {
   final Function onTap;
   final String explanation;
   final Color backgroundColor;
-  final bool showImage;
+  final Alignment imageAlignment;
+  final ImageProvider backgroundImage;
 
   const CarouselCard(
       {Key key,
@@ -18,7 +19,8 @@ class CarouselCard extends StatelessWidget {
       @required this.onTap,
       @required this.explanation,
       this.backgroundColor = MyColors.paletteBlue,
-      this.showImage = false})
+      this.imageAlignment,
+      this.backgroundImage})
       : super(key: key);
 
   @override
@@ -46,14 +48,15 @@ class CarouselCard extends StatelessWidget {
                         backgroundColor.withOpacity(0.7)
                       ],
                     ),
-                    image: showImage
+                    image: backgroundImage != null
                         ? DecorationImage(
-                            image: AssetImage(ImagePath.peopleHoldingHands),
+                            image: backgroundImage,
                             fit: BoxFit.cover,
+                            alignment: imageAlignment ?? Alignment.center,
                           )
                         : null),
               ),
-              if (showImage)
+              if (backgroundImage != null)
                 DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -61,8 +64,8 @@ class CarouselCard extends StatelessWidget {
                       end: Alignment.bottomRight,
                       //stops: [0.0, 1.0],
                       colors: [
-                        MyColors.black54.withOpacity(0.6),
-                        Colors.transparent
+                        MyColors.black87.withOpacity(0.7),
+                        Colors.transparent,
                       ],
                     ),
                   ),

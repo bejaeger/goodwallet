@@ -3,6 +3,7 @@ import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_fund_model.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
+import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -25,11 +26,13 @@ class CausesViewModel extends BaseModel {
           "title": "Friend Referral Fund",
           "description":
               "This fund is used to raise money when referring the Good Wallet to your peers",
+          "imagePath": ImagePath.peopleHoldingHands,
         }),
         GoodWalletFundModel.fromMap({
           "title": "The Developer Fund",
           "description":
-              "Support further developments of the Good Wallet to offer better and more services",
+              "Support further developments of the Good Wallet to offer better services",
+          "imagePath": ImagePath.workNextToCreek,
         }),
       ];
       log.i(
