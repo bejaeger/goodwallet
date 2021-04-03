@@ -41,7 +41,7 @@ class SendMoneyViewMobile extends StatelessWidget {
                     _optionalMessageView(model),
                     verticalSpaceMassive,
                     ElevatedButton(
-                        onPressed: () => model.makeDummyPayment(),
+                        onPressed: () => model.dummyPaymentConfirmationDialog(),
                         child: Text('Send'),
                     )
                   ],
