@@ -10,8 +10,10 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 class GlobalGivingProjectCardMobile extends StatelessWidget {
   final GlobalGivingProjectModel project;
   final Function onTap;
+  final Function onTapFavorite;
 
-  GlobalGivingProjectCardMobile({@required this.project, this.onTap});
+  GlobalGivingProjectCardMobile(
+      {@required this.project, this.onTap, this.onTapFavorite});
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -60,7 +62,7 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
                   child: IconButton(
                     icon: Icon(Icons.favorite_border,
                         size: 25, color: MyColors.almostWhite),
-                    onPressed: () => null,
+                    onPressed: onTapFavorite,
                   ),
                 ),
                 Align(
@@ -104,8 +106,10 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
 class GlobalGivingProjectCard extends StatelessWidget {
   final GlobalGivingProjectModel project;
   final Function onTap;
+  final Function onTapFavorite;
 
-  GlobalGivingProjectCard({@required this.project, this.onTap});
+  GlobalGivingProjectCard(
+      {@required this.project, this.onTap, this.onTapFavorite});
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -151,9 +155,7 @@ class GlobalGivingProjectCard extends StatelessWidget {
               // ),
               IconButton(
                 icon: Icon(Icons.favorite, color: ColorSettings.primaryColor),
-                onPressed: () {
-                  // Perform some action
-                },
+                onPressed: onTapFavorite,
               ),
             ],
           ),

@@ -160,7 +160,7 @@ class HomeViewMobile extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: LayoutSettings.horizontalPadding),
-                          child: Text("Favorite projects",
+                          child: Text("Most popular projects",
                               style: textTheme(context).headline6),
                         ),
                         verticalSpaceSmall,
@@ -231,7 +231,7 @@ class FeaturedAppsCarousel extends StatelessWidget {
             CarouselCard(
               title: "Sportsbetting",
               explanation: "Bet with friends and win Good Gollars",
-              onTap: () => null,
+              onTap: model.showNotImplementedSnackbar,
               backgroundColor: MyColors.paletteTurquoise,
             ),
             SizedBox(width: LayoutSettings.horizontalPadding),
@@ -239,7 +239,7 @@ class FeaturedAppsCarousel extends StatelessWidget {
               title: "Your Application",
               explanation:
                   "This could be your application that leverages the Good Wallet to do good",
-              onTap: () => null,
+              onTap: model.showNotImplementedSnackbar,
               backgroundColor: MyColors.palettePurple,
             ),
             SizedBox(width: LayoutSettings.horizontalPadding),
@@ -263,21 +263,20 @@ class FeaturedProjectsCarousel extends StatelessWidget {
             CarouselCard(
               title: "Health and Development",
               explanation: "Have an impact and change the world for the better",
-              onTap: () => model
-                  .navigateToSingleFeaturedAppView(FeaturedAppType.Marketplace),
+              onTap: model.showNotImplementedSnackbar,
             ),
             SizedBox(width: LayoutSettings.horizontalPadding),
             CarouselCard(
               title: "Climate Action",
               explanation: "Help turning the wheels and fight climate change",
-              onTap: () => null,
+              onTap: model.showNotImplementedSnackbar,
               backgroundColor: MyColors.paletteTurquoise,
             ),
             SizedBox(width: LayoutSettings.horizontalPadding),
             CarouselCard(
               title: "Poverty",
               explanation: "Help people in need",
-              onTap: () => null,
+              onTap: model.showNotImplementedSnackbar,
               backgroundColor: MyColors.palettePurple,
             ),
             SizedBox(width: LayoutSettings.horizontalPadding),

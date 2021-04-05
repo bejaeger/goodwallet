@@ -131,6 +131,7 @@ class CausesListViewMobile extends StatelessWidget {
                             project: model.projects[index],
                             onTap: () async =>
                                 await model.navigateToProjectScreen(index),
+                            onTapFavorite: model.showNotImplementedSnackbar,
                           ),
                         ),
                       ),
@@ -150,7 +151,7 @@ class CausesListViewMobile extends StatelessWidget {
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: GoodWalletFundCardMobile(
                                 fund: fund,
-                                onTap: () => null,
+                                onTap: model.showNotImplementedSnackbar,
                                 imageAlignment: alignment,
                                 backgroundImage: AssetImage(fund.imagePath),
                               ),

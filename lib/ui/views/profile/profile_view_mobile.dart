@@ -194,8 +194,11 @@ class ProfileViewMobile extends StatelessWidget {
                           padding: const EdgeInsets.all(20.0),
                           child: Align(
                             alignment: Alignment.topRight,
-                            child: Icon(Icons.settings,
-                                color: ColorSettings.greyTextColor, size: 25),
+                            child: IconButton(
+                              onPressed: model.showNotImplementedSnackbar,
+                              icon: Icon(Icons.settings,
+                                  color: ColorSettings.greyTextColor, size: 25),
+                            ),
                           ),
                         ),
                         Column(
@@ -227,13 +230,16 @@ class ProfileViewMobile extends StatelessWidget {
                           ),
                           verticalSpaceSmall,
                           ProfileListItem(
-                              title: "Invite Friends", onPressed: () => null),
+                              title: "Invite Friends",
+                              onPressed: model.showNotImplementedSnackbar),
                           verticalSpaceSmall,
                           ProfileListItem(
-                              title: "Contacts", onPressed: () => null),
+                              title: "Contacts",
+                              onPressed: model.showNotImplementedSnackbar),
                           verticalSpaceSmall,
                           ProfileListItem(
-                              title: "Achievements", onPressed: () => null),
+                              title: "Achievements",
+                              onPressed: model.showNotImplementedSnackbar),
                           verticalSpaceMedium,
                           spacedDivider,
                           Center(

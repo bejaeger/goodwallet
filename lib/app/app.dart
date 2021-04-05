@@ -14,11 +14,13 @@ import 'package:good_wallet/ui/views/layout/layout_template_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/navigation_bar_viewmodel.dart';
 import 'package:good_wallet/ui/views/login/create_account_view.dart';
 import 'package:good_wallet/ui/views/login/login_view.dart';
+import 'package:good_wallet/ui/views/money_pools/create_money_pool_view.dart';
 import 'package:good_wallet/ui/views/money_pools/manage_money_pools_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_cancel_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_success_view.dart';
 import 'package:good_wallet/ui/views/payments/send_money_view.dart';
 import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
+import 'package:good_wallet/ui/views/qrcode/qrcode_view_mobile.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_view.dart';
@@ -48,11 +50,14 @@ import 'package:stacked_services/stacked_services.dart';
     CustomRoute(page: SingleFeaturedAppView),
     CustomRoute(page: ManageMoneyPoolsView),
     CustomRoute(page: TransactionsView),
+    CustomRoute(page: QRCodeViewMobile),
+    CustomRoute(page: CreateMoneyPoolView),
   ],
   dependencies: [
     // Registers all singletons
     LazySingleton(classType: NavigationService),
     LazySingleton(classType: DialogService),
+    LazySingleton(classType: SnackbarService),
     LazySingleton(classType: BottomSheetService),
     LazySingleton(classType: FirestorePaymentDataService),
     LazySingleton(classType: StripePaymentService),

@@ -69,6 +69,11 @@ class MyThemeData {
           primary: Color(0xFF600000), // dark red
         ),
       ),
+      tabBarTheme: TabBarTheme(
+        indicator: UnderlineTabIndicator(
+          borderSide: BorderSide(color: MyColors.lightRed, width: 5.0),
+        ),
+      ),
       iconTheme: IconThemeData(
         color: Color(0xFFcc492f),
       ),

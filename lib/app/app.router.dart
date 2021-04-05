@@ -21,11 +21,13 @@ import '../ui/views/layout/layout_template_view.dart';
 import '../ui/views/layout/layout_template_view_mobile.dart';
 import '../ui/views/login/create_account_view.dart';
 import '../ui/views/login/login_view.dart';
+import '../ui/views/money_pools/create_money_pool_view.dart';
 import '../ui/views/money_pools/manage_money_pools_view.dart';
 import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
 import '../ui/views/payments/send_money_view.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
+import '../ui/views/qrcode/qrcode_view_mobile.dart';
 import '../ui/views/transaction_history/transactions_view.dart';
 import '../ui/views/wallet/wallet_view.dart';
 
@@ -46,6 +48,8 @@ class Routes {
   static const String singleFeaturedAppView = '/single-featured-app-view';
   static const String manageMoneyPoolsView = '/manage-money-pools-view';
   static const String transactionsView = '/transactions-view';
+  static const String qRCodeViewMobile = '/q-rcode-view-mobile';
+  static const String createMoneyPoolView = '/create-money-pool-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -63,6 +67,8 @@ class Routes {
     singleFeaturedAppView,
     manageMoneyPoolsView,
     transactionsView,
+    qRCodeViewMobile,
+    createMoneyPoolView,
   };
 }
 
@@ -86,6 +92,8 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.singleFeaturedAppView, page: SingleFeaturedAppView),
     RouteDef(Routes.manageMoneyPoolsView, page: ManageMoneyPoolsView),
     RouteDef(Routes.transactionsView, page: TransactionsView),
+    RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
+    RouteDef(Routes.createMoneyPoolView, page: CreateMoneyPoolView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -237,6 +245,26 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    QRCodeViewMobile: (data) {
+      var args = data.getArgs<QRCodeViewMobileArguments>(
+        orElse: () => QRCodeViewMobileArguments(),
+      );
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            QRCodeViewMobile(
+          key: args.key,
+          initialIndex: args.initialIndex,
+        ),
+        settings: data,
+      );
+    },
+    CreateMoneyPoolView: (data) {
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const CreateMoneyPoolView(),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -299,4 +327,11 @@ class TransactionsViewArguments {
   final TransactionType historyType;
   TransactionsViewArguments(
       {this.key, this.historyType = TransactionType.InOrOut});
+}
+
+/// QRCodeViewMobile arguments holder class
+class QRCodeViewMobileArguments {
+  final Key key;
+  final int initialIndex;
+  QRCodeViewMobileArguments({this.key, this.initialIndex = 0});
 }

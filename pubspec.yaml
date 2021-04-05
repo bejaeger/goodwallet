@@ -108,6 +108,9 @@ flutter:
     - assets/icons/circle-of-people.png
     - assets/icons/apps-around-globus.png
     - assets/icons/hand-accepting-money2.png
+    - assets/icons/magnifying-glass.png
+    - assets/icons/qrcode-scan.png
+    - assets/icons/qrcode-scanning.png    
     - assets/images/people-holding-hands.jpeg
     - assets/images/work-next-to-creek.jpeg
 

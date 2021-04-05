@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/layout_widgets/bottom_sheet_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
+import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/views/home/bottom_sheets/send_money_bottom_sheet_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -56,13 +57,13 @@ class SendMoneyBottomSheetView extends StatelessWidget {
             completer: completer,
             responseData: "clicked Look up user or money pool",
             title: "Search for user or money pool",
-            icon: Icon(Icons.search, size: 28),
+            icon: Image.asset(ImageIconPaths.magnifyingGlass),
           ),
           BottomSheetListEntry(
             completer: completer,
-            responseData: "clicked Look up user or money pool",
+            responseData: model.navigateToScanQRCodeView,
             title: "Scan user QR code",
-            icon: Icon(Icons.qr_code_scanner_rounded, size: 28),
+            icon: Image.asset(ImageIconPaths.qrcodeScan),
           ),
         ],
       ),

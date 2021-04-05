@@ -70,7 +70,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                       child: IconButton(
                         icon: Icon(Icons.favorite_border,
                             size: 25, color: MyColors.almostWhite),
-                        onPressed: () => null,
+                        onPressed: model.showNotImplementedSnackbar,
                       ),
                     ),
                     Align(
