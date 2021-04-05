@@ -36,13 +36,13 @@ class SingleProjectViewModel extends BaseModel {
     await _dialogService.showConfirmationDialog(
       title: 'Donation Amount Too High',
       description:
-          'You cannot pay \$ ${donationAmount} with just \$ ${userWallet.currentBalance}',
+          'You cannot donate \$ ${donationAmount} with just \$ ${userWallet.currentBalance/100} in your account.',
     );
   }
 
   Future confirmationOrCancellationDistributor(
       String projectTitle, int donationAmount) async {
-    if ((userWallet.currentBalance - donationAmount) < 0) {
+    if ((userWallet.currentBalance/100 - donationAmount) < 0) {
       showAmountTooHighDialog(donationAmount.toString());
     } else {
       showConfirmationDialog(projectTitle, donationAmount.toString());

@@ -47,28 +47,6 @@ class HomeViewModel extends BaseModel {
     }
   }
 
-  Future fetchUsers() async {
-    setBusy(true);
-    var usersResults = await _userDataService.getUsersOnceOff();
-    setBusy(false);
-
-    if (usersResults is List<MyUser>) {
-      try{
-        _users = usersResults;
-        print(_users);
-        notifyListeners();
-    }  catch (e) {
-      log.e("Error in fetchUsers(): ${e.toString()}");
-    }
-
-      
-    }
-  }
-    
-    
-
-  // }
-
   Future navigateToSingleFeaturedAppView(FeaturedAppType type) async {
     log.i("Navigating to single featured app view");
     await _navigationService.navigateTo(Routes.singleFeaturedAppView,

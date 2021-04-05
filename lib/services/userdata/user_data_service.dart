@@ -417,20 +417,20 @@ class UserDataService {
     userStateSubject.add(UserStatus.SignedOut);
   }
 
-  Future getUsersOnceOff() async {
-    try {
-      var usersDocuments = await _usersCollectionReference.get();
-      if (usersDocuments.docs.isNotEmpty) {
-        return usersDocuments.docs
-            .map((snapshot) => MyUser.fromMap(snapshot.data()))
-            .where((mappedItem) => mappedItem.fullName != null)
-            .toList();
-      }
-    } catch (e) {
-      log.e("Error getting all user names in getUsersOnceOff(): ${e.toString()}");
-      rethrow;
-    }
-  }
+  // Future getUsersOnceOff() async {
+  //   try {
+  //     var usersDocuments = await _usersCollectionReference.get();
+  //     if (usersDocuments.docs.isNotEmpty) {
+  //       return usersDocuments.docs
+  //           .map((snapshot) => MyUser.fromMap(snapshot.data()))
+  //           .where((mappedItem) => mappedItem.fullName != null)
+  //           .toList();
+  //     }
+  //   } catch (e) {
+  //     log.e("Error getting all user names in getUsersOnceOff(): ${e.toString()}");
+  //     rethrow;
+  //   }
+  // }
 }
 
 // Helper class returned from public function of UserDataService
