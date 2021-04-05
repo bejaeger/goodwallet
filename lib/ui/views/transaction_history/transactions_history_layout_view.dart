@@ -94,14 +94,15 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
     var textStyle = textTheme(context).headline2.copyWith(fontSize: 28);
     if (type == TransactionType.Donation) {
       return Text(
-          "Balance: \$ " + (model.userWallet.donations / 100).toString(),
+          "Total donations: \$ " +
+              (model.userWallet.donations / 100).toString(),
           style: textStyle);
     } else if (type == TransactionType.Incoming) {
-      return Text("Balance: TBI", style: textStyle);
+      return Text("Raised: TBI", style: textStyle);
       ;
     } else if (type == TransactionType.TransferredToPeers) {
       return Text(
-          "Balance: \$ " +
+          "Total gifted: \$ " +
               (model.userWallet.transferredToPeers / 100).toString(),
           style: textStyle);
     } else if (type == TransactionType.InOrOut) {
