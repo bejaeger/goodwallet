@@ -145,7 +145,9 @@ class StackedRouter extends RouterBase {
       );
     },
     LayoutTemplate: (data) {
-      var args = data.getArgs<LayoutTemplateArguments>(nullOk: false);
+      var args = data.getArgs<LayoutTemplateArguments>(
+        orElse: () => LayoutTemplateArguments(),
+      );
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) => LayoutTemplate(
           key: args.key,
@@ -215,7 +217,9 @@ class StackedRouter extends RouterBase {
       );
     },
     SingleFeaturedAppView: (data) {
-      var args = data.getArgs<SingleFeaturedAppViewArguments>(nullOk: false);
+      var args = data.getArgs<SingleFeaturedAppViewArguments>(
+        orElse: () => SingleFeaturedAppViewArguments(),
+      );
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) =>
             SingleFeaturedAppView(
@@ -285,7 +289,7 @@ class SendMoneyViewArguments {
 class LayoutTemplateArguments {
   final Key key;
   final Widget childView;
-  LayoutTemplateArguments({this.key, @required this.childView});
+  LayoutTemplateArguments({this.key, this.childView});
 }
 
 /// LoginView arguments holder class
@@ -318,7 +322,7 @@ class CreateAccountViewArguments {
 class SingleFeaturedAppViewArguments {
   final Key key;
   final FeaturedAppType type;
-  SingleFeaturedAppViewArguments({this.key, @required this.type});
+  SingleFeaturedAppViewArguments({this.key, this.type});
 }
 
 /// TransactionsView arguments holder class

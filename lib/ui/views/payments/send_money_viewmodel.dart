@@ -9,7 +9,6 @@ import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'package:stripe_payment/stripe_payment.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:good_wallet/ui/views/payments/stripe_checkout/stripe_checkout_stub.dart'
@@ -42,13 +41,6 @@ class SendMoneyViewModel extends BaseModel {
     setPaymentReady(true);
     notifyListeners();
   }
-
-  // take from https://stripe.com/docs/testing#international-cards
-  final CreditCard testCard = CreditCard(
-    number: '4000002760003184		',
-    expMonth: 12,
-    expYear: 22,
-  );
 
   @override
   List<Map<String, String>> _userInfoMaps = [];
@@ -105,6 +97,7 @@ class SendMoneyViewModel extends BaseModel {
         recipientName: recipientName,
         senderUid: currentUser.id,
         senderName: currentUser.fullName,
+        createdAt: FieldValue.serverTimestamp(),
         amount: amount * 100,
         currency: "cad",
         message: msg,
