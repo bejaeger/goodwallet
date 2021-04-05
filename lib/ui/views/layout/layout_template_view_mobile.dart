@@ -1,11 +1,10 @@
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
-import 'package:good_wallet/style/page_transiation_mobile.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
-import 'package:good_wallet/ui/views/goodcauses/causes_view_mobile.dart';
+import 'package:good_wallet/ui/views/causes/causes_view_mobile.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_viewmodel.dart';
+import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
@@ -24,7 +23,24 @@ class LayoutTemplateViewMobile extends StatelessWidget {
         child: Scaffold(
           //extendBodyBehindAppBar: true,
           extendBody: true,
-          bottomNavigationBar: SizedBox(
+          bottomNavigationBar:
+              // Card(
+              //   margin: EdgeInsets.all(0.0),
+              //   elevation: 2.0,
+              //   child: Container(
+              //     height: LayoutSettings.bottomNavigationBarHeight,
+              //     color: Colors.white,
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //       children: <Widget>[
+              //         Icon(Icons.home_rounded, size: 28),
+              //         Icon(Icons.favorite, size: 28),
+              //         Icon(Icons.person, size: 28),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+              SizedBox(
             height: LayoutSettings.bottomNavigationBarHeight,
             child: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
@@ -35,15 +51,20 @@ class LayoutTemplateViewMobile extends StatelessWidget {
               items: [
                 BottomNavigationBarItem(
                   label: 'Home',
-                  icon: Icon(Icons.home_filled, size: 20),
+                  icon: Icon(Icons.home_rounded, size: 20),
                 ),
                 BottomNavigationBarItem(
                   label: 'Give',
                   icon: Icon(Icons.favorite, size: 20),
                 ),
+                BottomNavigationBarItem(
+                  label: 'Profile',
+                  icon: Icon(Icons.person, size: 20),
+                ),
               ],
             ),
           ),
+
           body: getViewForIndex(
               model.currentIndex), // getViewForIndex(model.currentIndex),
           // body: MyPageTransitionSwitcher(
@@ -59,7 +80,9 @@ class LayoutTemplateViewMobile extends StatelessWidget {
     if (index == BottomNavigatorIndex.Home.index) {
       return HomeViewMobile();
     } else if (index == BottomNavigatorIndex.Give.index) {
-      return GoodCausesViewMobile();
+      return CausesViewMobile();
+    } else if (index == BottomNavigatorIndex.Profile.index) {
+      return ProfileViewMobile();
     } else {
       return HomeViewMobile();
     }

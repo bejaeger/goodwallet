@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/datamodels/payments/donation_model.dart';
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
@@ -29,10 +30,10 @@ class UserDataService {
   final FirebaseAuthenticationService _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
 
-  // controller to expose stream of wallet data and transactions
-  final StreamController<WalletBalancesModel> _balancesStreamController =
-      StreamController<WalletBalancesModel>.broadcast();
+  // controller to expose stream of wallet transactions and payments
   final StreamController<List<dynamic>> _transactionsController =
+      StreamController<List<dynamic>>.broadcast();
+  final StreamController<List<dynamic>> _walletTransactionsController =
       StreamController<List<dynamic>>.broadcast();
 
   // subject to keep track of initialization of user
@@ -163,35 +164,10 @@ class UserDataService {
           }));
         }
       });
-      // var userData = await _usersCollectionReference.doc(uid).get();
-      // userWalletSubject.add(WalletBalancesModel.fromData({
-      //   'currentBalance': userData["balance"] as num,
-      //   'donations': userData["donations"] as num,
-      //   'transferredToPeers': userData["implicitDonations"] as num,
-      // }));
     } catch (e) {
       log.e("Error updating user wallet: ${e.toString()}");
       rethrow;
     }
-  }
-
-  // This function is deprecated
-  // Listen to wallet in base_viewmodel instead
-  // Also, easier to use BehaviorSubject
-  Stream listenToBalanceRealTime(var uid) {
-    log.i("Start listening to wallet balances");
-    Stream<DocumentSnapshot> docSnapshot =
-        _usersCollectionReference.doc(uid).snapshots();
-    docSnapshot.listen((userData) {
-      if (userData != null) {
-        _balancesStreamController.add(WalletBalancesModel.fromData({
-          'currentBalance': userData["balance"] as double,
-          'donations': userData["donations"] as double,
-          'transferredToPeers': userData["implicitDonations"] as double,
-        }));
-      }
-    });
-    return _balancesStreamController.stream;
   }
 
   Stream listenToTransactionsRealTime() {
@@ -208,6 +184,7 @@ class UserDataService {
 
     // There is no OR query for different fields in firebase
     // Get single streams and combine later with rxDart
+
     Stream<QuerySnapshot> outgoing = _paymentsCollectionReference
         .where("senderUid", isEqualTo: currentUser.id)
         .orderBy("createdAt",
@@ -257,6 +234,176 @@ class UserDataService {
     });
     // return stream from controller
     return _transactionsController.stream;
+  }
+
+  Stream listenToWalletTransactionsRealTime() {
+    // Function listening to collections to fetch
+    // incoming and outgoing (donations) money of the Good Wallet
+
+    // TODO: Add limit to this query and only load more
+    // when user asks for it!
+    // keyword: pagination
+    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
+
+    if (userStateSubject.value != UserStatus.Initialized)
+      log.i("User not initialized, the following code will break");
+
+    // There is no OR query for different fields in firebase
+    // Get single streams and combine later with rxDart
+
+    // outgoing = donations
+    Stream<QuerySnapshot> outgoing = _usersCollectionReference
+        .doc(_currentUser.id)
+        .collection("donations")
+        .orderBy("createdAt",
+            descending: true) // already added because needed with limit!
+        .snapshots();
+    Stream<QuerySnapshot> incoming = _paymentsCollectionReference
+        .where("recipientUid", isEqualTo: currentUser.id)
+        .orderBy("createdAt", descending: true)
+        .snapshots();
+
+    // combine streams with rxdart
+    Stream<List<dynamic>> transactionStream =
+        Rx.combineLatest2(outgoing, incoming, (outSnapshot, inSnapshot) {
+      // list of transactions to be returned
+      List<dynamic> transactions = <dynamic>[];
+
+      if (outSnapshot.docs.isNotEmpty) {
+        transactions.addAll(outSnapshot.docs
+            .map((snapshot) => DonationModel.fromMap(snapshot.data()))
+            .toList());
+      }
+      if (inSnapshot.docs.isNotEmpty) {
+        List<dynamic> inTransactions = inSnapshot.docs
+            .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
+            .toList();
+        List<dynamic> transactionIds =
+            transactions.map((element) => element.transactionId).toList();
+        inTransactions.forEach((element) {
+          // Add logic to find top ups (transactions to own account!)
+          // Can be deprecated once data is already stored accordingly with topUp = true!
+          if (!transactionIds.contains(element.transactionId)) {
+            transactions.add(element);
+          } else {
+            element.topUp = true;
+            transactions.removeWhere(
+                (el2) => el2.transactionId == element.transactionId);
+            transactions.add(element);
+          }
+        });
+      }
+
+      return transactions;
+    });
+    // listen to combined stream and add transactions to controller
+    transactionStream.listen((transactions) {
+      _walletTransactionsController.add(transactions);
+    });
+    // return stream from controller
+    return _walletTransactionsController.stream;
+  }
+
+  Future<List<dynamic>> getListOfDonations() async {
+    // TODO: Add limit to this query and only load more
+    // when user asks for it!
+    // keyword: pagination
+    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
+
+    if (userStateSubject.value != UserStatus.Initialized)
+      log.i("User not initialized, the following code will break!");
+
+    List<dynamic> listOfDonations = <dynamic>[];
+
+    QuerySnapshot donationsSnapshot = await _usersCollectionReference
+        .doc(_currentUser.id)
+        .collection("donations")
+        .orderBy("createdAt", descending: true)
+        .get();
+    if (donationsSnapshot != null) {
+      if (donationsSnapshot.docs.isNotEmpty) {
+        listOfDonations.addAll(donationsSnapshot.docs
+            .map((snapshot) => DonationModel.fromMap(snapshot.data()))
+            .toList());
+      } else {
+        log.e("Snapshot of donations collectoin is empty");
+      }
+    } else {
+      log.e(
+          "Donations could not be retrieved, check how you access the firestore collections");
+    }
+
+    return listOfDonations;
+  }
+
+  Future<List<dynamic>> getListOfTransactionsToPeers() async {
+    // TODO: Add limit to this query and only load more
+    // when user asks for it!
+    // keyword: pagination
+    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
+
+    if (userStateSubject.value != UserStatus.Initialized)
+      log.i("User not initialized, the following code will break!");
+
+    List<dynamic> listOfTransactionsToPeers = <dynamic>[];
+    QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
+        .where("senderUid", isEqualTo: currentUser.id)
+        .orderBy("createdAt",
+            descending: true) // already added because needed with limit!
+        .get();
+    if (transactionsSnapshot != null) {
+      if (transactionsSnapshot.docs.isNotEmpty) {
+        try {
+          listOfTransactionsToPeers.addAll(transactionsSnapshot.docs
+              .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
+              .toList());
+        } catch (e) {
+          log.e("Could not map firestore data into TransactionModel");
+        }
+      } else {
+        log.e("Snapshot of donations collecton is empty");
+      }
+    } else {
+      log.e(
+          "Donations could not be retrieved, check how you access the firestore collections");
+    }
+
+    return listOfTransactionsToPeers;
+  }
+
+  Future<List<dynamic>> getListOfIncomingTransactions() async {
+    // TODO: Add limit to this query and only load more
+    // when user asks for it!
+    // keyword: pagination
+    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
+
+    if (userStateSubject.value != UserStatus.Initialized)
+      log.i("User not initialized, the following code will break!");
+
+    List<dynamic> listOfTransactions = <dynamic>[];
+    QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
+        .where("recipientUid", isEqualTo: currentUser.id)
+        .orderBy("createdAt",
+            descending: true) // already added because needed with limit!
+        .get();
+    if (transactionsSnapshot != null) {
+      if (transactionsSnapshot.docs.isNotEmpty) {
+        try {
+          listOfTransactions.addAll(transactionsSnapshot.docs
+              .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
+              .toList());
+        } catch (e) {
+          log.e("Could not map firestore data into TransactionModel");
+        }
+      } else {
+        log.e("Snapshot of donations collectin is empty");
+      }
+    } else {
+      log.e(
+          "Donations could not be retrieved, check how you access the firestore collections");
+    }
+
+    return listOfTransactions;
   }
 
   Future handleLogoutEvent() async {

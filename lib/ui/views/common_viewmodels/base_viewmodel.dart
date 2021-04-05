@@ -5,6 +5,7 @@ import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 // The Basemodel
 // All our ViewModels inherit from this class so
@@ -13,6 +14,8 @@ import 'package:stacked/stacked.dart';
 
 class BaseModel extends IndexTrackingViewModel {
   final UserDataService _userDataService = locator<UserDataService>();
+  final SnackbarService _snackbarService = locator<SnackbarService>();
+
   final log = getLogger("BaseModel");
 
   MyUser get currentUser => _userDataService.currentUser;
@@ -49,5 +52,10 @@ class BaseModel extends IndexTrackingViewModel {
         }
       },
     );
+  }
+
+  void showNotImplementedSnackbar() {
+    _snackbarService.showSnackbar(
+        message: "Not yet implemented...I know, it's sad");
   }
 }

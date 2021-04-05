@@ -60,6 +60,7 @@ class BottomSheetLayout extends StatelessWidget {
                 ),
                 verticalSpaceMedium,
                 if (widgetBeforeButtons != null) widgetBeforeButtons,
+                if (widgetBeforeButtons != null) verticalSpaceRegular,
                 if (buttons != null)
                   Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -83,7 +84,7 @@ class BottomSheetListEntry extends StatelessWidget {
   final String description;
   final Function(SheetResponse p1) completer;
   final dynamic responseData;
-  final Icon icon;
+  final Widget icon;
 
   const BottomSheetListEntry({
     Key key,
@@ -111,8 +112,15 @@ class BottomSheetListEntry extends StatelessWidget {
               fontWeight: icon != null ? FontWeight.w400 : FontWeight.w600),
         ),
         subtitle: description != null
-            ? Text(description,
-                style: textTheme(context).bodyText2.copyWith(fontSize: 15))
+            ? Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  width: screenWidthPercentage(context, percentage: 0.6),
+                  child: Text(description,
+                      style:
+                          textTheme(context).bodyText2.copyWith(fontSize: 15)),
+                ),
+              )
             : null,
       ),
     );

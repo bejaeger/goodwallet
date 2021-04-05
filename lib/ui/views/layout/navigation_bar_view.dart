@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/enums/user_status.dart';
-import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/ui/views/layout/navigation_bar_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';

@@ -19,16 +19,14 @@ class DummyPaymentService {
 
       // Create DonationModel. This is a dummy for now. Here we need
       // the actual information to be added
-      DonationModel donationModelDummy = DonationModel.fromMap({
-        "projectId": "DummyId",
-        "projectName": projectTitle,
-        "amount": amount,
-        "currency": "cad",
-        "status": "dummy",
-      });
-
-      // Add new document to cloud firestore. This will trigger the server function
-      // to update the good wallet!
+      DonationModel donationModelDummy = DonationModel(
+        projectId: "DummyId",
+        projectName: projectTitle,
+        amount: amount,
+        currency: "cad",
+        createdAt: FieldValue.serverTimestamp(),
+        status: "dummy",
+      );
       docRef.add(donationModelDummy.toJson());
     } catch (e) {
       log.e("Couldn't process donation: ${e.toString()}");

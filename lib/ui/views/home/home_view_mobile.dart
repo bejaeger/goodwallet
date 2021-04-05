@@ -3,8 +3,7 @@ import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/home_viewmodel.dart';
-import 'package:good_wallet/ui/views/home/home_custom_app_bar_view.dart';
-import 'package:good_wallet/ui/widgets/donation_dashboard_card.dart';
+import 'package:good_wallet/ui/widgets/carousel_card.dart';
 import 'package:good_wallet/ui/widgets/pledge_button.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -31,6 +30,7 @@ class HomeViewMobile extends StatelessWidget {
                   //   pinned: true,
                   // ),
                   SliverAppBar(
+                    automaticallyImplyLeading: false,
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -41,13 +41,13 @@ class HomeViewMobile extends StatelessWidget {
                                 style: textTheme(context)
                                     .headline3
                                     .copyWith(fontSize: 25)),
-                            GestureDetector(
-                                onTap: model.navigateToSettingsView,
-                                child: Icon(
-                                  Icons.person_outline_rounded,
-                                  color: ColorSettings.whiteTextColor,
-                                  size: 25,
-                                ))
+                            // GestureDetector(
+                            //     onTap: model.navigateToSettingsView,
+                            //     child: Icon(
+                            //       Icons.settings,
+                            //       color: ColorSettings.whiteTextColor,
+                            //       size: 25,
+                            //     ),),
                           ],
                         ),
                       ],
@@ -74,32 +74,38 @@ class HomeViewMobile extends StatelessWidget {
                                 Text("Hi " + model.currentUser.fullName,
                                     style: textTheme(context).headline4),
                                 verticalSpaceSmall,
-                                Card(
-                                  elevation: 2.0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  color: Colors.white,
-                                  child: Container(
-                                    padding: const EdgeInsets.only(
-                                        top: 15.0, bottom: 15.0, left: 10.0),
-                                    width: screenWidthWithoutPadding(context) -
-                                        8.0,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                            "\$ " +
-                                                (model.userWallet
-                                                            .currentBalance /
-                                                        100)
-                                                    .toString(),
-                                            style:
-                                                textTheme(context).headline2),
-                                        Text(
-                                            "Your current balance to be donated"),
-                                      ],
+                                GestureDetector(
+                                  onTap:
+                                      model.navigateToTransactionsHistoryView,
+                                  child: Card(
+                                    elevation: 2.0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    color: Colors.white,
+                                    child: Container(
+                                      padding: const EdgeInsets.only(
+                                          top: 15.0, bottom: 15.0, left: 10.0),
+                                      width:
+                                          screenWidthWithoutPadding(context) -
+                                              8.0,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              "\$ " +
+                                                  (model.userWallet
+                                                              .currentBalance /
+                                                          100)
+                                                      .toString(),
+                                              style: textTheme(context)
+                                                  .headline2
+                                                  .copyWith(fontSize: 28)),
+                                          Text(
+                                              "Your current balance to be donated"),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -154,72 +160,11 @@ class HomeViewMobile extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: LayoutSettings.horizontalPadding),
-                          child: Text("Your contributions",
+                          child: Text("Most popular projects",
                               style: textTheme(context).headline6),
                         ),
                         verticalSpaceSmall,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: LayoutSettings.horizontalPadding),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                                maxWidth: screenWidthWithoutPadding(context)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  flex: 10,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      DonationDashboardCard(
-                                        value: model.userWallet.donations / 100,
-                                        subtext: "Given to good causes",
-                                        icon: Icon(
-                                          Icons.favorite,
-                                          color: ColorSettings.primaryColor,
-                                          size: 30,
-                                        ),
-                                      ),
-                                      // verticalSpaceSmall,
-                                      // PledgeButton(
-                                      //     title: "+ Donate",
-                                      //     onPressed: model
-                                      //         .navigateToDonationView),
-                                    ],
-                                  ),
-                                ),
-                                Spacer(flex: 1),
-                                Expanded(
-                                  flex: 10,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      DonationDashboardCard(
-                                        value: model
-                                                .userWallet.transferredToPeers /
-                                            100,
-                                        subtext: "Pledged for friends",
-                                        icon: Icon(
-                                          Icons.send_rounded,
-                                          size: 30,
-                                        ),
-                                      ),
-                                      // verticalSpaceSmall,
-                                      // PledgeButton(
-                                      //     title: "+ Send money",
-                                      //     onPressed: model
-                                      //         .showSendMoneyBottomSheet),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        FeaturedProjectsCarousel(model: model),
                         verticalSpaceMedium,
                         Padding(
                           padding: const EdgeInsets.symmetric(
@@ -230,12 +175,6 @@ class HomeViewMobile extends StatelessWidget {
                         verticalSpaceSmall,
                         FeaturedAppsCarousel(model: model),
                         verticalSpaceMedium,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: LayoutSettings.horizontalPadding),
-                          child: Text("Recent activities",
-                              style: textTheme(context).headline6),
-                        ),
                         verticalSpaceMassive,
                       ],
                     ),
@@ -292,7 +231,7 @@ class FeaturedAppsCarousel extends StatelessWidget {
             CarouselCard(
               title: "Sportsbetting",
               explanation: "Bet with friends and win Good Gollars",
-              onTap: () => null,
+              onTap: model.showNotImplementedSnackbar,
               backgroundColor: MyColors.paletteTurquoise,
             ),
             SizedBox(width: LayoutSettings.horizontalPadding),
@@ -300,7 +239,7 @@ class FeaturedAppsCarousel extends StatelessWidget {
               title: "Your Application",
               explanation:
                   "This could be your application that leverages the Good Wallet to do good",
-              onTap: () => null,
+              onTap: model.showNotImplementedSnackbar,
               backgroundColor: MyColors.palettePurple,
             ),
             SizedBox(width: LayoutSettings.horizontalPadding),
@@ -309,68 +248,39 @@ class FeaturedAppsCarousel extends StatelessWidget {
   }
 }
 
-class CarouselCard extends StatelessWidget {
-  final String title;
-  final Function onTap;
-  final String explanation;
-  final Color backgroundColor;
+class FeaturedProjectsCarousel extends StatelessWidget {
+  final dynamic model;
 
-  const CarouselCard(
-      {Key key,
-      @required this.title,
-      @required this.onTap,
-      @required this.explanation,
-      this.backgroundColor = MyColors.paletteBlue})
-      : super(key: key);
-
+  const FeaturedProjectsCarousel({Key key, this.model}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: screenWidthPercentage(context, percentage: 0.8),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Card(
-          elevation: 2.0,
-          clipBehavior: Clip.hardEdge,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [backgroundColor, backgroundColor.withOpacity(0.7)],
-              ),
+        height: 200,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: [
+            SizedBox(width: LayoutSettings.horizontalPadding),
+            CarouselCard(
+              title: "Health and Development",
+              explanation: "Have an impact and change the world for the better",
+              onTap: model.showNotImplementedSnackbar,
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: SizedBox(
-                        width: screenWidthPercentage(context, percentage: 0.45),
-                        child: Text(explanation,
-                            style: textTheme(context)
-                                .bodyText1
-                                .copyWith(fontSize: 16))),
-                  ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Icon(Icons.arrow_forward_ios,
-                        color: ColorSettings.whiteTextColor, size: 20),
-                  ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(title, style: textTheme(context).headline5),
-                  ),
-                ],
-              ),
+            SizedBox(width: LayoutSettings.horizontalPadding),
+            CarouselCard(
+              title: "Climate Action",
+              explanation: "Help turning the wheels and fight climate change",
+              onTap: model.showNotImplementedSnackbar,
+              backgroundColor: MyColors.paletteTurquoise,
             ),
-          ),
-        ),
-      ),
-    );
+            SizedBox(width: LayoutSettings.horizontalPadding),
+            CarouselCard(
+              title: "Poverty",
+              explanation: "Help people in need",
+              onTap: model.showNotImplementedSnackbar,
+              backgroundColor: MyColors.palettePurple,
+            ),
+            SizedBox(width: LayoutSettings.horizontalPadding),
+          ],
+        ));
   }
 }

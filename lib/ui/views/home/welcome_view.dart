@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/ui/views/home/welcome_viewmodel.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:stacked/stacked.dart';
@@ -19,7 +18,7 @@ class WelcomeView extends StatelessWidget {
           return true;
         },
         child: Scaffold(
-          backgroundColor: backgroundColor,
+          backgroundColor: Theme.of(context).backgroundColor,
           body: NotificationListener<ScrollNotification>(
             onNotification: model.handleScrollNotification,
             child: Stack(

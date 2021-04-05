@@ -10,7 +10,7 @@ class TransactionModel {
   final num amount;
   final String currency;
   String message;
-  Timestamp createdAt;
+  dynamic createdAt;
   String transactionId;
   String status;
   bool topUp; // if topping up own Good Wallet
@@ -22,13 +22,14 @@ class TransactionModel {
     @required this.senderName,
     @required this.amount,
     @required this.currency,
+    @required this.createdAt,
     this.transactionId,
     this.message,
-    this.createdAt,
     this.status,
     this.topUp,
   });
 
+  // to be used when data is pushed to firestore (createdAt casted to FieldValue)
   Map<String, dynamic> toJson() {
     var returnJson = {
       'recipientUid': recipientUid,
@@ -39,13 +40,14 @@ class TransactionModel {
       'currency': currency,
       'transactionId': transactionId,
       'message': message,
-      'createdAt': createdAt,
+      'createdAt': createdAt as FieldValue,
       'status': status,
       'topUp': topUp,
     };
     return returnJson;
   }
 
+  // to be used when data is fetched from firestore (createdAt casted to Timestamp)
   static TransactionModel fromMap(Map<String, dynamic> map) {
     var data = TransactionModel(
         recipientUid: map['recipientUid'],
@@ -53,10 +55,10 @@ class TransactionModel {
         senderUid: map['senderUid'],
         senderName: map['senderName'],
         amount: map['amount'],
-        currency: map['currency']);
+        currency: map['currency'],
+        createdAt: map['createdAt'] as Timestamp);
     data.transactionId = returnIfAvailable(map, "transactionId");
     data.message = returnIfAvailable(map, "message");
-    data.createdAt = returnIfAvailable(map, "createdAt");
     data.status = returnIfAvailable(map, "status");
     data.topUp = returnIfAvailable(map, "topUp");
     return data;

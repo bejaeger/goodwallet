@@ -2,12 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/setup_bottom_sheet_ui.dart';
-import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_view.dart';
-import 'package:good_wallet/ui/views/layout/layout_template_view_mobile.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:good_wallet/utils/unfocuser.dart';
@@ -70,6 +67,11 @@ class MyThemeData {
         style: TextButton.styleFrom(
           //textStyle: TextStyle(fontSize: 15, color: MyColors.darkTurquoise),
           primary: Color(0xFF600000), // dark red
+        ),
+      ),
+      tabBarTheme: TabBarTheme(
+        indicator: UnderlineTabIndicator(
+          borderSide: BorderSide(color: MyColors.lightRed, width: 5.0),
         ),
       ),
       iconTheme: IconThemeData(

@@ -3,8 +3,22 @@
 ## App architecture / State Management Solution
 - We use the stacked package by FilledStacks which provides a very clean solutions for state management and realizing an MVVM architecture in flutter [[stacked](https://pub.dev/packages/stacked)]
 - [This blog post](https://medium.com/flutter-community/a-beginners-guide-to-architecting-a-flutter-app-1e9053211a74) provides a nice introduction to the stacked architecture
-- Highly recommended to watch the architecture tutorials summarized [[FilledStack's github repo](https://github.com/FilledStacks/flutter-tutorials)] (especially the tutorials 48, 49, 50). I basically set up the code like explained there. Having views separate from viewmodels and services allows the code to be incredibly clean and maintainable, so let's try that! :)
+- Highly recommended to watch the architecture tutorials summarized [[FilledStack's github repo](https://github.com/FilledStacks/flutter-tutorials)] (especially the tutorials 48, 49, 50). We basically set up the code like explained there. 
 - From the FilledStacks I can additionally recommend the tutorials starting from number 38. They helped me a ton!
+
+## Stacked Architecture Principles (from [here](https://www.filledstacks.com/post/flutter-and-provider-architecture-using-stacked/#how-does-stacked-work))
+
+How does stacked work
+The architecture functionally consists of only 3 parts. Views, ViewModels and Services. Views on top, the closest to the user, ViewModels are below that taking input from the Views and Services below that which is what the ViewModel's make use of to provide functionality. That's it. It comes with some rules that I highly recommend not to break.
+
+- Views should never MAKE USE of a service directly.
+- Views should contain zero to (preferred) no logic. If the logic is from UI only items then we do the least amount of required logic and pass the rest to the ViewModel.
+- Views should ONLY render the state in its ViewModel.
+- 1 View has 1 ViewModel
+- ViewModels for widgets that represent page views are bound to a single View only.
+- ViewModels may be re-used if the UI requires the exact same functionality.
+- ViewModels should not know about other ViewModels**
+Along with the 3 pillars above, something to consider is that any service / class that is not a ViewModel, that makes use of multiple services should be called a manager. This is something that would help distinguish better in code which services depend on other services and which are stand alone services. This is not a HARD rule but it's something to consider.
 
 ## Stacked Architecture Cheatsheet
 See [application setup](https://pub.flutter-io.cn/packages/stacked#application-setup) in stacked README.
