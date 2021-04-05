@@ -17,12 +17,8 @@ import '../services/payments/stripe_payment_service.dart';
 import '../services/userdata/user_data_service.dart';
 import '../ui/views/causes/causes_viewmodel.dart';
 import '../ui/views/layout/navigation_bar_viewmodel.dart';
-<<<<<<< HEAD
 import '../ui/views/payments/send_money_viewmodel.dart';
-||||||| fd76180
-=======
 import '../ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
->>>>>>> f9705e950d7ad3dc1d24a607696efd6383627b7e
 import '../ui/views/wallet/wallet_viewmodel.dart';
 
 final locator = StackedLocator.instance;
@@ -37,13 +33,9 @@ void setupLocator() {
   locator.registerLazySingleton(() => GlobalGivingAPIService());
   locator.registerLazySingleton(() => WalletViewModel());
   locator.registerLazySingleton(() => CausesViewModel());
-<<<<<<< HEAD
   locator.registerLazySingleton(() => SendMoneyViewModel());
-||||||| fd76180
-=======
   locator.registerLazySingleton(() => TransactionHistoryLayoutViewModel());
   locator.registerLazySingleton(() => NavigationBarViewModel());
->>>>>>> f9705e950d7ad3dc1d24a607696efd6383627b7e
   locator.registerLazySingleton(() => FirebaseAuthenticationService());
   locator.registerLazySingleton(() => DummyPaymentService());
   locator.registerSingleton(UserDataService());

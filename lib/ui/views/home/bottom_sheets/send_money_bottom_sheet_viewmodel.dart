@@ -8,9 +8,7 @@ class SendMoneyBottomSheetViewModel extends BaseModel {
   final NavigationService _navigationService = locator<NavigationService>();
 
   Future navigateToSendMoneyViewMobile() async {
-    await _navigationService.navigateTo(Routes.sendMoneyViewMobile,
-        arguments: LayoutTemplateViewMobileArguments(
-            index: BottomNavigatorIndex.Give.index));
+    await _navigationService.navigateTo(Routes.sendMoneyViewMobile);
   }
 
   void navigateToScanQRCodeView() {

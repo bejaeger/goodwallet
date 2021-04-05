@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:good_wallet/style/colors.dart';
 import 'package:good_wallet/ui/views/payments/send_money_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -29,27 +28,27 @@ class SendMoneyViewMobile extends StatelessWidget {
           ? CircularProgressIndicator()
           : Scaffold(
               body: Center(
-                child: Container(height: 500,
-                child: ListView(
-                  children: [
-                    _selectUserView(model),
-                    verticalSpaceMedium,
-                    _buildSearchTextWidget(context, model),
-                    verticalSpaceMedium,
-                    _selectValueView(context, model),
-                    verticalSpaceMedium,
-                    _optionalMessageView(model),
-                    verticalSpaceMassive,
-                    ElevatedButton(
+                child: Container(
+                  height: 500,
+                  child: ListView(
+                    children: [
+                      _selectUserView(model),
+                      verticalSpaceMedium,
+                      _buildSearchTextWidget(context, model),
+                      verticalSpaceMedium,
+                      _selectValueView(context, model),
+                      verticalSpaceMedium,
+                      _optionalMessageView(model),
+                      verticalSpaceMassive,
+                      ElevatedButton(
                         onPressed: () => model.dummyPaymentConfirmationDialog(),
                         child: Text('Send'),
-                    )
-                  ],
-                ), 
-                ),
-                  
+                      )
+                    ],
+                  ),
                 ),
               ),
+            ),
     );
   }
 }

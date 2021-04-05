@@ -30,7 +30,8 @@ class SendMoneyViewModel extends BaseModel {
   final TextEditingController _userSelectionController =
       TextEditingController();
   TextEditingController get userSelectionController => _userSelectionController;
-  final DummyPaymentService _dummyPaymentService = locator<DummyPaymentService>();
+  final DummyPaymentService _dummyPaymentService =
+      locator<DummyPaymentService>();
 
   void setUser(String selection) {
     _userSelectionController.text = selection;
@@ -110,6 +111,7 @@ class SendMoneyViewModel extends BaseModel {
         senderName: currentUser.fullName,
         amount: amount * 100,
         currency: "cad",
+        createdAt: FieldValue.serverTimestamp(),
         message: msg,
         status: 'initialized',
       );
@@ -129,6 +131,7 @@ class SendMoneyViewModel extends BaseModel {
       senderName: currentUser.fullName,
       amount: 700,
       currency: "cad",
+      createdAt: FieldValue.serverTimestamp(),
       message: "Test Transfer",
       status: 'initialized',
     );
@@ -148,8 +151,6 @@ class SendMoneyViewModel extends BaseModel {
     }
     setPaymentReady(true);
   }
-
-  
 
   Future processPayment(TransactionModel data) async {
     setBusy(true);
@@ -267,58 +268,55 @@ class SendMoneyViewModel extends BaseModel {
     await _navigationService.navigateTo(Routes.welcomeView);
   }
 
-
   Future makeDummyPayment() async {
     try {
       var data = await fillTransactionModel();
       await _dummyPaymentService.processTransaction(data);
-    } catch (e){
-      log.e("Couldn't get fill transaction model or process dummy transaction: ${e.toString()}");
+    } catch (e) {
+      log.e(
+          "Couldn't get fill transaction model or process dummy transaction: ${e.toString()}");
       rethrow;
     }
   }
 
-  Future anotherPaymentConfirmationDialog() async{
+  Future anotherPaymentConfirmationDialog() async {
     try {
-        DialogResponse response = await _dialogService.showConfirmationDialog(
-      title: 'Confirmation',
-      description:
-          "Would you like to make another payment?",
-      confirmationTitle: 'Yes',
-      dialogPlatform: DialogPlatform.Material,
-      cancelTitle: 'No',
-    );
-    if (!response.confirmed) {
-     _navigationService.navigateTo(Routes.homeViewMobile);
-    }
-    print('DialogResponse: ${response.confirmed}');
-      }  catch (e) {
-        log.e("Couldn't process payment: ${e.toString()}");
-        rethrow;
+      DialogResponse response = await _dialogService.showConfirmationDialog(
+        title: 'Confirmation',
+        description: "Would you like to make another payment?",
+        confirmationTitle: 'Yes',
+        dialogPlatform: DialogPlatform.Material,
+        cancelTitle: 'No',
+      );
+      if (!response.confirmed) {
+        _navigationService.navigateTo(Routes.homeViewMobile);
+      }
+      print('DialogResponse: ${response.confirmed}');
+    } catch (e) {
+      log.e("Couldn't process payment: ${e.toString()}");
+      rethrow;
     }
   }
 
   Future dummyPaymentConfirmationDialog() async {
-      try {
-        var data = await fillTransactionModel();
-        DialogResponse response = await _dialogService.showConfirmationDialog(
-      title: 'Confirmation',
-      description:
-          "Are you sure that you want to send ${data.amount/100}\$ to ${data.recipientName}",
-      confirmationTitle: 'Yes',
-      dialogPlatform: DialogPlatform.Material,
-      cancelTitle: 'No',
-    );
-    if (response.confirmed) {
-      await _dummyPaymentService.processTransaction(data);
-      await anotherPaymentConfirmationDialog();
+    try {
+      var data = await fillTransactionModel();
+      DialogResponse response = await _dialogService.showConfirmationDialog(
+        title: 'Confirmation',
+        description:
+            "Are you sure that you want to send ${data.amount / 100}\$ to ${data.recipientName}",
+        confirmationTitle: 'Yes',
+        dialogPlatform: DialogPlatform.Material,
+        cancelTitle: 'No',
+      );
+      if (response.confirmed) {
+        await _dummyPaymentService.processTransaction(data);
+        await anotherPaymentConfirmationDialog();
+      }
+      print('DialogResponse: ${response.confirmed}');
+    } catch (e) {
+      log.e("Couldn't process payment: ${e.toString()}");
+      rethrow;
     }
-    print('DialogResponse: ${response.confirmed}');
-      }  catch (e) {
-        log.e("Couldn't process payment: ${e.toString()}");
-        rethrow;
-    }
-      
   }
-
 }
