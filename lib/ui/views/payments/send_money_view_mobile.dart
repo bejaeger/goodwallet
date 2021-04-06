@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
+import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/payments/send_money_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -27,25 +29,62 @@ class SendMoneyViewMobile extends StatelessWidget {
       builder: (context, model, child) => model.isBusy
           ? CircularProgressIndicator()
           : Scaffold(
-              body: Center(
-                child: Container(
-                  height: 500,
-                  child: ListView(
-                    children: [
-                      _selectUserView(model),
-                      verticalSpaceMedium,
-                      _buildSearchTextWidget(context, model),
-                      verticalSpaceMedium,
-                      _selectValueView(context, model),
-                      verticalSpaceMedium,
-                      _optionalMessageView(model),
-                      verticalSpaceMassive,
-                      ElevatedButton(
-                        onPressed: () => model.dummyPaymentConfirmationDialog(),
-                        child: Text('Send'),
-                      )
-                    ],
-                  ),
+              body: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: LayoutSettings.horizontalPadding),
+                child: ListView(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          padding: EdgeInsets.zero,
+                          alignment: Alignment.centerLeft,
+                          icon: Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.black,
+                          ),
+                          onPressed: model.navigateBack,
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.info_outline_rounded,
+                            color: ColorSettings.blackHeadlineColor,
+                          ),
+                          onPressed: model.showNotImplementedSnackbar,
+                        ),
+                      ],
+                    ),
+                    Text(
+                      "Send Money",
+                      style: TextStyle(fontSize: 34),
+                    ),
+                    verticalSpaceLarge,
+                    Column(
+                      children: [
+                        verticalSpaceMedium,
+                        _buildSearchTextWidget(context, model),
+                        verticalSpaceMedium,
+                        _selectValueView(context, model),
+                        verticalSpaceMedium,
+                        _optionalMessageView(model),
+                        verticalSpaceMassive,
+                        //_selectUserView(model),
+                        verticalSpaceRegular,
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minWidth:
+                                screenWidthPercentage(context, percentage: 0.7),
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () =>
+                                model.dummyPaymentConfirmationDialog(),
+                            child: Text('Send'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -57,7 +96,7 @@ _selectUserView(dynamic model) {
   return Column(
     children: [
       Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        //mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text("Send Money to: ", style: TextStyle(fontSize: 18)),
           model.selectedUserInfoMap != null
@@ -75,7 +114,8 @@ _selectUserView(dynamic model) {
 _selectValueView(dynamic context, var model) {
   return Container(
     child: TextFormField(
-      decoration: new InputDecoration(labelText: "Amount"),
+      decoration: new InputDecoration(
+          prefixIcon: Icon(Icons.money), labelText: "Amount in \$"),
       keyboardType: TextInputType.number,
       controller: model.transferValueController,
       inputFormatters: <TextInputFormatter>[
@@ -88,7 +128,9 @@ _selectValueView(dynamic context, var model) {
 _optionalMessageView(model) {
   return Container(
     child: TextField(
-      decoration: new InputDecoration(labelText: "Message (optional)"),
+      decoration: new InputDecoration(
+          prefixIcon: Icon(Icons.message_outlined),
+          labelText: "Message (optional)"),
       controller:
           model.optionalMessageController, // Only numbers can be entered
     ),
@@ -107,7 +149,8 @@ _buildSearchTextWidget(BuildContext context, dynamic model) {
           Text("No user found", style: TextStyle(fontSize: 18)),
       getImmediateSuggestions: true,
       textFieldConfiguration: TextFieldConfiguration(
-        decoration: InputDecoration(hintText: 'Select user'),
+        decoration: InputDecoration(
+            prefixIcon: Icon(Icons.search), hintText: 'Search for user'),
         controller: model.userSelectionController,
       ),
       suggestionsCallback: (String pattern) async {
