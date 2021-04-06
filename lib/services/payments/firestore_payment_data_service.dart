@@ -42,10 +42,7 @@ class FirestorePaymentDataService {
         await handleAlreadyExistingPaymentIntent(documentsSnapshot, uid);
       }
       var docRef = paymentIntentCollectionRef.doc();
-      data.transactionId = docRef.id;
-      var jsonData = data.toJson();
-      jsonData["createdAt"] = FieldValue.serverTimestamp();
-      await docRef.set(jsonData);
+      await docRef.set(data.toJson());
       return docRef.id;
     } catch (error) {
       print("ERROR: payment intent couldn't be created in firestore!");

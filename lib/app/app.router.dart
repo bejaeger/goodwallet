@@ -26,6 +26,7 @@ import '../ui/views/money_pools/manage_money_pools_view.dart';
 import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
 import '../ui/views/payments/send_money_view.dart';
+import '../ui/views/payments/send_money_view_mobile.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
 import '../ui/views/qrcode/qrcode_view_mobile.dart';
 import '../ui/views/transaction_history/transactions_view.dart';
@@ -47,6 +48,7 @@ class Routes {
   static const String createAccountView = '/create-account-view';
   static const String singleFeaturedAppView = '/single-featured-app-view';
   static const String manageMoneyPoolsView = '/manage-money-pools-view';
+  static const String sendMoneyViewMobile = '/send-money-view-mobile';
   static const String transactionsView = '/transactions-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String createMoneyPoolView = '/create-money-pool-view';
@@ -66,6 +68,7 @@ class Routes {
     createAccountView,
     singleFeaturedAppView,
     manageMoneyPoolsView,
+    sendMoneyViewMobile,
     transactionsView,
     qRCodeViewMobile,
     createMoneyPoolView,
@@ -91,6 +94,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.createAccountView, page: CreateAccountView),
     RouteDef(Routes.singleFeaturedAppView, page: SingleFeaturedAppView),
     RouteDef(Routes.manageMoneyPoolsView, page: ManageMoneyPoolsView),
+    RouteDef(Routes.sendMoneyViewMobile, page: SendMoneyViewMobile),
     RouteDef(Routes.transactionsView, page: TransactionsView),
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
     RouteDef(Routes.createMoneyPoolView, page: CreateMoneyPoolView),
@@ -232,6 +236,20 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    SendMoneyViewMobile: (data) {
+      var args = data.getArgs<SendMoneyViewMobileArguments>(
+        orElse: () => SendMoneyViewMobileArguments(),
+      );
+      return PageRouteBuilder<dynamic>(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            SendMoneyViewMobile(
+          key: args.key,
+          userInfoMap: args.userInfoMap,
+          openSearchBarOnBuild: args.openSearchBarOnBuild,
+        ),
+        settings: data,
+      );
+    },
     TransactionsView: (data) {
       var args = data.getArgs<TransactionsViewArguments>(
         orElse: () => TransactionsViewArguments(),
@@ -319,6 +337,15 @@ class SingleFeaturedAppViewArguments {
   final Key key;
   final FeaturedAppType type;
   SingleFeaturedAppViewArguments({this.key, @required this.type});
+}
+
+/// SendMoneyViewMobile arguments holder class
+class SendMoneyViewMobileArguments {
+  final Key key;
+  final Map<String, String> userInfoMap;
+  final dynamic openSearchBarOnBuild;
+  SendMoneyViewMobileArguments(
+      {this.key, this.userInfoMap, this.openSearchBarOnBuild = false});
 }
 
 /// TransactionsView arguments holder class

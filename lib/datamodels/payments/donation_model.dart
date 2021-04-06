@@ -7,9 +7,9 @@ class DonationModel {
   final String projectName;
   final num amount;
   final String currency;
+  dynamic createdAt;
   String organizationName;
   String message;
-  Timestamp createdAt;
   String transactionId;
   String status;
 
@@ -18,10 +18,10 @@ class DonationModel {
     @required this.projectName,
     @required this.amount,
     @required this.currency,
+    @required this.createdAt,
     this.organizationName,
     this.transactionId,
     this.message,
-    this.createdAt,
     this.status,
   });
 
@@ -31,10 +31,10 @@ class DonationModel {
       'projectName': projectName,
       'amount': amount,
       'currency': currency,
+      'createdAt': createdAt,
       'organizationName': organizationName,
       'transactionId': transactionId,
       'message': message,
-      'createdAt': createdAt,
       'status': status,
     };
     return returnJson;
@@ -48,11 +48,11 @@ class DonationModel {
           projectId: map['projectId'],
           projectName: map['projectName'],
           amount: map['amount'],
-          currency: map['currency']);
+          currency: map['currency'],
+          createdAt: map['createdAt']);
       returnData.organizationName = returnIfAvailable(map, 'organizationName');
       returnData.transactionId = returnIfAvailable(map, "transactionId");
       returnData.message = returnIfAvailable(map, "message");
-      returnData.createdAt = returnIfAvailable(map, "createdAt");
       returnData.status = returnIfAvailable(map, "status");
     } catch (e) {
       rethrow;

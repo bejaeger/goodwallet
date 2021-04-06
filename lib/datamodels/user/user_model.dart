@@ -52,4 +52,15 @@ class MyUser {
   String getInitials() {
     return getInitialsFromName(this.fullName);
   }
+
+  static MyUser fromMap(Map<String, dynamic> map) {
+    var data = MyUser(
+        id: map['id'],
+        fullName: map['fullName'],
+        email: map['email'],
+        balance: map['balance'],
+        implicitDonations: map['implicitDonations'],
+        donations: map['donations']);
+    return data;
+  }  
 }
