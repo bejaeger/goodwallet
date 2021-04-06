@@ -34,12 +34,12 @@ class DummyPaymentService {
     }
   }
 
-  Future processTransaction(_transactionModelDummy) async {
+  Future processTransaction(TransactionModel transactionModelDummy) async {
     // to be implemented
     // similar to processDonation above but use add TransactionModel to firestore
     // collection 'payments' not 'users/<userId>/donations/{donationId}' as above
     try {
-      _paymentsCollectionReference.add(_transactionModelDummy.toJson());
+      _paymentsCollectionReference.add(transactionModelDummy.toJson());
     } catch (e) {
       log.e("Couldn't process dummy transaction: ${e.toString()}");
       rethrow;
