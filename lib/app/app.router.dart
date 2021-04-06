@@ -7,9 +7,9 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/material.dart';
+import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:stacked/stacked.dart';
 
-import '../datamodels/causes/global_giving_project_model.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/transaction_type.dart';
 import '../ui/views/causes/causes_view.dart';
@@ -322,7 +322,7 @@ class LayoutTemplateViewMobileArguments {
 /// SingleProjectViewMobile arguments holder class
 class SingleProjectViewMobileArguments {
   final Key key;
-  final GlobalGivingProjectModel project;
+  final GoodWalletProjectModel project;
   SingleProjectViewMobileArguments({this.key, this.project});
 }
 

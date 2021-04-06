@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/causes/global_giving_project_model.dart';
+import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/causes/single_project_viewmodel.dart';
-import 'package:good_wallet/ui/widgets/small_wallet_card.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
@@ -11,7 +10,7 @@ final _donationAmountController = TextEditingController();
 var userGoodDollarsSavings = 2000;
 
 class SingleProjectViewMobile extends StatelessWidget {
-  final GlobalGivingProjectModel project;
+  final GoodWalletProjectModel project;
   const SingleProjectViewMobile({Key key, this.project}) : super(key: key);
 
   @override

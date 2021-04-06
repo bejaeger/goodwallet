@@ -102,7 +102,7 @@ class CausesListViewMobile extends StatelessWidget {
       viewModelBuilder: () => locator<CausesViewModel>(),
       disposeViewModel: false,
       fireOnModelReadyOnce: true,
-      onModelReady: (model) async => await model.fetchProjects(),
+      onModelReady: (model) async => await model.fetchCauses(),
       builder: (context, model, child) => model.isBusy
           ? Center(child: CircularProgressIndicator())
           : Shimmer(

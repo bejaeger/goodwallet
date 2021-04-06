@@ -1,12 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/datamodels/causes/global_giving_project_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'dart:math';
+import 'package:good_wallet/utils/logger.dart';
 
 // For info on json parsing see
 // @see https://dart.dev/tutorials/web/fetch-data
 
 class GlobalGivingAPIService {
+  final log = getLogger("global_giving_api_service.dart");
+  final CollectionReference _causesCollectionReference =
+      FirebaseFirestore.instance.collection("causes");
+
   Future getRandomProject() async {
     // test request for specific project
     //String url =
@@ -63,10 +69,56 @@ class GlobalGivingAPIService {
         projectList.add(project);
       }
       return projectList;
-      //return project;
     } catch (e) {
-      print("Error: ${e.toString()}");
+      log.e(
+          "Could not return featured projects, failed with error: ${e.toString()}");
     }
+  }
+
+  Future getProjectsOfTheMonth({bool addToFirestore = false}) async {
+    List<String> projectIds = [
+      "14516",
+      "3935",
+      "5607",
+      "31919",
+      "9451",
+      "2291",
+      "8799",
+      "1877",
+      "6066",
+      "898"
+    ];
+    Uri url = Uri.https(
+      "api.globalgiving.org",
+      "/api/public/projectservice/projects/collection/ids",
+      {
+        "api_key": "578f2d27-8c47-4456-9d57-3bb0cb3f883b",
+        "projectIds": projectIds.join(",")
+      },
+    );
+    return _getProjectListFromHTTPCall(url, addToFirestore);
+  }
+
+  Future<List<GlobalGivingProjectModel>> _getProjectListFromHTTPCall(
+      Uri url, bool addToFirestore) async {
+    http.Response response = await fetchProject(url);
+    List<GlobalGivingProjectModel> projectList = [];
+    try {
+      var jsonResponse = convert.jsonDecode(response.body);
+      var fetchedProjects =
+          jsonResponse["projects"]["project"] as List<dynamic>;
+      int numberProjects = fetchedProjects.length;
+      for (int i = 0; i < numberProjects; i++) {
+        GlobalGivingProjectModel project =
+            GlobalGivingProjectModel.readJsonProject(fetchedProjects[i]);
+        if (addToFirestore) _causesCollectionReference.add(project.toJson());
+        projectList.add(project);
+      }
+    } catch (e) {
+      log.e(
+          "Could not return featured projects, failed with error: ${e.toString()}");
+    }
+    return projectList;
   }
 
   Future<http.Response> fetchProject(dynamic url) async {

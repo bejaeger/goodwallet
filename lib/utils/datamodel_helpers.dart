@@ -1,5 +1,7 @@
 // Some small helper functions
 
+import 'package:good_wallet/enums/causes_type.dart';
+
 String getInitialsFromName(String name) {
   List<String> splitName = name.split(" ");
   List<String> initials = [];
@@ -15,4 +17,8 @@ dynamic returnIfAvailable(dynamic map, String key) {
   } else {
     return null;
   }
+}
+
+CauseType getCauseTypeFromString(String str) {
+  return CauseType.values.firstWhere((e) => e.toString() == str);
 }

@@ -1,0 +1,1 @@
+enum CauseType { GlobalGivingProject, GoodWalletFund }

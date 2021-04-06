@@ -13,4 +13,12 @@ class Organization {
     };
     return returnJson;
   }
+
+  static Organization fromMap(Map<String, dynamic> map) {
+    var data = Organization(
+      name: map["name"],
+      url: map["url"],
+    );
+    return data;
+  }
 }
