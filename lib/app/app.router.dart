@@ -145,9 +145,7 @@ class StackedRouter extends RouterBase {
       );
     },
     LayoutTemplate: (data) {
-      var args = data.getArgs<LayoutTemplateArguments>(
-        orElse: () => LayoutTemplateArguments(),
-      );
+      var args = data.getArgs<LayoutTemplateArguments>(nullOk: false);
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) => LayoutTemplate(
           key: args.key,
@@ -187,9 +185,7 @@ class StackedRouter extends RouterBase {
       );
     },
     SingleProjectViewMobile: (data) {
-      var args = data.getArgs<SingleProjectViewMobileArguments>(
-        orElse: () => SingleProjectViewMobileArguments(),
-      );
+      var args = data.getArgs<SingleProjectViewMobileArguments>(nullOk: false);
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) =>
             SingleProjectViewMobile(
@@ -217,9 +213,7 @@ class StackedRouter extends RouterBase {
       );
     },
     SingleFeaturedAppView: (data) {
-      var args = data.getArgs<SingleFeaturedAppViewArguments>(
-        orElse: () => SingleFeaturedAppViewArguments(),
-      );
+      var args = data.getArgs<SingleFeaturedAppViewArguments>(nullOk: false);
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) =>
             SingleFeaturedAppView(
@@ -289,7 +283,7 @@ class SendMoneyViewArguments {
 class LayoutTemplateArguments {
   final Key? key;
   final Widget? childView;
-  LayoutTemplateArguments({this.key, this.childView});
+  LayoutTemplateArguments({this.key, required this.childView});
 }
 
 /// LoginView arguments holder class
@@ -309,7 +303,7 @@ class LayoutTemplateViewMobileArguments {
 class SingleProjectViewMobileArguments {
   final Key? key;
   final GlobalGivingProjectModel? project;
-  SingleProjectViewMobileArguments({this.key, this.project});
+  SingleProjectViewMobileArguments({this.key, required this.project});
 }
 
 /// CreateAccountView arguments holder class
@@ -322,7 +316,7 @@ class CreateAccountViewArguments {
 class SingleFeaturedAppViewArguments {
   final Key? key;
   final FeaturedAppType? type;
-  SingleFeaturedAppViewArguments({this.key, this.type});
+  SingleFeaturedAppViewArguments({this.key, required this.type});
 }
 
 /// TransactionsView arguments holder class

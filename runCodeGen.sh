@@ -1,1 +1,1 @@
-flutter pub run build_runner build --delete-conflicting-outputs
+flutter pub run --no-sound-null-safety build_runner build --delete-conflicting-outputs
