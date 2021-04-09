@@ -60,6 +60,7 @@ class BottomSheetLayout extends StatelessWidget {
                 ),
                 verticalSpaceMedium,
                 if (widgetBeforeButtons != null) widgetBeforeButtons!,
+                if (widgetBeforeButtons != null) verticalSpaceRegular,
                 if (buttons != null)
                   Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,

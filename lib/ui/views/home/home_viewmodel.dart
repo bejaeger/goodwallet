@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
+import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';

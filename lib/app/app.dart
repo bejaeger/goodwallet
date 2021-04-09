@@ -20,6 +20,8 @@ import 'package:good_wallet/ui/views/money_pools/manage_money_pools_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_cancel_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_success_view.dart';
 import 'package:good_wallet/ui/views/payments/send_money_view.dart';
+import 'package:good_wallet/ui/views/payments/send_money_view_mobile.dart';
+import 'package:good_wallet/ui/views/payments/send_money_viewmodel.dart';
 import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
 import 'package:good_wallet/ui/views/qrcode/qrcode_view_mobile.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
@@ -50,6 +52,7 @@ import 'package:stacked_services/stacked_services.dart';
     CustomRoute(page: CreateAccountView),
     CustomRoute(page: SingleFeaturedAppView),
     CustomRoute(page: ManageMoneyPoolsView),
+    CustomRoute(page: SendMoneyViewMobile),
     CustomRoute(page: TransactionsView),
     CustomRoute(page: QRCodeViewMobile),
     CustomRoute(page: CreateMoneyPoolView),
@@ -67,6 +70,7 @@ import 'package:stacked_services/stacked_services.dart';
     // viewmodels
     LazySingleton(classType: WalletViewModel),
     LazySingleton(classType: CausesViewModel),
+    LazySingleton(classType: SendMoneyViewModel),
     LazySingleton(classType: TransactionHistoryLayoutViewModel),
     // TODO: Check whether this is deprecated
     LazySingleton(classType: NavigationBarViewModel),

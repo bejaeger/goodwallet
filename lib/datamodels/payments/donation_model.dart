@@ -9,7 +9,7 @@ class DonationModel {
   final String? currency;
   String? organizationName;
   String? message;
-  Timestamp? createdAt;
+  dynamic createdAt;
   String? transactionId;
   String? status;
 
@@ -18,10 +18,10 @@ class DonationModel {
     required this.projectName,
     required this.amount,
     required this.currency,
+    required this.createdAt,
     this.organizationName,
     this.transactionId,
     this.message,
-    this.createdAt,
     this.status,
   });
 
@@ -45,14 +45,15 @@ class DonationModel {
     DonationModel returnData;
     try {
       returnData = DonationModel(
-          projectId: map['projectId'],
-          projectName: map['projectName'],
-          amount: map['amount'],
-          currency: map['currency']);
+        projectId: map['projectId'],
+        projectName: map['projectName'],
+        amount: map['amount'],
+        currency: map['currency'],
+        createdAt: map['createdAt'],
+      );
       returnData.organizationName = returnIfAvailable(map, 'organizationName');
       returnData.transactionId = returnIfAvailable(map, "transactionId");
       returnData.message = returnIfAvailable(map, "message");
-      returnData.createdAt = returnIfAvailable(map, "createdAt");
       returnData.status = returnIfAvailable(map, "status");
     } catch (e) {
       rethrow;

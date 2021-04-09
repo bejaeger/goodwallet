@@ -1,10 +1,10 @@
-import 'dart:async';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/causes/global_giving_project_model.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_fund_model.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
+import 'package:good_wallet/enums/causes_type.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
@@ -12,16 +12,18 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 
 class CausesViewModel extends BaseModel {
-  List<GoodWalletProjectModel>? projects;
-  List<GoodWalletFundModel>? goodWalletFunds;
-
-  final log = getLogger("causes_viewmodel.dart");
-
   final GlobalGivingAPIService? _globalGivingAPIservice =
       locator<GlobalGivingAPIService>();
   final NavigationService? _navigationService = locator<NavigationService>();
+  final CollectionReference _causesCollectionReference =
+      FirebaseFirestore.instance.collection("causes");
 
-  Future fetchProjects() async {
+  final log = getLogger("causes_viewmodel.dart");
+
+  List<GoodWalletProjectModel>? projects;
+  List<GoodWalletFundModel>? goodWalletFunds;
+
+  Future fetchCauses() async {
     setBusy(true);
     if (projects == null) {
       projects = await (_globalGivingAPIservice!.getFeaturedProjects());
@@ -29,24 +31,39 @@ class CausesViewModel extends BaseModel {
     }
     if (goodWalletFunds == null) {
       goodWalletFunds = [
-        GoodWalletFundModel.fromMap({
-          "title": "Friend Referral Fund",
-          "description":
+        GoodWalletFundModel(
+          title: "Friend Referral Fund",
+          description:
               "This fund is used to raise money when referring the Good Wallet to your peers",
-          "imagePath": ImagePath.peopleHoldingHands,
-        }),
-        GoodWalletFundModel.fromMap({
-          "title": "The Developer Fund",
-          "description":
+          imagePath: ImagePath.peopleHoldingHands,
+        ),
+        GoodWalletFundModel(
+          title: "The Developer Fund",
+          description:
               "Support further developments of the Good Wallet to offer better services",
-          "imagePath": ImagePath.workNextToCreek,
-        }),
+          imagePath: ImagePath.workNextToCreek,
+        ),
       ];
       log.i(
           "Fetched good wallet fund list with length ${goodWalletFunds!.length}");
     }
     setBusy(false);
     notifyListeners();
+  }
+
+  Future fetchGlobalGivingProjects() async {
+    QuerySnapshot projectsSnapshot = await _causesCollectionReference
+        .where("causeType", isEqualTo: CauseType.GlobalGivingProject.toString())
+        .get();
+    if (projectsSnapshot != null) {
+      projects = projectsSnapshot.docs
+          .map((snapshot) => GoodWalletProjectModel.fromMap(snapshot.data()!))
+          .toList();
+    } else {
+      // No data stored on firestore yet, use global giving API
+      projects = await _globalGivingAPIservice!
+          .getProjectsOfTheMonth(addToFirestore: false);
+    }
   }
 
   Future navigateToProjectScreen(index) async {
