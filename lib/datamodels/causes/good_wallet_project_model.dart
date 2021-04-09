@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:good_wallet/datamodels/causes/organization_model.dart';
 import 'package:good_wallet/enums/causes_type.dart';
 import 'package:good_wallet/utils/datamodel_helpers.dart';
@@ -42,7 +43,7 @@ class GoodWalletProjectModel {
       'fundingGoal': fundingGoal,
       'themeName': themeName,
       'globalGivingProjectId': globalGivingProjectId,
-      'causeType': causeType.toString(),
+      'causeType': describeEnum(causeType),
     };
     return returnJson;
   }

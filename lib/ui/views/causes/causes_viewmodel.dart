@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/causes/global_giving_project_model.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_fund_model.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:good_wallet/enums/causes_type.dart';
@@ -49,13 +49,16 @@ class CausesViewModel extends BaseModel {
 
   Future fetchGlobalGivingProjects() async {
     QuerySnapshot projectsSnapshot = await _causesCollectionReference
-        .where("causeType", isEqualTo: CauseType.GlobalGivingProject.toString())
+        .where("causeType",
+            isEqualTo: describeEnum(CauseType.GlobalGivingProject))
         .get();
-    if (projectsSnapshot != null) {
+    if (projectsSnapshot != null && projectsSnapshot.docs.isNotEmpty) {
+      log.i("Found data of global giving projects on firestore");
       projects = projectsSnapshot.docs
           .map((snapshot) => GoodWalletProjectModel.fromMap(snapshot.data()))
           .toList();
     } else {
+      log.i("Get global giving projects from API");
       // No data stored on firestore yet, use global giving API
       projects = await _globalGivingAPIservice.getProjectsOfTheMonth(
           addToFirestore: false);
