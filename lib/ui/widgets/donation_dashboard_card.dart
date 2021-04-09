@@ -13,13 +13,13 @@ class DonationDashboardCard extends StatelessWidget {
   final String subtext;
   final double value;
   final Icon icon;
-  final Function callback;
+  final void Function()? callback;
 
   const DonationDashboardCard({
-    Key key,
-    @required this.subtext,
-    @required this.value,
-    @required this.icon,
+    Key? key,
+    required this.subtext,
+    required this.value,
+    required this.icon,
     this.callback,
   }) : super(key: key);
 
@@ -57,14 +57,14 @@ class DonationDashboardCard extends StatelessWidget {
                 fit: BoxFit.scaleDown,
                 child: Text(
                   "\$ " + value.toString(),
-                  style: textTheme(context).headline4.copyWith(
+                  style: textTheme(context).headline4!.copyWith(
                       fontSize: 25, color: ColorSettings.blackHeadlineColor),
                 ),
               ),
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(subtext,
-                    style: textTheme(context).bodyText2.copyWith(fontSize: 15)),
+                    style: textTheme(context).bodyText2!.copyWith(fontSize: 15)),
               ),
               // verticalSpaceMedium,
               // LinearPercentIndicator(

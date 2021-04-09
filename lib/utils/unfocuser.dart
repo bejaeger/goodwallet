@@ -6,9 +6,9 @@ import 'package:flutter/widgets.dart';
 // @see https://github.com/flutter/flutter/issues/32433
 
 class Unfocuser extends StatelessWidget {
-  const Unfocuser({Key key, this.child}) : super(key: key);
+  const Unfocuser({Key? key, this.child}) : super(key: key);
 
-  final Widget child;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +25,9 @@ class Unfocuser extends StatelessWidget {
           }
         }
 
-        final primaryFocus = FocusManager.instance.primaryFocus;
+        final primaryFocus = FocusManager.instance.primaryFocus!;
 
-        if (primaryFocus.context.widget is EditableText) {
+        if (primaryFocus.context!.widget is EditableText) {
           primaryFocus.unfocus();
         }
       },
@@ -37,7 +37,7 @@ class Unfocuser extends StatelessWidget {
 }
 
 class IgnoreUnfocuser extends SingleChildRenderObjectWidget {
-  IgnoreUnfocuser({@required this.child}) : super(child: child);
+  IgnoreUnfocuser({required this.child}) : super(child: child);
 
   final Widget child;
 

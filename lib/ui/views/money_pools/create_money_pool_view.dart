@@ -7,7 +7,7 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class CreateMoneyPoolView extends StatelessWidget {
-  const CreateMoneyPoolView({Key key}) : super(key: key);
+  const CreateMoneyPoolView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class CreateMoneyPoolView extends StatelessWidget {
               GestureDetector(
                 onTap: model.navigateToManageMoneyPoolsView,
                 child: Text("Manage existing money pools",
-                    style: textTheme(context).bodyText2.copyWith(
+                    style: textTheme(context).bodyText2!.copyWith(
                         fontWeight: FontWeight.bold,
                         color: ColorSettings.primaryColor)),
               ),

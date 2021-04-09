@@ -12,7 +12,7 @@ import 'package:stacked/stacked.dart';
 
 class QRCodeViewMobile extends StatelessWidget {
   final int initialIndex;
-  const QRCodeViewMobile({Key key, this.initialIndex = 0}) : super(key: key);
+  const QRCodeViewMobile({Key? key, this.initialIndex = 0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +39,9 @@ class QRCodeViewMobile extends StatelessWidget {
 }
 
 class ScanQRCode extends StatelessWidget {
-  final Function onScanCodePressed;
+  final void Function() onScanCodePressed;
 
-  const ScanQRCode({Key key, @required this.onScanCodePressed})
+  const ScanQRCode({Key? key, required this.onScanCodePressed})
       : super(key: key);
 
   @override
@@ -69,7 +69,7 @@ class ScanQRCode extends StatelessWidget {
 
 class MyQRCode extends StatelessWidget {
   final String userInfo;
-  const MyQRCode({Key key, @required this.userInfo}) : super(key: key);
+  const MyQRCode({Key? key, required this.userInfo}) : super(key: key);
 
   Widget _buildProfileImage() {
     return Center(

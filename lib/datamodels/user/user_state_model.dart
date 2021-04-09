@@ -1,7 +1,7 @@
 import 'package:good_wallet/enums/user_status.dart';
 
 class UserState {
-  UserStatus status;
+  UserStatus? status;
   dynamic value;
 
   UserState({this.value}) {

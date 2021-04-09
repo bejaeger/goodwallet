@@ -4,16 +4,16 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:stacked/stacked.dart';
 
 class WelcomeView extends StatelessWidget {
-  const WelcomeView({Key key}) : super(key: key);
+  const WelcomeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder.reactive(
       viewModelBuilder: () => WelcomeViewModel(),
-      onModelReady: (model) {
+      onModelReady: (dynamic model) {
         model.imageHeight = MediaQuery.of(context).size.height;
       },
-      builder: (context, model, child) => WillPopScope(
+      builder: (context, dynamic model, child) => WillPopScope(
         onWillPop: () async {
           return true;
         },

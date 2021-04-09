@@ -278,8 +278,8 @@ class StackedRouter extends RouterBase {
 
 /// SendMoneyView arguments holder class
 class SendMoneyViewArguments {
-  final Key key;
-  final Map<String, String> userInfoMap;
+  final Key? key;
+  final Map<String, String>? userInfoMap;
   final dynamic openSearchBarOnBuild;
   SendMoneyViewArguments(
       {this.key, this.userInfoMap, this.openSearchBarOnBuild = false});
@@ -287,47 +287,47 @@ class SendMoneyViewArguments {
 
 /// LayoutTemplate arguments holder class
 class LayoutTemplateArguments {
-  final Key key;
-  final Widget childView;
+  final Key? key;
+  final Widget? childView;
   LayoutTemplateArguments({this.key, this.childView});
 }
 
 /// LoginView arguments holder class
 class LoginViewArguments {
-  final Key key;
+  final Key? key;
   LoginViewArguments({this.key});
 }
 
 /// LayoutTemplateViewMobile arguments holder class
 class LayoutTemplateViewMobileArguments {
-  final Key key;
-  final int index;
+  final Key? key;
+  final int? index;
   LayoutTemplateViewMobileArguments({this.key, this.index});
 }
 
 /// SingleProjectViewMobile arguments holder class
 class SingleProjectViewMobileArguments {
-  final Key key;
-  final GlobalGivingProjectModel project;
+  final Key? key;
+  final GlobalGivingProjectModel? project;
   SingleProjectViewMobileArguments({this.key, this.project});
 }
 
 /// CreateAccountView arguments holder class
 class CreateAccountViewArguments {
-  final Key key;
+  final Key? key;
   CreateAccountViewArguments({this.key});
 }
 
 /// SingleFeaturedAppView arguments holder class
 class SingleFeaturedAppViewArguments {
-  final Key key;
-  final FeaturedAppType type;
+  final Key? key;
+  final FeaturedAppType? type;
   SingleFeaturedAppViewArguments({this.key, this.type});
 }
 
 /// TransactionsView arguments holder class
 class TransactionsViewArguments {
-  final Key key;
+  final Key? key;
   final TransactionType historyType;
   TransactionsViewArguments(
       {this.key, this.historyType = TransactionType.InOrOut});
@@ -335,7 +335,7 @@ class TransactionsViewArguments {
 
 /// QRCodeViewMobile arguments holder class
 class QRCodeViewMobileArguments {
-  final Key key;
+  final Key? key;
   final int initialIndex;
   QRCodeViewMobileArguments({this.key, this.initialIndex = 0});
 }

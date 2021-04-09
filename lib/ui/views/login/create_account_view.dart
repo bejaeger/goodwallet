@@ -12,7 +12,7 @@ import 'package:stacked/stacked_annotations.dart';
   FormTextField(name: 'password'),
 ])
 class CreateAccountView extends StatelessWidget with $CreateAccountView {
-  CreateAccountView({Key key}) : super(key: key);
+  CreateAccountView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

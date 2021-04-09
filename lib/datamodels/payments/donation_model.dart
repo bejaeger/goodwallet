@@ -3,21 +3,21 @@ import 'package:flutter/foundation.dart';
 import 'package:good_wallet/utils/datamodel_helpers.dart';
 
 class DonationModel {
-  final String projectId;
-  final String projectName;
-  final num amount;
-  final String currency;
-  String organizationName;
-  String message;
-  Timestamp createdAt;
-  String transactionId;
-  String status;
+  final String? projectId;
+  final String? projectName;
+  final num? amount;
+  final String? currency;
+  String? organizationName;
+  String? message;
+  Timestamp? createdAt;
+  String? transactionId;
+  String? status;
 
   DonationModel({
-    @required this.projectId,
-    @required this.projectName,
-    @required this.amount,
-    @required this.currency,
+    required this.projectId,
+    required this.projectName,
+    required this.amount,
+    required this.currency,
     this.organizationName,
     this.transactionId,
     this.message,

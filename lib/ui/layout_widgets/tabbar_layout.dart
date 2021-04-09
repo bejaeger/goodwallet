@@ -13,10 +13,10 @@ class TabBarLayout extends StatefulWidget {
   final int initialIndex;
 
   const TabBarLayout({
-    Key key,
-    @required this.title,
-    @required this.tabs,
-    @required this.views,
+    Key? key,
+    required this.title,
+    required this.tabs,
+    required this.views,
     this.initialIndex = 0,
   }) : super(key: key); //
   @override
@@ -25,7 +25,7 @@ class TabBarLayout extends StatefulWidget {
 
 class _TabBarLayoutState extends State<TabBarLayout>
     with TickerProviderStateMixin {
-  TabController _tabController;
+  TabController? _tabController;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _TabBarLayoutState extends State<TabBarLayout>
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController!.dispose();
     super.dispose();
   }
 

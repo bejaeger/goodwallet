@@ -5,21 +5,21 @@ class ColorSettings extends MyColors {
   static const Color primaryColor = MyColors.primaryRed;
   static const Color primaryColorLight = MyColors.lightRed;
   static const Color primaryColorDark = MyColors.darkRed;
-  static Color whiteTextColor = MyColors.almostWhiteGrey;
-  static Color greyTextColor = MyColors.darkGrey;
-  static Color lightGreyTextColor = MyColors.lightGrey;
-  static Color blackTextColor = MyColors.darkGrey;
+  static Color? whiteTextColor = MyColors.almostWhiteGrey;
+  static Color? greyTextColor = MyColors.darkGrey;
+  static Color? lightGreyTextColor = MyColors.lightGrey;
+  static Color? blackTextColor = MyColors.darkGrey;
   static Color blackHeadlineColor = MyColors.black87;
 }
 
 class MyColors {
   static const Color almostWhite = Colors.white70;
-  static Color almostWhiteGrey = Colors.grey[200];
+  static Color? almostWhiteGrey = Colors.grey[200];
   static const Color grey = Colors.grey;
   static const Color black54 = Colors.black54;
   static const Color black87 = Colors.black87;
-  static Color darkGrey = Colors.grey[800];
-  static Color lightGrey = Colors.grey[600];
+  static Color? darkGrey = Colors.grey[800];
+  static Color? lightGrey = Colors.grey[600];
 
   // @see https://material.io/resources/color/#!/?view.left=0&view.right=1&primary.color=941305
   static const Color primaryRed = Color(0xFF941305);

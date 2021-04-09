@@ -4,13 +4,14 @@ import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class SingleProjectViewModel extends BaseModel {
-  final _dialogService = locator<DialogService>();
-  final _dummyPaymentService = locator<DummyPaymentService>();
-  final NavigationService _navigationService = locator<NavigationService>();
+  final DialogService? _dialogService = locator<DialogService>();
+  final DummyPaymentService? _dummyPaymentService =
+      locator<DummyPaymentService>();
+  final NavigationService? _navigationService = locator<NavigationService>();
 
   Future showConfirmationDialog(
-      String projectTitle, String donationAmount) async {
-    DialogResponse response = await _dialogService.showConfirmationDialog(
+      String? projectTitle, String donationAmount) async {
+    DialogResponse? response = await _dialogService!.showConfirmationDialog(
       title: 'Confirmation',
       description:
           "Are you sure that you want to donate $donationAmount good dollars to $projectTitle",
@@ -18,28 +19,29 @@ class SingleProjectViewModel extends BaseModel {
       dialogPlatform: DialogPlatform.Material,
       cancelTitle: 'No',
     );
-    _dummyPaymentService.processDonation(currentUser.id, "Dummy");
+    _dummyPaymentService!.processDonation(currentUser!.id, "Dummy");
     print('DialogResponse: ${response?.confirmed}');
   }
 
   Future showAmountTooHighDialog(String donationAmount) async {
-    await _dialogService.showConfirmationDialog(
+    await _dialogService!.showConfirmationDialog(
       title: 'Donation Amount Too High',
       description:
           'You cannot pay \$ ${donationAmount} with just \$ ${userWallet.currentBalance}',
     );
   }
 
-  Future confirmationOrCancellationDistributor(
-      String projectTitle, int donationAmount) {
-    if ((userWallet.currentBalance - donationAmount) < 0) {
+  Future? confirmationOrCancellationDistributor(
+      String? projectTitle, int donationAmount) {
+    if ((userWallet.currentBalance! - donationAmount) < 0) {
       showAmountTooHighDialog(donationAmount.toString());
     } else {
       showConfirmationDialog(projectTitle, donationAmount.toString());
     }
+    return null;
   }
 
   void navigateBack() {
-    _navigationService.back();
+    _navigationService!.back();
   }
 }

@@ -3,12 +3,12 @@
 import 'package:good_wallet/utils/datamodel_helpers.dart';
 
 class MyUser {
-  final String id;
-  final String fullName;
-  final String email;
-  final num balance;
-  final num implicitDonations;
-  final num donations;
+  final String? id;
+  final String? fullName;
+  final String? email;
+  final num? balance;
+  final num? implicitDonations;
+  final num? donations;
 
   MyUser(
       {this.implicitDonations,
@@ -37,7 +37,7 @@ class MyUser {
     };
     // create search keywords for user
     if (addSearchKeywords) {
-      List<String> splitList = fullName.split(' ');
+      List<String> splitList = fullName!.split(' ');
       List<String> searchKeywords = [];
       for (int i = 0; i < splitList.length; i++) {
         for (int j = 1; j <= splitList[i].length; j++) {
@@ -50,6 +50,6 @@ class MyUser {
   }
 
   String getInitials() {
-    return getInitialsFromName(this.fullName);
+    return getInitialsFromName(this.fullName!);
   }
 }

@@ -1,4 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/enums/authentication_method.dart';
@@ -9,10 +10,10 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 
 abstract class AuthenticationViewModel extends FormViewModel {
-  final navigationService = locator<NavigationService>();
-  final UserDataService _userDataService = locator<UserDataService>();
+  final NavigationService? navigationService = locator<NavigationService>();
+  final UserDataService? _userDataService = locator<UserDataService>();
   final String successRoute;
-  AuthenticationViewModel({@required this.successRoute});
+  AuthenticationViewModel({required this.successRoute});
   final log = getLogger("authentication_viewmodel.dart");
 
   @override
@@ -21,17 +22,17 @@ abstract class AuthenticationViewModel extends FormViewModel {
   Future saveData(AuthenticationMethod method) async {
     // Run the authentication and set viewmodel to busy
     final FirebaseAuthenticationResult result =
-        await runBusyFuture(runAuthentication(method));
+        await (runBusyFuture(runAuthentication(method)));
 
     if (!result.hasError) {
       log.i("Authentication successful, now initializing user data");
 
       final UserDataServiceResult result2 =
-          await runBusyFuture(initializeUser(result.uid));
+          await (runBusyFuture(initializeUser(result.user!.uid)));
 
       if (!result2.hasError) {
         // authenticated and initialized -> go to successRoute
-        navigationService.replaceWith(successRoute);
+        navigationService!.replaceWith(successRoute);
       } else {
         log.e("Failed initializing user with error: ${result2.errorMessage}");
         setValidationMessage(
@@ -47,7 +48,7 @@ abstract class AuthenticationViewModel extends FormViewModel {
   }
 
   Future<UserDataServiceResult> initializeUser(String uid) async {
-    return await _userDataService.initializeCurrentUser(uid);
+    return await _userDataService!.initializeCurrentUser(uid);
   }
 
   // needs to be overrriden!

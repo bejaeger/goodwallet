@@ -14,12 +14,12 @@ import 'package:stacked/stacked.dart';
 class TransactionsHistoryLayoutView extends StatelessWidget {
   final TransactionType type;
   final int maximumLength;
-  final String userName;
-  final Widget description;
+  final String? userName;
+  final Widget? description;
 
   const TransactionsHistoryLayoutView(
-      {Key key,
-      @required this.type,
+      {Key? key,
+      required this.type,
       this.maximumLength = 5,
       this.userName,
       this.description})
@@ -34,7 +34,7 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
         model.initialize();
       },
       fireOnModelReadyOnce: true,
-      builder: (context, model, child) => model.getTransactions(type).isEmpty
+      builder: (context, model, child) => model.getTransactions(type)!.isEmpty
           ? model.isBusy
               ? Center(child: CircularProgressIndicator())
               : Center(child: Text("No transactions on record!"))
@@ -71,14 +71,14 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
                     verticalSpaceMediumLarge,
                     ListView.builder(
                       itemCount:
-                          model.getTransactions(type).length > maximumLength
+                          model.getTransactions(type)!.length > maximumLength
                               ? maximumLength
-                              : model.getTransactions(type).length,
+                              : model.getTransactions(type)!.length,
                       shrinkWrap: true,
                       physics: ScrollPhysics(),
                       itemBuilder: (context, index) {
                         return TransactionListTile(
-                          transactionData: model.getTransactions(type)[index],
+                          transactionData: model.getTransactions(type)![index],
                           inferEntryTypeFunction: model.inferTransactionType,
                         );
                       },
@@ -90,8 +90,8 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
     );
   }
 
-  Widget _getMainStatisticsDisplay(dynamic model, BuildContext context) {
-    var textStyle = textTheme(context).headline2.copyWith(fontSize: 28);
+  Widget? _getMainStatisticsDisplay(dynamic model, BuildContext context) {
+    var textStyle = textTheme(context).headline2!.copyWith(fontSize: 28);
     if (type == TransactionType.Donation) {
       return Text(
           "Balance: \$ " + (model.userWallet.donations / 100).toString(),
@@ -118,9 +118,9 @@ class TransactionListTile extends StatelessWidget {
   final Function inferEntryTypeFunction;
 
   const TransactionListTile(
-      {Key key,
-      @required this.transactionData,
-      @required this.inferEntryTypeFunction})
+      {Key? key,
+      required this.transactionData,
+      required this.inferEntryTypeFunction})
       : super(key: key);
 
   @override
@@ -142,20 +142,20 @@ class TransactionListTile extends StatelessWidget {
             children: [
               if (style.descriptor != null)
                 Text(
-                  style.descriptor,
-                  style: textTheme(context).bodyText2.copyWith(
+                  style.descriptor!,
+                  style: textTheme(context).bodyText2!.copyWith(
                         fontSize: 15,
                       ),
                 ),
-              Text(style.nameToDisplay,
-                  style: textTheme(context).headline6.copyWith(fontSize: 16)),
+              Text(style.nameToDisplay!,
+                  style: textTheme(context).headline6!.copyWith(fontSize: 16)),
             ],
           ),
           // @see https://api.flutter.dev/flutter/intl/DateFormat-class.html
           //.add_jm()
           subtitle: Text(
             DateFormat.MMMEd().format(transactionData.createdAt.toDate()),
-            style: textTheme(context).bodyText2.copyWith(
+            style: textTheme(context).bodyText2!.copyWith(
                   fontSize: 15,
                 ),
           ),
@@ -169,7 +169,7 @@ class TransactionListTile extends StatelessWidget {
     );
   }
 
-  _getTransactionsHistoryEntryStyle(TransactionType type) {
+  _getTransactionsHistoryEntryStyle(TransactionType? type) {
     if (type == TransactionType.Donation) {
       return TransactionHistoryEntryStyle(
           color: ColorSettings.primaryColor,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
@@ -14,10 +16,10 @@ class LoginViewModel extends AuthenticationViewModel {
   LoginViewModel() : super(successRoute: Routes.layoutTemplateViewMobile);
   //    kIsWeb ? Routes.walletView : Routes.layoutTemplateViewMobile);
 
-  final NavigationService _navigationService = locator<NavigationService>();
+  final NavigationService? _navigationService = locator<NavigationService>();
   final log = getLogger("login_viewmodel.dart");
   // stacked firebase services
-  final FirebaseAuthenticationService _firebaseAuthenticationService =
+  final FirebaseAuthenticationService? _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
 
   @override
@@ -25,30 +27,29 @@ class LoginViewModel extends AuthenticationViewModel {
       AuthenticationMethod method) {
     if (method == AuthenticationMethod.email) {
       log.i("Login with e-mail");
-      return _firebaseAuthenticationService.loginWithEmail(
-          email: emailValue, password: passwordValue);
+      return _firebaseAuthenticationService!
+          .loginWithEmail(email: emailValue!, password: passwordValue!);
     } else if (method == AuthenticationMethod.google) {
       log.i("Login with google");
-      return _firebaseAuthenticationService.signInWithGoogle();
-    } else if (method == AuthenticationMethod.facebook) {
-      log.i("Login with facebook");
-      return _firebaseAuthenticationService.signInWithFacebook();
+      return _firebaseAuthenticationService!.signInWithGoogle();
     } else if (method == AuthenticationMethod.apple) {
       log.i("Login with apple");
-      return _firebaseAuthenticationService.signInWithApple();
+      return _firebaseAuthenticationService!.signInWithApple();
     } else if (method == AuthenticationMethod.dummy) {
       log.i("Login with dummy account");
-      return _firebaseAuthenticationService.loginWithEmail(
-          email: "test@gmail.com", password: "m1m1m1");
+      return _firebaseAuthenticationService!
+          .loginWithEmail(email: "test@gmail.com", password: "m1m1m1");
     } else {
       log.e(
-          "The authentication method you tried to use is not implemented yet. Use E-mail, Google, Facebook, or Apple to authenticate");
-      return null;
+          "The authentication method you tried to use is not implemented yet. Use E-mail, Google, or Apple to authenticate");
+      return Future.value(FirebaseAuthenticationResult.error(
+          errorMessage:
+              "Authentification method you try to use is not available."));
     }
   }
 
   void navigateToCreateAccount() {
-    navigationService.navigateTo(Routes.createAccountView);
+    navigationService!.navigateTo(Routes.createAccountView);
   }
 
   bool isPwShown = false;

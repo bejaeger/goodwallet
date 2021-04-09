@@ -11,8 +11,9 @@ final _donationAmountController = TextEditingController();
 var userGoodDollarsSavings = 2000;
 
 class SingleProjectViewMobile extends StatelessWidget {
-  final GlobalGivingProjectModel project;
-  const SingleProjectViewMobile({Key key, this.project}) : super(key: key);
+  final GlobalGivingProjectModel? project;
+  const SingleProjectViewMobile({Key? key, required this.project})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                       width: screenWidth(context),
                       height: 200.0,
                       child: Image.network(
-                        project.imageUrl,
+                        project!.imageUrl!,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -82,9 +83,9 @@ class SingleProjectViewMobile extends StatelessWidget {
                           width:
                               screenWidthPercentage(context, percentage: 0.8),
                           child: Text(
-                            project.title,
+                            project!.title!,
                             style: textTheme(context)
-                                .headline3
+                                .headline3!
                                 .copyWith(fontSize: 25),
                           ),
                         ),
@@ -119,7 +120,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () =>
                             model.confirmationOrCancellationDistributor(
-                                project.title,
+                                project!.title,
                                 int.parse(_donationAmountController.text)),
                         child: Text('Donate'),
                       ),
@@ -150,9 +151,9 @@ class SingleProjectViewMobile extends StatelessWidget {
                         horizontal: LayoutSettings.horizontalPadding),
                     child: Text(
                       "Balance: \$ " +
-                          (model.userWallet.currentBalance / 100).toString(),
+                          (model.userWallet.currentBalance! / 100).toString(),
                       style:
-                          textTheme(context).bodyText2.copyWith(fontSize: 16.0),
+                          textTheme(context).bodyText2!.copyWith(fontSize: 16.0),
                     )),
               ),
               verticalSpaceMediumLarge,
@@ -163,17 +164,17 @@ class SingleProjectViewMobile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      project.organization.name,
+                      project!.organization!.name!,
                       softWrap: true,
                       style: textTheme(context).headline6,
                     ),
                     Text(
-                      project.organization.url,
+                      project!.organization!.url!,
                       softWrap: true,
                     ),
                     verticalSpaceMedium,
                     Text(
-                      project.summary,
+                      project!.summary!,
                       softWrap: true,
                     ),
                   ],

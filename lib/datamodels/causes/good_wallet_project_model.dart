@@ -4,16 +4,16 @@ import 'package:good_wallet/utils/datamodel_helpers.dart';
 // PODO for a good cause defined by our organization
 
 class GoodWalletProjectModel {
-  String title;
-  String imageUrl;
-  String contactUrl;
-  String summary;
+  String? title;
+  String? imageUrl;
+  String? contactUrl;
+  String? summary;
 
-  Organization organization;
+  Organization? organization;
 
-  num fundingCurrent;
-  num fundingGoal;
-  String themeName;
+  num? fundingCurrent;
+  num? fundingGoal;
+  String? themeName;
 
   GoodWalletProjectModel(
       {this.title,
@@ -31,7 +31,7 @@ class GoodWalletProjectModel {
       'imageUrl': imageUrl,
       'contactUrl': contactUrl,
       'summary': summary,
-      'organization': organization.toJson(),
+      'organization': organization!.toJson(),
       'fundingCurrent': fundingCurrent,
       'fundingGoal': fundingGoal,
       'themeName': themeName,

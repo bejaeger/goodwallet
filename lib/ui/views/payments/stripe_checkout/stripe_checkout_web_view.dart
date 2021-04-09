@@ -42,11 +42,11 @@ class CheckoutOptions {
   external String get cancelUrl;
 
   external factory CheckoutOptions({
-    List<LineItem> lineItems,
-    String mode,
-    String successUrl,
-    String cancelUrl,
-    String sessionId,
+    List<LineItem>? lineItems,
+    String? mode,
+    String? successUrl,
+    String? cancelUrl,
+    String? sessionId,
   });
 }
 
@@ -57,5 +57,5 @@ class LineItem {
 
   external int get quantity;
 
-  external factory LineItem({String price, int quantity});
+  external factory LineItem({String? price, int? quantity});
 }

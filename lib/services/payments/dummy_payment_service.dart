@@ -11,7 +11,7 @@ class DummyPaymentService {
   final CollectionReference _paymentsCollectionReference =
       FirebaseFirestore.instance.collection("payments");
 
-  Future processDonation(String uid, String projectId) async {
+  Future processDonation(String? uid, String projectId) async {
     try {
       // get reference to collection we want to add a document to
       // that holds the relevant information for the donation.

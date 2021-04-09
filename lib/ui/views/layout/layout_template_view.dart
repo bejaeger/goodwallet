@@ -7,8 +7,8 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class LayoutTemplate extends StatelessWidget {
-  final Widget childView;
-  const LayoutTemplate({Key key, @required this.childView}) : super(key: key);
+  final Widget? childView;
+  const LayoutTemplate({Key? key, required this.childView}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

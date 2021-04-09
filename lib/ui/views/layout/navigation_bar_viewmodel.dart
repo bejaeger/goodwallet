@@ -5,32 +5,32 @@ import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class NavigationBarViewModel extends BaseModel {
-  final NavigationService _navigationService = locator<NavigationService>();
-  final UserDataService _userDataService = locator<UserDataService>();
+  final NavigationService? _navigationService = locator<NavigationService>();
+  final UserDataService? _userDataService = locator<UserDataService>();
 
   Future navigateToWelcomeView() async {
-    await _navigationService.navigateTo(Routes.welcomeView);
+    await _navigationService!.navigateTo(Routes.welcomeView);
   }
 
   Future navigateToWalletView() async {
-    await _navigationService.navigateTo(Routes.walletView);
+    await _navigationService!.navigateTo(Routes.walletView);
   }
 
   Future navigateToSendMoneyView() async {
-    await _navigationService.navigateTo(Routes.sendMoneyView);
+    await _navigationService!.navigateTo(Routes.sendMoneyView);
   }
 
   Future navigateToDonationView() async {
-    await _navigationService.navigateTo(Routes.donationView);
+    await _navigationService!.navigateTo(Routes.donationView);
   }
 
   Future navigateToLoginScreen() async {
     //setShowNavigationBar(false);
-    await _navigationService.navigateTo(Routes.loginView);
+    await _navigationService!.navigateTo(Routes.loginView);
   }
 
   Future logout() async {
-    await runBusyFuture(_userDataService.handleLogoutEvent());
+    await runBusyFuture(_userDataService!.handleLogoutEvent());
     navigateToWelcomeView();
   }
 }

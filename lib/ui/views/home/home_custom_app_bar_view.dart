@@ -12,7 +12,7 @@ class HomeCustomAppBarView extends SliverPersistentHeaderDelegate {
   final double minExtent;
   final double maxExtent;
 
-  HomeCustomAppBarView({@required this.minExtent, @required this.maxExtent});
+  HomeCustomAppBarView({required this.minExtent, required this.maxExtent});
 
   @override
   Widget build(
@@ -64,7 +64,7 @@ class HomeCustomAppBarView extends SliverPersistentHeaderDelegate {
                         child: Text('\$ 1003.10',
                             style: Theme.of(context)
                                 .textTheme
-                                .headline6
+                                .headline6!
                                 .copyWith(
                                     fontWeight: FontWeight.w800,
                                     fontSize: 20,
@@ -72,10 +72,10 @@ class HomeCustomAppBarView extends SliverPersistentHeaderDelegate {
                       ),
                       Text(
                         'Total raised by our community',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
                               fontSize: 15,
                               color:
-                                  ColorSettings.lightGreyTextColor.withOpacity(
+                                  ColorSettings.lightGreyTextColor!.withOpacity(
                                 (1 - shrinkPercentage),
                               ),
                             ),
@@ -113,7 +113,7 @@ class HomeCustomAppBarView extends SliverPersistentHeaderDelegate {
                   borderRadius: BorderRadius.circular(10.0),
                   color: getBkgColor(context).withOpacity(0.0)),
               child: Text('The Good Wallet',
-                  style: Theme.of(context).textTheme.headline2.copyWith(
+                  style: Theme.of(context).textTheme.headline2!.copyWith(
                       color: ColorSettings.blackHeadlineColor,
                       fontSize: (30.0 * (1.0 - shrinkPercentage * 0.15))
                           .clamp(25.0, 30.0))),
@@ -140,6 +140,5 @@ class HomeCustomAppBarView extends SliverPersistentHeaderDelegate {
   OverScrollHeaderStretchConfiguration get stretchConfiguration =>
       OverScrollHeaderStretchConfiguration(
         stretchTriggerOffset: maxExtent,
-        onStretchTrigger: () => null,
       );
 }

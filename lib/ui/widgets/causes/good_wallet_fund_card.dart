@@ -5,13 +5,13 @@ import 'package:good_wallet/ui/widgets/carousel_card.dart';
 
 class GoodWalletFundCardMobile extends StatelessWidget {
   final GoodWalletFundModel fund;
-  final Function onTap;
-  final Alignment imageAlignment;
-  final ImageProvider backgroundImage;
+  final Function? onTap;
+  final Alignment? imageAlignment;
+  final ImageProvider? backgroundImage;
 
   const GoodWalletFundCardMobile(
-      {Key key,
-      @required this.fund,
+      {Key? key,
+      required this.fund,
       this.onTap,
       this.imageAlignment,
       this.backgroundImage})
@@ -22,7 +22,7 @@ class GoodWalletFundCardMobile extends StatelessWidget {
       height: 200,
       child: CarouselCard(
         title: fund.title,
-        onTap: onTap,
+        onTap: onTap as void Function()?,
         explanation: fund.description,
         backgroundImage: backgroundImage,
         imageAlignment: imageAlignment,

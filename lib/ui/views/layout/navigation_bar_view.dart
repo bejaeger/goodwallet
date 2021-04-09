@@ -6,7 +6,7 @@ import 'package:good_wallet/utils/extensions/hover_extension.dart';
 
 class NavigationBar extends StatelessWidget {
   final dynamic model;
-  const NavigationBar({Key key, this.model}) : super(key: key);
+  const NavigationBar({Key? key, this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -82,8 +82,8 @@ class NavigationBar extends StatelessWidget {
 }
 
 class _NavBarItem extends StatelessWidget {
-  final String label;
-  final Function onPressed;
+  final String? label;
+  final void Function()? onPressed;
   const _NavBarItem({this.label, this.onPressed});
 
   @override
@@ -94,7 +94,7 @@ class _NavBarItem extends StatelessWidget {
       splashColor: Colors.transparent,
       onPressed: onPressed,
       child: Text(
-        label,
+        label!,
         style: TextStyle(
             fontSize: 16, color: Colors.grey[100]), //Colors.grey[100]),
       ),

@@ -8,7 +8,7 @@ class WelcomeViewModel extends BaseModel {
   String _explanationText = "Are you interested in our vision? Click here!";
   String get explanationText => _explanationText;
 
-  double imageHeight;
+  double? imageHeight;
 
   double currentOffset = 0;
 

@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
               //: auto_router.Routes.layoutTemplateViewMobile,
               : auto_router.Routes.loginView,
           builder: (context, child) =>
-              isDesktop(context) ? LayoutTemplate(childView: child) : child),
+              isDesktop(context) ? LayoutTemplate(childView: child) : child!),
     );
   }
 }

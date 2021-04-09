@@ -14,7 +14,7 @@ import 'package:good_wallet/ui/views/login/login_view.form.dart';
   FormTextField(name: 'password'),
 ])
 class LoginView extends StatelessWidget with $LoginView {
-  LoginView({Key key}) : super(key: key);
+  LoginView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

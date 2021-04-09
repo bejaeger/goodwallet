@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CallToActionButton extends StatelessWidget {
-  final Function onTap;
-  final String text;
-  final Icon icon;
-  final Color color;
+  final void Function()? onTap;
+  final String? text;
+  final Icon? icon;
+  final Color? color;
   final bool leadingIcon;
 
   const CallToActionButton(
-      {Key key,
+      {Key? key,
       this.leadingIcon = true,
       this.onTap,
       this.text,
@@ -23,7 +23,7 @@ class CallToActionButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: color),
+          border: Border.all(color: color!),
           //color: color,
         ),
         child: Padding(
@@ -33,20 +33,20 @@ class CallToActionButton extends StatelessWidget {
             children: [
               leadingIcon
                   ? icon != null
-                      ? icon
+                      ? icon!
                       : Container()
                   : Container(),
               Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: Text(
-                  text,
+                  text!,
                   style: TextStyle(fontSize: 14, color: color),
                 ),
               ),
               leadingIcon
                   ? Container()
                   : icon != null
-                      ? icon
+                      ? icon!
                       : Container(),
             ],
           ),
@@ -57,13 +57,13 @@ class CallToActionButton extends StatelessWidget {
 }
 
 class CallToActionButtonRound extends StatelessWidget {
-  final Function onPressed;
-  final String text;
-  final Icon icon;
-  final Color color;
+  final void Function()? onPressed;
+  final String? text;
+  final Icon? icon;
+  final Color? color;
 
   const CallToActionButtonRound(
-      {Key key, this.onPressed, this.text, this.icon, this.color})
+      {Key? key, this.onPressed, this.text, this.icon, this.color})
       : super(key: key);
 
   @override
@@ -74,14 +74,14 @@ class CallToActionButtonRound extends StatelessWidget {
           radius: 32,
           backgroundColor: color,
           child: IconButton(
-            icon: icon,
+            icon: icon!,
             color: Colors.white,
             onPressed: onPressed,
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(text,
+          child: Text(text!,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey[800], fontSize: 15)),
         ),
