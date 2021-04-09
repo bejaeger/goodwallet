@@ -8,11 +8,11 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class SendMoneyViewMobile extends StatelessWidget {
-  final Map<String, String> userInfoMap;
+  final Map<String, String>? userInfoMap;
   final openSearchBarOnBuild;
 
   SendMoneyViewMobile(
-      {Key key, this.userInfoMap, this.openSearchBarOnBuild = false})
+      {Key? key, this.userInfoMap, this.openSearchBarOnBuild = false})
       : super(key: key);
 
   @override

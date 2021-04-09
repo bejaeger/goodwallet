@@ -3,26 +3,26 @@ import 'package:flutter/foundation.dart';
 import 'package:good_wallet/utils/datamodel_helpers.dart';
 
 class TransactionModel {
-  final String recipientUid;
-  final String recipientName;
-  final String senderUid;
-  final String senderName;
-  final num amount;
-  final String currency;
-  String message;
+  final String? recipientUid;
+  final String? recipientName;
+  final String? senderUid;
+  final String? senderName;
+  final num? amount;
+  final String? currency;
+  String? message;
   dynamic createdAt;
-  String transactionId;
-  String status;
-  bool topUp; // if topping up own Good Wallet
+  String? transactionId;
+  String? status;
+  bool? topUp; // if topping up own Good Wallet
 
   TransactionModel({
-    @required this.recipientUid,
-    @required this.recipientName,
-    @required this.senderUid,
-    @required this.senderName,
-    @required this.amount,
-    @required this.currency,
-    @required this.createdAt,
+    required this.recipientUid,
+    required this.recipientName,
+    required this.senderUid,
+    required this.senderName,
+    required this.amount,
+    required this.currency,
+    required this.createdAt,
     this.transactionId,
     this.message,
     this.status,
@@ -40,7 +40,7 @@ class TransactionModel {
       'currency': currency,
       'transactionId': transactionId,
       'message': message,
-      'createdAt': createdAt as FieldValue,
+      'createdAt': createdAt as FieldValue?,
       'status': status,
       'topUp': topUp,
     };
@@ -56,7 +56,7 @@ class TransactionModel {
         senderName: map['senderName'],
         amount: map['amount'],
         currency: map['currency'],
-        createdAt: map['createdAt'] as Timestamp);
+        createdAt: map['createdAt'] as Timestamp?);
     data.transactionId = returnIfAvailable(map, "transactionId");
     data.message = returnIfAvailable(map, "message");
     data.status = returnIfAvailable(map, "status");

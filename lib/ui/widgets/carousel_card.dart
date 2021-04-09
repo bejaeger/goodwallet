@@ -6,18 +6,18 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 // Carousel card to be used in carousels see e.g. home view
 
 class CarouselCard extends StatelessWidget {
-  final String title;
-  final Function onTap;
-  final String explanation;
+  final String? title;
+  final void Function()? onTap;
+  final String? explanation;
   final Color backgroundColor;
-  final Alignment imageAlignment;
-  final ImageProvider backgroundImage;
+  final Alignment? imageAlignment;
+  final ImageProvider? backgroundImage;
 
   const CarouselCard(
-      {Key key,
-      @required this.title,
-      @required this.onTap,
-      @required this.explanation,
+      {Key? key,
+      required this.title,
+      required this.onTap,
+      required this.explanation,
       this.backgroundColor = MyColors.paletteBlue,
       this.imageAlignment,
       this.backgroundImage})
@@ -50,7 +50,7 @@ class CarouselCard extends StatelessWidget {
                     ),
                     image: backgroundImage != null
                         ? DecorationImage(
-                            image: backgroundImage,
+                            image: backgroundImage!,
                             fit: BoxFit.cover,
                             alignment: imageAlignment ?? Alignment.center,
                           )
@@ -79,9 +79,9 @@ class CarouselCard extends StatelessWidget {
                       child: SizedBox(
                           width:
                               screenWidthPercentage(context, percentage: 0.45),
-                          child: Text(explanation,
+                          child: Text(explanation!,
                               style: textTheme(context)
-                                  .bodyText1
+                                  .bodyText1!
                                   .copyWith(fontSize: 16))),
                     ),
                     Align(
@@ -91,7 +91,7 @@ class CarouselCard extends StatelessWidget {
                     ),
                     Align(
                       alignment: Alignment.topLeft,
-                      child: Text(title, style: textTheme(context).headline5),
+                      child: Text(title!, style: textTheme(context).headline5),
                     ),
                   ],
                 ),

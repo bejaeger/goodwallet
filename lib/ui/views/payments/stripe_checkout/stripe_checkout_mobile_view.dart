@@ -10,9 +10,9 @@ const apiKey =
 const initialUrl = 'https://marcinusx.github.io/test1/index.html';
 
 class StripeCheckoutMobileView extends StatefulWidget {
-  final String sessionId;
+  final String? sessionId;
 
-  const StripeCheckoutMobileView({Key key, this.sessionId}) : super(key: key);
+  const StripeCheckoutMobileView({Key? key, this.sessionId}) : super(key: key);
 
   @override
   _StripeCheckoutMobileViewState createState() =>
@@ -20,7 +20,7 @@ class StripeCheckoutMobileView extends StatefulWidget {
 }
 
 class _StripeCheckoutMobileViewState extends State<StripeCheckoutMobileView> {
-  WebViewController _webViewController;
+  late WebViewController _webViewController;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class _StripeCheckoutMobileViewState extends State<StripeCheckoutMobileView> {
     );
   }
 
-  Future<void> _redirectToStripe(String sessionId) async {
+  Future<void> _redirectToStripe(String? sessionId) async {
     final redirectToCheckoutJs = '''
 var stripe = Stripe(\'$apiKey\');
 stripe.redirectToCheckout({

@@ -9,21 +9,25 @@ import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart
 import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'package:good_wallet/utils/logger.dart';
 
 class CausesViewModel extends BaseModel {
-  final _globalGivingAPIservice = locator<GlobalGivingAPIService>();
-  final _navigationService = locator<NavigationService>();
+  final GlobalGivingAPIService? _globalGivingAPIservice =
+      locator<GlobalGivingAPIService>();
+  final NavigationService? _navigationService = locator<NavigationService>();
   final CollectionReference _causesCollectionReference =
       FirebaseFirestore.instance.collection("causes");
 
-  List<GoodWalletProjectModel> projects;
-  List<GoodWalletFundModel> goodWalletFunds;
+  final log = getLogger("causes_viewmodel.dart");
+
+  List<GoodWalletProjectModel>? projects;
+  List<GoodWalletFundModel>? goodWalletFunds;
 
   Future fetchCauses() async {
     setBusy(true);
     if (projects == null) {
-      await fetchGlobalGivingProjects();
-      log.i("Fetched project list with length ${projects.length}");
+      projects = await (_globalGivingAPIservice!.getFeaturedProjects());
+      log.i("Fetched project list with length ${projects!.length}");
     }
     if (goodWalletFunds == null) {
       goodWalletFunds = [
@@ -41,7 +45,7 @@ class CausesViewModel extends BaseModel {
         ),
       ];
       log.i(
-          "Fetched good wallet fund list with length ${goodWalletFunds.length}");
+          "Fetched good wallet fund list with length ${goodWalletFunds!.length}");
     }
     setBusy(false);
     notifyListeners();
@@ -53,17 +57,18 @@ class CausesViewModel extends BaseModel {
         .get();
     if (projectsSnapshot != null) {
       projects = projectsSnapshot.docs
-          .map((snapshot) => GoodWalletProjectModel.fromMap(snapshot.data()))
+          .map((snapshot) => GoodWalletProjectModel.fromMap(snapshot.data()!))
           .toList();
     } else {
       // No data stored on firestore yet, use global giving API
-      projects = await _globalGivingAPIservice.getProjectsOfTheMonth(
-          addToFirestore: false);
+      projects = await _globalGivingAPIservice!
+          .getProjectsOfTheMonth(addToFirestore: false);
     }
   }
 
   Future navigateToProjectScreen(index) async {
-    await _navigationService.navigateTo(Routes.singleProjectViewMobile,
-        arguments: SingleProjectViewMobileArguments(project: projects[index]));
+    await _navigationService!.navigateTo(Routes.singleProjectViewMobile,
+        arguments: SingleProjectViewMobileArguments(
+            project: projects![index] as GlobalGivingProjectModel?));
   }
 }

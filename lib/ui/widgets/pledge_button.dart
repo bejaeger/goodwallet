@@ -9,13 +9,13 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 
 class PledgeCircularButton extends StatelessWidget {
   final String title;
-  final Function onPressed;
-  final Widget icon;
-  final Color buttonColor;
+  final void Function() onPressed;
+  final Widget? icon;
+  final Color? buttonColor;
   const PledgeCircularButton(
-      {Key key,
-      @required this.title,
-      @required this.onPressed,
+      {Key? key,
+      required this.title,
+      required this.onPressed,
       this.icon,
       this.buttonColor})
       : super(key: key);
@@ -38,7 +38,7 @@ class PledgeCircularButton extends StatelessWidget {
           ),
           verticalSpaceTiny,
           Text(title,
-              style: textTheme(context).bodyText2.copyWith(
+              style: textTheme(context).bodyText2!.copyWith(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                   color: ColorSettings.blackHeadlineColor))
@@ -50,10 +50,10 @@ class PledgeCircularButton extends StatelessWidget {
 
 class PledgeButton extends StatelessWidget {
   final String title;
-  final Function onPressed;
-  final double minWidth;
+  final void Function()? onPressed;
+  final double? minWidth;
   const PledgeButton(
-      {Key key, @required this.title, @required this.onPressed, this.minWidth})
+      {Key? key, required this.title, required this.onPressed, this.minWidth})
       : super(key: key);
 
   @override
@@ -72,7 +72,7 @@ class PledgeButton extends StatelessWidget {
               child: Text(
                 title,
                 textAlign: TextAlign.left,
-                style: textTheme(context).headline5.copyWith(fontSize: 16),
+                style: textTheme(context).headline5!.copyWith(fontSize: 16),
               ),
             ),
           ),

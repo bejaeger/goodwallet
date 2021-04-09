@@ -3,6 +3,7 @@ import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
+import 'package:good_wallet/style/page_transitions.dart';
 import 'package:good_wallet/ui/views/causes/causes_view.dart';
 import 'package:good_wallet/ui/views/causes/causes_viewmodel.dart';
 import 'package:good_wallet/ui/views/causes/single_project_view_mobile.dart';

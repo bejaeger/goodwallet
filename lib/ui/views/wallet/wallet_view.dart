@@ -39,7 +39,7 @@ class WalletView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildFullName(model.currentUser.fullName),
+                        _buildFullName(model.currentUser!.fullName!),
                         verticalSpace(25),
                         _buildDonationBalanceView(model),
                         Row(

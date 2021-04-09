@@ -27,7 +27,10 @@ class GlobalGivingAPIService {
         "api.globalgiving.org",
         "/api/public/projectservice/featured/projects",
         {"api_key": "578f2d27-8c47-4456-9d57-3bb0cb3f883b"});
-    http.Response response = await fetchProject(url);
+    http.Response? response = await fetchProject(url);
+    if (response == null) {
+      return null;
+    }
     try {
       var jsonResponse = convert.jsonDecode(response.body);
       var fetchedProjects =
@@ -55,7 +58,10 @@ class GlobalGivingAPIService {
         "api.globalgiving.org",
         "/api/public/projectservice/featured/projects",
         {"api_key": "578f2d27-8c47-4456-9d57-3bb0cb3f883b"});
-    http.Response response = await fetchProject(url);
+    http.Response? response = await fetchProject(url);
+    if (response == null) {
+      return null;
+    }
     try {
       var jsonResponse = convert.jsonDecode(response.body);
       var fetchedProjects =
@@ -101,10 +107,11 @@ class GlobalGivingAPIService {
 
   Future<List<GlobalGivingProjectModel>> _getProjectListFromHTTPCall(
       Uri url, bool addToFirestore) async {
-    http.Response response = await fetchProject(url);
+    http.Response? response = await fetchProject(url);
     List<GlobalGivingProjectModel> projectList = [];
+    if (response == null) null;
     try {
-      var jsonResponse = convert.jsonDecode(response.body);
+      var jsonResponse = convert.jsonDecode(response!.body);
       var fetchedProjects =
           jsonResponse["projects"]["project"] as List<dynamic>;
       int numberProjects = fetchedProjects.length;
@@ -121,8 +128,8 @@ class GlobalGivingAPIService {
     return projectList;
   }
 
-  Future<http.Response> fetchProject(dynamic url) async {
-    http.Response response;
+  Future<http.Response?> fetchProject(dynamic url) async {
+    http.Response? response;
     try {
       response = await http.get(url, headers: {'accept': 'application/json'});
     } catch (e) {

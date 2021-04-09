@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
@@ -16,10 +18,10 @@ class CreateAccountViewModel extends AuthenticationViewModel {
                 kIsWeb ? Routes.walletView : Routes.layoutTemplateViewMobile);
 
   final _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseAuthenticationService _firebaseAuthenticationService =
+  final FirebaseAuthenticationService? _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
   final log = getLogger("LoginViewModel");
-  final UserDataService _userDataService = locator<UserDataService>();
+  final UserDataService? _userDataService = locator<UserDataService>();
 
   // TODO
   // Maybe we want to use stacked's version again and change the createUser function
@@ -37,15 +39,17 @@ class CreateAccountViewModel extends AuthenticationViewModel {
         // not expose the user in the result
         log.e("E-mail: $emailValue");
         result = await _firebaseAuth.createUserWithEmailAndPassword(
-            email: emailValue, password: passwordValue);
+            email: emailValue!, password: passwordValue!);
 
         //result = await _firebaseAuth.userChanges()
         // create user in databank when it is the first time!
         // Reconsider this!
         // Think about how to get User from uid!
+        // TODO: This has gladly changed in the stacked firebase auth and now
+        // the User is retrieved! rethink the following lines....
 
         UserDataServiceResult result2 =
-            await _userDataService.createUser(result.user, fullNameValue);
+            await (_userDataService!.createUser(result.user!, fullNameValue));
         if (result2.hasError) {
           return FirebaseAuthenticationResult.error(
               errorMessage:
@@ -62,8 +66,7 @@ class CreateAccountViewModel extends AuthenticationViewModel {
             errorMessage:
                 "An unknown error accoured when creating a new user. Please try again later or contact support.");
       }
-      return FirebaseAuthenticationResult(
-          uid: result.user.uid, userToken: result.user.refreshToken);
+      return FirebaseAuthenticationResult(user: result.user);
     } else {
       log.e(
           "The authentication method you tried to use is not implemented yet. Use E-mail, Google, Facebook, or Apple to authenticate");
@@ -72,5 +75,5 @@ class CreateAccountViewModel extends AuthenticationViewModel {
     }
   }
 
-  void navigateBack() => navigationService.back();
+  void navigateBack() => navigationService!.back();
 }

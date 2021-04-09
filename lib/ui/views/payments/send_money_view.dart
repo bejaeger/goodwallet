@@ -7,10 +7,10 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class SendMoneyView extends StatelessWidget {
-  final Map<String, String> userInfoMap;
+  final Map<String, String>? userInfoMap;
   final openSearchBarOnBuild;
 
-  SendMoneyView({Key key, this.userInfoMap, this.openSearchBarOnBuild = false})
+  SendMoneyView({Key? key, this.userInfoMap, this.openSearchBarOnBuild = false})
       : super(key: key);
 
   @override
@@ -58,7 +58,7 @@ class SendMoneyView extends StatelessWidget {
                                 _optionalMessageView(model),
                                 verticalSpace(30),
                                 model.errorMessage != null
-                                    ? Text(model.errorMessage,
+                                    ? Text(model.errorMessage!,
                                         style: TextStyle(color: Colors.red))
                                     : Container(height: 0, width: 0),
                                 model.isBusy

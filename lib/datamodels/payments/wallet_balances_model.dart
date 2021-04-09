@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class WalletBalancesModel {
-  final num currentBalance;
-  final num donations;
-  final num transferredToPeers;
+  final num? currentBalance;
+  final num? donations;
+  final num? transferredToPeers;
 
   WalletBalancesModel(
       {this.currentBalance, this.donations, this.transferredToPeers});

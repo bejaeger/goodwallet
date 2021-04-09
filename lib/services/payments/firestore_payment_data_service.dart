@@ -64,7 +64,7 @@ class FirestorePaymentDataService {
         // Move paymentIntent to pending firestore collection!
         print(
             "WARNING: Found residual paymentIntent that is already processed, moving it to pending payment intents!");
-        getPendingPaymentIntentCollectionRef(uid).add(element.data());
+        getPendingPaymentIntentCollectionRef(uid).add(element.data()!);
         element.reference.delete();
       }
     });
@@ -82,7 +82,7 @@ class FirestorePaymentDataService {
         await getLatestPaymentIntentDocSnapshot(uid);
     if (documentsSnapshot.size == 1) {
       // transfer good dollars
-      var data = TransactionModel.fromMap(documentsSnapshot.docs[0].data());
+      var data = TransactionModel.fromMap(documentsSnapshot.docs[0].data()!);
       data.status = "success"; // change status success!
       var docRef = _paymentsCollectionReference.doc(data.transactionId);
       await docRef.set(data.toJson());

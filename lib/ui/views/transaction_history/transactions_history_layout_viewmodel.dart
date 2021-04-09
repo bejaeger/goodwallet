@@ -5,10 +5,13 @@ import 'package:good_wallet/enums/transaction_type.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'package:good_wallet/utils/logger.dart';
 
 class TransactionHistoryLayoutViewModel extends BaseModel {
-  final NavigationService _navigationService = locator<NavigationService>();
-  final UserDataService _userDataService = locator<UserDataService>();
+  final NavigationService? _navigationService = locator<NavigationService>();
+  final UserDataService? _userDataService = locator<UserDataService>();
+
+  final log = getLogger("transactions_history_layout_viewmodel.dart");
 
   // will be fetched from firestore
   List<dynamic> listOfDonations = <dynamic>[];
@@ -19,13 +22,13 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
   // subscriptions to listen to transaction history of payments collection
   // payments into the users Good Wallet as well as payments
   // of the user into someone else's GW
-  StreamSubscription _transactionSubscription;
-  List<dynamic> transactions;
+  StreamSubscription? _transactionSubscription;
+  List<dynamic>? transactions;
 
   // subscriptions to listen to transactions in and out of wallet
   // incoming money into the wallet and donations
-  StreamSubscription _walletTransactionSubscription;
-  List<dynamic> walletTransactions;
+  StreamSubscription? _walletTransactionSubscription;
+  List<dynamic>? walletTransactions;
 
   @override
   void dispose() {
@@ -34,7 +37,7 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
     super.dispose();
   }
 
-  Future<void> initialize([TransactionType type]) async {
+  Future<void> initialize([TransactionType? type]) async {
     setBusy(true);
     if (type == null) {
       //await listenToWalletTransactions();
@@ -57,8 +60,8 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
 
   Future buildListOfWalletTransactions() async {
     List<dynamic> newListOfWalletTransactions = <dynamic>[];
-    var outgoing = await _userDataService.getListOfDonations();
-    var incoming = await _userDataService.getListOfIncomingTransactions();
+    var outgoing = await _userDataService!.getListOfDonations();
+    var incoming = await _userDataService!.getListOfIncomingTransactions();
     newListOfWalletTransactions.addAll(outgoing);
     newListOfWalletTransactions.addAll(incoming);
     try {
@@ -74,20 +77,20 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
   }
 
   Future fetchListOfDonations() async {
-    listOfDonations = await _userDataService.getListOfDonations();
+    listOfDonations = await _userDataService!.getListOfDonations();
     log.i("Fetched list of donations with length = ${listOfDonations.length}");
   }
 
   Future fetchListOfIncomingTransactions() async {
     listOfIncomingTransactions =
-        await _userDataService.getListOfIncomingTransactions();
+        await _userDataService!.getListOfIncomingTransactions();
     log.i(
         "Fetched list of incoming transfers with length = ${listOfIncomingTransactions.length}");
   }
 
   Future fetchListOfTransactionsToPeers() async {
     listOfTransactionsToPeers =
-        await _userDataService.getListOfTransactionsToPeers();
+        await _userDataService!.getListOfTransactionsToPeers();
     log.i(
         "Fetched list of transfers to peers with length = ${listOfTransactionsToPeers.length}");
   }
@@ -102,7 +105,7 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
     var tmpVar;
     try {
       tmpVar = transactionData.recipientUid;
-      var incoming = (transactionData.recipientUid == currentUser.id);
+      var incoming = (transactionData.recipientUid == currentUser!.id);
       type = incoming
           ? TransactionType.Incoming
           : TransactionType.TransferredToPeers;
@@ -119,9 +122,9 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
     return type;
   }
 
-  void navigateBack() => _navigationService.back();
+  void navigateBack() => _navigationService!.back();
 
-  List<dynamic> getTransactions(TransactionType type) {
+  List<dynamic>? getTransactions(TransactionType type) {
     if (type == TransactionType.Donation) {
       return listOfDonations;
     } else if (type == TransactionType.Incoming) {
@@ -134,7 +137,7 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
     return null;
   }
 
-  num getBalanceStringCorrespondingToType(TransactionType type) {
+  num? getBalanceStringCorrespondingToType(TransactionType type) {
     if (type == TransactionType.Donation) {
       return userWallet.donations;
     } else if (type == TransactionType.Incoming) {
@@ -158,11 +161,11 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
     // Function to be called in initialization of viewmodel or in onModelReady
 
     setBusy(true);
-    _userDataService.userStateSubject.listen(
+    _userDataService!.userStateSubject.listen(
       (state) {
         if (isUserSignedIn) {
           _transactionSubscription =
-              _userDataService.listenToTransactionsRealTime().listen(
+              _userDataService!.listenToTransactionsRealTime().listen(
             (transactionsData) {
               List<dynamic> updatedTransactions = transactionsData;
               if (updatedTransactions != null &&
@@ -195,11 +198,11 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
     // Listen to transaction collection if user is logged in otherwise cancel
     // subscription
     // Function to be called in initialization of viewmodel or on onModelReady
-    _userDataService.userStateSubject.listen(
+    _userDataService!.userStateSubject.listen(
       (state) {
         if (isUserSignedIn) {
           _walletTransactionSubscription =
-              _userDataService.listenToWalletTransactionsRealTime().listen(
+              _userDataService!.listenToWalletTransactionsRealTime().listen(
             (transactionsData) {
               List<dynamic> updatedTransactions = transactionsData;
               if (updatedTransactions != null &&

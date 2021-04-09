@@ -7,9 +7,9 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:stacked/stacked.dart';
 
+import '../datamodels/causes/global_giving_project_model.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/transaction_type.dart';
 import '../ui/views/causes/causes_view.dart';
@@ -189,9 +189,7 @@ class StackedRouter extends RouterBase {
       );
     },
     SingleProjectViewMobile: (data) {
-      var args = data.getArgs<SingleProjectViewMobileArguments>(
-        orElse: () => SingleProjectViewMobileArguments(),
-      );
+      var args = data.getArgs<SingleProjectViewMobileArguments>(nullOk: false);
       return PageRouteBuilder<dynamic>(
         pageBuilder: (context, animation, secondaryAnimation) =>
             SingleProjectViewMobile(
@@ -292,8 +290,8 @@ class StackedRouter extends RouterBase {
 
 /// SendMoneyView arguments holder class
 class SendMoneyViewArguments {
-  final Key key;
-  final Map<String, String> userInfoMap;
+  final Key? key;
+  final Map<String, String>? userInfoMap;
   final dynamic openSearchBarOnBuild;
   SendMoneyViewArguments(
       {this.key, this.userInfoMap, this.openSearchBarOnBuild = false});
@@ -301,48 +299,48 @@ class SendMoneyViewArguments {
 
 /// LayoutTemplate arguments holder class
 class LayoutTemplateArguments {
-  final Key key;
-  final Widget childView;
-  LayoutTemplateArguments({this.key, @required this.childView});
+  final Key? key;
+  final Widget? childView;
+  LayoutTemplateArguments({this.key, required this.childView});
 }
 
 /// LoginView arguments holder class
 class LoginViewArguments {
-  final Key key;
+  final Key? key;
   LoginViewArguments({this.key});
 }
 
 /// LayoutTemplateViewMobile arguments holder class
 class LayoutTemplateViewMobileArguments {
-  final Key key;
-  final int index;
+  final Key? key;
+  final int? index;
   LayoutTemplateViewMobileArguments({this.key, this.index});
 }
 
 /// SingleProjectViewMobile arguments holder class
 class SingleProjectViewMobileArguments {
-  final Key key;
-  final GoodWalletProjectModel project;
-  SingleProjectViewMobileArguments({this.key, this.project});
+  final Key? key;
+  final GlobalGivingProjectModel? project;
+  SingleProjectViewMobileArguments({this.key, required this.project});
 }
 
 /// CreateAccountView arguments holder class
 class CreateAccountViewArguments {
-  final Key key;
+  final Key? key;
   CreateAccountViewArguments({this.key});
 }
 
 /// SingleFeaturedAppView arguments holder class
 class SingleFeaturedAppViewArguments {
-  final Key key;
-  final FeaturedAppType type;
-  SingleFeaturedAppViewArguments({this.key, @required this.type});
+  final Key? key;
+  final FeaturedAppType? type;
+  SingleFeaturedAppViewArguments({this.key, required this.type});
 }
 
 /// SendMoneyViewMobile arguments holder class
 class SendMoneyViewMobileArguments {
-  final Key key;
-  final Map<String, String> userInfoMap;
+  final Key? key;
+  final Map<String, String>? userInfoMap;
   final dynamic openSearchBarOnBuild;
   SendMoneyViewMobileArguments(
       {this.key, this.userInfoMap, this.openSearchBarOnBuild = false});
@@ -350,7 +348,7 @@ class SendMoneyViewMobileArguments {
 
 /// TransactionsView arguments holder class
 class TransactionsViewArguments {
-  final Key key;
+  final Key? key;
   final TransactionType historyType;
   TransactionsViewArguments(
       {this.key, this.historyType = TransactionType.InOrOut});
@@ -358,7 +356,7 @@ class TransactionsViewArguments {
 
 /// QRCodeViewMobile arguments holder class
 class QRCodeViewMobileArguments {
-  final Key key;
+  final Key? key;
   final int initialIndex;
   QRCodeViewMobileArguments({this.key, this.initialIndex = 0});
 }

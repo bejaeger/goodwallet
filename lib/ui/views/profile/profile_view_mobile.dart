@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 
 class ProfileViewMobile extends StatelessWidget {
-  dynamic _model;
+  late dynamic _model;
 
   Widget _buildCoverImage(Size screenSize) {
     return Container(
@@ -79,7 +79,7 @@ class ProfileViewMobile extends StatelessWidget {
                   Text(
                     "\$ " + (_model.userWallet.currentBalance / 100).toString(),
                     style: textTheme(context)
-                        .bodyText2
+                        .bodyText2!
                         .copyWith(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                 ],
@@ -100,12 +100,12 @@ class ProfileViewMobile extends StatelessWidget {
       children: <Widget>[
         Text(
           count,
-          style: textTheme(context).bodyText2.copyWith(
+          style: textTheme(context).bodyText2!.copyWith(
               fontWeight: FontWeight.bold, fontSize: 18, color: color),
         ),
         Text(
           label,
-          style: textTheme(context).bodyText2.copyWith(color: color),
+          style: textTheme(context).bodyText2!.copyWith(color: color),
         ),
       ],
     );
@@ -271,9 +271,9 @@ class ProfileViewMobile extends StatelessWidget {
 }
 
 class ProfileListItem extends StatelessWidget {
-  final Function onPressed;
-  final String title;
-  const ProfileListItem({Key key, this.onPressed, this.title})
+  final Function? onPressed;
+  final String? title;
+  const ProfileListItem({Key? key, this.onPressed, this.title})
       : super(key: key);
 
   @override
@@ -284,10 +284,10 @@ class ProfileListItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: ListTile(
-        title: Text(title,
-            style: textTheme(context).headline6.copyWith(fontSize: 20)),
+        title: Text(title!,
+            style: textTheme(context).headline6!.copyWith(fontSize: 20)),
         trailing: Icon(Icons.arrow_forward_ios),
-        onTap: onPressed,
+        onTap: onPressed as void Function()?,
       ),
     );
   }

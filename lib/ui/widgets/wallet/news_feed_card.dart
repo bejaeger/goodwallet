@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 
 class FeedCard extends StatelessWidget {
-  final String title;
-  final String actionButtonText;
-  final String imageLocation;
-  final String supportingText;
+  final String? title;
+  final String? actionButtonText;
+  final String? imageLocation;
+  final String? supportingText;
 
   const FeedCard(
-      {Key key,
+      {Key? key,
       this.title,
       this.actionButtonText,
       this.imageLocation,
@@ -30,14 +30,14 @@ class FeedCard extends StatelessWidget {
                 height: 200,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage(imageLocation),
+                    image: AssetImage(imageLocation!),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Text(supportingText,
+                child: Text(supportingText!,
                     style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey[800],
@@ -53,7 +53,7 @@ class FeedCard extends StatelessWidget {
                 onPressed: () {
                   // Perform some action
                 },
-                child: Text(actionButtonText),
+                child: Text(actionButtonText!),
               ),
               IconButton(
                 icon: Icon(Icons.share),

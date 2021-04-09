@@ -50,7 +50,7 @@ double screenHeightPercentage(BuildContext context, {double percentage = 1}) =>
 double screenWidthPercentage(BuildContext context, {double percentage = 1}) =>
     screenWidth(context) * percentage;
 
-double screenWidthWithoutPadding(BuildContext context, {double percentage}) =>
+double screenWidthWithoutPadding(BuildContext context, {double? percentage}) =>
     percentage != null
         ? (screenWidth(context) - 2 * LayoutSettings.horizontalPadding) *
             percentage
@@ -61,8 +61,8 @@ TextTheme textTheme(BuildContext context) => Theme.of(context).textTheme;
 
 class CenteredView extends StatelessWidget {
   final maxWidth;
-  final Widget child;
-  const CenteredView({Key key, this.child, this.maxWidth}) : super(key: key);
+  final Widget? child;
+  const CenteredView({Key? key, this.child, this.maxWidth}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

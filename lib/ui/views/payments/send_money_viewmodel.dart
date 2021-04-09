@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
@@ -10,28 +12,31 @@ import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'package:stripe_payment/stripe_payment.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:good_wallet/utils/logger.dart';
 
 import 'package:good_wallet/ui/views/payments/stripe_checkout/stripe_checkout_stub.dart'
     if (dart.library.js) 'package:good_wallet/ui/views/payments/stripe_checkout/stripe_checkout_web_view.dart';
 import 'package:universal_html/js.dart';
 
 class SendMoneyViewModel extends BaseModel {
-  final DialogService _dialogService = locator<DialogService>();
-  final NavigationService _navigationService = locator<NavigationService>();
+  final DialogService? _dialogService = locator<DialogService>();
+  final NavigationService? _navigationService = locator<NavigationService>();
   final transferValueController = TextEditingController();
   final optionalMessageController = TextEditingController();
-  final FirestorePaymentDataService _firestorePaymentDataService =
+  final FirestorePaymentDataService? _firestorePaymentDataService =
       locator<FirestorePaymentDataService>();
-  final _stripePaymentService = locator<StripePaymentService>();
-  final _userDataService = locator<UserDataService>();
+  final StripePaymentService? _stripePaymentService =
+      locator<StripePaymentService>();
+  final UserDataService? _userDataService = locator<UserDataService>();
 
   final TextEditingController _userSelectionController =
       TextEditingController();
   TextEditingController get userSelectionController => _userSelectionController;
   final DummyPaymentService _dummyPaymentService =
       locator<DummyPaymentService>();
+
+  final log = getLogger("send_money_viewmodel.dart");
 
   void setUser(String selection) {
     _userSelectionController.text = selection;
@@ -41,25 +46,18 @@ class SendMoneyViewModel extends BaseModel {
     notifyListeners();
   }
 
-  void selectUser(Map<String, String> userMap) {
+  void selectUser(Map<String, String>? userMap) {
     _selectedUserInfoMap = userMap;
     setPaymentReady(true);
     notifyListeners();
   }
 
-  // take from https://stripe.com/docs/testing#international-cards
-  final CreditCard testCard = CreditCard(
-    number: '4000002760003184		',
-    expMonth: 12,
-    expYear: 22,
-  );
-
   @override
-  List<Map<String, String>> _userInfoMaps = [];
-  List<Map<String, String>> get userInfoMaps => _userInfoMaps;
+  List<Map<String, String?>> _userInfoMaps = [];
+  List<Map<String, String?>> get userInfoMaps => _userInfoMaps;
 
-  Map<String, String> _selectedUserInfoMap;
-  Map<String, String> get selectedUserInfoMap => _selectedUserInfoMap;
+  Map<String, String?>? _selectedUserInfoMap;
+  Map<String, String?>? get selectedUserInfoMap => _selectedUserInfoMap;
 
   List<String> _nameList = [];
   List<String> get nameList => _nameList;
@@ -73,8 +71,8 @@ class SendMoneyViewModel extends BaseModel {
   String _paymentStatus = "unknown";
   String get paymentStatus => _paymentStatus;
 
-  String _errorMessage;
-  String get errorMessage => _errorMessage;
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
 
   void addListenersToControllers() {
     transferValueController.addListener(() {
@@ -100,18 +98,18 @@ class SendMoneyViewModel extends BaseModel {
     var recipientUid, recipientName, amount, msg, currency;
     TransactionModel data;
     try {
-      recipientUid = selectedUserInfoMap["id"];
-      recipientName = selectedUserInfoMap["name"];
+      recipientUid = selectedUserInfoMap!["id"];
+      recipientName = selectedUserInfoMap!["name"];
       amount = _getAmount();
       msg = optionalMessageController.text;
       data = TransactionModel(
         recipientUid: recipientUid,
         recipientName: recipientName,
-        senderUid: currentUser.id,
-        senderName: currentUser.fullName,
+        senderUid: currentUser!.id,
+        senderName: currentUser!.fullName,
+        createdAt: FieldValue.serverTimestamp(),
         amount: amount * 100,
         currency: "cad",
-        createdAt: FieldValue.serverTimestamp(),
         message: msg,
         status: 'initialized',
       );
@@ -127,11 +125,11 @@ class SendMoneyViewModel extends BaseModel {
     var data = TransactionModel(
       recipientUid: "3QrVvwOmrraFMl3EaSzn6byLpFu2",
       recipientName: "Hans",
-      senderUid: currentUser.id,
-      senderName: currentUser.fullName,
+      senderUid: currentUser!.id,
+      senderName: currentUser!.fullName,
       amount: 700,
-      currency: "cad",
       createdAt: FieldValue.serverTimestamp(),
+      currency: "cad",
       message: "Test Transfer",
       status: 'initialized',
     );
@@ -154,13 +152,13 @@ class SendMoneyViewModel extends BaseModel {
 
   Future processPayment(TransactionModel data) async {
     setBusy(true);
-    var resultCreatePaymentIntent = await _firestorePaymentDataService
-        .createPaymentIntent(data, currentUser.id);
+    var resultCreatePaymentIntent = await _firestorePaymentDataService!
+        .createPaymentIntent(data, currentUser!.id);
 
     if (resultCreatePaymentIntent is String) {
       // string is document id which is payId, so
       // let's get started
-      var sessionId = await _stripePaymentService.createStripeSessionId(data);
+      var sessionId = await _stripePaymentService!.createStripeSessionId(data);
       if (sessionId is String) {
         print("INFO: Redirecting to stripe checkout");
         if (kIsWeb) {
@@ -171,7 +169,7 @@ class SendMoneyViewModel extends BaseModel {
         }
       } else if (sessionId is bool) {
         if (!sessionId) {
-          await _dialogService.showDialog(
+          await _dialogService!.showDialog(
             title: "Error! Stripe payment couldn't be processed",
             description: "",
           );
@@ -179,7 +177,7 @@ class SendMoneyViewModel extends BaseModel {
       }
     } else if (resultCreatePaymentIntent is bool) {
       if (!resultCreatePaymentIntent) {
-        await _dialogService.showDialog(
+        await _dialogService!.showDialog(
           title: "Error! Payment couldn't be processed",
           description: "",
         );
@@ -192,10 +190,10 @@ class SendMoneyViewModel extends BaseModel {
 
   void handlePaymentSuccess() async {
     print("INFO: Stripe payment successfull. Handling it");
-    _userDataService.userStateSubject.listen((state) async {
+    _userDataService!.userStateSubject.listen((state) async {
       if (state == UserStatus.SignedIn) {
-        bool result = await _firestorePaymentDataService
-            .handlePaymentSuccess(currentUser.id);
+        bool result = await _firestorePaymentDataService!
+            .handlePaymentSuccess(currentUser!.id);
         if (result)
           _paymentStatus = "success";
         else
@@ -212,9 +210,10 @@ class SendMoneyViewModel extends BaseModel {
 
   void handlePaymentFailure() async {
     print("INFO: Stripe payment cancelled. Handling it");
-    _userDataService.userStateSubject.listen((state) async {
+    _userDataService!.userStateSubject.listen((state) async {
       if (state == UserStatus.SignedIn) {
-        await _firestorePaymentDataService.handlePaymentFailure(currentUser.id);
+        await _firestorePaymentDataService!
+            .handlePaymentFailure(currentUser!.id);
         _paymentStatus = "failure";
         notifyListeners();
       }
@@ -229,23 +228,23 @@ class SendMoneyViewModel extends BaseModel {
         .get();
     _userInfoMaps = foundUsers.docs.map((DocumentSnapshot doc) {
       return {
-        "name": doc.get("fullName") as String,
-        "id": doc.get("id") as String,
+        "name": doc.get("fullName") as String?,
+        "id": doc.get("id") as String?,
       };
     }).toList();
   }
 
   // TODO: Put in service and catch errors
-  List<String> getNamesFromUserMap() {
-    List<String> returnValue =
+  List<String?> getNamesFromUserMap() {
+    List<String?> returnValue =
         _userInfoMaps.map((Map<String, dynamic> userInfo) {
-      return userInfo["name"] as String;
+      return userInfo["name"] as String?;
     }).toList();
     return returnValue;
   }
 
   // TODO: Put in service and catch errors
-  Future<List<String>> getQueriedUserNames(String pattern) async {
+  Future<List<String?>> getQueriedUserNames(String pattern) async {
     await queryUsers(pattern);
     return getNamesFromUserMap();
   }
@@ -261,11 +260,11 @@ class SendMoneyViewModel extends BaseModel {
   }
 
   Future navigateToWalletView() async {
-    await _navigationService.navigateTo(Routes.walletView);
+    await _navigationService!.navigateTo(Routes.walletView);
   }
 
   Future navigateToHomeView() async {
-    await _navigationService.navigateTo(Routes.welcomeView);
+    await _navigationService!.navigateTo(Routes.welcomeView);
   }
 
   Future makeDummyPayment() async {
@@ -281,15 +280,15 @@ class SendMoneyViewModel extends BaseModel {
 
   Future anotherPaymentConfirmationDialog() async {
     try {
-      DialogResponse response = await _dialogService.showConfirmationDialog(
+      DialogResponse? response = await _dialogService!.showConfirmationDialog(
         title: 'Confirmation',
         description: "Would you like to make another payment?",
         confirmationTitle: 'Yes',
         dialogPlatform: DialogPlatform.Material,
         cancelTitle: 'No',
       );
-      if (!response.confirmed) {
-        _navigationService.navigateTo(Routes.homeViewMobile);
+      if (!response!.confirmed) {
+        _navigationService!.navigateTo(Routes.homeViewMobile);
       }
       print('DialogResponse: ${response.confirmed}');
     } catch (e) {
@@ -301,7 +300,7 @@ class SendMoneyViewModel extends BaseModel {
   Future dummyPaymentConfirmationDialog() async {
     try {
       var data = await fillTransactionModel();
-      DialogResponse response = await _dialogService.showConfirmationDialog(
+      DialogResponse? response = await _dialogService!.showConfirmationDialog(
         title: 'Confirmation',
         description:
             "Are you sure that you want to send ${data.amount / 100}\$ to ${data.recipientName}",
@@ -309,7 +308,7 @@ class SendMoneyViewModel extends BaseModel {
         dialogPlatform: DialogPlatform.Material,
         cancelTitle: 'No',
       );
-      if (response.confirmed) {
+      if (response!.confirmed) {
         await _dummyPaymentService.processTransaction(data);
         await anotherPaymentConfirmationDialog();
       }

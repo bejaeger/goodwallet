@@ -9,14 +9,14 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class LayoutTemplateViewMobile extends StatelessWidget {
-  final int index;
-  const LayoutTemplateViewMobile({Key key, this.index}) : super(key: key);
+  final int? index;
+  const LayoutTemplateViewMobile({Key? key, this.index}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<LayoutTemplateViewModel>.reactive(
       viewModelBuilder: () => LayoutTemplateViewModel(),
       onModelReady: (model) {
-        if (index != null) model.setIndex(index);
+        if (index != null) model.setIndex(index!);
         return null;
       },
       builder: (context, model, child) => SafeArea(

@@ -39,7 +39,7 @@ class HomeViewMobile extends StatelessWidget {
                           children: [
                             Text("Home",
                                 style: textTheme(context)
-                                    .headline3
+                                    .headline3!
                                     .copyWith(fontSize: 25)),
                             // GestureDetector(
                             //     onTap: model.navigateToSettingsView,
@@ -71,7 +71,7 @@ class HomeViewMobile extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 verticalSpaceMedium,
-                                Text("Hi " + model.currentUser.fullName,
+                                Text("Hi " + model.currentUser!.fullName!,
                                     style: textTheme(context).headline4),
                                 verticalSpaceSmall,
                                 GestureDetector(
@@ -96,11 +96,11 @@ class HomeViewMobile extends StatelessWidget {
                                           Text(
                                               "\$ " +
                                                   (model.userWallet
-                                                              .currentBalance /
+                                                              .currentBalance! /
                                                           100)
                                                       .toString(),
                                               style: textTheme(context)
-                                                  .headline2
+                                                  .headline2!
                                                   .copyWith(fontSize: 28)),
                                           Text(
                                               "Your current balance to be donated"),
@@ -199,7 +199,7 @@ class HomeViewMobile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("Goodometer: \$ 10789",
-                style: textTheme(context).headline1.copyWith(fontSize: 20)),
+                style: textTheme(context).headline1!.copyWith(fontSize: 20)),
             Text("Total raised by our community",
                 style: textTheme(context).bodyText1),
           ],
@@ -212,7 +212,7 @@ class HomeViewMobile extends StatelessWidget {
 class FeaturedAppsCarousel extends StatelessWidget {
   final dynamic model;
 
-  const FeaturedAppsCarousel({Key key, this.model}) : super(key: key);
+  const FeaturedAppsCarousel({Key? key, this.model}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -251,7 +251,7 @@ class FeaturedAppsCarousel extends StatelessWidget {
 class FeaturedProjectsCarousel extends StatelessWidget {
   final dynamic model;
 
-  const FeaturedProjectsCarousel({Key key, this.model}) : super(key: key);
+  const FeaturedProjectsCarousel({Key? key, this.model}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SizedBox(

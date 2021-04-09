@@ -4,24 +4,23 @@ import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
 class AuthenticationLayout extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String mainButtonTitle;
-  final Widget form;
+  final String? title;
+  final String? subtitle;
+  final String? mainButtonTitle;
+  final Widget? form;
   final bool showTermsText;
-  final Function onMainButtonTapped;
-  final Function onCreateAccountTapped;
-  final Function onForgotPassword;
-  final Function onBackPressed;
-  final Function onDummyLoginTapped;
-  final Function onGoogleButtonTapped;
-  final Function onFacebookButtonTapped;
-  final Function onAppleButtonTapped;
-  final String validationMessage;
+  final void Function()? onMainButtonTapped;
+  final void Function()? onCreateAccountTapped;
+  final void Function()? onForgotPassword;
+  final void Function()? onBackPressed;
+  final void Function()? onDummyLoginTapped;
+  final void Function()? onGoogleButtonTapped;
+  final void Function()? onAppleButtonTapped;
+  final String? validationMessage;
   final bool busy;
 
   const AuthenticationLayout({
-    Key key,
+    Key? key,
     this.title,
     this.subtitle,
     this.mainButtonTitle,
@@ -35,7 +34,6 @@ class AuthenticationLayout extends StatelessWidget {
     this.busy = false,
     this.onDummyLoginTapped,
     this.onGoogleButtonTapped,
-    this.onFacebookButtonTapped,
     this.onAppleButtonTapped,
   }) : super(key: key);
 
@@ -58,7 +56,7 @@ class AuthenticationLayout extends StatelessWidget {
               onPressed: onBackPressed,
             ),
           Text(
-            title,
+            title!,
             style: TextStyle(fontSize: 34),
           ),
           verticalSpaceSmall,
@@ -67,12 +65,12 @@ class AuthenticationLayout extends StatelessWidget {
             child: SizedBox(
               width: screenWidthPercentage(context, percentage: 0.7),
               child: Text(
-                subtitle,
+                subtitle!,
               ),
             ),
           ),
           verticalSpaceRegular,
-          form,
+          form!,
           verticalSpaceRegular,
           if (onForgotPassword != null)
             Align(
@@ -81,7 +79,7 @@ class AuthenticationLayout extends StatelessWidget {
                   onTap: onForgotPassword,
                   child: Text(
                     'Forget Password?',
-                    style: textTheme(context).bodyText2.copyWith(
+                    style: textTheme(context).bodyText2!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                   )),
@@ -89,7 +87,7 @@ class AuthenticationLayout extends StatelessWidget {
           verticalSpaceRegular,
           if (validationMessage != null)
             Text(
-              validationMessage,
+              validationMessage!,
               style: TextStyle(
                 color: Colors.red,
                 //fontSize: kBodyTextSize,
@@ -111,7 +109,7 @@ class AuthenticationLayout extends StatelessWidget {
                       valueColor: AlwaysStoppedAnimation(Colors.white),
                     )
                   : Text(
-                      mainButtonTitle,
+                      mainButtonTitle!,
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -167,9 +165,7 @@ class AuthenticationLayout extends StatelessWidget {
               'By signing up you agree to our terms, conditions and privacy policy.',
               textAlign: TextAlign.center,
             ),
-          if (onGoogleButtonTapped != null ||
-              onFacebookButtonTapped != null ||
-              onAppleButtonTapped != null)
+          if (onGoogleButtonTapped != null || onAppleButtonTapped != null)
             Padding(
               padding: const EdgeInsets.only(top: 20, bottom: 20),
               child: Center(
@@ -180,19 +176,13 @@ class AuthenticationLayout extends StatelessWidget {
             SignInButton(
               Buttons.Google,
               text: "SIGN IN WITH GOOGLE",
-              onPressed: onGoogleButtonTapped,
-            ),
-          if (onFacebookButtonTapped != null)
-            SignInButton(
-              Buttons.Facebook,
-              text: "SIGN IN WITH FACEBOOK",
-              onPressed: onFacebookButtonTapped,
+              onPressed: onGoogleButtonTapped!,
             ),
           if (onAppleButtonTapped != null)
             SignInButton(
               Buttons.Apple,
               text: "SIGN IN WITH APPLE",
-              onPressed: onAppleButtonTapped,
+              onPressed: onAppleButtonTapped!,
             ),
           verticalSpaceLarge,
         ],

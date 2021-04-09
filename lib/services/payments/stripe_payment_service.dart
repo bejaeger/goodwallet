@@ -15,7 +15,7 @@ class StripePaymentService {
       var url = window.location.href;
       url = url.replaceAll("send-money-view", "");
       dataToServer["domain"] = url;
-      final result = await callable(dataToServer);
+      final HttpsCallableResult<dynamic> result = await callable(dataToServer);
       var sessionId = result.data["sessionId"];
       return sessionId;
     } catch (error) {
