@@ -107,10 +107,11 @@ class GlobalGivingAPIService {
 
   Future<List<GlobalGivingProjectModel>> _getProjectListFromHTTPCall(
       Uri url, bool addToFirestore) async {
-    http.Response response = await fetchProject(url);
+    http.Response? response = await fetchProject(url);
     List<GlobalGivingProjectModel> projectList = [];
+    if (response == null) null;
     try {
-      var jsonResponse = convert.jsonDecode(response.body);
+      var jsonResponse = convert.jsonDecode(response!.body);
       var fetchedProjects =
           jsonResponse["projects"]["project"] as List<dynamic>;
       int numberProjects = fetchedProjects.length;

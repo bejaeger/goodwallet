@@ -7,9 +7,9 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:stacked/stacked.dart';
 
+import '../datamodels/causes/global_giving_project_model.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/transaction_type.dart';
 import '../ui/views/causes/causes_view.dart';
@@ -319,19 +319,9 @@ class LayoutTemplateViewMobileArguments {
 
 /// SingleProjectViewMobile arguments holder class
 class SingleProjectViewMobileArguments {
-<<<<<<< HEAD
   final Key? key;
   final GlobalGivingProjectModel? project;
   SingleProjectViewMobileArguments({this.key, required this.project});
-||||||| d11148d
-  final Key key;
-  final GlobalGivingProjectModel project;
-  SingleProjectViewMobileArguments({this.key, this.project});
-=======
-  final Key key;
-  final GoodWalletProjectModel project;
-  SingleProjectViewMobileArguments({this.key, this.project});
->>>>>>> master
 }
 
 /// CreateAccountView arguments holder class
@@ -349,8 +339,8 @@ class SingleFeaturedAppViewArguments {
 
 /// SendMoneyViewMobile arguments holder class
 class SendMoneyViewMobileArguments {
-  final Key key;
-  final Map<String, String> userInfoMap;
+  final Key? key;
+  final Map<String, String>? userInfoMap;
   final dynamic openSearchBarOnBuild;
   SendMoneyViewMobileArguments(
       {this.key, this.userInfoMap, this.openSearchBarOnBuild = false});

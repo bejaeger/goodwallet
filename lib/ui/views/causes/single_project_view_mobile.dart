@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/datamodels/causes/global_giving_project_model.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
@@ -10,17 +11,9 @@ final _donationAmountController = TextEditingController();
 var userGoodDollarsSavings = 2000;
 
 class SingleProjectViewMobile extends StatelessWidget {
-<<<<<<< HEAD
   final GlobalGivingProjectModel? project;
   const SingleProjectViewMobile({Key? key, required this.project})
       : super(key: key);
-||||||| d11148d
-  final GlobalGivingProjectModel project;
-  const SingleProjectViewMobile({Key key, this.project}) : super(key: key);
-=======
-  final GoodWalletProjectModel project;
-  const SingleProjectViewMobile({Key key, this.project}) : super(key: key);
->>>>>>> master
 
   @override
   Widget build(BuildContext context) {
@@ -159,8 +152,9 @@ class SingleProjectViewMobile extends StatelessWidget {
                     child: Text(
                       "Balance: \$ " +
                           (model.userWallet.currentBalance! / 100).toString(),
-                      style:
-                          textTheme(context).bodyText2!.copyWith(fontSize: 16.0),
+                      style: textTheme(context)
+                          .bodyText2!
+                          .copyWith(fontSize: 16.0),
                     )),
               ),
               verticalSpaceMediumLarge,
