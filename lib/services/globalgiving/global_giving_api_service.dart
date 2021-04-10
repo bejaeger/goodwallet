@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:good_wallet/datamodels/causes/global_giving_project_model.dart';
+import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'dart:math';
@@ -40,8 +40,10 @@ class GlobalGivingAPIService {
       int randomProjectNumber =
           random.nextInt(numberProjects); // seems limitted
       var jsonProject = fetchedProjects[randomProjectNumber];
-      GlobalGivingProjectModel project =
-          GlobalGivingProjectModel.readJsonProject(jsonProject);
+      GoodWalletProjectModel project =
+          GoodWalletProjectModel.fromGlobalGivingAPICall(
+        jsonProject,
+      );
       return project;
       //return project;
     } catch (e) {
@@ -68,10 +70,10 @@ class GlobalGivingAPIService {
           jsonResponse["projects"]["project"] as List<dynamic>;
       int numberProjects = fetchedProjects.length - 1;
 
-      List<GlobalGivingProjectModel> projectList = [];
+      List<GoodWalletProjectModel> projectList = [];
       for (int i = 0; i < numberProjects; i++) {
-        GlobalGivingProjectModel project =
-            GlobalGivingProjectModel.readJsonProject(fetchedProjects[i]);
+        GoodWalletProjectModel project =
+            GoodWalletProjectModel.fromGlobalGivingAPICall(fetchedProjects[i]);
         projectList.add(project);
       }
       return projectList;
@@ -105,19 +107,21 @@ class GlobalGivingAPIService {
     return _getProjectListFromHTTPCall(url, addToFirestore);
   }
 
-  Future<List<GlobalGivingProjectModel>> _getProjectListFromHTTPCall(
+  Future<List<GoodWalletProjectModel>> _getProjectListFromHTTPCall(
       Uri url, bool addToFirestore) async {
     http.Response? response = await fetchProject(url);
-    List<GlobalGivingProjectModel> projectList = [];
-    if (response == null) null;
+    List<GoodWalletProjectModel> projectList = [];
+    //if (response == null) return response;
     try {
       var jsonResponse = convert.jsonDecode(response!.body);
       var fetchedProjects =
           jsonResponse["projects"]["project"] as List<dynamic>;
       int numberProjects = fetchedProjects.length;
       for (int i = 0; i < numberProjects; i++) {
-        GlobalGivingProjectModel project =
-            GlobalGivingProjectModel.readJsonProject(fetchedProjects[i]);
+        GoodWalletProjectModel project =
+            GoodWalletProjectModel.fromGlobalGivingAPICall(
+          fetchedProjects[i],
+        );
         if (addToFirestore) _causesCollectionReference.add(project.toJson());
         projectList.add(project);
       }
@@ -133,7 +137,7 @@ class GlobalGivingAPIService {
     try {
       response = await http.get(url, headers: {'accept': 'application/json'});
     } catch (e) {
-      print("Error when trying to fetch project data: ${e.toString()}");
+      log.e("Error when trying to fetch project data: ${e.toString()}");
     }
     return response;
   }

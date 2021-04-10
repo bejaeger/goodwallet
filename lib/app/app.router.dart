@@ -9,7 +9,8 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
-import '../datamodels/causes/global_giving_project_model.dart';
+import '../datamodels/causes/good_wallet_project_model.dart';
+import '../datamodels/user/qr_code_user_info_model.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/transaction_type.dart';
 import '../ui/views/causes/causes_view.dart';
@@ -242,7 +243,7 @@ class StackedRouter extends RouterBase {
         pageBuilder: (context, animation, secondaryAnimation) =>
             SendMoneyViewMobile(
           key: args.key,
-          userInfoMap: args.userInfoMap,
+          userInfo: args.userInfo,
           openSearchBarOnBuild: args.openSearchBarOnBuild,
         ),
         settings: data,
@@ -291,7 +292,7 @@ class StackedRouter extends RouterBase {
 /// SendMoneyView arguments holder class
 class SendMoneyViewArguments {
   final Key? key;
-  final Map<String, String>? userInfoMap;
+  final QRCodeUserInfo? userInfoMap;
   final dynamic openSearchBarOnBuild;
   SendMoneyViewArguments(
       {this.key, this.userInfoMap, this.openSearchBarOnBuild = false});
@@ -320,7 +321,7 @@ class LayoutTemplateViewMobileArguments {
 /// SingleProjectViewMobile arguments holder class
 class SingleProjectViewMobileArguments {
   final Key? key;
-  final GlobalGivingProjectModel? project;
+  final GoodWalletProjectModel? project;
   SingleProjectViewMobileArguments({this.key, required this.project});
 }
 
@@ -340,10 +341,10 @@ class SingleFeaturedAppViewArguments {
 /// SendMoneyViewMobile arguments holder class
 class SendMoneyViewMobileArguments {
   final Key? key;
-  final Map<String, String>? userInfoMap;
+  final QRCodeUserInfo? userInfo;
   final dynamic openSearchBarOnBuild;
   SendMoneyViewMobileArguments(
-      {this.key, this.userInfoMap, this.openSearchBarOnBuild = false});
+      {this.key, this.userInfo, this.openSearchBarOnBuild = false});
 }
 
 /// TransactionsView arguments holder class

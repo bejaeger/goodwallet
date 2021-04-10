@@ -2,6 +2,7 @@ import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
+import 'package:good_wallet/services/qrcode/qr_code_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/style/page_transitions.dart';
 import 'package:good_wallet/ui/views/causes/causes_view.dart';
@@ -79,6 +80,8 @@ import 'package:stacked_services/stacked_services.dart';
       classType: FirebaseAuthenticationService,
     ),
     LazySingleton(classType: DummyPaymentService),
+    LazySingleton(classType: QRCodeService),
+
     Singleton(classType: UserDataService),
 
     // don't register the auth service lazily because we want it

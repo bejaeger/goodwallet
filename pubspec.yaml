@@ -37,7 +37,7 @@ dependencies:
 
   intl: ^0.17.0
   qr_flutter: ^4.0.0
-  #flutter_barcode_scanner: ^1.0.1
+  qr_code_scanner: ^0.4.0
   path_provider: ^2.0.1
 
   # Stacked State Management
@@ -111,6 +111,9 @@ flutter:
     - assets/icons/qrcode-scanning.png    
     - assets/images/people-holding-hands.jpeg
     - assets/images/work-next-to-creek.jpeg
+    - assets/icons/holding-hands.png
+    - assets/images/credit-card-background.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
+import 'package:good_wallet/datamodels/user/qr_code_user_info_model.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
@@ -40,24 +41,22 @@ class SendMoneyViewModel extends BaseModel {
 
   void setUser(String selection) {
     _userSelectionController.text = selection;
-    _selectedUserInfoMap =
-        _userInfoMaps.where((element) => element["name"] == selection).first;
+    selectedUserInfo =
+        userInfoMaps.where((element) => element.name == selection).first;
     setPaymentReady(true);
     notifyListeners();
   }
 
-  void selectUser(Map<String, String>? userMap) {
-    _selectedUserInfoMap = userMap;
+  void selectUser(QRCodeUserInfo userInfo) {
+    selectedUserInfo = userInfo;
+    userSelectionController.text = userInfo.name;
     setPaymentReady(true);
     notifyListeners();
   }
 
   @override
-  List<Map<String, String?>> _userInfoMaps = [];
-  List<Map<String, String?>> get userInfoMaps => _userInfoMaps;
-
-  Map<String, String?>? _selectedUserInfoMap;
-  Map<String, String?>? get selectedUserInfoMap => _selectedUserInfoMap;
+  List<QRCodeUserInfo> userInfoMaps = [];
+  QRCodeUserInfo? selectedUserInfo;
 
   List<String> _nameList = [];
   List<String> get nameList => _nameList;
@@ -98,8 +97,8 @@ class SendMoneyViewModel extends BaseModel {
     var recipientUid, recipientName, amount, msg, currency;
     TransactionModel data;
     try {
-      recipientUid = selectedUserInfoMap!["id"];
-      recipientName = selectedUserInfoMap!["name"];
+      recipientUid = selectedUserInfo!.id;
+      recipientName = selectedUserInfo!.name;
       amount = _getAmount();
       msg = optionalMessageController.text;
       data = TransactionModel(
@@ -226,19 +225,16 @@ class SendMoneyViewModel extends BaseModel {
         .collection("users")
         .where("searchKeywords", arrayContains: query.toLowerCase())
         .get();
-    _userInfoMaps = foundUsers.docs.map((DocumentSnapshot doc) {
-      return {
-        "name": doc.get("fullName") as String?,
-        "id": doc.get("id") as String?,
-      };
+    userInfoMaps = foundUsers.docs.map((DocumentSnapshot doc) {
+      return QRCodeUserInfo(
+          name: doc.get("fullName") as String, id: doc.get("id") as String);
     }).toList();
   }
 
   // TODO: Put in service and catch errors
-  List<String?> getNamesFromUserMap() {
-    List<String?> returnValue =
-        _userInfoMaps.map((Map<String, dynamic> userInfo) {
-      return userInfo["name"] as String?;
+  List<String?> getNamesFromuserInfo() {
+    List<String?> returnValue = userInfoMaps.map((QRCodeUserInfo userInfo) {
+      return userInfo.name;
     }).toList();
     return returnValue;
   }
@@ -246,7 +242,7 @@ class SendMoneyViewModel extends BaseModel {
   // TODO: Put in service and catch errors
   Future<List<String?>> getQueriedUserNames(String pattern) async {
     await queryUsers(pattern);
-    return getNamesFromUserMap();
+    return getNamesFromuserInfo();
   }
 
   Future navigateToCheckoutMobileView(String sessionId) async {
@@ -265,6 +261,10 @@ class SendMoneyViewModel extends BaseModel {
 
   Future navigateToHomeView() async {
     await _navigationService!.navigateTo(Routes.welcomeView);
+  }
+
+  void navigateBack() {
+    _navigationService!.back();
   }
 
   Future makeDummyPayment() async {

@@ -82,7 +82,7 @@ class UserDataService {
       log.i("Populating current user");
       try {
         await _populateCurrentUser(uid);
-        userWalletSubject.add(await updateWallet(uid));
+        await listenToWalletUpdates(uid);
         userStateSubject.add(UserStatus.Initialized);
       } catch (e) {
         return UserDataServiceResult.error(
@@ -145,7 +145,7 @@ class UserDataService {
     }
   }
 
-  Future updateWallet(var uid) async {
+  Future listenToWalletUpdates(var uid) async {
     try {
       _usersCollectionReference.doc(uid).snapshots().listen((userData) {
         if (userData.exists) {
@@ -154,6 +154,8 @@ class UserDataService {
             'donations': userData["donations"] as num?,
             'transferredToPeers': userData["implicitDonations"] as num?,
           }));
+        } else {
+          log.e("Wallet data could not be retrieved from firebase");
         }
       });
     } catch (e) {

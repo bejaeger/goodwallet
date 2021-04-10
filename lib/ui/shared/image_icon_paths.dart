@@ -7,4 +7,5 @@ class ImageIconPaths {
   static const magnifyingGlass = "assets/icons/magnifying-glass.png";
   static const qrcodeScan = "assets/icons/qrcode-scan.png";
   static const qrcodeScanning = "assets/icons/qrcode-scanning.png";
+  static const holdingHands = "assets/icons/holding-hands.png";
 }

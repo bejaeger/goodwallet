@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/causes/global_giving_project_model.dart';
+import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
@@ -28,8 +28,8 @@ class WalletViewModel extends BaseModel {
   WalletBalancesModel get wallet => _wallet;
 
   // projects to be exposed
-  List<GlobalGivingProjectModel>? _projects;
-  List<GlobalGivingProjectModel>? get projects => _projects;
+  List<GoodWalletProjectModel>? _projects;
+  List<GoodWalletProjectModel>? get projects => _projects;
 
   void listenToTransactions() {
     // Listen to transaction collection if user is logged in otherwise cancel
@@ -66,7 +66,7 @@ class WalletViewModel extends BaseModel {
 
   // Make a stream listening to projects!
   Future getProjects() async {
-    List<GlobalGivingProjectModel> newProjects = [];
+    List<GoodWalletProjectModel> newProjects = [];
     var newProject = await _ggApiService!.getRandomProject();
     if (newProject != null) {
       newProjects.add(newProject);

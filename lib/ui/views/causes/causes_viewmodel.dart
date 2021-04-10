@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/causes/global_giving_project_model.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_fund_model.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:good_wallet/enums/causes_type.dart';
@@ -26,8 +26,9 @@ class CausesViewModel extends BaseModel {
   Future fetchCauses() async {
     setBusy(true);
     if (projects == null) {
-      projects = await (_globalGivingAPIservice!.getFeaturedProjects());
+      await fetchGlobalGivingProjects();
       log.i("Fetched project list with length ${projects!.length}");
+      // TODO: Add user info when no projects could be retrieved..e.g. network issues
     }
     if (goodWalletFunds == null) {
       goodWalletFunds = [
@@ -47,19 +48,26 @@ class CausesViewModel extends BaseModel {
       log.i(
           "Fetched good wallet fund list with length ${goodWalletFunds!.length}");
     }
-    setBusy(false);
+    if (projects != null) {
+      setBusy(false);
+    } else {
+      log.e("Project array is still null!");
+    }
     notifyListeners();
   }
 
   Future fetchGlobalGivingProjects() async {
     QuerySnapshot projectsSnapshot = await _causesCollectionReference
-        .where("causeType", isEqualTo: CauseType.GlobalGivingProject.toString())
+        .where("causeType",
+            isEqualTo: describeEnum(CauseType.GlobalGivingProject))
         .get();
-    if (projectsSnapshot != null) {
+    if (projectsSnapshot.docs.isNotEmpty) {
+      log.i("Found data of global giving projects on firestore");
       projects = projectsSnapshot.docs
           .map((snapshot) => GoodWalletProjectModel.fromMap(snapshot.data()!))
           .toList();
     } else {
+      log.i("Get global giving projects from API");
       // No data stored on firestore yet, use global giving API
       projects = await _globalGivingAPIservice!
           .getProjectsOfTheMonth(addToFirestore: false);
@@ -68,7 +76,6 @@ class CausesViewModel extends BaseModel {
 
   Future navigateToProjectScreen(index) async {
     await _navigationService!.navigateTo(Routes.singleProjectViewMobile,
-        arguments: SingleProjectViewMobileArguments(
-            project: projects![index] as GlobalGivingProjectModel?));
+        arguments: SingleProjectViewMobileArguments(project: projects![index]));
   }
 }

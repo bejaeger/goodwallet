@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:good_wallet/datamodels/user/qr_code_user_info_model.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/ui/views/payments/send_money_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class SendMoneyView extends StatelessWidget {
-  final Map<String, String>? userInfoMap;
+  final QRCodeUserInfo? userInfoMap;
   final openSearchBarOnBuild;
 
   SendMoneyView({Key? key, this.userInfoMap, this.openSearchBarOnBuild = false})
@@ -21,7 +22,7 @@ class SendMoneyView extends StatelessWidget {
         model.setPaymentReady(false);
         model.addListenersToControllers();
         if (userInfoMap != null) {
-          model.selectUser(userInfoMap);
+          model.selectUser(userInfoMap!);
         }
       },
       builder: (context, model, child) => WillPopScope(

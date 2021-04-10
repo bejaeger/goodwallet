@@ -4,6 +4,7 @@ import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/home_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/carousel_card.dart';
+import 'package:good_wallet/ui/widgets/good_wallet_card.dart';
 import 'package:good_wallet/ui/widgets/pledge_button.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -74,42 +75,19 @@ class HomeViewMobile extends StatelessWidget {
                                 Text("Hi " + model.currentUser!.fullName!,
                                     style: textTheme(context).headline4),
                                 verticalSpaceSmall,
-                                GestureDetector(
-                                  onTap:
+                                GoodWalletCard(
+                                  onCardTap:
                                       model.navigateToTransactionsHistoryView,
-                                  child: Card(
-                                    elevation: 2.0,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    color: Colors.white,
-                                    child: Container(
-                                      padding: const EdgeInsets.only(
-                                          top: 15.0, bottom: 15.0, left: 10.0),
-                                      width:
-                                          screenWidthWithoutPadding(context) -
-                                              8.0,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                              "\$ " +
-                                                  (model.userWallet
-                                                              .currentBalance! /
-                                                          100)
-                                                      .toString(),
-                                              style: textTheme(context)
-                                                  .headline2!
-                                                  .copyWith(fontSize: 28)),
-                                          Text(
-                                              "Your current balance to be donated"),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                  onQRCodeTap: model.navigateToQRCodeView,
+                                  currentBalance:
+                                      model.userWallet.currentBalance!,
+                                  totalDonations: model.userWallet.donations!,
+                                  totalRaised: 7800,
+                                  userInfo: model.getQRCodeUserInfoString(),
                                 ),
                                 verticalSpaceRegular,
+                                // Text("Actions",
+                                //     style: textTheme(context).headline6),
                                 SizedBox(
                                   width: screenWidthWithoutPadding(context),
                                   child: Row(

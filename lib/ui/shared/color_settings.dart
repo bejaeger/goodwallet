@@ -10,6 +10,7 @@ class ColorSettings extends MyColors {
   static Color? lightGreyTextColor = MyColors.lightGrey;
   static Color? blackTextColor = MyColors.darkGrey;
   static Color blackHeadlineColor = MyColors.black87;
+  static Color qrCodeOnWalletColor = MyColors.gold;
 }
 
 class MyColors {
@@ -34,4 +35,6 @@ class MyColors {
   // @see https://material.io/design/color/the-color-system.html#tools-for-picking-colors
   static const Color paletteTurquoise = Color(0xFF149c9a);
   static const Color palettePurple = Color(0xFF7653c9);
+
+  static const Color gold = Color(0xFFFFA700);
 }
