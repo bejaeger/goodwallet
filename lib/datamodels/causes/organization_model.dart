@@ -1,8 +1,8 @@
 // PODO for non-profit organization
 
 class Organization {
-  final String name;
-  final String url;
+  final String? name;
+  final String? url;
 
   Organization({this.name, this.url});
 

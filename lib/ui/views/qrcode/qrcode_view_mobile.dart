@@ -12,7 +12,7 @@ import 'package:stacked/stacked.dart';
 
 class QRCodeViewMobile extends StatelessWidget {
   final int initialIndex;
-  const QRCodeViewMobile({Key key, this.initialIndex = 0}) : super(key: key);
+  const QRCodeViewMobile({Key? key, this.initialIndex = 0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class QRCodeViewMobile extends StatelessWidget {
         ),
       ], views: [
         ScanQRCode(
-          onScanCodePressed: model.showNotImplementedSnackbar,
+          analyzeScanResult: model.analyzeScanResult,
         ),
         MyQRCode(userInfo: model.getUserInfo()),
       ]),
@@ -39,9 +39,9 @@ class QRCodeViewMobile extends StatelessWidget {
 }
 
 class ScanQRCode extends StatefulWidget {
-  final Function onScanCodePressed;
+  final Future Function(Barcode? result) analyzeScanResult;
 
-  const ScanQRCode({Key key, @required this.onScanCodePressed})
+  const ScanQRCode({Key? key, required this.analyzeScanResult})
       : super(key: key);
 
   @override
@@ -49,8 +49,7 @@ class ScanQRCode extends StatefulWidget {
 }
 
 class _ScanQRCodeState extends State<ScanQRCode> {
-  Barcode result;
-  QRViewController controller;
+  QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   // In order to get hot reload to work we need to pause the camera if the platform
@@ -59,9 +58,9 @@ class _ScanQRCodeState extends State<ScanQRCode> {
   void reassemble() {
     super.reassemble();
     if (Platform.isAndroid) {
-      controller.pauseCamera();
+      controller?.pauseCamera();
     }
-    controller.resumeCamera();
+    controller?.resumeCamera();
   }
 
   @override
@@ -70,28 +69,23 @@ class _ScanQRCodeState extends State<ScanQRCode> {
       children: [
         verticalSpaceLarge,
         Container(
-          height: 250,
-          width: 250,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          clipBehavior: Clip.hardEdge,
+          height: screenHeightPercentage(context, percentage: 0.6),
+          width: screenWidth(context),
           child: _buildQrView(context),
           // SizedBox.expand(
           //     child: Image.asset(ImageIconPaths.qrcodeScanning)),
         ),
-        verticalSpaceLarge,
-        ElevatedButton(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Scan", style: textTheme(context).headline5),
-            ),
-            onPressed: widget.onScanCodePressed),
+        verticalSpaceMedium,
+        Text("Scan a users QR Code"),
       ],
     );
   }
 
   Widget _buildQrView(BuildContext context) {
-    // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
-    var scanArea = (screenWidth(context) < 400 || screenHeight(context) < 400)
-        ? 150.0
-        : 300.0;
     // To ensure the Scanner view is properly sizes after rotation
     // we need to listen for Flutter SizeChanged notification and update controller
     return QRView(
@@ -102,7 +96,7 @@ class _ScanQRCodeState extends State<ScanQRCode> {
           borderRadius: 10,
           borderLength: 30,
           borderWidth: 10,
-          cutOutSize: scanArea),
+          cutOutSize: 250),
     );
   }
 
@@ -110,10 +104,10 @@ class _ScanQRCodeState extends State<ScanQRCode> {
     setState(() {
       this.controller = controller;
     });
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
+    controller.scannedDataStream.listen((scanData) async {
+      // analyzes scanned result and navigates to new
+      // screen if qr code scan was successfull
+      await widget.analyzeScanResult(scanData);
     });
   }
 
@@ -126,7 +120,7 @@ class _ScanQRCodeState extends State<ScanQRCode> {
 
 class MyQRCode extends StatelessWidget {
   final String userInfo;
-  const MyQRCode({Key key, @required this.userInfo}) : super(key: key);
+  const MyQRCode({Key? key, required this.userInfo}) : super(key: key);
 
   Widget _buildProfileImage() {
     return Center(

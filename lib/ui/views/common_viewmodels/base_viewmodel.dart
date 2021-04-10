@@ -13,15 +13,14 @@ import 'package:stacked_services/stacked_services.dart';
 // entire App
 
 class BaseModel extends IndexTrackingViewModel {
-  final UserDataService _userDataService = locator<UserDataService>();
-  final SnackbarService _snackbarService = locator<SnackbarService>();
-  final NavigationService _navigationService = locator<NavigationService>();
+  final UserDataService? _userDataService = locator<UserDataService>();
+  final SnackbarService? _snackbarService = locator<SnackbarService>();
 
-  final log = getLogger("BaseModel");
+  final baseModelLog = getLogger("BaseModel");
 
-  MyUser get currentUser => _userDataService.currentUser;
+  MyUser? get currentUser => _userDataService!.currentUser;
 
-  UserStatus userStatus;
+  UserStatus? userStatus;
   bool get isUserSignedIn =>
       userStatus == UserStatus.SignedIn || userStatus == UserStatus.Initialized;
   bool get isUserInitialized => userStatus == UserStatus.Initialized;
@@ -29,38 +28,32 @@ class BaseModel extends IndexTrackingViewModel {
   WalletBalancesModel userWallet = WalletBalancesModel.empty();
 
   BaseModel() {
-    log.i("Initialized!");
+    baseModelLog.i("Initialized!");
 
     //--------------------------------------
     // Set up top-level listeners
 
     //  listen to changes in auth state
-    _userDataService.userStateSubject.listen(
+    _userDataService!.userStateSubject.listen(
       (state) {
-        log.v("Listened to auth state change update: state = $state");
+        baseModelLog.v("Listened to auth state change update: state = $state");
         userStatus = state;
         notifyListeners();
       },
     );
 
     // listen to changes in wallet
-    _userDataService.userWalletSubject.listen(
+    _userDataService!.userWalletSubject.listen(
       (wallet) {
-        log.v("Listened to wallet update");
-        if (wallet != null) {
-          userWallet = wallet;
-          notifyListeners();
-        }
+        baseModelLog.v("Listened to wallet update");
+        userWallet = wallet;
+        notifyListeners();
       },
     );
   }
 
   void showNotImplementedSnackbar() {
-    _snackbarService.showSnackbar(
-        message: "Not yet implemented...I know, it's sad");
-  }
-
-  void navigateBack() {
-    _navigationService.back();
+    _snackbarService!.showSnackbar(
+        title: "Not yet implemented.", message: "I know... it's sad");
   }
 }

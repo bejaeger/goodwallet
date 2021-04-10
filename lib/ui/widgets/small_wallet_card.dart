@@ -5,15 +5,15 @@ import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
 class SmallWalletCard extends StatelessWidget {
-  final Function onTap;
+  final void Function()? onTap;
   final num balance;
   final num width;
   final num fontSize;
-  final num height;
+  final num? height;
 
   const SmallWalletCard(
-      {Key key,
-      @required this.balance,
+      {Key? key,
+      required this.balance,
       this.onTap,
       this.width = 125.0,
       this.fontSize = 18.0,
@@ -31,8 +31,8 @@ class SmallWalletCard extends StatelessWidget {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         child: Container(
           padding: const EdgeInsets.all(8.0),
-          width: width,
-          height: height ?? null,
+          width: width as double?,
+          height: height as double? ?? null,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -44,8 +44,8 @@ class SmallWalletCard extends StatelessWidget {
                   horizontalSpaceSmall,
                   Text(
                     "\$ " + (balance / 100).toString(),
-                    style: textTheme(context).bodyText2.copyWith(
-                        fontWeight: FontWeight.bold, fontSize: fontSize),
+                    style: textTheme(context).bodyText2!.copyWith(
+                        fontWeight: FontWeight.bold, fontSize: fontSize as double?),
                   ),
                 ],
               ),

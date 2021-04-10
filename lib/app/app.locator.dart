@@ -14,6 +14,7 @@ import '../services/globalgiving/global_giving_api_service.dart';
 import '../services/payments/dummy_payment_service.dart';
 import '../services/payments/firestore_payment_data_service.dart';
 import '../services/payments/stripe_payment_service.dart';
+import '../services/qrcode/qr_code_service.dart';
 import '../services/userdata/user_data_service.dart';
 import '../ui/views/causes/causes_viewmodel.dart';
 import '../ui/views/layout/navigation_bar_viewmodel.dart';
@@ -38,5 +39,6 @@ void setupLocator() {
   locator.registerLazySingleton(() => NavigationBarViewModel());
   locator.registerLazySingleton(() => FirebaseAuthenticationService());
   locator.registerLazySingleton(() => DummyPaymentService());
+  locator.registerLazySingleton(() => QRCodeService());
   locator.registerSingleton(UserDataService());
 }

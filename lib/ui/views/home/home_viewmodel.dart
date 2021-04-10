@@ -6,27 +6,31 @@ import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
+import 'package:good_wallet/services/qrcode/qr_code_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'package:good_wallet/utils/logger.dart';
 
 class HomeViewModel extends BaseModel {
-  final _bottomSheetService = locator<BottomSheetService>();
-  final NavigationService _navigationService = locator<NavigationService>();
-  final UserDataService _userDataService = locator<UserDataService>();
-  final DialogService _dialogService = locator<DialogService>();
+  final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
+  final NavigationService? _navigationService = locator<NavigationService>();
+  final QRCodeService? _qrCodeService = locator<QRCodeService>();
 
-  List<MyUser> _users;
-  List<MyUser> get users => _users;
-      
+  final log = getLogger("home_viewmodel.dart");
+
   Future navigateToDonationView() async {
-    await _navigationService.replaceWith(Routes.layoutTemplateViewMobile,
+    await _navigationService!.replaceWith(Routes.layoutTemplateViewMobile,
         arguments: LayoutTemplateViewMobileArguments(
             index: BottomNavigatorIndex.Give.index));
   }
 
+  String getQRCodeUserInfoString() {
+    return _qrCodeService!.getEncodedUserInfo(currentUser!);
+  }
+
   Future showRaiseMoneyBottomSheet() async {
-    var sheetResponse = await _bottomSheetService.showCustomSheet(
+    var sheetResponse = await _bottomSheetService!.showCustomSheet(
       variant: BottomSheetType.raise,
       barrierDismissible: true,
     );
@@ -37,7 +41,7 @@ class HomeViewModel extends BaseModel {
   }
 
   Future showSendMoneyBottomSheet() async {
-    var sheetResponse = await _bottomSheetService.showCustomSheet(
+    var sheetResponse = await _bottomSheetService!.showCustomSheet(
       variant: BottomSheetType.sendMoney,
       barrierDismissible: true,
     );
@@ -49,7 +53,7 @@ class HomeViewModel extends BaseModel {
 
   Future navigateToSingleFeaturedAppView(FeaturedAppType type) async {
     log.i("Navigating to single featured app view");
-    await _navigationService.navigateTo(Routes.singleFeaturedAppView,
+    await _navigationService!.navigateTo(Routes.singleFeaturedAppView,
         arguments: SingleFeaturedAppViewArguments(type: type));
   }
 
@@ -58,6 +62,11 @@ class HomeViewModel extends BaseModel {
   }
 
   Future navigateToTransactionsHistoryView() async {
-    _navigationService.navigateTo(Routes.transactionsView);
+    _navigationService!.navigateTo(Routes.transactionsView);
+  }
+
+  void navigateToQRCodeView() {
+    _navigationService!.navigateTo(Routes.qRCodeViewMobile,
+        arguments: QRCodeViewMobileArguments(initialIndex: 1));
   }
 }

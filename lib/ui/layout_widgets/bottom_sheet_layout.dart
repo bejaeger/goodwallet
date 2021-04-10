@@ -8,14 +8,14 @@ import 'package:stacked_services/stacked_services.dart';
 
 class BottomSheetLayout extends StatelessWidget {
   final String title;
-  final SheetRequest request;
-  final List<BottomSheetListEntry> buttons;
-  final Widget widgetBeforeButtons;
-  final Widget widgetAfterButtons;
+  final SheetRequest? request;
+  final List<BottomSheetListEntry>? buttons;
+  final Widget? widgetBeforeButtons;
+  final Widget? widgetAfterButtons;
 
   const BottomSheetLayout({
-    Key key,
-    @required this.title,
+    Key? key,
+    required this.title,
     this.request,
     this.buttons,
     this.widgetBeforeButtons,
@@ -59,14 +59,14 @@ class BottomSheetLayout extends StatelessWidget {
                   ),
                 ),
                 verticalSpaceMedium,
-                if (widgetBeforeButtons != null) widgetBeforeButtons,
+                if (widgetBeforeButtons != null) widgetBeforeButtons!,
                 if (widgetBeforeButtons != null) verticalSpaceRegular,
                 if (buttons != null)
                   Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: buttons),
+                      children: buttons!),
                 if (widgetAfterButtons != null) verticalSpaceMedium,
-                if (widgetAfterButtons != null) widgetAfterButtons,
+                if (widgetAfterButtons != null) widgetAfterButtons!,
                 verticalSpaceMedium,
               ],
             ),
@@ -81,16 +81,16 @@ class BottomSheetLayout extends StatelessWidget {
 
 class BottomSheetListEntry extends StatelessWidget {
   final String title;
-  final String description;
-  final Function(SheetResponse p1) completer;
+  final String? description;
+  final Function(SheetResponse p1)? completer;
   final dynamic responseData;
-  final Widget icon;
+  final Widget? icon;
 
   const BottomSheetListEntry({
-    Key key,
-    @required this.completer,
-    @required this.responseData,
-    @required this.title,
+    Key? key,
+    required this.completer,
+    required this.responseData,
+    required this.title,
     this.icon,
     this.description,
   }) : super(key: key);
@@ -98,7 +98,7 @@ class BottomSheetListEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      onPressed: () => completer(SheetResponse(responseData: responseData)),
+      onPressed: () => completer!(SheetResponse(responseData: responseData)),
       child: ListTile(
         leading: icon != null
             ? CircleAvatar(
@@ -116,9 +116,9 @@ class BottomSheetListEntry extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: SizedBox(
                   width: screenWidthPercentage(context, percentage: 0.6),
-                  child: Text(description,
+                  child: Text(description!,
                       style:
-                          textTheme(context).bodyText2.copyWith(fontSize: 15)),
+                          textTheme(context).bodyText2!.copyWith(fontSize: 15)),
                 ),
               )
             : null,

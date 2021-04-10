@@ -8,11 +8,11 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class RaiseMoneyBottomSheetView extends StatelessWidget {
-  final SheetRequest request;
-  final Function(SheetResponse) completer;
+  final SheetRequest? request;
+  final Function(SheetResponse)? completer;
 
   const RaiseMoneyBottomSheetView({
-    Key key,
+    Key? key,
     this.request,
     this.completer,
   }) : super(key: key);

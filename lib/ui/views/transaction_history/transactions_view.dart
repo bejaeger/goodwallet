@@ -11,7 +11,7 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 
 class TransactionsView extends StatefulWidget {
   final TransactionType historyType; // used for initial value of tab controller
-  const TransactionsView({Key key, this.historyType = TransactionType.InOrOut})
+  const TransactionsView({Key? key, this.historyType = TransactionType.InOrOut})
       : super(key: key); //
   @override
   _TransactionsViewState createState() => _TransactionsViewState();
@@ -19,7 +19,7 @@ class TransactionsView extends StatefulWidget {
 
 class _TransactionsViewState extends State<TransactionsView>
     with TickerProviderStateMixin {
-  TabController _tabController;
+  TabController? _tabController;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _TransactionsViewState extends State<TransactionsView>
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController!.dispose();
     super.dispose();
   }
 

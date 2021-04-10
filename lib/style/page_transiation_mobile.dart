@@ -5,7 +5,7 @@ class MyPageTransitionSwitcher extends StatelessWidget {
   final Widget child;
   final bool reverse;
   const MyPageTransitionSwitcher(
-      {Key key, @required this.child, @required this.reverse})
+      {Key? key, required this.child, required this.reverse})
       : super(key: key);
 
   @override

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_fund_model.dart';
 import 'package:good_wallet/enums/causes_list_type.dart';
-import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/causes/causes_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/causes/global_giving_project_card.dart';
@@ -14,14 +13,14 @@ import 'package:stacked/stacked.dart';
 // CausesViewMobile sets up tab bar view
 
 class CausesViewMobile extends StatefulWidget {
-  const CausesViewMobile({Key key}) : super(key: key); //
+  const CausesViewMobile({Key? key}) : super(key: key); //
   @override
   _CausesViewMobileState createState() => _CausesViewMobileState();
 }
 
 class _CausesViewMobileState extends State<CausesViewMobile>
     with TickerProviderStateMixin {
-  TabController _tabController;
+  TabController? _tabController;
 
   @override
   void initState() {
@@ -31,7 +30,7 @@ class _CausesViewMobileState extends State<CausesViewMobile>
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController!.dispose();
     super.dispose();
   }
 
@@ -91,9 +90,9 @@ class _CausesViewMobileState extends State<CausesViewMobile>
 
 class CausesListViewMobile extends StatelessWidget {
   final CausesListType type;
-  final Widget description;
+  final Widget? description;
 
-  const CausesListViewMobile({Key key, @required this.type, this.description})
+  const CausesListViewMobile({Key? key, required this.type, this.description})
       : super(key: key);
 
   @override
@@ -124,11 +123,11 @@ class CausesListViewMobile extends StatelessWidget {
                       ListView.builder(
                         shrinkWrap: true,
                         physics: ScrollPhysics(),
-                        itemCount: model.projects.length,
+                        itemCount: model.projects!.length,
                         itemBuilder: (context, index) => Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: GlobalGivingProjectCardMobile(
-                            project: model.projects[index],
+                            project: model.projects![index],
                             onTap: () async =>
                                 await model.navigateToProjectScreen(index),
                             onTapFavorite: model.showNotImplementedSnackbar,
@@ -139,10 +138,10 @@ class CausesListViewMobile extends StatelessWidget {
                       ListView.builder(
                           shrinkWrap: true,
                           physics: ScrollPhysics(),
-                          itemCount: model.goodWalletFunds.length,
+                          itemCount: model.goodWalletFunds!.length,
                           itemBuilder: (context, index) {
                             GoodWalletFundModel fund =
-                                model.goodWalletFunds[index];
+                                model.goodWalletFunds![index];
                             Alignment alignment =
                                 fund.title == "Friend Referral Fund"
                                     ? Alignment.bottomCenter
@@ -153,7 +152,7 @@ class CausesListViewMobile extends StatelessWidget {
                                 fund: fund,
                                 onTap: model.showNotImplementedSnackbar,
                                 imageAlignment: alignment,
-                                backgroundImage: AssetImage(fund.imagePath),
+                                backgroundImage: AssetImage(fund.imagePath!),
                               ),
                             );
                           })

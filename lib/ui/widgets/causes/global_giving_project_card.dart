@@ -9,11 +9,11 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 
 class GlobalGivingProjectCardMobile extends StatelessWidget {
   final GoodWalletProjectModel project;
-  final Function onTap;
-  final Function onTapFavorite;
+  final void Function()? onTap;
+  final void Function()? onTapFavorite;
 
   GlobalGivingProjectCardMobile(
-      {@required this.project, this.onTap, this.onTapFavorite});
+      {required this.project, this.onTap, this.onTapFavorite});
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -40,7 +40,7 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
                         ],
                       ),
                       image: DecorationImage(
-                        image: NetworkImage(project.imageUrl),
+                        image: NetworkImage(project.imageUrl!),
                         fit: BoxFit.cover,
                       )),
                 ),
@@ -78,7 +78,7 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
                             Expanded(
                               flex: 10,
                               child: Text(
-                                project.title,
+                                project.title!,
                                 style: textTheme(context).headline5,
                               ),
                             ),
@@ -104,12 +104,12 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
 }
 
 class GlobalGivingProjectCard extends StatelessWidget {
-  final GoodWalletProjectModel project;
-  final Function onTap;
-  final Function onTapFavorite;
+  final GoodWalletProjectModel? project;
+  final void Function()? onTap;
+  final void Function()? onTapFavorite;
 
   GlobalGivingProjectCard(
-      {@required this.project, this.onTap, this.onTapFavorite});
+      {required this.project, this.onTap, this.onTapFavorite});
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -123,14 +123,14 @@ class GlobalGivingProjectCard extends StatelessWidget {
             height: 200,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(project.imageUrl),
+                image: NetworkImage(project!.imageUrl!),
                 fit: BoxFit.cover,
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Text(project.title,
+            child: Text(project!.title!,
                 style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey[800],

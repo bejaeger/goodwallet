@@ -8,15 +8,15 @@ Widget customTransition(BuildContext context, Animation<double> animation,
 class CustomTransition extends StatefulWidget {
   final Widget child;
 
-  const CustomTransition({Key key, @required this.child}) : super(key: key);
+  const CustomTransition({Key? key, required this.child}) : super(key: key);
   @override
   _CustomTransitionState createState() => _CustomTransitionState();
 }
 
 class _CustomTransitionState extends State<CustomTransition>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation _animation;
+  late AnimationController _controller;
+  late Animation _animation;
 
   @override
   void initState() {
@@ -35,6 +35,6 @@ class _CustomTransitionState extends State<CustomTransition>
   @override
   Widget build(BuildContext context) {
     _controller.forward();
-    return FadeTransition(opacity: _animation, child: widget.child);
+    return FadeTransition(opacity: _animation as Animation<double>, child: widget.child);
   }
 }

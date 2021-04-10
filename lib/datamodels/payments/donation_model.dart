@@ -3,22 +3,22 @@ import 'package:flutter/foundation.dart';
 import 'package:good_wallet/utils/datamodel_helpers.dart';
 
 class DonationModel {
-  final String projectId;
-  final String projectName;
-  final num amount;
-  final String currency;
+  final String? projectId;
+  final String? projectName;
+  final num? amount;
+  final String? currency;
+  String? organizationName;
+  String? message;
   dynamic createdAt;
-  String organizationName;
-  String message;
-  String transactionId;
-  String status;
+  String? transactionId;
+  String? status;
 
   DonationModel({
-    @required this.projectId,
-    @required this.projectName,
-    @required this.amount,
-    @required this.currency,
-    @required this.createdAt,
+    required this.projectId,
+    required this.projectName,
+    required this.amount,
+    required this.currency,
+    required this.createdAt,
     this.organizationName,
     this.transactionId,
     this.message,
@@ -31,10 +31,10 @@ class DonationModel {
       'projectName': projectName,
       'amount': amount,
       'currency': currency,
-      'createdAt': createdAt,
       'organizationName': organizationName,
       'transactionId': transactionId,
       'message': message,
+      'createdAt': createdAt,
       'status': status,
     };
     return returnJson;
@@ -45,11 +45,12 @@ class DonationModel {
     DonationModel returnData;
     try {
       returnData = DonationModel(
-          projectId: map['projectId'],
-          projectName: map['projectName'],
-          amount: map['amount'],
-          currency: map['currency'],
-          createdAt: map['createdAt']);
+        projectId: map['projectId'],
+        projectName: map['projectName'],
+        amount: map['amount'],
+        currency: map['currency'],
+        createdAt: map['createdAt'],
+      );
       returnData.organizationName = returnIfAvailable(map, 'organizationName');
       returnData.transactionId = returnIfAvailable(map, "transactionId");
       returnData.message = returnIfAvailable(map, "message");

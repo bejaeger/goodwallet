@@ -9,4 +9,6 @@ class ImagePath {
   static const String peopleHoldingHands =
       'assets/images/people-holding-hands.jpeg';
   static const String workNextToCreek = 'assets/images/work-next-to-creek.jpeg';
+  static const String creditCardBackground =
+      'assets/images/credit-card-background.png';
 }

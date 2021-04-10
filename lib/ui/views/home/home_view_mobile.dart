@@ -4,6 +4,7 @@ import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/home_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/carousel_card.dart';
+import 'package:good_wallet/ui/widgets/good_wallet_card.dart';
 import 'package:good_wallet/ui/widgets/pledge_button.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -39,7 +40,7 @@ class HomeViewMobile extends StatelessWidget {
                           children: [
                             Text("Home",
                                 style: textTheme(context)
-                                    .headline3
+                                    .headline3!
                                     .copyWith(fontSize: 25)),
                             // GestureDetector(
                             //     onTap: model.navigateToSettingsView,
@@ -71,45 +72,22 @@ class HomeViewMobile extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 verticalSpaceMedium,
-                                Text("Hi " + model.currentUser.fullName,
+                                Text("Hi " + model.currentUser!.fullName!,
                                     style: textTheme(context).headline4),
                                 verticalSpaceSmall,
-                                GestureDetector(
-                                  onTap:
+                                GoodWalletCard(
+                                  onCardTap:
                                       model.navigateToTransactionsHistoryView,
-                                  child: Card(
-                                    elevation: 2.0,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    color: Colors.white,
-                                    child: Container(
-                                      padding: const EdgeInsets.only(
-                                          top: 15.0, bottom: 15.0, left: 10.0),
-                                      width:
-                                          screenWidthWithoutPadding(context) -
-                                              8.0,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                              "\$ " +
-                                                  (model.userWallet
-                                                              .currentBalance /
-                                                          100)
-                                                      .toString(),
-                                              style: textTheme(context)
-                                                  .headline2
-                                                  .copyWith(fontSize: 28)),
-                                          Text(
-                                              "Your current balance to be donated"),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                  onQRCodeTap: model.navigateToQRCodeView,
+                                  currentBalance:
+                                      model.userWallet.currentBalance!,
+                                  totalDonations: model.userWallet.donations!,
+                                  totalRaised: 7800,
+                                  userInfo: model.getQRCodeUserInfoString(),
                                 ),
                                 verticalSpaceRegular,
+                                // Text("Actions",
+                                //     style: textTheme(context).headline6),
                                 SizedBox(
                                   width: screenWidthWithoutPadding(context),
                                   child: Row(
@@ -199,7 +177,7 @@ class HomeViewMobile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("Goodometer: \$ 10789",
-                style: textTheme(context).headline1.copyWith(fontSize: 20)),
+                style: textTheme(context).headline1!.copyWith(fontSize: 20)),
             Text("Total raised by our community",
                 style: textTheme(context).bodyText1),
           ],
@@ -212,7 +190,7 @@ class HomeViewMobile extends StatelessWidget {
 class FeaturedAppsCarousel extends StatelessWidget {
   final dynamic model;
 
-  const FeaturedAppsCarousel({Key key, this.model}) : super(key: key);
+  const FeaturedAppsCarousel({Key? key, this.model}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -251,7 +229,7 @@ class FeaturedAppsCarousel extends StatelessWidget {
 class FeaturedProjectsCarousel extends StatelessWidget {
   final dynamic model;
 
-  const FeaturedProjectsCarousel({Key key, this.model}) : super(key: key);
+  const FeaturedProjectsCarousel({Key? key, this.model}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SizedBox(

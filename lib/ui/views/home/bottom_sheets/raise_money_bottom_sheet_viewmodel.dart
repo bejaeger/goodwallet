@@ -6,20 +6,20 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class RaiseMoneyBottomSheetViewModel extends BaseModel {
-  final NavigationService _navigationService = locator<NavigationService>();
+  final NavigationService? _navigationService = locator<NavigationService>();
   final log = getLogger("RaiseMoneyBottomSheetViewModel");
 
   Future navigateToAcceptPaymentsView() async {
     log.i("Clicked navigating to accept payments view (not yet implemented!)");
-    await _navigationService.navigateTo(Routes.qRCodeViewMobile,
+    await _navigationService!.navigateTo(Routes.qRCodeViewMobile,
         arguments: QRCodeViewMobileArguments(initialIndex: 1));
   }
 
   Future navigateToManageMoneyPoolsView() async {
-    await _navigationService.navigateTo(Routes.manageMoneyPoolsView);
+    await _navigationService!.navigateTo(Routes.manageMoneyPoolsView);
   }
 
   void navigateToCreateMoneyPoolView() {
-    _navigationService.navigateTo(Routes.createMoneyPoolView);
+    _navigationService!.navigateTo(Routes.createMoneyPoolView);
   }
 }

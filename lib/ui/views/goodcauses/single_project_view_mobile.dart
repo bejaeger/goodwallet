@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/causes/global_giving_project_model.dart';
+import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:good_wallet/ui/views/causes/single_project_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -7,9 +7,9 @@ import 'package:stacked/stacked.dart';
 final _donationAmountController = TextEditingController();
 
 class SingleProjectViewMobile extends StatelessWidget {
-  final GlobalGivingProjectModel project;
-  const SingleProjectViewMobile({Key key, this.project}) : super(key: key);
-  
+  final GoodWalletProjectModel? project;
+  const SingleProjectViewMobile({Key? key, required this.project})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class SingleProjectViewMobile extends StatelessWidget {
       viewModelBuilder: () => SingleProjectViewModel(),
       builder: (context, model, child) => Scaffold(
         appBar: AppBar(
-          title: Text(project.title),
+          title: Text(project!.title!),
           centerTitle: true,
         ),
         body: Container(
@@ -30,7 +30,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                   width: screenWidth(context),
                   // height: 100.0,
                   child: Image.network(
-                    project.imageUrl,
+                    project!.imageUrl!,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -54,7 +54,9 @@ class SingleProjectViewMobile extends StatelessWidget {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () =>
-                            model.confirmationOrCancellationDistributor(project.title, int.parse(_donationAmountController.text)),
+                            model.confirmationOrCancellationDistributor(
+                                project!.title,
+                                int.parse(_donationAmountController.text)),
                         child: Text('Donate'),
                       ),
                     ),
@@ -89,7 +91,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                         children: <Widget>[
                           Icon(Icons.account_balance_wallet),
                           Text(
-                            "\$ ${model.userWallet.currentBalance/100}",
+                            "\$ ${model.userWallet.currentBalance! / 100}",
                           ),
                         ],
                       ),
@@ -110,7 +112,7 @@ class SingleProjectViewMobile extends StatelessWidget {
               //   child: Expanded(
               // Flexible()
               Text(
-                project.summary,
+                project!.summary!,
                 softWrap: true,
                 style: TextStyle(),
               ),

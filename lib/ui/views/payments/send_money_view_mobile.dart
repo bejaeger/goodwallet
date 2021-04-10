@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:good_wallet/datamodels/user/qr_code_user_info_model.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/payments/send_money_viewmodel.dart';
@@ -8,11 +9,11 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class SendMoneyViewMobile extends StatelessWidget {
-  final Map<String, String> userInfoMap;
+  final QRCodeUserInfo? userInfo;
   final openSearchBarOnBuild;
 
   SendMoneyViewMobile(
-      {Key key, this.userInfoMap, this.openSearchBarOnBuild = false})
+      {Key? key, this.userInfo, this.openSearchBarOnBuild = false})
       : super(key: key);
 
   @override
@@ -22,8 +23,8 @@ class SendMoneyViewMobile extends StatelessWidget {
       onModelReady: (model) {
         model.setPaymentReady(false);
         model.addListenersToControllers();
-        if (userInfoMap != null) {
-          model.selectUser(userInfoMap);
+        if (userInfo != null) {
+          model.selectUser(userInfo!);
         }
       },
       builder: (context, model, child) => model.isBusy
@@ -77,8 +78,9 @@ class SendMoneyViewMobile extends StatelessWidget {
                                 screenWidthPercentage(context, percentage: 0.7),
                           ),
                           child: ElevatedButton(
-                            onPressed: () =>
-                                model.dummyPaymentConfirmationDialog(),
+                            onPressed: model.isPaymentReady
+                                ? () => model.dummyPaymentConfirmationDialog()
+                                : null,
                             child: Text('Send'),
                           ),
                         ),
