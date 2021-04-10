@@ -27,7 +27,7 @@ class UserDataService {
   final CollectionReference _usersCollectionReference =
       FirebaseFirestore.instance.collection("users");
 
-  final FirebaseAuthenticationService _firebaseAuthenticationService =
+  final FirebaseAuthenticationService? _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
 
   // controller to expose stream of wallet transactions and payments
@@ -45,8 +45,8 @@ class UserDataService {
       BehaviorSubject<WalletBalancesModel>.seeded(WalletBalancesModel.empty());
 
   // current user with all our custom data attached to it
-  MyUser _currentUser;
-  MyUser get currentUser => _currentUser;
+  MyUser? _currentUser;
+  MyUser? get currentUser => _currentUser;
   void setCurrentUser(MyUser user) {
     _currentUser = user;
   }
@@ -57,7 +57,7 @@ class UserDataService {
   // This might not be of need for mobile but
   // will become more useful thinking about PWAs especially
   // on desktop.
-  Stream<User> userStream;
+  late Stream<User?> userStream;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   UserDataService() {
@@ -78,16 +78,11 @@ class UserDataService {
   Future<UserDataServiceResult> initializeCurrentUser(String uid) async {
     log.i("Initializing user data");
 
-    if (uid == null) {
-      log.e("No user id specified for initiliazation.");
-      return UserDataServiceResult.error(errorMessage: "No user specified!");
-    }
-
     if (userStateSubject.value != UserStatus.Initialized) {
       log.i("Populating current user");
       try {
         await _populateCurrentUser(uid);
-        userWalletSubject.add(await updateWallet(uid));
+        await listenToWalletUpdates(uid);
         userStateSubject.add(UserStatus.Initialized);
       } catch (e) {
         return UserDataServiceResult.error(
@@ -104,7 +99,7 @@ class UserDataService {
   Future _populateCurrentUser(String uid) async {
     try {
       var userData = await _usersCollectionReference.doc(uid).get();
-      if (userData == null) {
+      if (!userData.exists) {
         // This means no user has been created yet in cloud firestore
         // This happens for example when loggin in with google, facebook, ...
         // We first have to create a user and then
@@ -115,7 +110,8 @@ class UserDataService {
         // We NEED the actual user here!
         log.e("This is not yet implemented!");
       }
-      MyUser user = MyUser.fromData(userData.data());
+
+      MyUser user = MyUser.fromData(userData.data()!);
       _currentUser = user;
     } catch (e) {
       log.e("Error in _populateCurrentUser(): ${e.toString()}");
@@ -124,11 +120,7 @@ class UserDataService {
   }
 
   // User ------------------------------------------------->>
-  Future createUser(User user, [String fullName]) async {
-    if (user == null) {
-      UserDataServiceResult.error(
-          errorMessage: "Could not create user, user is null");
-    }
+  Future createUser(User user, [String? fullName]) async {
     // create a new user profile on firestore`
     num balance = 0;
     num implicitDonations = 0;
@@ -153,15 +145,17 @@ class UserDataService {
     }
   }
 
-  Future updateWallet(var uid) async {
+  Future listenToWalletUpdates(var uid) async {
     try {
       _usersCollectionReference.doc(uid).snapshots().listen((userData) {
-        if (userData != null) {
+        if (userData.exists) {
           userWalletSubject.add(WalletBalancesModel.fromData({
-            'currentBalance': userData["balance"] as num,
-            'donations': userData["donations"] as num,
-            'transferredToPeers': userData["implicitDonations"] as num,
+            'currentBalance': userData["balance"] as num?,
+            'donations': userData["donations"] as num?,
+            'transferredToPeers': userData["implicitDonations"] as num?,
           }));
+        } else {
+          log.e("Wallet data could not be retrieved from firebase");
         }
       });
     } catch (e) {
@@ -186,18 +180,18 @@ class UserDataService {
     // Get single streams and combine later with rxDart
 
     Stream<QuerySnapshot> outgoing = _paymentsCollectionReference
-        .where("senderUid", isEqualTo: currentUser.id)
+        .where("senderUid", isEqualTo: currentUser!.id)
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .snapshots();
     Stream<QuerySnapshot> incoming = _paymentsCollectionReference
-        .where("recipientUid", isEqualTo: currentUser.id)
+        .where("recipientUid", isEqualTo: currentUser!.id)
         .orderBy("createdAt", descending: true)
         .snapshots();
 
     // combine streams with rxdart
-    Stream<List<dynamic>> transactionStream =
-        Rx.combineLatest2(outgoing, incoming, (outSnapshot, inSnapshot) {
+    Stream<List<dynamic>> transactionStream = Rx.combineLatest2(
+        outgoing, incoming, (dynamic outSnapshot, dynamic inSnapshot) {
       // list of transactions to be returned
       List<dynamic> transactions = <dynamic>[];
 
@@ -253,19 +247,19 @@ class UserDataService {
 
     // outgoing = donations
     Stream<QuerySnapshot> outgoing = _usersCollectionReference
-        .doc(_currentUser.id)
+        .doc(_currentUser!.id)
         .collection("donations")
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .snapshots();
     Stream<QuerySnapshot> incoming = _paymentsCollectionReference
-        .where("recipientUid", isEqualTo: currentUser.id)
+        .where("recipientUid", isEqualTo: currentUser!.id)
         .orderBy("createdAt", descending: true)
         .snapshots();
 
     // combine streams with rxdart
-    Stream<List<dynamic>> transactionStream =
-        Rx.combineLatest2(outgoing, incoming, (outSnapshot, inSnapshot) {
+    Stream<List<dynamic>> transactionStream = Rx.combineLatest2(
+        outgoing, incoming, (dynamic outSnapshot, dynamic inSnapshot) {
       // list of transactions to be returned
       List<dynamic> transactions = <dynamic>[];
 
@@ -316,21 +310,16 @@ class UserDataService {
     List<dynamic> listOfDonations = <dynamic>[];
 
     QuerySnapshot donationsSnapshot = await _usersCollectionReference
-        .doc(_currentUser.id)
+        .doc(_currentUser!.id)
         .collection("donations")
         .orderBy("createdAt", descending: true)
         .get();
-    if (donationsSnapshot != null) {
-      if (donationsSnapshot.docs.isNotEmpty) {
-        listOfDonations.addAll(donationsSnapshot.docs
-            .map((snapshot) => DonationModel.fromMap(snapshot.data()))
-            .toList());
-      } else {
-        log.e("Snapshot of donations collectoin is empty");
-      }
+    if (donationsSnapshot.docs.isNotEmpty) {
+      listOfDonations.addAll(donationsSnapshot.docs
+          .map((snapshot) => DonationModel.fromMap(snapshot.data()!))
+          .toList());
     } else {
-      log.e(
-          "Donations could not be retrieved, check how you access the firestore collections");
+      log.e("Snapshot of donations collectoin is empty");
     }
 
     return listOfDonations;
@@ -347,25 +336,20 @@ class UserDataService {
 
     List<dynamic> listOfTransactionsToPeers = <dynamic>[];
     QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
-        .where("senderUid", isEqualTo: currentUser.id)
+        .where("senderUid", isEqualTo: currentUser!.id)
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .get();
-    if (transactionsSnapshot != null) {
-      if (transactionsSnapshot.docs.isNotEmpty) {
-        try {
-          listOfTransactionsToPeers.addAll(transactionsSnapshot.docs
-              .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
-              .toList());
-        } catch (e) {
-          log.e("Could not map firestore data into TransactionModel");
-        }
-      } else {
-        log.e("Snapshot of donations collecton is empty");
+    if (transactionsSnapshot.docs.isNotEmpty) {
+      try {
+        listOfTransactionsToPeers.addAll(transactionsSnapshot.docs
+            .map((snapshot) => TransactionModel.fromMap(snapshot.data()!))
+            .toList());
+      } catch (e) {
+        log.e("Could not map firestore data into TransactionModel");
       }
     } else {
-      log.e(
-          "Donations could not be retrieved, check how you access the firestore collections");
+      log.e("Snapshot of donations collecton is empty");
     }
 
     return listOfTransactionsToPeers;
@@ -382,25 +366,20 @@ class UserDataService {
 
     List<dynamic> listOfTransactions = <dynamic>[];
     QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
-        .where("recipientUid", isEqualTo: currentUser.id)
+        .where("recipientUid", isEqualTo: currentUser!.id)
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .get();
-    if (transactionsSnapshot != null) {
-      if (transactionsSnapshot.docs.isNotEmpty) {
-        try {
-          listOfTransactions.addAll(transactionsSnapshot.docs
-              .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
-              .toList());
-        } catch (e) {
-          log.e("Could not map firestore data into TransactionModel");
-        }
-      } else {
-        log.e("Snapshot of donations collectin is empty");
+    if (transactionsSnapshot.docs.isNotEmpty) {
+      try {
+        listOfTransactions.addAll(transactionsSnapshot.docs
+            .map((snapshot) => TransactionModel.fromMap(snapshot.data()!))
+            .toList());
+      } catch (e) {
+        log.e("Could not map firestore data into TransactionModel");
       }
     } else {
-      log.e(
-          "Donations could not be retrieved, check how you access the firestore collections");
+      log.e("Snapshot of donations collectin is empty");
     }
 
     return listOfTransactions;
@@ -412,7 +391,7 @@ class UserDataService {
     // set current user to null
     _currentUser = null;
     // actually log out from firebase
-    await _firebaseAuthenticationService.logout();
+    await _firebaseAuthenticationService!.logout();
     // set auth state to signed out
     userStateSubject.add(UserStatus.SignedOut);
   }
@@ -421,15 +400,15 @@ class UserDataService {
 // Helper class returned from public function of UserDataService
 class UserDataServiceResult {
   /// Helper message which type of data was tried to be acceessed
-  final String typeOfData;
+  final String? typeOfData;
 
   /// Contains the error message for the request
-  final String errorMessage;
+  final String? errorMessage;
 
   UserDataServiceResult({this.typeOfData}) : errorMessage = null;
 
   UserDataServiceResult.error({this.errorMessage}) : typeOfData = null;
 
   /// Returns true if the response has an error associated with it
-  bool get hasError => errorMessage != null && errorMessage.isNotEmpty;
+  bool get hasError => errorMessage != null && errorMessage!.isNotEmpty;
 }
