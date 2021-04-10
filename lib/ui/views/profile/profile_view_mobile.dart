@@ -135,11 +135,8 @@ class ProfileViewMobile extends StatelessWidget {
               "Total donations",
               "\$ " + (_model.userWallet.donations / 100).toString(),
               ColorSettings.primaryColor),
-          // _buildStatItem(
-          //     context,
-          //     "Current balance",
-          //     "\$ " + (_model.userWallet.currentBalance / 100).toString(),
-          //     ColorSettings.blackTextColor),
+          _buildStatItem(
+              context, "Total raised", "\$ TBI", ColorSettings.primaryColor),
           _buildStatItem(
               context,
               "Total gifted",
@@ -191,7 +188,25 @@ class ProfileViewMobile extends StatelessWidget {
                       children: <Widget>[
                         _buildCoverImage(screenSize(context)),
                         Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.only(
+                              top: 10.0, left: 20.0, right: 20.0),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              alignment: Alignment.centerLeft,
+                              icon: Icon(
+                                Icons.close,
+                                color: ColorSettings.greyTextColor,
+                                size: 28,
+                              ),
+                              onPressed: model.navigateBack,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 10.0, left: 20.0, right: 20.0),
                           child: Align(
                             alignment: Alignment.topRight,
                             child: IconButton(
@@ -219,11 +234,6 @@ class ProfileViewMobile extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: Column(
                         children: [
-                          ProfileListItem(
-                            title: "Your Money Pools",
-                            onPressed: model.navigateToManageMoneyPoolsView,
-                          ),
-                          verticalSpaceSmall,
                           ProfileListItem(
                             title: "Donations History",
                             onPressed: model.navigateToDonationsHistoryView,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
+import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/home_viewmodel.dart';
+import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/ui/widgets/carousel_card.dart';
 import 'package:good_wallet/ui/widgets/good_wallet_card.dart';
 import 'package:good_wallet/ui/widgets/pledge_button.dart';
@@ -42,13 +44,14 @@ class HomeViewMobile extends StatelessWidget {
                                 style: textTheme(context)
                                     .headline3!
                                     .copyWith(fontSize: 25)),
-                            // GestureDetector(
-                            //     onTap: model.navigateToSettingsView,
-                            //     child: Icon(
-                            //       Icons.settings,
-                            //       color: ColorSettings.whiteTextColor,
-                            //       size: 25,
-                            //     ),),
+                            GestureDetector(
+                              onTap: model.navigateToProfileView,
+                              child: Icon(
+                                Icons.person,
+                                color: ColorSettings.whiteTextColor,
+                                size: 25,
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -84,47 +87,60 @@ class HomeViewMobile extends StatelessWidget {
                                   totalDonations: model.userWallet.donations!,
                                   totalRaised: 7800,
                                   userInfo: model.getQRCodeUserInfoString(),
+                                  showGoodometer: true,
                                 ),
                                 verticalSpaceRegular,
-                                // Text("Actions",
-                                //     style: textTheme(context).headline6),
+                                Text("Services",
+                                    style: textTheme(context).headline6),
+                                verticalSpaceSmall,
                                 SizedBox(
                                   width: screenWidthWithoutPadding(context),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      PledgeCircularButton(
-                                        title: "Raise money",
-                                        onPressed:
-                                            model.showRaiseMoneyBottomSheet,
-                                        buttonColor: MyColors.paletteBlue
-                                            .withOpacity(0.90),
-                                        icon: Icon(Icons.add,
-                                            color:
-                                                ColorSettings.whiteTextColor),
-                                      ),
-                                      PledgeCircularButton(
-                                        title: "Donate",
-                                        onPressed: model.navigateToDonationView,
-                                        buttonColor: ColorSettings.primaryColor
-                                            .withOpacity(1.0),
-                                        icon: Icon(Icons.favorite,
-                                            color:
-                                                ColorSettings.whiteTextColor),
-                                      ),
-                                      PledgeCircularButton(
-                                        title: "Send money",
-                                        onPressed:
-                                            model.showSendMoneyBottomSheet,
-                                        buttonColor: ColorSettings
-                                            .primaryColorLight
-                                            .withOpacity(1.0),
-                                        icon: Icon(Icons.send_rounded,
-                                            color:
-                                                ColorSettings.whiteTextColor),
-                                      ),
-                                    ],
+                                  child: FittedBox(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        CallToActionButtonRound(
+                                          text: "Get payed",
+                                          onPressed: model
+                                              .navigateToAcceptPaymentsView,
+                                          color: MyColors.paletteBlue
+                                              .withOpacity(0.3),
+                                          icon: Image.asset(
+                                              ImageIconPaths.handAcceptingMoney,
+                                              color: MyColors.paletteBlue),
+                                        ),
+                                        CallToActionButtonRound(
+                                          text: "Money pools",
+                                          onPressed: model
+                                              .navigateToManageMoneyPoolsView,
+                                          color: MyColors.paletteTurquoise
+                                              .withOpacity(0.3),
+                                          icon: Image.asset(
+                                              ImageIconPaths.circleOfPeople,
+                                              color: MyColors.paletteTurquoise),
+                                        ),
+                                        CallToActionButtonRound(
+                                          text: "Invite friends",
+                                          onPressed:
+                                              model.showNotImplementedSnackbar,
+                                          color: MyColors.palettePurple
+                                              .withOpacity(0.3),
+                                          icon: Image.asset(
+                                              ImageIconPaths.huggingPeople,
+                                              color: MyColors.palettePurple),
+                                        ),
+                                        CallToActionButtonRound(
+                                          text: "Send money",
+                                          onPressed:
+                                              model.showSendMoneyBottomSheet,
+                                          color: MyColors.lightRed
+                                              .withOpacity(0.3),
+                                          icon: Icon(Icons.send_rounded,
+                                              color: MyColors.lightRed),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -132,25 +148,35 @@ class HomeViewMobile extends StatelessWidget {
                             SizedBox(width: LayoutSettings.horizontalPadding),
                           ],
                         ),
-                        verticalSpaceMedium,
-                        _goodometerDisplay(context, model),
-                        verticalSpaceMedium,
+                        //verticalSpaceMedium,
+                        //_goodometerDisplay(context, model),
+                        // verticalSpaceMedium,
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(
+                        //       horizontal: LayoutSettings.horizontalPadding),
+                        //   child: Text("Most popular projects",
+                        //       style: textTheme(context).headline6),
+                        // ),
+                        // verticalSpaceSmall,
+                        // FeaturedProjectsCarousel(model: model),
+                        verticalSpaceRegular,
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: LayoutSettings.horizontalPadding),
-                          child: Text("Most popular projects",
-                              style: textTheme(context).headline6),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Featured apps",
+                                  style: textTheme(context).headline6),
+                              TextButton(
+                                onPressed: model.showNotImplementedSnackbar,
+                                child: Text(
+                                  "See all",
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                        verticalSpaceSmall,
-                        FeaturedProjectsCarousel(model: model),
-                        verticalSpaceMedium,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: LayoutSettings.horizontalPadding),
-                          child: Text("Featured apps",
-                              style: textTheme(context).headline6),
-                        ),
-                        verticalSpaceSmall,
                         FeaturedAppsCarousel(model: model),
                         verticalSpaceMedium,
                         verticalSpaceMassive,

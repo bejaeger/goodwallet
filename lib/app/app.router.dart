@@ -30,6 +30,7 @@ import '../ui/views/payments/send_money_view.dart';
 import '../ui/views/payments/send_money_view_mobile.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
 import '../ui/views/qrcode/qrcode_view_mobile.dart';
+import '../ui/views/raise_money/raise_money_view.dart';
 import '../ui/views/transaction_history/transactions_view.dart';
 import '../ui/views/wallet/wallet_view.dart';
 
@@ -53,6 +54,7 @@ class Routes {
   static const String transactionsView = '/transactions-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String createMoneyPoolView = '/create-money-pool-view';
+  static const String raiseMoneyView = '/raise-money-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -73,6 +75,7 @@ class Routes {
     transactionsView,
     qRCodeViewMobile,
     createMoneyPoolView,
+    raiseMoneyView,
   };
 }
 
@@ -99,20 +102,20 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.transactionsView, page: TransactionsView),
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
     RouteDef(Routes.createMoneyPoolView, page: CreateMoneyPoolView),
+    RouteDef(Routes.raiseMoneyView, page: RaiseMoneyView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
   final _pagesMap = <Type, StackedRouteFactory>{
     WelcomeView: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const WelcomeView(),
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const WelcomeView(),
         settings: data,
       );
     },
     WalletView: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => WalletView(),
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => WalletView(),
         settings: data,
       );
     },
@@ -120,8 +123,8 @@ class StackedRouter extends RouterBase {
       var args = data.getArgs<SendMoneyViewArguments>(
         orElse: () => SendMoneyViewArguments(),
       );
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => SendMoneyView(
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => SendMoneyView(
           key: args.key,
           userInfoMap: args.userInfoMap,
           openSearchBarOnBuild: args.openSearchBarOnBuild,
@@ -130,29 +133,27 @@ class StackedRouter extends RouterBase {
       );
     },
     DonationView: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => DonationView(),
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => DonationView(),
         settings: data,
       );
     },
     PaymentSuccessView: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            PaymentSuccessView(),
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => PaymentSuccessView(),
         settings: data,
       );
     },
     PaymentCancelView: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            PaymentCancelView(),
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => PaymentCancelView(),
         settings: data,
       );
     },
     LayoutTemplate: (data) {
       var args = data.getArgs<LayoutTemplateArguments>(nullOk: false);
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) => LayoutTemplate(
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => LayoutTemplate(
           key: args.key,
           childView: args.childView,
         ),
@@ -163,9 +164,8 @@ class StackedRouter extends RouterBase {
       var args = data.getArgs<LoginViewArguments>(
         orElse: () => LoginViewArguments(),
       );
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            LoginView(key: args.key),
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => LoginView(key: args.key),
         settings: data,
       );
     },
@@ -173,9 +173,8 @@ class StackedRouter extends RouterBase {
       var args = data.getArgs<LayoutTemplateViewMobileArguments>(
         orElse: () => LayoutTemplateViewMobileArguments(),
       );
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            LayoutTemplateViewMobile(
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => LayoutTemplateViewMobile(
           key: args.key,
           index: args.index,
         ),
@@ -183,17 +182,15 @@ class StackedRouter extends RouterBase {
       );
     },
     HomeViewMobile: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            HomeViewMobile(),
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => HomeViewMobile(),
         settings: data,
       );
     },
     SingleProjectViewMobile: (data) {
       var args = data.getArgs<SingleProjectViewMobileArguments>(nullOk: false);
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            SingleProjectViewMobile(
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => SingleProjectViewMobile(
           key: args.key,
           project: args.project,
         ),
@@ -201,9 +198,8 @@ class StackedRouter extends RouterBase {
       );
     },
     ProfileViewMobile: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            ProfileViewMobile(),
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => ProfileViewMobile(),
         settings: data,
       );
     },
@@ -211,17 +207,15 @@ class StackedRouter extends RouterBase {
       var args = data.getArgs<CreateAccountViewArguments>(
         orElse: () => CreateAccountViewArguments(),
       );
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            CreateAccountView(key: args.key),
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => CreateAccountView(key: args.key),
         settings: data,
       );
     },
     SingleFeaturedAppView: (data) {
       var args = data.getArgs<SingleFeaturedAppViewArguments>(nullOk: false);
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            SingleFeaturedAppView(
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => SingleFeaturedAppView(
           key: args.key,
           type: args.type,
         ),
@@ -229,9 +223,8 @@ class StackedRouter extends RouterBase {
       );
     },
     ManageMoneyPoolsView: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const ManageMoneyPoolsView(),
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const ManageMoneyPoolsView(),
         settings: data,
       );
     },
@@ -239,9 +232,8 @@ class StackedRouter extends RouterBase {
       var args = data.getArgs<SendMoneyViewMobileArguments>(
         orElse: () => SendMoneyViewMobileArguments(),
       );
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            SendMoneyViewMobile(
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => SendMoneyViewMobile(
           key: args.key,
           userInfo: args.userInfo,
           openSearchBarOnBuild: args.openSearchBarOnBuild,
@@ -253,9 +245,8 @@ class StackedRouter extends RouterBase {
       var args = data.getArgs<TransactionsViewArguments>(
         orElse: () => TransactionsViewArguments(),
       );
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            TransactionsView(
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => TransactionsView(
           key: args.key,
           historyType: args.historyType,
         ),
@@ -266,9 +257,8 @@ class StackedRouter extends RouterBase {
       var args = data.getArgs<QRCodeViewMobileArguments>(
         orElse: () => QRCodeViewMobileArguments(),
       );
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            QRCodeViewMobile(
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => QRCodeViewMobile(
           key: args.key,
           initialIndex: args.initialIndex,
         ),
@@ -276,9 +266,14 @@ class StackedRouter extends RouterBase {
       );
     },
     CreateMoneyPoolView: (data) {
-      return PageRouteBuilder<dynamic>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const CreateMoneyPoolView(),
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const CreateMoneyPoolView(),
+        settings: data,
+      );
+    },
+    RaiseMoneyView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const RaiseMoneyView(),
         settings: data,
       );
     },

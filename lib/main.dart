@@ -66,7 +66,7 @@ class MyThemeData {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           //textStyle: TextStyle(fontSize: 15, color: MyColors.darkTurquoise),
-          primary: Color(0xFF600000), // dark red
+          primary: ColorSettings.blackHeadlineColor, // dark red
         ),
       ),
       tabBarTheme: TabBarTheme(

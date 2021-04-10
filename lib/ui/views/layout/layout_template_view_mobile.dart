@@ -5,6 +5,7 @@ import 'package:good_wallet/ui/views/causes/causes_view_mobile.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_viewmodel.dart';
 import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
+import 'package:good_wallet/ui/views/raise_money/raise_money_view.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
@@ -54,12 +55,12 @@ class LayoutTemplateViewMobile extends StatelessWidget {
                   icon: Icon(Icons.home_rounded, size: 20),
                 ),
                 BottomNavigationBarItem(
-                  label: 'Give',
+                  label: 'Donate',
                   icon: Icon(Icons.favorite, size: 20),
                 ),
                 BottomNavigationBarItem(
-                  label: 'Profile',
-                  icon: Icon(Icons.person, size: 20),
+                  label: 'Raise Money',
+                  icon: Icon(Icons.arrow_upward, size: 20),
                 ),
               ],
             ),
@@ -81,8 +82,8 @@ class LayoutTemplateViewMobile extends StatelessWidget {
       return HomeViewMobile();
     } else if (index == BottomNavigatorIndex.Give.index) {
       return CausesViewMobile();
-    } else if (index == BottomNavigatorIndex.Profile.index) {
-      return ProfileViewMobile();
+    } else if (index == BottomNavigatorIndex.RaiseMoney.index) {
+      return RaiseMoneyView();
     } else {
       return HomeViewMobile();
     }

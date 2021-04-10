@@ -25,6 +25,7 @@ import 'package:good_wallet/ui/views/payments/send_money_view_mobile.dart';
 import 'package:good_wallet/ui/views/payments/send_money_viewmodel.dart';
 import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
 import 'package:good_wallet/ui/views/qrcode/qrcode_view_mobile.dart';
+import 'package:good_wallet/ui/views/raise_money/raise_money_view.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_view.dart';
@@ -36,27 +37,28 @@ import 'package:stacked_services/stacked_services.dart';
 @StackedApp(
   // TODO: Add back transitions
   routes: [
-    CustomRoute(page: WelcomeView),
-    CustomRoute(page: WalletView),
-    CustomRoute(page: SendMoneyView),
-    CustomRoute(page: DonationView),
-    CustomRoute(page: PaymentSuccessView),
-    CustomRoute(page: PaymentCancelView),
-    CustomRoute(page: LayoutTemplate),
-    CustomRoute(page: LoginView, initial: true),
+    MaterialRoute(page: WelcomeView),
+    MaterialRoute(page: WalletView),
+    MaterialRoute(page: SendMoneyView),
+    MaterialRoute(page: DonationView),
+    MaterialRoute(page: PaymentSuccessView),
+    MaterialRoute(page: PaymentCancelView),
+    MaterialRoute(page: LayoutTemplate),
+    MaterialRoute(page: LoginView, initial: true),
 
     // Mobile routes
-    CustomRoute(page: LayoutTemplateViewMobile),
-    CustomRoute(page: HomeViewMobile),
-    CustomRoute(page: SingleProjectViewMobile),
-    CustomRoute(page: ProfileViewMobile),
-    CustomRoute(page: CreateAccountView),
-    CustomRoute(page: SingleFeaturedAppView),
-    CustomRoute(page: ManageMoneyPoolsView),
-    CustomRoute(page: SendMoneyViewMobile),
-    CustomRoute(page: TransactionsView),
-    CustomRoute(page: QRCodeViewMobile),
-    CustomRoute(page: CreateMoneyPoolView),
+    MaterialRoute(page: LayoutTemplateViewMobile),
+    MaterialRoute(page: HomeViewMobile),
+    MaterialRoute(page: SingleProjectViewMobile),
+    MaterialRoute(page: ProfileViewMobile),
+    MaterialRoute(page: CreateAccountView),
+    MaterialRoute(page: SingleFeaturedAppView),
+    MaterialRoute(page: ManageMoneyPoolsView),
+    MaterialRoute(page: SendMoneyViewMobile),
+    MaterialRoute(page: TransactionsView),
+    MaterialRoute(page: QRCodeViewMobile),
+    MaterialRoute(page: CreateMoneyPoolView),
+    MaterialRoute(page: RaiseMoneyView),
   ],
   dependencies: [
     // Registers all singletons

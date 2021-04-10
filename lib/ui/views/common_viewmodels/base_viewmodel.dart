@@ -15,6 +15,7 @@ import 'package:stacked_services/stacked_services.dart';
 class BaseModel extends IndexTrackingViewModel {
   final UserDataService? _userDataService = locator<UserDataService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
+  final NavigationService? _navigationService = locator<NavigationService>();
 
   final baseModelLog = getLogger("BaseModel");
 
@@ -55,5 +56,9 @@ class BaseModel extends IndexTrackingViewModel {
   void showNotImplementedSnackbar() {
     _snackbarService!.showSnackbar(
         title: "Not yet implemented.", message: "I know... it's sad");
+  }
+
+  void navigateBack() {
+    _navigationService!.back();
   }
 }

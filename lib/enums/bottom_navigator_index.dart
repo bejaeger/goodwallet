@@ -1,5 +1,5 @@
 enum BottomNavigatorIndex {
   Home,
   Give,
-  Profile,
+  RaiseMoney,
 }

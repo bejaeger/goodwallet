@@ -28,8 +28,11 @@ class PledgeCircularButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ElevatedButton(
-            style:
-                ElevatedButton.styleFrom(shape: CircleBorder(), elevation: 2.0),
+            style: ElevatedButton.styleFrom(
+              shape: CircleBorder(),
+              elevation: 2.0,
+              primary: Colors.transparent,
+            ),
             onPressed: onPressed,
             child: CircleAvatar(
                 child: icon,
