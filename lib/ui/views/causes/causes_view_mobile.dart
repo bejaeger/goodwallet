@@ -2,87 +2,60 @@ import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_fund_model.dart';
 import 'package:good_wallet/enums/causes_list_type.dart';
+import 'package:good_wallet/ui/layout_widgets/tabbar_layout.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/causes/causes_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/causes/global_giving_project_card.dart';
 import 'package:good_wallet/ui/widgets/causes/good_wallet_fund_card.dart';
+import 'package:good_wallet/ui/widgets/small_wallet_card.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:stacked/stacked.dart';
 
 // CausesViewMobile sets up tab bar view
 
-class CausesViewMobile extends StatefulWidget {
+class CausesViewMobile extends StatelessWidget {
   const CausesViewMobile({Key? key}) : super(key: key); //
-  @override
-  _CausesViewMobileState createState() => _CausesViewMobileState();
-}
-
-class _CausesViewMobileState extends State<CausesViewMobile>
-    with TickerProviderStateMixin {
-  TabController? _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController!.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Effective Causes"),
-        bottom: PreferredSize(
-          preferredSize:
-              Size(screenWidth(context), LayoutSettings.tabBarPreferredHeight),
-          child: Container(
-            child: TabBar(
-              controller: _tabController,
-              isScrollable: true,
-              tabs: [
-                Container(
-                    width: screenWidth(context) * 0.25,
-                    child: Tab(text: "All Projects")),
-                Container(
-                    width: screenWidth(context) * 0.3,
-                    child: Tab(text: "Good Wallet Funds")),
-                Container(
-                    width: screenWidth(context) * 0.25,
-                    child: Tab(text: "Favorites")),
-              ],
-            ),
+    return ViewModelBuilder<CausesViewModel>.reactive(
+      viewModelBuilder: () => locator<CausesViewModel>(),
+      disposeViewModel: false,
+      fireOnModelReadyOnce: true,
+      onModelReady: (model) async => await model.fetchCauses(),
+      builder: (context, model, child) => TabBarLayout(
+        title: "Social Projects",
+        titleTrailingWidget: SmallWalletCard(
+            onTap: model.navigateToTransactionsHistoryView,
+            width: 80,
+            balance: model.userWallet.currentBalance!),
+        tabs: [
+          Container(
+              width: screenWidth(context) * 0.25,
+              child: Tab(text: "All Projects")),
+          Container(
+              width: screenWidth(context) * 0.3,
+              child: Tab(text: "Good Wallet Funds")),
+          Container(
+              width: screenWidth(context) * 0.25,
+              child: Tab(text: "Favorites")),
+        ],
+        views: [
+          CausesListViewMobile(
+            type: CausesListType.GlobalGivingProjects,
+            description: Text("High-impact charities provided by GlobalGiving"),
           ),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: LayoutSettings.horizontalPadding),
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            CausesListViewMobile(
-              type: CausesListType.GlobalGivingProjects,
-              description:
-                  Text("High-impact charities provided by GlobalGiving"),
-            ),
-            CausesListViewMobile(
-              type: CausesListType.GoodWalletFund,
-              description: Text(
-                  "Support one of our Good Wallet funds and help grow our community"),
-            ),
-            CausesListViewMobile(
-              type: CausesListType.Favorites,
-              description: Text("Your favorite projects"),
-            ),
-          ],
-        ),
+          CausesListViewMobile(
+            type: CausesListType.GoodWalletFund,
+            description: Text(
+                "Support one of our Good Wallet funds and help grow our community"),
+          ),
+          CausesListViewMobile(
+            type: CausesListType.Favorites,
+            description: Text("Your favorite projects"),
+          ),
+        ],
       ),
     );
   }

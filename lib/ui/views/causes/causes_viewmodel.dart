@@ -48,11 +48,7 @@ class CausesViewModel extends BaseModel {
       log.i(
           "Fetched good wallet fund list with length ${goodWalletFunds!.length}");
     }
-    if (projects != null) {
-      setBusy(false);
-    } else {
-      log.e("Project array is still null!");
-    }
+    setBusy(false);
     notifyListeners();
   }
 
@@ -77,5 +73,9 @@ class CausesViewModel extends BaseModel {
   Future navigateToProjectScreen(index) async {
     await _navigationService!.navigateTo(Routes.singleProjectViewMobile,
         arguments: SingleProjectViewMobileArguments(project: projects![index]));
+  }
+
+  Future navigateToTransactionsHistoryView() async {
+    _navigationService!.navigateTo(Routes.transactionsView);
   }
 }

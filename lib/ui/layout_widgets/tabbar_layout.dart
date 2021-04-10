@@ -12,12 +12,15 @@ class TabBarLayout extends StatefulWidget {
   final List<Widget> views;
   final int initialIndex;
 
+  final Widget? titleTrailingWidget;
+
   const TabBarLayout({
     Key? key,
     required this.title,
     required this.tabs,
     required this.views,
     this.initialIndex = 0,
+    this.titleTrailingWidget,
   }) : super(key: key); //
   @override
   _TabBarLayoutState createState() => _TabBarLayoutState();
@@ -46,7 +49,13 @@ class _TabBarLayoutState extends State<TabBarLayout>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(widget.title),
+            if (widget.titleTrailingWidget != null) widget.titleTrailingWidget!,
+          ],
+        ),
         bottom: PreferredSize(
           preferredSize:
               Size(screenWidth(context), LayoutSettings.tabBarPreferredHeight),
