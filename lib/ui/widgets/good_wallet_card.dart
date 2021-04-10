@@ -62,8 +62,8 @@ class GoodWalletCard extends StatelessWidget {
                       colors: [
                         // Colors.white.withOpacity(0.2),
                         // Colors.white.withOpacity(0.9),
-                        ColorSettings.primaryColor.withOpacity(0.55),
-                        ColorSettings.primaryColor.withOpacity(0.2),
+                        ColorSettings.primaryColorLight.withOpacity(0.55),
+                        ColorSettings.primaryColorLight.withOpacity(0.2),
                       ],
                     ),
                   ),
