@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/datamodels/causes/global_giving_project_model.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_fund_model.dart';
 import 'package:good_wallet/enums/causes_list_type.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';

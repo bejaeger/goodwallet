@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/datamodels/causes/global_giving_project_model.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';

@@ -19,7 +19,7 @@ class GoodWalletProjectModel {
   num? fundingGoal;
   String? themeName;
 
-  CauseType causeType;
+  CauseType? causeType;
 
   GoodWalletProjectModel({
     required this.title,
