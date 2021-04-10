@@ -45,13 +45,13 @@ class GoodWalletProjectModel {
       'fundingGoal': fundingGoal,
       'themeName': themeName,
       'globalGivingProjectId': globalGivingProjectId,
-      'causeType': describeEnum(causeType),
+      'causeType': describeEnum(causeType!),
     };
     return returnJson;
   }
 
   static GoodWalletProjectModel fromMap(Map<String, dynamic> map) {
-    final log = getLogger("good_wallet_project_model.dart");
+    final log = getLogger("good_wallet_project_model.dart - fromMap");
     try {
       var data = GoodWalletProjectModel(
         title: map["title"],
@@ -69,6 +69,31 @@ class GoodWalletProjectModel {
       return data;
     } catch (e) {
       log.e("Could not retrieve good wallet fromMap");
+      rethrow;
+    }
+  }
+
+  static GoodWalletProjectModel fromGlobalGivingAPICall(var json) {
+    final log =
+        getLogger("good_wallet_project_model.dart - fromGlobalGivingAPICall");
+    try {
+      var organization = Organization(
+          name: json["organization"]["name"], url: json["organization"]["url"]);
+      var data = GoodWalletProjectModel(
+        title: json["title"],
+        imageUrl: json["image"]["imagelink"][3]["url"],
+        contactUrl: json["contactUrl"],
+        summary: json["summary"],
+        organization: organization,
+        causeType: CauseType.GlobalGivingProject,
+        themeName: json["themeName"],
+      );
+      data.globalGivingProjectId = returnIfAvailable(json, "id");
+      data.fundingCurrent = returnIfAvailable(json, "funding");
+      data.fundingGoal = returnIfAvailable(json, "goal");
+      return data;
+    } catch (e) {
+      log.e("Failed to read Json project with error: ${e.toString()}");
       rethrow;
     }
   }

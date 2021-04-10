@@ -40,7 +40,7 @@ class GoodWalletCard extends StatelessWidget {
         child: Container(
           width: screenWidthWithoutPadding(context) - 8.0,
           child: AspectRatio(
-            aspectRatio: 1.586, // aspect ratio credit card
+            aspectRatio: 1.5, // aspect ratio credit card
             child: Stack(
               fit: StackFit.expand,
               children: [
@@ -62,15 +62,15 @@ class GoodWalletCard extends StatelessWidget {
                       colors: [
                         // Colors.white.withOpacity(0.2),
                         // Colors.white.withOpacity(0.9),
-                        ColorSettings.primaryColor.withOpacity(0.5),
-                        ColorSettings.primaryColor.withOpacity(0.1),
+                        ColorSettings.primaryColor.withOpacity(0.55),
+                        ColorSettings.primaryColor.withOpacity(0.2),
                       ],
                     ),
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.only(
-                      top: 20.0, bottom: 5.0, left: 20.0, right: 10.0),
+                      top: 25.0, bottom: 10.0, left: 25.0, right: 15.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -98,16 +98,20 @@ class GoodWalletCard extends StatelessWidget {
                         ],
                       ),
                       verticalSpaceRegular,
-                      GestureDetector(
-                        onTap: onQRCodeTap,
-                        child: SizedBox(
-                          height: 40,
-                          width: 40,
-                          child: QrImage(
-                            foregroundColor: ColorSettings.qrCodeOnWalletColor,
-                            backgroundColor: ColorSettings.greyTextColor!,
-                            padding: const EdgeInsets.all(0.0),
-                            data: userInfo,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: GestureDetector(
+                          onTap: onQRCodeTap,
+                          child: SizedBox(
+                            height: 40,
+                            width: 40,
+                            child: QrImage(
+                              foregroundColor:
+                                  ColorSettings.qrCodeOnWalletColor,
+                              backgroundColor: ColorSettings.greyTextColor!,
+                              padding: const EdgeInsets.all(0.0),
+                              data: userInfo,
+                            ),
                           ),
                         ),
                       ),
@@ -119,12 +123,12 @@ class GoodWalletCard extends StatelessWidget {
                               context,
                               "Total donations",
                               "\$" + (totalDonations / 100).toString(),
-                              ColorSettings.primaryColor),
+                              ColorSettings.greyTextColor),
                           _buildStatItem(
                               context,
                               "Total raised",
                               "\$" + (totalRaised / 100).toString(),
-                              ColorSettings.primaryColor),
+                              ColorSettings.greyTextColor),
                         ],
                       )
                     ],

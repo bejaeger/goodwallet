@@ -41,7 +41,9 @@ class GlobalGivingAPIService {
           random.nextInt(numberProjects); // seems limitted
       var jsonProject = fetchedProjects[randomProjectNumber];
       GoodWalletProjectModel project =
-          GoodWalletProjectModel.fromMap(jsonProject);
+          GoodWalletProjectModel.fromGlobalGivingAPICall(
+        jsonProject,
+      );
       return project;
       //return project;
     } catch (e) {
@@ -71,7 +73,7 @@ class GlobalGivingAPIService {
       List<GoodWalletProjectModel> projectList = [];
       for (int i = 0; i < numberProjects; i++) {
         GoodWalletProjectModel project =
-            GoodWalletProjectModel.fromMap(fetchedProjects[i]);
+            GoodWalletProjectModel.fromGlobalGivingAPICall(fetchedProjects[i]);
         projectList.add(project);
       }
       return projectList;
@@ -109,7 +111,7 @@ class GlobalGivingAPIService {
       Uri url, bool addToFirestore) async {
     http.Response? response = await fetchProject(url);
     List<GoodWalletProjectModel> projectList = [];
-    if (response == null) null;
+    //if (response == null) return response;
     try {
       var jsonResponse = convert.jsonDecode(response!.body);
       var fetchedProjects =
@@ -117,7 +119,9 @@ class GlobalGivingAPIService {
       int numberProjects = fetchedProjects.length;
       for (int i = 0; i < numberProjects; i++) {
         GoodWalletProjectModel project =
-            GoodWalletProjectModel.fromMap(fetchedProjects[i]);
+            GoodWalletProjectModel.fromGlobalGivingAPICall(
+          fetchedProjects[i],
+        );
         if (addToFirestore) _causesCollectionReference.add(project.toJson());
         projectList.add(project);
       }
@@ -133,7 +137,7 @@ class GlobalGivingAPIService {
     try {
       response = await http.get(url, headers: {'accept': 'application/json'});
     } catch (e) {
-      print("Error when trying to fetch project data: ${e.toString()}");
+      log.e("Error when trying to fetch project data: ${e.toString()}");
     }
     return response;
   }

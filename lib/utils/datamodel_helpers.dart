@@ -22,8 +22,13 @@ dynamic returnIfAvailable(dynamic map, String key) {
 }
 
 CauseType getCauseTypeFromString(String str) {
-  var cause = CauseType.values.firstWhere((e) => describeEnum(e) == str);
-  final log = getLogger("datamodel_helpers.dart");
-  log.i("Found Causetype ${cause.toString()}");
+  CauseType cause;
+  try {
+    cause = CauseType.values.firstWhere((e) => describeEnum(e) == str);
+  } catch (e) {
+    final log = getLogger("datamodel_helpers.dart");
+    log.e("Could not find matching element, error: ${e.toString()}");
+    rethrow;
+  }
   return cause;
 }

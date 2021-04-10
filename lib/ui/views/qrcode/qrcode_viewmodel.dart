@@ -42,6 +42,7 @@ class QRCodeViewModel extends BaseModel {
       await _navigationService!.navigateTo(Routes.sendMoneyViewMobile,
           arguments: SendMoneyViewMobileArguments(userInfo: userInfo));
     }
+
     setBusy(false);
   }
 }

@@ -26,8 +26,9 @@ class CausesViewModel extends BaseModel {
   Future fetchCauses() async {
     setBusy(true);
     if (projects == null) {
-      projects = await (_globalGivingAPIservice!.getFeaturedProjects());
+      await fetchGlobalGivingProjects();
       log.i("Fetched project list with length ${projects!.length}");
+      // TODO: Add user info when no projects could be retrieved..e.g. network issues
     }
     if (goodWalletFunds == null) {
       goodWalletFunds = [
@@ -47,7 +48,11 @@ class CausesViewModel extends BaseModel {
       log.i(
           "Fetched good wallet fund list with length ${goodWalletFunds!.length}");
     }
-    setBusy(false);
+    if (projects != null) {
+      setBusy(false);
+    } else {
+      log.e("Project array is still null!");
+    }
     notifyListeners();
   }
 
@@ -56,7 +61,7 @@ class CausesViewModel extends BaseModel {
         .where("causeType",
             isEqualTo: describeEnum(CauseType.GlobalGivingProject))
         .get();
-    if (projectsSnapshot != null && projectsSnapshot.docs.isNotEmpty) {
+    if (projectsSnapshot.docs.isNotEmpty) {
       log.i("Found data of global giving projects on firestore");
       projects = projectsSnapshot.docs
           .map((snapshot) => GoodWalletProjectModel.fromMap(snapshot.data()!))
