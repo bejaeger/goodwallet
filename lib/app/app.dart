@@ -3,6 +3,7 @@ import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/qrcode/qr_code_service.dart';
+import 'package:good_wallet/services/userdata/local_storage_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/style/page_transitions.dart';
 import 'package:good_wallet/ui/views/causes/causes_view.dart';
@@ -26,6 +27,7 @@ import 'package:good_wallet/ui/views/payments/send_money_viewmodel.dart';
 import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
 import 'package:good_wallet/ui/views/qrcode/qrcode_view_mobile.dart';
 import 'package:good_wallet/ui/views/raise_money/raise_money_view.dart';
+import 'package:good_wallet/ui/views/startup_logic/startup_logic_view.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_view.dart';
@@ -59,6 +61,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: QRCodeViewMobile),
     MaterialRoute(page: CreateMoneyPoolView),
     MaterialRoute(page: RaiseMoneyView),
+    MaterialRoute(page: StartUpLogicView),
   ],
   dependencies: [
     // Registers all singletons
@@ -83,6 +86,10 @@ import 'package:stacked_services/stacked_services.dart';
     ),
     LazySingleton(classType: DummyPaymentService),
     LazySingleton(classType: QRCodeService),
+    Presolve(
+      classType: LocalStorageService,
+      presolveUsing: LocalStorageService.getInstance,
+    ),
 
     Singleton(classType: UserDataService),
 
