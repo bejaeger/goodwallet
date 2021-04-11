@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/enums/authentication_method.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';

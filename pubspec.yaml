@@ -45,6 +45,9 @@ dependencies:
   stacked_services: ^0.8.2
   stacked_firebase_auth: ^0.2.1
 
+  # storage
+  shared_preferences: ^2.0.5
+
   get_it: ^6.0.0
   image_picker: ^0.7.4
   cached_network_image: ^3.0.0

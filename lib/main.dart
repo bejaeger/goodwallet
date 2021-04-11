@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/setup_bottom_sheet_ui.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_view.dart';
@@ -12,14 +13,20 @@ import 'package:logger/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'app/app.router.dart' as auto_router;
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:good_wallet/utils/logger.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  setupLocator();
-  setupBottomSheetUi();
-  Logger.level = Level.info;
-  runApp(MyApp());
+  final log = getLogger("main.dart");
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    await setupLocator();
+    setupBottomSheetUi();
+    Logger.level = Level.info;
+    runApp(MyApp());
+  } catch (e) {
+    log.e("Set up failed");
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -38,7 +45,7 @@ class MyApp extends StatelessWidget {
           initialRoute: kIsWeb
               ? auto_router.Routes.welcomeView
               //: auto_router.Routes.layoutTemplateViewMobile,
-              : auto_router.Routes.loginView,
+              : auto_router.Routes.startUpLogicView,
           builder: (context, child) =>
               isDesktop(context) ? LayoutTemplate(childView: child) : child!),
     );

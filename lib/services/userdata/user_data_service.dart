@@ -86,13 +86,14 @@ class UserDataService {
         await listenToWalletUpdates(user.uid);
         userStateSubject.add(UserStatus.Initialized);
       } catch (e) {
+        // this should produce an error. listened to in start up logic
+        userStateSubject.add(UserStatus.SignedInNotInitialized);
         return UserDataServiceResult.error(
             errorMessage:
                 "Initializing current user failed with message: ${e.toString()}");
       }
     } else {
-      log.w(
-          "User already initialized. To avoid future problems it is best to check why this function is executed twice");
+      log.w("User already initialized. ");
     }
     return UserDataServiceResult();
   }
@@ -104,6 +105,12 @@ class UserDataService {
         // This means no user has been created yet in cloud firestore
         // This happens for example when loggin in with google, facebook, ...
         // We first have to create a user and then
+        //
+        // HERE we need the user to be passed to this function
+        // If this code will never execute the user Id is enough.
+        // Do this e.g. when authenticating from local token
+        //
+
         log.w(
             "Create user because this seems to be the first time a user is logging in with third-party authentification");
         var result = await createUser(user);

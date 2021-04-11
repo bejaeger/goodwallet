@@ -31,6 +31,7 @@ import '../ui/views/payments/send_money_view_mobile.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
 import '../ui/views/qrcode/qrcode_view_mobile.dart';
 import '../ui/views/raise_money/raise_money_view.dart';
+import '../ui/views/startup_logic/startup_logic_view.dart';
 import '../ui/views/transaction_history/transactions_view.dart';
 import '../ui/views/wallet/wallet_view.dart';
 
@@ -55,6 +56,7 @@ class Routes {
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String createMoneyPoolView = '/create-money-pool-view';
   static const String raiseMoneyView = '/raise-money-view';
+  static const String startUpLogicView = '/start-up-logic-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -76,6 +78,7 @@ class Routes {
     qRCodeViewMobile,
     createMoneyPoolView,
     raiseMoneyView,
+    startUpLogicView,
   };
 }
 
@@ -103,6 +106,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
     RouteDef(Routes.createMoneyPoolView, page: CreateMoneyPoolView),
     RouteDef(Routes.raiseMoneyView, page: RaiseMoneyView),
+    RouteDef(Routes.startUpLogicView, page: StartUpLogicView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -274,6 +278,12 @@ class StackedRouter extends RouterBase {
     RaiseMoneyView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => const RaiseMoneyView(),
+        settings: data,
+      );
+    },
+    StartUpLogicView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const StartUpLogicView(),
         settings: data,
       );
     },
