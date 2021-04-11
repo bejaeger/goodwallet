@@ -180,7 +180,7 @@ class ProfileViewMobile extends StatelessWidget {
       builder: (context, model, child) {
         _model = model;
         return Scaffold(
-          body: !model.isUserSignedIn
+          body: !model.isUserSignedIn || model.isBusy
               ? Center(child: CircularProgressIndicator())
               : ListView(
                   children: [

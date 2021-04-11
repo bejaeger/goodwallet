@@ -84,7 +84,7 @@ class GoodWalletCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Current Balance",
+                              "Your Balance",
                               style: textTheme(context).bodyText2!.copyWith(
                                   fontSize: 18,
                                   color: ColorSettings.greyTextColor),
@@ -122,26 +122,30 @@ class GoodWalletCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               verticalSpaceSmall,
-                              Row(
-                                children: [
-                                  Text(
-                                    "Good Wallet Goodometer: ",
-                                    style: textTheme(context)
-                                        .bodyText2!
-                                        .copyWith(
-                                            fontSize: 18,
-                                            color: ColorSettings.greyTextColor),
-                                  ),
-                                  Text(
-                                    "\$ 10789",
-                                    style: textTheme(context)
-                                        .bodyText2!
-                                        .copyWith(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
-                                            color: ColorSettings.greyTextColor),
-                                  ),
-                                ],
+                              FittedBox(
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Good Wallet Goodometer: ",
+                                      style: textTheme(context)
+                                          .bodyText2!
+                                          .copyWith(
+                                              fontSize: 18,
+                                              color:
+                                                  ColorSettings.greyTextColor),
+                                    ),
+                                    Text(
+                                      "\$ 10789",
+                                      style: textTheme(context)
+                                          .bodyText2!
+                                          .copyWith(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                              color:
+                                                  ColorSettings.greyTextColor),
+                                    ),
+                                  ],
+                                ),
                               ),
                               // Text("Total raised by our community",
                               //     style: textTheme(context).bodyText2),

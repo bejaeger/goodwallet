@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/enums/authentication_method.dart';
@@ -28,7 +29,7 @@ abstract class AuthenticationViewModel extends FormViewModel {
       log.i("Authentication successful, now initializing user data");
 
       final UserDataServiceResult result2 =
-          await (runBusyFuture(initializeUser(result.user!.uid)));
+          await (runBusyFuture(initializeUser(result.user!)));
 
       if (!result2.hasError) {
         // authenticated and initialized -> go to successRoute
@@ -47,8 +48,8 @@ abstract class AuthenticationViewModel extends FormViewModel {
     }
   }
 
-  Future<UserDataServiceResult> initializeUser(String uid) async {
-    return await _userDataService!.initializeCurrentUser(uid);
+  Future<UserDataServiceResult> initializeUser(User user) async {
+    return await _userDataService!.initializeCurrentUser(user);
   }
 
   // needs to be overrriden!

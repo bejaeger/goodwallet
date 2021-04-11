@@ -66,7 +66,7 @@ class UserDataService {
       (user) async {
         if (user != null) {
           userStateSubject.add(UserStatus.SignedIn);
-          initializeCurrentUser(user.uid);
+          initializeCurrentUser(user);
         } else {
           userStateSubject.add(UserStatus.SignedOut);
         }
@@ -75,14 +75,15 @@ class UserDataService {
     );
   }
 
-  Future<UserDataServiceResult> initializeCurrentUser(String uid) async {
+  Future<UserDataServiceResult> initializeCurrentUser(User user) async {
     log.i("Initializing user data");
 
     if (userStateSubject.value != UserStatus.Initialized) {
       log.i("Populating current user");
       try {
-        await _populateCurrentUser(uid);
-        await listenToWalletUpdates(uid);
+        UserDataServiceResult result = await _populateCurrentUser(user);
+        if (result.hasError) return result;
+        await listenToWalletUpdates(user.uid);
         userStateSubject.add(UserStatus.Initialized);
       } catch (e) {
         return UserDataServiceResult.error(
@@ -96,23 +97,29 @@ class UserDataService {
     return UserDataServiceResult();
   }
 
-  Future _populateCurrentUser(String uid) async {
+  Future _populateCurrentUser(User user) async {
     try {
-      var userData = await _usersCollectionReference.doc(uid).get();
+      var userData = await _usersCollectionReference.doc(user.uid).get();
       if (!userData.exists) {
         // This means no user has been created yet in cloud firestore
         // This happens for example when loggin in with google, facebook, ...
         // We first have to create a user and then
-
         log.w(
             "Create user because this seems to be the first time a user is logging in with third-party authentification");
-        //createUser(uid);
-        // We NEED the actual user here!
-        log.e("This is not yet implemented!");
+        var result = await createUser(user);
+        if (result.hasError) {
+          return UserDataServiceResult.error(
+              errorMessage:
+                  "User data could not be created in our databank. Please try again later or contact support with error messaage: ${result.errorMessage}");
+        } else {
+          // retrieve data again because now it exists
+          userData = await _usersCollectionReference.doc(user.uid).get();
+        }
       }
-
-      MyUser user = MyUser.fromData(userData.data()!);
-      _currentUser = user;
+      // populate current User
+      MyUser myUser = MyUser.fromData(userData.data()!);
+      _currentUser = myUser;
+      return UserDataServiceResult();
     } catch (e) {
       log.e("Error in _populateCurrentUser(): ${e.toString()}");
       rethrow;
@@ -125,16 +132,16 @@ class UserDataService {
     num balance = 0;
     num implicitDonations = 0;
     num donations = 0;
-    String name = fullName ?? (user.displayName ?? "");
-    MyUser myuser = MyUser(
-      id: user.uid,
-      email: user.email,
-      fullName: name,
-      balance: balance,
-      implicitDonations: implicitDonations,
-      donations: donations,
-    );
     try {
+      String name = fullName ?? (user.displayName ?? "");
+      MyUser myuser = MyUser(
+        id: user.uid,
+        email: user.email,
+        fullName: name,
+        balance: balance,
+        implicitDonations: implicitDonations,
+        donations: donations,
+      );
       await _usersCollectionReference.doc(user.uid).set(myuser.toJson(true));
       return UserDataServiceResult();
     } catch (e) {
