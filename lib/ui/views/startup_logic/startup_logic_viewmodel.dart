@@ -20,10 +20,6 @@ class StartUpLogicViewModel extends BaseModel {
 
   final log = getLogger("startup_logic_viewmodel.dart");
 
-  Future navigateToHomeView() async {
-    await _navigationService!.replaceWith(Routes.layoutTemplateViewMobile);
-  }
-
   void handleStartUpLogic() {
     _userStateSubscription = _userDataService!.userStateSubject.listen(
       (state) async {
@@ -31,9 +27,6 @@ class StartUpLogicViewModel extends BaseModel {
           // TODO: improve transition!
           log.i("User already signed in, navigating to home view");
           Future.delayed(Duration(seconds: 1));
-          // await _navigationService!.replaceWith(Routes.layoutTemplateViewMobile,
-          //     arguments: LayoutTemplateViewMobileArguments(
-          //         index: BottomNavigatorIndex.Home.index));
           await _navigationService!.replaceWithTransition(
               LayoutTemplateViewMobile(
                 index: BottomNavigatorIndex.Home.index,

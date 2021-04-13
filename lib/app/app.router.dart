@@ -43,7 +43,7 @@ class Routes {
   static const String paymentSuccessView = '/payment-success-view';
   static const String paymentCancelView = '/payment-cancel-view';
   static const String layoutTemplate = '/layout-template';
-  static const String loginView = '/';
+  static const String loginView = '/login-view';
   static const String layoutTemplateViewMobile = '/layout-template-view-mobile';
   static const String homeViewMobile = '/home-view-mobile';
   static const String singleProjectViewMobile = '/single-project-view-mobile';
@@ -56,7 +56,7 @@ class Routes {
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String createMoneyPoolView = '/create-money-pool-view';
   static const String raiseMoneyView = '/raise-money-view';
-  static const String startUpLogicView = '/start-up-logic-view';
+  static const String startUpLogicView = '/';
   static const all = <String>{
     welcomeView,
     walletView,

@@ -25,9 +25,6 @@ class StartUpLogicView extends StatelessWidget {
                         style: textTheme(context).headline2),
                     verticalSpaceMedium,
                     CircularProgressIndicator(),
-                    // ElevatedButton(
-                    //     onPressed: model.navigateToHomeView,
-                    //     child: Text("Click"))
                   ],
                 ),
               ),

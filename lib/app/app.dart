@@ -46,7 +46,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: PaymentSuccessView),
     MaterialRoute(page: PaymentCancelView),
     MaterialRoute(page: LayoutTemplate),
-    MaterialRoute(page: LoginView, initial: true),
+    MaterialRoute(page: LoginView),
 
     // Mobile routes
     MaterialRoute(page: LayoutTemplateViewMobile),
@@ -61,7 +61,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: QRCodeViewMobile),
     MaterialRoute(page: CreateMoneyPoolView),
     MaterialRoute(page: RaiseMoneyView),
-    MaterialRoute(page: StartUpLogicView),
+    MaterialRoute(page: StartUpLogicView, initial: true),
   ],
   dependencies: [
     // Registers all singletons

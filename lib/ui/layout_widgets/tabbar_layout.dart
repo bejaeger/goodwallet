@@ -49,7 +49,7 @@ class _TabBarLayoutState extends State<TabBarLayout>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
