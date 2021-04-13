@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           theme: MyThemeData.myTheme(),
           initialRoute: kIsWeb
               ? auto_router.Routes.welcomeView
-              //: auto_router.Routes.layoutTemplateViewMobile,
+              //    : auto_router.Routes.layoutTemplateViewMobile,
               : auto_router.Routes.startUpLogicView,
           builder: (context, child) =>
               isDesktop(context) ? LayoutTemplate(childView: child) : child!),

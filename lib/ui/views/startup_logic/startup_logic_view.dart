@@ -11,41 +11,45 @@ class StartUpLogicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<StartUpLogicViewModel>.reactive(
-        viewModelBuilder: () => StartUpLogicViewModel(),
-        onModelReady: (model) async {
-          await model.handleStartUpLogic();
-        },
-        builder: (context, model, child) => model.showLoadingScreen()
-            ? Scaffold(
-                body: Center(
+      viewModelBuilder: () => StartUpLogicViewModel(),
+      onModelReady: (model) {
+        model.handleStartUpLogic();
+      },
+      builder: (context, model, child) => model.showLoadingScreen()
+          ? Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("The Good Wallet",
+                        style: textTheme(context).headline2),
+                    verticalSpaceMedium,
+                    CircularProgressIndicator(),
+                    // ElevatedButton(
+                    //     onPressed: model.navigateToHomeView,
+                    //     child: Text("Click"))
+                  ],
+                ),
+              ),
+            )
+          : Scaffold(
+              body: Center(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.all(LayoutSettings.horizontalPadding),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("The Good Wallet",
+                      Text("Failure to log in",
                           style: textTheme(context).headline2),
                       verticalSpaceMedium,
-                      CircularProgressIndicator(),
+                      Text(
+                          "Unfortunately, there was an error when logging. Please contact our support"),
                     ],
                   ),
                 ),
-              )
-            : Scaffold(
-                body: Center(
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.all(LayoutSettings.horizontalPadding),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Failure to log in",
-                            style: textTheme(context).headline2),
-                        verticalSpaceMedium,
-                        Text(
-                            "Unfortunately, there was an error when logging. Please contact our support"),
-                      ],
-                    ),
-                  ),
-                ),
-              ));
+              ),
+            ),
+    );
   }
 }
