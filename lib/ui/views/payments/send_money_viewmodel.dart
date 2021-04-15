@@ -104,8 +104,8 @@ class SendMoneyViewModel extends BaseModel {
       data = TransactionModel(
         recipientUid: recipientUid,
         recipientName: recipientName,
-        senderUid: currentUser!.id,
-        senderName: currentUser!.fullName,
+        senderUid: currentUser.id,
+        senderName: currentUser.fullName,
         createdAt: FieldValue.serverTimestamp(),
         amount: amount * 100,
         currency: "cad",
@@ -124,8 +124,8 @@ class SendMoneyViewModel extends BaseModel {
     var data = TransactionModel(
       recipientUid: "3QrVvwOmrraFMl3EaSzn6byLpFu2",
       recipientName: "Hans",
-      senderUid: currentUser!.id,
-      senderName: currentUser!.fullName,
+      senderUid: currentUser.id,
+      senderName: currentUser.fullName,
       amount: 700,
       createdAt: FieldValue.serverTimestamp(),
       currency: "cad",
@@ -152,7 +152,7 @@ class SendMoneyViewModel extends BaseModel {
   Future processPayment(TransactionModel data) async {
     setBusy(true);
     var resultCreatePaymentIntent = await _firestorePaymentDataService!
-        .createPaymentIntent(data, currentUser!.id);
+        .createPaymentIntent(data, currentUser.id);
 
     if (resultCreatePaymentIntent is String) {
       // string is document id which is payId, so
@@ -192,7 +192,7 @@ class SendMoneyViewModel extends BaseModel {
     _userDataService!.userStateSubject.listen((state) async {
       if (state == UserStatus.SignedIn) {
         bool result = await _firestorePaymentDataService!
-            .handlePaymentSuccess(currentUser!.id);
+            .handlePaymentSuccess(currentUser.id);
         if (result)
           _paymentStatus = "success";
         else
@@ -212,7 +212,7 @@ class SendMoneyViewModel extends BaseModel {
     _userDataService!.userStateSubject.listen((state) async {
       if (state == UserStatus.SignedIn) {
         await _firestorePaymentDataService!
-            .handlePaymentFailure(currentUser!.id);
+            .handlePaymentFailure(currentUser.id);
         _paymentStatus = "failure";
         notifyListeners();
       }

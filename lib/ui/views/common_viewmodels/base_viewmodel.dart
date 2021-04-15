@@ -19,7 +19,7 @@ class BaseModel extends IndexTrackingViewModel {
 
   final baseModelLog = getLogger("BaseModel");
 
-  MyUser? get currentUser => _userDataService!.currentUser;
+  MyUser get currentUser => _userDataService!.currentUser;
 
   UserStatus? userStatus;
   bool get isUserSignedIn =>

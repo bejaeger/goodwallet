@@ -1,11 +1,11 @@
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
+import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/qrcode/qr_code_service.dart';
 import 'package:good_wallet/services/userdata/local_storage_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
-import 'package:good_wallet/style/page_transitions.dart';
 import 'package:good_wallet/ui/views/causes/causes_view.dart';
 import 'package:good_wallet/ui/views/causes/causes_viewmodel.dart';
 import 'package:good_wallet/ui/views/causes/single_project_view_mobile.dart';
@@ -17,8 +17,10 @@ import 'package:good_wallet/ui/views/layout/layout_template_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/navigation_bar_viewmodel.dart';
 import 'package:good_wallet/ui/views/login/create_account_view.dart';
 import 'package:good_wallet/ui/views/login/login_view.dart';
-import 'package:good_wallet/ui/views/money_pools/create_money_pool_view.dart';
+import 'package:good_wallet/ui/views/money_pools/create_money_pool_form_view.dart';
+import 'package:good_wallet/ui/views/money_pools/create_money_pool_intro_view.dart';
 import 'package:good_wallet/ui/views/money_pools/manage_money_pools_view.dart';
+import 'package:good_wallet/ui/views/money_pools/single_money_pool_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_cancel_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_success_view.dart';
 import 'package:good_wallet/ui/views/payments/send_money_view.dart';
@@ -37,7 +39,6 @@ import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 @StackedApp(
-  // TODO: Add back transitions
   routes: [
     MaterialRoute(page: WelcomeView),
     MaterialRoute(page: WalletView),
@@ -49,6 +50,9 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: LoginView),
 
     // Mobile routes
+    MaterialRoute(page: SingleMoneyPoolView),
+    MaterialRoute(page: CreateMoneyPoolIntroView),
+    MaterialRoute(page: CreateMoneyPoolFormView),
     MaterialRoute(page: LayoutTemplateViewMobile),
     MaterialRoute(page: HomeViewMobile),
     MaterialRoute(page: SingleProjectViewMobile),
@@ -59,7 +63,6 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: SendMoneyViewMobile),
     MaterialRoute(page: TransactionsView),
     MaterialRoute(page: QRCodeViewMobile),
-    MaterialRoute(page: CreateMoneyPoolView),
     MaterialRoute(page: RaiseMoneyView),
     MaterialRoute(page: StartUpLogicView, initial: true),
   ],
@@ -80,6 +83,7 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(classType: TransactionHistoryLayoutViewModel),
     // TODO: Check whether this is deprecated
     LazySingleton(classType: NavigationBarViewModel),
+    LazySingleton(classType: MoneyPoolService),
 
     LazySingleton(
       classType: FirebaseAuthenticationService,

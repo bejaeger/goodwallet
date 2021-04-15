@@ -45,8 +45,8 @@ class UserDataService {
       BehaviorSubject<WalletBalancesModel>.seeded(WalletBalancesModel.empty());
 
   // current user with all our custom data attached to it
-  MyUser? _currentUser;
-  MyUser? get currentUser => _currentUser;
+  late MyUser _currentUser;
+  MyUser get currentUser => _currentUser;
   void setCurrentUser(MyUser user) {
     _currentUser = user;
   }
@@ -141,9 +141,10 @@ class UserDataService {
     num donations = 0;
     try {
       String name = fullName ?? (user.displayName ?? "");
+      String email = user.email ?? "";
       MyUser myuser = MyUser(
         id: user.uid,
-        email: user.email,
+        email: email,
         fullName: name,
         balance: balance,
         implicitDonations: implicitDonations,
@@ -194,12 +195,12 @@ class UserDataService {
     // Get single streams and combine later with rxDart
 
     Stream<QuerySnapshot> outgoing = _paymentsCollectionReference
-        .where("senderUid", isEqualTo: currentUser!.id)
+        .where("senderUid", isEqualTo: currentUser.id)
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .snapshots();
     Stream<QuerySnapshot> incoming = _paymentsCollectionReference
-        .where("recipientUid", isEqualTo: currentUser!.id)
+        .where("recipientUid", isEqualTo: currentUser.id)
         .orderBy("createdAt", descending: true)
         .snapshots();
 
@@ -261,13 +262,13 @@ class UserDataService {
 
     // outgoing = donations
     Stream<QuerySnapshot> outgoing = _usersCollectionReference
-        .doc(_currentUser!.id)
+        .doc(_currentUser.id)
         .collection("donations")
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .snapshots();
     Stream<QuerySnapshot> incoming = _paymentsCollectionReference
-        .where("recipientUid", isEqualTo: currentUser!.id)
+        .where("recipientUid", isEqualTo: currentUser.id)
         .orderBy("createdAt", descending: true)
         .snapshots();
 
@@ -324,13 +325,13 @@ class UserDataService {
     List<dynamic> listOfDonations = <dynamic>[];
 
     QuerySnapshot donationsSnapshot = await _usersCollectionReference
-        .doc(_currentUser!.id)
+        .doc(_currentUser.id)
         .collection("donations")
         .orderBy("createdAt", descending: true)
         .get();
     if (donationsSnapshot.docs.isNotEmpty) {
       listOfDonations.addAll(donationsSnapshot.docs
-          .map((snapshot) => DonationModel.fromMap(snapshot.data()!))
+          .map((snapshot) => DonationModel.fromMap(snapshot.data()))
           .toList());
     } else {
       log.e("Snapshot of donations collectoin is empty");
@@ -350,14 +351,14 @@ class UserDataService {
 
     List<dynamic> listOfTransactionsToPeers = <dynamic>[];
     QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
-        .where("senderUid", isEqualTo: currentUser!.id)
+        .where("senderUid", isEqualTo: currentUser.id)
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .get();
     if (transactionsSnapshot.docs.isNotEmpty) {
       try {
         listOfTransactionsToPeers.addAll(transactionsSnapshot.docs
-            .map((snapshot) => TransactionModel.fromMap(snapshot.data()!))
+            .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
             .toList());
       } catch (e) {
         log.e("Could not map firestore data into TransactionModel");
@@ -380,14 +381,14 @@ class UserDataService {
 
     List<dynamic> listOfTransactions = <dynamic>[];
     QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
-        .where("recipientUid", isEqualTo: currentUser!.id)
+        .where("recipientUid", isEqualTo: currentUser.id)
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .get();
     if (transactionsSnapshot.docs.isNotEmpty) {
       try {
         listOfTransactions.addAll(transactionsSnapshot.docs
-            .map((snapshot) => TransactionModel.fromMap(snapshot.data()!))
+            .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
             .toList());
       } catch (e) {
         log.e("Could not map firestore data into TransactionModel");
@@ -403,7 +404,7 @@ class UserDataService {
     // clear wallet
     userWalletSubject.add(WalletBalancesModel.empty());
     // set current user to null
-    _currentUser = null;
+    _currentUser = MyUser.empty();
     // actually log out from firebase
     await _firebaseAuthenticationService!.logout();
     // set auth state to signed out

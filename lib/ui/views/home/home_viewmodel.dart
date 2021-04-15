@@ -26,7 +26,7 @@ class HomeViewModel extends BaseModel {
   }
 
   String getQRCodeUserInfoString() {
-    return _qrCodeService!.getEncodedUserInfo(currentUser!);
+    return _qrCodeService!.getEncodedUserInfo(currentUser);
   }
 
   Future showRaiseMoneyBottomSheet() async {
@@ -82,5 +82,9 @@ class HomeViewModel extends BaseModel {
 
   Future navigateToManageMoneyPoolsView() async {
     await _navigationService!.navigateTo(Routes.manageMoneyPoolsView);
+  }
+
+  Future navigateToSendMoneyViewMobile() async {
+    await _navigationService!.navigateTo(Routes.sendMoneyViewMobile);
   }
 }

@@ -16,7 +16,7 @@ class QRCodeViewModel extends BaseModel {
   final NavigationService? _navigationService = locator<NavigationService>();
 
   String getUserInfo() {
-    return _qrCodeService!.getEncodedUserInfo(currentUser!);
+    return _qrCodeService!.getEncodedUserInfo(currentUser);
   }
 
   Future analyzeScanResult([Barcode? result]) async {

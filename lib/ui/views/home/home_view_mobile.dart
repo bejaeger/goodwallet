@@ -8,6 +8,7 @@ import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/ui/widgets/carousel_card.dart';
 import 'package:good_wallet/ui/widgets/good_wallet_card.dart';
 import 'package:good_wallet/ui/widgets/pledge_button.dart';
+import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
@@ -21,7 +22,7 @@ class HomeViewMobile extends StatelessWidget {
           : Scaffold(
               body: CustomScrollView(
                 key: PageStorageKey('storage-key'),
-                physics: AlwaysScrollableScrollPhysics(),
+                physics: BouncingScrollPhysics(),
                 slivers: [
                   // Todo: create custom SliverAppPersistentHeader
                   // SliverPersistentHeader(
@@ -75,7 +76,7 @@ class HomeViewMobile extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 verticalSpaceMedium,
-                                Text("Hi " + model.currentUser!.fullName!,
+                                Text("Hi " + model.currentUser.fullName,
                                     style: textTheme(context).headline4),
                                 verticalSpaceSmall,
                                 GoodWalletCard(
@@ -101,7 +102,7 @@ class HomeViewMobile extends StatelessWidget {
                                           MainAxisAlignment.spaceAround,
                                       children: [
                                         CallToActionButtonRound(
-                                          text: "Get payed",
+                                          text: "Receive",
                                           onPressed: model
                                               .navigateToAcceptPaymentsView,
                                           color: MyColors.paletteBlue
@@ -109,6 +110,17 @@ class HomeViewMobile extends StatelessWidget {
                                           icon: Image.asset(
                                               ImageIconPaths.handAcceptingMoney,
                                               color: MyColors.paletteBlue),
+                                        ),
+                                        CallToActionButtonRound(
+                                          text: "Commit",
+                                          onPressed: model
+                                              .navigateToSendMoneyViewMobile,
+                                          color:
+                                              MyColors.softRed.withOpacity(0.3),
+                                          icon: Icon(
+                                              Icons.attach_money_outlined,
+                                              color: MyColors.softRed,
+                                              size: 28),
                                         ),
                                         CallToActionButtonRound(
                                           text: "Money pools",
@@ -124,21 +136,20 @@ class HomeViewMobile extends StatelessWidget {
                                           text: "Invite friends",
                                           onPressed:
                                               model.showNotImplementedSnackbar,
-                                          color: MyColors.palettePurple
-                                              .withOpacity(0.3),
+                                          color: MyColors.gold.withOpacity(0.3),
                                           icon: Image.asset(
                                               ImageIconPaths.huggingPeople,
-                                              color: MyColors.palettePurple),
+                                              color: MyColors.gold),
                                         ),
-                                        CallToActionButtonRound(
-                                          text: "Send money",
-                                          onPressed:
-                                              model.showSendMoneyBottomSheet,
-                                          color: MyColors.lightRed
-                                              .withOpacity(0.3),
-                                          icon: Icon(Icons.send_rounded,
-                                              color: MyColors.lightRed),
-                                        ),
+                                        // CallToActionButtonRound(
+                                        //   text: "Send money",
+                                        //   onPressed:
+                                        //       model.showSendMoneyBottomSheet,
+                                        //   color: MyColors.lightRed
+                                        //       .withOpacity(0.3),
+                                        //   icon: Icon(Icons.send_rounded,
+                                        //       color: MyColors.lightRed),
+                                        // ),
                                       ],
                                     ),
                                   ),
@@ -148,36 +159,14 @@ class HomeViewMobile extends StatelessWidget {
                             SizedBox(width: LayoutSettings.horizontalPadding),
                           ],
                         ),
-                        //verticalSpaceMedium,
-                        //_goodometerDisplay(context, model),
-                        // verticalSpaceMedium,
-                        // Padding(
-                        //   padding: const EdgeInsets.symmetric(
-                        //       horizontal: LayoutSettings.horizontalPadding),
-                        //   child: Text("Most popular projects",
-                        //       style: textTheme(context).headline6),
-                        // ),
-                        // verticalSpaceSmall,
-                        // FeaturedProjectsCarousel(model: model),
+                        verticalSpaceSmall,
+                        _sendMoneyButton(context, model),
                         verticalSpaceRegular,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: LayoutSettings.horizontalPadding),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Featured apps",
-                                  style: textTheme(context).headline6),
-                              TextButton(
-                                onPressed: model.showNotImplementedSnackbar,
-                                child: Text(
-                                  "See all",
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        FeaturedAppsCarousel(model: model),
+                        SectionHeader(
+                            title: "Projects you supported",
+                            onTextButtonTap: model.showNotImplementedSnackbar),
+                        FeaturedProjectsCarousel(model: model),
+                        //FeaturedAppsCarousel(model: model),
                         verticalSpaceMedium,
                         verticalSpaceMassive,
                       ],
@@ -186,6 +175,46 @@ class HomeViewMobile extends StatelessWidget {
                 ],
               ),
             ),
+    );
+  }
+
+  Widget _sendMoneyButton(BuildContext context, dynamic model) {
+    return Align(
+      alignment: Alignment.center,
+      child: Container(
+        constraints: BoxConstraints(
+          minWidth: screenWidthWithoutPadding(context),
+          maxWidth: screenWidthWithoutPadding(context),
+          minHeight: 45,
+        ),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.all(0.0),
+              elevation: 0.0,
+              primary: ColorSettings.primaryColorLight.withOpacity(0.8)),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 12.0, bottom: 12.0, left: 20.0, right: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Send money",
+                    style: textTheme(context).headline5!.copyWith(
+                        fontSize: 18, color: ColorSettings.whiteTextColor),
+                  ),
+                  Icon(Icons.send_rounded, color: ColorSettings.whiteTextColor)
+                ],
+              ),
+            ),
+          ),
+          onPressed: model.showSendMoneyBottomSheet,
+        ),
+      ),
     );
   }
 
@@ -210,45 +239,6 @@ class HomeViewMobile extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class FeaturedAppsCarousel extends StatelessWidget {
-  final dynamic model;
-
-  const FeaturedAppsCarousel({Key? key, this.model}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-        height: 200,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: [
-            SizedBox(width: LayoutSettings.horizontalPadding),
-            CarouselCard(
-              title: "Marketplace",
-              explanation: "Sell items in exchange for Good Dollars",
-              onTap: () => model
-                  .navigateToSingleFeaturedAppView(FeaturedAppType.Marketplace),
-            ),
-            SizedBox(width: LayoutSettings.horizontalPadding),
-            CarouselCard(
-              title: "Sportsbetting",
-              explanation: "Bet with friends and win Good Gollars",
-              onTap: model.showNotImplementedSnackbar,
-              backgroundColor: MyColors.paletteTurquoise,
-            ),
-            SizedBox(width: LayoutSettings.horizontalPadding),
-            CarouselCard(
-              title: "Your Application",
-              explanation:
-                  "This could be your application that leverages the Good Wallet to do good",
-              onTap: model.showNotImplementedSnackbar,
-              backgroundColor: MyColors.palettePurple,
-            ),
-            SizedBox(width: LayoutSettings.horizontalPadding),
-          ],
-        ));
   }
 }
 

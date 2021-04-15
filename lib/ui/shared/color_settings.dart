@@ -36,5 +36,6 @@ class MyColors {
   static const Color paletteTurquoise = Color(0xFF149c9a);
   static const Color palettePurple = Color(0xFF7653c9);
 
-  static const Color gold = Color(0xFFFFA700);
+  static const Color gold = Color(0xFFfc8a00);
+  static const Color softRed = Color(0xFFff5f37);
 }

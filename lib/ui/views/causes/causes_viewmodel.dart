@@ -60,7 +60,7 @@ class CausesViewModel extends BaseModel {
     if (projectsSnapshot.docs.isNotEmpty) {
       log.i("Found data of global giving projects on firestore");
       projects = projectsSnapshot.docs
-          .map((snapshot) => GoodWalletProjectModel.fromMap(snapshot.data()!))
+          .map((snapshot) => GoodWalletProjectModel.fromMap(snapshot.data()))
           .toList();
     } else {
       log.i("Get global giving projects from API");

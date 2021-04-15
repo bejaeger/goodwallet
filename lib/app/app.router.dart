@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 import '../datamodels/causes/good_wallet_project_model.dart';
+import '../datamodels/money_pools/money_pool_model.dart';
 import '../datamodels/user/qr_code_user_info_model.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/transaction_type.dart';
@@ -22,8 +23,10 @@ import '../ui/views/layout/layout_template_view.dart';
 import '../ui/views/layout/layout_template_view_mobile.dart';
 import '../ui/views/login/create_account_view.dart';
 import '../ui/views/login/login_view.dart';
-import '../ui/views/money_pools/create_money_pool_view.dart';
+import '../ui/views/money_pools/create_money_pool_form_view.dart';
+import '../ui/views/money_pools/create_money_pool_intro_view.dart';
 import '../ui/views/money_pools/manage_money_pools_view.dart';
+import '../ui/views/money_pools/single_money_pool_view.dart';
 import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
 import '../ui/views/payments/send_money_view.dart';
@@ -44,6 +47,10 @@ class Routes {
   static const String paymentCancelView = '/payment-cancel-view';
   static const String layoutTemplate = '/layout-template';
   static const String loginView = '/login-view';
+  static const String singleMoneyPoolView = '/single-money-pool-view';
+  static const String createMoneyPoolIntroView =
+      '/create-money-pool-intro-view';
+  static const String createMoneyPoolFormView = '/create-money-pool-form-view';
   static const String layoutTemplateViewMobile = '/layout-template-view-mobile';
   static const String homeViewMobile = '/home-view-mobile';
   static const String singleProjectViewMobile = '/single-project-view-mobile';
@@ -54,7 +61,6 @@ class Routes {
   static const String sendMoneyViewMobile = '/send-money-view-mobile';
   static const String transactionsView = '/transactions-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
-  static const String createMoneyPoolView = '/create-money-pool-view';
   static const String raiseMoneyView = '/raise-money-view';
   static const String startUpLogicView = '/';
   static const all = <String>{
@@ -66,6 +72,9 @@ class Routes {
     paymentCancelView,
     layoutTemplate,
     loginView,
+    singleMoneyPoolView,
+    createMoneyPoolIntroView,
+    createMoneyPoolFormView,
     layoutTemplateViewMobile,
     homeViewMobile,
     singleProjectViewMobile,
@@ -76,7 +85,6 @@ class Routes {
     sendMoneyViewMobile,
     transactionsView,
     qRCodeViewMobile,
-    createMoneyPoolView,
     raiseMoneyView,
     startUpLogicView,
   };
@@ -94,6 +102,9 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.paymentCancelView, page: PaymentCancelView),
     RouteDef(Routes.layoutTemplate, page: LayoutTemplate),
     RouteDef(Routes.loginView, page: LoginView),
+    RouteDef(Routes.singleMoneyPoolView, page: SingleMoneyPoolView),
+    RouteDef(Routes.createMoneyPoolIntroView, page: CreateMoneyPoolIntroView),
+    RouteDef(Routes.createMoneyPoolFormView, page: CreateMoneyPoolFormView),
     RouteDef(Routes.layoutTemplateViewMobile, page: LayoutTemplateViewMobile),
     RouteDef(Routes.homeViewMobile, page: HomeViewMobile),
     RouteDef(Routes.singleProjectViewMobile, page: SingleProjectViewMobile),
@@ -104,7 +115,6 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.sendMoneyViewMobile, page: SendMoneyViewMobile),
     RouteDef(Routes.transactionsView, page: TransactionsView),
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
-    RouteDef(Routes.createMoneyPoolView, page: CreateMoneyPoolView),
     RouteDef(Routes.raiseMoneyView, page: RaiseMoneyView),
     RouteDef(Routes.startUpLogicView, page: StartUpLogicView),
   ];
@@ -170,6 +180,31 @@ class StackedRouter extends RouterBase {
       );
       return MaterialPageRoute<dynamic>(
         builder: (context) => LoginView(key: args.key),
+        settings: data,
+      );
+    },
+    SingleMoneyPoolView: (data) {
+      var args = data.getArgs<SingleMoneyPoolViewArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => SingleMoneyPoolView(
+          key: args.key,
+          moneyPool: args.moneyPool,
+        ),
+        settings: data,
+      );
+    },
+    CreateMoneyPoolIntroView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => CreateMoneyPoolIntroView(),
+        settings: data,
+      );
+    },
+    CreateMoneyPoolFormView: (data) {
+      var args = data.getArgs<CreateMoneyPoolFormViewArguments>(
+        orElse: () => CreateMoneyPoolFormViewArguments(),
+      );
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => CreateMoneyPoolFormView(key: args.key),
         settings: data,
       );
     },
@@ -269,12 +304,6 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
-    CreateMoneyPoolView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => const CreateMoneyPoolView(),
-        settings: data,
-      );
-    },
     RaiseMoneyView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => const RaiseMoneyView(),
@@ -316,6 +345,19 @@ class LoginViewArguments {
   LoginViewArguments({this.key});
 }
 
+/// SingleMoneyPoolView arguments holder class
+class SingleMoneyPoolViewArguments {
+  final Key? key;
+  final MoneyPoolModel moneyPool;
+  SingleMoneyPoolViewArguments({this.key, required this.moneyPool});
+}
+
+/// CreateMoneyPoolFormView arguments holder class
+class CreateMoneyPoolFormViewArguments {
+  final Key? key;
+  CreateMoneyPoolFormViewArguments({this.key});
+}
+
 /// LayoutTemplateViewMobile arguments holder class
 class LayoutTemplateViewMobileArguments {
   final Key? key;
@@ -339,7 +381,7 @@ class CreateAccountViewArguments {
 /// SingleFeaturedAppView arguments holder class
 class SingleFeaturedAppViewArguments {
   final Key? key;
-  final FeaturedAppType? type;
+  final FeaturedAppType type;
   SingleFeaturedAppViewArguments({this.key, required this.type});
 }
 

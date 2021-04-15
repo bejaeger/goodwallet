@@ -8,7 +8,7 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class SingleFeaturedAppView extends StatelessWidget {
-  final FeaturedAppType? type;
+  final FeaturedAppType type;
 
   const SingleFeaturedAppView({Key? key, required this.type}) : super(key: key);
 

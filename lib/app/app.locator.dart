@@ -11,6 +11,7 @@ import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../services/globalgiving/global_giving_api_service.dart';
+import '../services/money_pools/money_pool_service.dart';
 import '../services/payments/dummy_payment_service.dart';
 import '../services/payments/firestore_payment_data_service.dart';
 import '../services/payments/stripe_payment_service.dart';
@@ -38,6 +39,7 @@ Future setupLocator() async {
   locator.registerLazySingleton(() => SendMoneyViewModel());
   locator.registerLazySingleton(() => TransactionHistoryLayoutViewModel());
   locator.registerLazySingleton(() => NavigationBarViewModel());
+  locator.registerLazySingleton(() => MoneyPoolService());
   locator.registerLazySingleton(() => FirebaseAuthenticationService());
   locator.registerLazySingleton(() => DummyPaymentService());
   locator.registerLazySingleton(() => QRCodeService());

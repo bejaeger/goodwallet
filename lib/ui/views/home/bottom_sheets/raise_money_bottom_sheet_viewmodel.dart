@@ -20,6 +20,6 @@ class RaiseMoneyBottomSheetViewModel extends BaseModel {
   }
 
   void navigateToCreateMoneyPoolView() {
-    _navigationService!.navigateTo(Routes.createMoneyPoolView);
+    _navigationService!.navigateTo(Routes.createMoneyPoolIntroView);
   }
 }
