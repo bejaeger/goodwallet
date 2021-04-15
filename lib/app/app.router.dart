@@ -13,6 +13,7 @@ import '../datamodels/causes/good_wallet_project_model.dart';
 import '../datamodels/user/qr_code_user_info_model.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/transaction_type.dart';
+import '../ui/views/causes/causes_filter_view_mobile.dart';
 import '../ui/views/causes/causes_view.dart';
 import '../ui/views/causes/single_project_view_mobile.dart';
 import '../ui/views/featured_applications/single_featured_app_view.dart';
@@ -56,6 +57,7 @@ class Routes {
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String createMoneyPoolView = '/create-money-pool-view';
   static const String raiseMoneyView = '/raise-money-view';
+  static const String causesFilterViewMobile = '/causes-filter-view-mobile';
   static const String startUpLogicView = '/';
   static const all = <String>{
     welcomeView,
@@ -78,6 +80,7 @@ class Routes {
     qRCodeViewMobile,
     createMoneyPoolView,
     raiseMoneyView,
+    causesFilterViewMobile,
     startUpLogicView,
   };
 }
@@ -106,6 +109,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
     RouteDef(Routes.createMoneyPoolView, page: CreateMoneyPoolView),
     RouteDef(Routes.raiseMoneyView, page: RaiseMoneyView),
+    RouteDef(Routes.causesFilterViewMobile, page: CausesFilterViewMobile),
     RouteDef(Routes.startUpLogicView, page: StartUpLogicView),
   ];
   @override
@@ -278,6 +282,12 @@ class StackedRouter extends RouterBase {
     RaiseMoneyView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => const RaiseMoneyView(),
+        settings: data,
+      );
+    },
+    CausesFilterViewMobile: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const CausesFilterViewMobile(),
         settings: data,
       );
     },

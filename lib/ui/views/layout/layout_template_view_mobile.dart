@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
+import 'package:good_wallet/ui/views/causes/causes_filter_view_mobile.dart';
 import 'package:good_wallet/ui/views/causes/causes_view_mobile.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_viewmodel.dart';
@@ -81,7 +82,7 @@ class LayoutTemplateViewMobile extends StatelessWidget {
     if (index == BottomNavigatorIndex.Home.index) {
       return HomeViewMobile();
     } else if (index == BottomNavigatorIndex.Give.index) {
-      return CausesViewMobile();
+      return CausesFilterViewMobile();
     } else if (index == BottomNavigatorIndex.RaiseMoney.index) {
       return RaiseMoneyView();
     } else {

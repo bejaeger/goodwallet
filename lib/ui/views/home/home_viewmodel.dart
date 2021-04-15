@@ -83,4 +83,5 @@ class HomeViewModel extends BaseModel {
   Future navigateToManageMoneyPoolsView() async {
     await _navigationService!.navigateTo(Routes.manageMoneyPoolsView);
   }
+
 }
