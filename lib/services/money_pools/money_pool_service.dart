@@ -4,13 +4,14 @@
 //
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
 import 'package:good_wallet/utils/logger.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class MoneyPoolService {
   final CollectionReference _moneyPoolsCollectionReference =
       FirebaseFirestore.instance.collection("moneypools");
-
   final log = getLogger("money_pool_service.dart");
 
   List<MoneyPoolModel> _moneyPools = [];
@@ -18,23 +19,48 @@ class MoneyPoolService {
   Future getMoneyPools(String uid, [bool force = false]) async {
     if (_moneyPools.isEmpty || force) {
       _moneyPools = await fetchMoneyPools(uid);
-      // add an empty money pool which trigger displaying a CTA to create a new money pool
-      // this is rather hacky!
-      _moneyPools.add(MoneyPoolModel.empty());
     }
     return _moneyPools;
   }
 
+  // Future pushMoneyPool(MoneyPoolModel moneyPool) async {
+  //   if (moneyPool.moneyPoolId == null) {
+  //     DocumentReference docRef = _moneyPoolsCollectionReference.doc();
+  //     moneyPool.moneyPoolId = docRef.id;
+  //     await docRef.set(moneyPool.toJson());
+  //   } else {
+  //     _moneyPoolsCollectionReference
+  //         .doc(moneyPool.moneyPoolId)
+  //         .set(moneyPool.toJson());
+  //   }
+  // }
+
   Future createMoneyPool(MoneyPoolModel moneyPool) async {
     // probably we want to call a cloud function instead
     log.i("Creating money pool: ${moneyPool.toJson()}");
-    await _moneyPoolsCollectionReference.add(moneyPool.toJson());
+    //pushMoneyPool(moneyPool);
+    //
+    try {
+      DocumentReference docRef = _moneyPoolsCollectionReference.doc();
+      moneyPool.moneyPoolId = docRef.id;
+      await docRef.set(moneyPool.toJson());
+    } catch (e) {
+      log.e("Could not create document");
+      rethrow;
+    }
   }
 
   Future updateMoneyPool(MoneyPoolModel moneyPool) async {
     // probably we want to call a cloud function instead
     log.i("Updating money pool: ${moneyPool.toJson()}");
-    await _moneyPoolsCollectionReference.add(moneyPool.toJson());
+    try {
+      _moneyPoolsCollectionReference
+          .doc(moneyPool.moneyPoolId)
+          .update(moneyPool.toJson());
+    } catch (e) {
+      log.e("Failed to update money pool document");
+      rethrow;
+    }
   }
 
   Future deleteMoneyPool(String moneyPoolId) async {

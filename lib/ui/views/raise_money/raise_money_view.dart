@@ -6,6 +6,7 @@ import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/raise_money/raise_money_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/carousel_card.dart';
+import 'package:good_wallet/ui/widgets/custom_sliver_app_bar_small.dart';
 import 'package:good_wallet/ui/widgets/money_pool_preview.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
@@ -18,8 +19,7 @@ class RaiseMoneyView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<RaiseMoneyViewModel>.reactive(
       viewModelBuilder: () => RaiseMoneyViewModel(),
-      onModelReady: (model) async => await model.fetchMoneyPools(),
-      //fireOnModelReadyOnce: true,
+      onModelReady: (model) async => model.fetchMoneyPools(force: true),
       builder: (context, model, child) => Scaffold(
         body: RefreshIndicator(
           onRefresh: () async => await model.fetchMoneyPools(force: true),
@@ -27,37 +27,9 @@ class RaiseMoneyView extends StatelessWidget {
             key: PageStorageKey('storage-key'),
             physics: BouncingScrollPhysics(),
             slivers: [
-              SliverAppBar(
-                automaticallyImplyLeading: false,
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Raise Money",
-                            style: textTheme(context)
-                                .headline3!
-                                .copyWith(fontSize: 25)),
-                        GestureDetector(
-                          onTap: model.navigateToProfileView,
-                          child: Icon(
-                            Icons.person,
-                            color: ColorSettings.whiteTextColor,
-                            size: 25,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                titleSpacing: 20,
-                expandedHeight: LayoutSettings.minAppBarHeight * 1,
-                collapsedHeight: LayoutSettings.minAppBarHeight,
-                backgroundColor: ColorSettings.primaryColor, //Colors.white,
-                elevation: 2.0,
-                toolbarHeight: LayoutSettings.minAppBarHeight,
-                pinned: true,
+              CustomSliverAppBarSmall(
+                title: "Raise Money",
+                onRightIconPressed: model.navigateToProfileView,
               ),
               model.isBusy
                   ? SliverList(
@@ -110,10 +82,14 @@ class MoneyPoolsGridView extends StatelessWidget {
           mainAxisSpacing: 20,
           crossAxisCount: 2,
         ),
-        itemCount: model.moneyPools!.length > 4 ? 4 : model.moneyPools!.length,
+        itemCount:
+            model.moneyPools!.length > 3 ? 4 : model.moneyPools!.length + 1,
         itemBuilder: (context, index) {
+          var itemCount =
+              model.moneyPools!.length > 3 ? 4 : model.moneyPools!.length + 1;
+          var showCreateNew = index == itemCount - 1 ? true : false;
           return MoneyPoolPreview(
-            moneyPool: model.moneyPools![index],
+            moneyPool: showCreateNew ? null : model.moneyPools![index],
             onTap: (MoneyPoolModel pool) =>
                 model.navigateToSingleMoneyPoolView(pool),
             onCreateMoneyPoolTapped: model.navigateToCreateMoneyPoolView,

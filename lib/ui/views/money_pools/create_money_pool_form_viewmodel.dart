@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
@@ -55,11 +56,15 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
       }
 
       // This will be the implementation of the money pool!
-      await Future.delayed(Duration(seconds: 2));
-
+      await Future.delayed(Duration(seconds: 1));
       // this will create the money pool.
-      //nameValue!;
-      await navigateToSingleMoneyPool(moneyPool);
+      await _navigationService!.clearTillFirstAndShow(
+        Routes.singleMoneyPoolView,
+        // predicate: (Route<dynamic> route) =>
+        //     route.settings.name == Routes.manageMoneyPoolsView,
+        //predicate: ModalRoute.withName(Routes.manageMoneyPoolsView),
+        arguments: SingleMoneyPoolViewArguments(moneyPool: moneyPool),
+      );
       setBusy(false);
     } else {
       setValidationMessage("Please provide a valid name for your money pool.");

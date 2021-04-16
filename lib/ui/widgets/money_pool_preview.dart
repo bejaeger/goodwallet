@@ -4,22 +4,22 @@ import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
 class MoneyPoolPreview extends StatelessWidget {
-  final MoneyPoolModel moneyPool;
+  final MoneyPoolModel? moneyPool;
   final void Function(MoneyPoolModel pool) onTap;
   final void Function() onCreateMoneyPoolTapped;
 
-  const MoneyPoolPreview(
-      {Key? key,
-      required this.moneyPool,
-      required this.onTap,
-      required this.onCreateMoneyPoolTapped})
-      : super(key: key);
+  const MoneyPoolPreview({
+    Key? key,
+    required this.moneyPool,
+    required this.onTap,
+    required this.onCreateMoneyPoolTapped,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (moneyPool.total >= 0.0) {
+    if (moneyPool != null) {
       return GestureDetector(
-        onTap: () => onTap(moneyPool),
+        onTap: () => onTap(moneyPool!),
         child: Card(
           margin: const EdgeInsets.all(0.0),
           elevation: 4.0,
@@ -33,11 +33,12 @@ class MoneyPoolPreview extends StatelessWidget {
                 alignment: Alignment.topLeft,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        moneyPool.name,
+                        moneyPool!.name,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: textTheme(context)
@@ -60,7 +61,7 @@ class MoneyPoolPreview extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(moneyPool.total.toString(),
+                    Text(moneyPool!.total.toString(),
                         style: textTheme(context).headline3),
                     Text("Collected", style: textTheme(context).bodyText1),
                   ],

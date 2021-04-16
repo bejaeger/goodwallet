@@ -35,12 +35,17 @@ class GoodWalletCard extends StatelessWidget {
       onTap: onCardTap,
       child: Card(
         clipBehavior: Clip.hardEdge,
-        elevation: 2.0,
+        elevation: 5.0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(16.0),
         ),
         color: Colors.white,
         child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.0),
+            border: Border.all(
+                color: ColorSettings.primaryColor.withOpacity(0.8), width: 2),
+          ),
           width: screenWidthWithoutPadding(context) - 8.0,
           height: 220,
           child: Stack(
@@ -64,8 +69,8 @@ class GoodWalletCard extends StatelessWidget {
                     colors: [
                       // Colors.white.withOpacity(0.2),
                       // Colors.white.withOpacity(0.9),
-                      ColorSettings.primaryColorLight.withOpacity(0.55),
-                      ColorSettings.primaryColorLight.withOpacity(0.2),
+                      ColorSettings.primaryColor.withOpacity(0.2),
+                      ColorSettings.primaryColor.withOpacity(0.1),
                     ],
                   ),
                 ),

@@ -36,6 +36,7 @@ class MoneyPoolModel {
   String adminName;
   double total;
   String? description;
+  String? moneyPoolId;
   bool showTotalAmount;
   List<ContributingUser>? invitedUsers;
   List<ContributingUser>? contributingUsers;
@@ -44,6 +45,7 @@ class MoneyPoolModel {
       : this.name = "",
         this.adminUID = "",
         this.adminName = "",
+        this.moneyPoolId = "",
         this.total = -1.0,
         this.description = "",
         this.showTotalAmount = false,
@@ -54,6 +56,7 @@ class MoneyPoolModel {
       {required this.name,
       required this.adminName,
       required this.adminUID,
+      this.moneyPoolId,
       this.total = 0,
       this.description,
       this.showTotalAmount = true,
@@ -64,6 +67,7 @@ class MoneyPoolModel {
       : name = json['name'],
         adminUID = json['adminUID'],
         adminName = json['adminName'],
+        moneyPoolId = json['moneyPoolId'],
         showTotalAmount = json['showTotalAmount'],
         total = json['total'] {
     description = json['description'];
@@ -88,6 +92,7 @@ class MoneyPoolModel {
     data['name'] = this.name;
     data['description'] = this.description;
     data['adminUID'] = this.adminUID;
+    data['moneyPoolId'] = this.moneyPoolId;
     data['adminName'] = this.adminName;
     data['total'] = this.total;
     data['showTotalAmount'] = this.showTotalAmount;

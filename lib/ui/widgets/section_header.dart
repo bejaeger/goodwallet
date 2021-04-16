@@ -11,12 +11,14 @@ class SectionHeader extends StatelessWidget {
   final void Function()? onTextButtonTap;
   final String title;
   final String textButtonText;
+  final Widget? trailingIcon;
 
   const SectionHeader(
       {Key? key,
       required this.title,
       this.onTextButtonTap,
-      this.textButtonText = "See all"})
+      this.textButtonText = "See all",
+      this.trailingIcon})
       : super(key: key);
 
   @override
@@ -35,6 +37,7 @@ class SectionHeader extends StatelessWidget {
                 textButtonText,
               ),
             ),
+          if (trailingIcon != null) trailingIcon!,
         ],
       ),
     );

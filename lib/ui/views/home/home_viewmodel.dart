@@ -81,6 +81,9 @@ class HomeViewModel extends BaseModel {
   }
 
   Future navigateToManageMoneyPoolsView() async {
+    // await _navigationService!.navigateTo(Routes.layoutTemplateViewMobile,
+    //     arguments: LayoutTemplateViewMobileArguments(
+    //         index: BottomNavigatorIndex.ManageMoneyPools.index));
     await _navigationService!.navigateTo(Routes.manageMoneyPoolsView);
   }
 

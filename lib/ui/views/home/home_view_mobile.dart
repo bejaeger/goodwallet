@@ -93,7 +93,7 @@ class HomeViewMobile extends StatelessWidget {
                                 verticalSpaceRegular,
                                 Text("Services",
                                     style: textTheme(context).headline6),
-                                verticalSpaceSmall,
+                                verticalSpaceRegular,
                                 SizedBox(
                                   width: screenWidthWithoutPadding(context),
                                   child: FittedBox(
@@ -159,7 +159,7 @@ class HomeViewMobile extends StatelessWidget {
                             SizedBox(width: LayoutSettings.horizontalPadding),
                           ],
                         ),
-                        verticalSpaceSmall,
+                        verticalSpaceTiny,
                         _sendMoneyButton(context, model),
                         verticalSpaceRegular,
                         SectionHeader(

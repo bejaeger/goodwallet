@@ -9,6 +9,7 @@ import 'package:stacked_services/stacked_services.dart';
 class ManageMoneyPoolsViewModel extends MoneyPoolsViewModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
+  final SnackbarService? _snackbarService = locator<SnackbarService>();
 
   List<MoneyPoolModel> moneyPools = [];
 
@@ -27,12 +28,17 @@ class ManageMoneyPoolsViewModel extends MoneyPoolsViewModel {
     setBusy(false);
   }
 
+  Future showSuccessfulDeletionOverlay() async {
+    // _snackbarService!
+    //   .showSnackbar(title: "Success", message: "deleted money pool");
+  }
+
   Future navigateToSingleMoneyPoolView(MoneyPoolModel moneyPool) async {
     await _navigationService!.navigateTo(Routes.singleMoneyPoolView,
         arguments: SingleMoneyPoolViewArguments(moneyPool: moneyPool));
   }
 
   void navigateToCreateMoneyPoolView() {
-    _navigationService!.replaceWith(Routes.createMoneyPoolIntroView);
+    _navigationService!.navigateTo(Routes.createMoneyPoolIntroView);
   }
 }

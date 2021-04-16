@@ -216,6 +216,7 @@ class StackedRouter extends RouterBase {
         builder: (context) => LayoutTemplateViewMobile(
           key: args.key,
           index: args.index,
+          snackBarString: args.snackBarString,
         ),
         settings: data,
       );
@@ -262,8 +263,14 @@ class StackedRouter extends RouterBase {
       );
     },
     ManageMoneyPoolsView: (data) {
+      var args = data.getArgs<ManageMoneyPoolsViewArguments>(
+        orElse: () => ManageMoneyPoolsViewArguments(),
+      );
       return MaterialPageRoute<dynamic>(
-        builder: (context) => const ManageMoneyPoolsView(),
+        builder: (context) => ManageMoneyPoolsView(
+          key: args.key,
+          forceReload: args.forceReload,
+        ),
         settings: data,
       );
     },
@@ -362,7 +369,9 @@ class CreateMoneyPoolFormViewArguments {
 class LayoutTemplateViewMobileArguments {
   final Key? key;
   final int? index;
-  LayoutTemplateViewMobileArguments({this.key, this.index});
+  final String? snackBarString;
+  LayoutTemplateViewMobileArguments(
+      {this.key, this.index, this.snackBarString});
 }
 
 /// SingleProjectViewMobile arguments holder class
@@ -383,6 +392,13 @@ class SingleFeaturedAppViewArguments {
   final Key? key;
   final FeaturedAppType type;
   SingleFeaturedAppViewArguments({this.key, required this.type});
+}
+
+/// ManageMoneyPoolsView arguments holder class
+class ManageMoneyPoolsViewArguments {
+  final Key? key;
+  final bool forceReload;
+  ManageMoneyPoolsViewArguments({this.key, this.forceReload = false});
 }
 
 /// SendMoneyViewMobile arguments holder class

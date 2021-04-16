@@ -28,9 +28,7 @@ class StartUpLogicViewModel extends BaseModel {
           log.i("User already signed in, navigating to home view");
           Future.delayed(Duration(seconds: 1));
           await _navigationService!.replaceWithTransition(
-              LayoutTemplateViewMobile(
-                index: BottomNavigatorIndex.Home.index,
-              ),
+              LayoutTemplateViewMobile(),
               duration: Duration(milliseconds: 1500));
           _userStateSubscription?.cancel();
         }
