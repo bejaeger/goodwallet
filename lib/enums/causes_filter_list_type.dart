@@ -1,0 +1,1 @@
+enum CausesFilterListType { GoodWalletFund, Themes, Favorites }
