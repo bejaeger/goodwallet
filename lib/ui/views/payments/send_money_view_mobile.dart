@@ -5,6 +5,7 @@ import 'package:good_wallet/datamodels/user/qr_code_user_info_model.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/payments/send_money_viewmodel.dart';
+import 'package:good_wallet/ui/widgets/alternative_screen_header.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
@@ -35,31 +36,11 @@ class SendMoneyViewMobile extends StatelessWidget {
                     horizontal: LayoutSettings.horizontalPadding),
                 child: ListView(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          padding: EdgeInsets.zero,
-                          alignment: Alignment.centerLeft,
-                          icon: Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.black,
-                          ),
-                          onPressed: model.navigateBack,
+                    AlternativeScreenHeader(
+                        title: "Send Money",
+                        onBackButtonPressed: model.navigateBack,
+                        onRightButtonPressed: model.showNotImplementedSnackbar,
                         ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.info_outline_rounded,
-                            color: ColorSettings.blackHeadlineColor,
-                          ),
-                          onPressed: model.showNotImplementedSnackbar,
-                        ),
-                      ],
-                    ),
-                    Text(
-                      "Send Money",
-                      style: TextStyle(fontSize: 34),
-                    ),
                     verticalSpaceLarge,
                     Column(
                       children: [

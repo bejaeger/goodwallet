@@ -44,7 +44,7 @@ class AlternativeScreenHeader extends StatelessWidget {
             if (onRightButtonPressed != null)
               IconButton(
                 icon: Icon(
-                  Icons.info_outline_rounded,
+                  Icons.help_outline_rounded,
                   color: ColorSettings.blackHeadlineColor,
                 ),
                 onPressed: onRightButtonPressed!,
