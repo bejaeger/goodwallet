@@ -13,10 +13,12 @@ class ConstrainedWidthLayout extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Align(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: LayoutSettings.maxAppWidth),
-        child: child,
+    return SafeArea(
+      child: Align(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: LayoutSettings.maxAppWidth),
+          child: child,
+        ),
       ),
     );
   }
@@ -29,10 +31,12 @@ class ConstrainedWidthWithScaffoldLayout extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Align(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: LayoutSettings.maxAppWidth),
-        child: Scaffold(body: child),
+    return SafeArea(
+      child: Align(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: LayoutSettings.maxAppWidth),
+          child: Scaffold(body: child),
+        ),
       ),
     );
   }

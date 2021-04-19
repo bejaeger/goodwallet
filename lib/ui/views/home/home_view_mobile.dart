@@ -116,10 +116,10 @@ class HomeViewMobile extends StatelessWidget {
                                           onPressed: model
                                               .navigateToSendMoneyViewMobile,
                                           color:
-                                              MyColors.softRed.withOpacity(0.3),
+                                              MyColors.paletteBlue.withOpacity(0.3),
                                           icon: Icon(
                                               Icons.attach_money_outlined,
-                                              color: MyColors.softRed,
+                                              color: MyColors.paletteBlue,
                                               size: 28),
                                         ),
                                         CallToActionButtonRound(
@@ -191,7 +191,7 @@ class HomeViewMobile extends StatelessWidget {
           style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(0.0),
               elevation: 0.0,
-              primary: ColorSettings.primaryColorLight.withOpacity(0.8)),
+              primary: ColorSettings.primaryColorLight.withOpacity(0.9)),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.0),
@@ -203,7 +203,7 @@ class HomeViewMobile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Send money",
+                    "Send Money",
                     style: textTheme(context).headline5!.copyWith(
                         fontSize: 18, color: ColorSettings.whiteTextColor),
                   ),

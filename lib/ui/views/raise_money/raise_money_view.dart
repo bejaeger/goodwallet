@@ -6,7 +6,7 @@ import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/raise_money/raise_money_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/carousel_card.dart';
-import 'package:good_wallet/ui/widgets/custom_sliver_app_bar_small.dart';
+import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/ui/widgets/money_pool_preview.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
@@ -47,6 +47,7 @@ class RaiseMoneyView extends StatelessWidget {
                                   model.navigateToManageMoneyPoolView,
                             ),
                             MoneyPoolsGridView(model: model),
+                            verticalSpaceMedium,
                             SectionHeader(
                               title: "Featured apps",
                               onTextButtonTap: model.showNotImplementedSnackbar,

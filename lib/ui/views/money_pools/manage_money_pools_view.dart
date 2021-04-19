@@ -5,7 +5,7 @@ import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/money_pools/manage_money_pools_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/alternative_screen_header.dart';
-import 'package:good_wallet/ui/widgets/custom_sliver_app_bar_small.dart';
+import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/ui/widgets/money_pool_preview.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';

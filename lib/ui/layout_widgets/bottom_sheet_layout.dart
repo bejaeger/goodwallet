@@ -27,12 +27,11 @@ class BottomSheetLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<RaiseMoneyBottomSheetViewModel>.reactive(
       viewModelBuilder: () => RaiseMoneyBottomSheetViewModel(),
-      builder: (context, model, child) => ConstrainedWidthLayout(
+      builder: (context, model, child) => Align(
+        alignment: Alignment.bottomCenter,
         child: Container(
           padding: EdgeInsets.only(top: 2),
-          constraints: BoxConstraints(
-              maxWidth:
-                  screenWidth(context) - 2 * LayoutSettings.horizontalPadding),
+          constraints: BoxConstraints(maxWidth: screenWidth(context)),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
