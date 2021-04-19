@@ -26,6 +26,14 @@ class MyUser {
         implicitDonations = 0,
         donations = 0;
 
+  MyUser.dummy()
+      : id = "USERID",
+        fullName = "USERNAME",
+        email = "dummy@gmail.com",
+        balance = 0,
+        implicitDonations = 0,
+        donations = 0;
+
   MyUser.fromData(Map<String, dynamic> data)
       : id = data['id'],
         fullName = data['fullName'],

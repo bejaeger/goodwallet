@@ -10,7 +10,7 @@ class ColorSettings extends MyColors {
   static Color? lightGreyTextColor = MyColors.lightGrey;
   static Color? blackTextColor = MyColors.darkGrey;
   static Color blackHeadlineColor = MyColors.black87;
-  static Color qrCodeOnWalletColor = MyColors.gold;
+  static Color qrCodeOnWalletColor = MyColors.almostWhite;
 }
 
 class MyColors {

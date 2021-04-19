@@ -10,8 +10,7 @@ void main() {
       test('Function that encodes user information as a string in json style',
           () {
         var service = QRCodeService();
-        var info = service
-            .getEncodedUserInfo(MyUser(id: "USERID", fullName: "USERNAME"));
+        var info = service.getEncodedUserInfo(MyUser.dummy());
         expect(info, "{\"id\":\"USERID\",\"name\":\"USERNAME\"}");
       });
     });

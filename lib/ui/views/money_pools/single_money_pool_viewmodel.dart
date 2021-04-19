@@ -11,9 +11,9 @@ class SingleMoneyPoolViewModel extends BaseModel {
 
   Future deleteMoneyPool(String poolId) async {
     setBusy(true);
-    _navigationService!.clearStackAndShow(Routes.layoutTemplateViewMobile,
-        arguments: LayoutTemplateViewMobileArguments(
-            snackBarString: "Successfully deleted money pool"));
+    _navigationService!.clearStackAndShow(
+      Routes.layoutTemplateViewMobile,
+    );
     await _moneyPoolService!.deleteMoneyPool(poolId);
     setBusy(false);
   }

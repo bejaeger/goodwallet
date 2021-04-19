@@ -16,7 +16,6 @@ import '../services/payments/dummy_payment_service.dart';
 import '../services/payments/firestore_payment_data_service.dart';
 import '../services/payments/stripe_payment_service.dart';
 import '../services/qrcode/qr_code_service.dart';
-import '../services/userdata/local_storage_service.dart';
 import '../services/userdata/user_data_service.dart';
 import '../ui/views/causes/causes_viewmodel.dart';
 import '../ui/views/layout/navigation_bar_viewmodel.dart';
@@ -26,7 +25,7 @@ import '../ui/views/wallet/wallet_viewmodel.dart';
 
 final locator = StackedLocator.instance;
 
-Future setupLocator() async {
+void setupLocator() {
   locator.registerLazySingleton(() => NavigationService());
   locator.registerLazySingleton(() => DialogService());
   locator.registerLazySingleton(() => SnackbarService());
@@ -41,10 +40,7 @@ Future setupLocator() async {
   locator.registerLazySingleton(() => NavigationBarViewModel());
   locator.registerLazySingleton(() => MoneyPoolService());
   locator.registerLazySingleton(() => FirebaseAuthenticationService());
-  locator.registerLazySingleton(() => DummyPaymentService());
+  locator.registerSingleton(DummyPaymentService());
   locator.registerLazySingleton(() => QRCodeService());
-  final localStorageService = await LocalStorageService.getInstance();
-  locator.registerSingleton(localStorageService);
-
-  locator.registerSingleton(UserDataService());
+  locator.registerLazySingleton(() => UserDataService());
 }

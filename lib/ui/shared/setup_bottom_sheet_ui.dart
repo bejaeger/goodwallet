@@ -4,9 +4,10 @@ import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/ui/views/home/bottom_sheets/raise_money_bottom_sheet_view.dart';
 import 'package:good_wallet/ui/views/home/bottom_sheets/send_money_bottom_sheet_view.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'package:good_wallet/utils/logger.dart';
 
 void setupBottomSheetUi() {
-  final bottomSheetService = locator<BottomSheetService>();
+  final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
 
   final builders = {
     BottomSheetType.raise: (context, sheetRequest, completer) =>
@@ -15,5 +16,5 @@ void setupBottomSheetUi() {
         SendMoneyBottomSheetView(request: sheetRequest, completer: completer),
   };
 
-  bottomSheetService.setCustomSheetBuilders(builders);
+  _bottomSheetService!.setCustomSheetBuilders(builders);
 }

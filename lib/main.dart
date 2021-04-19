@@ -20,12 +20,12 @@ void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-    await setupLocator();
+    setupLocator();
     setupBottomSheetUi();
     Logger.level = Level.info;
     runApp(MyApp());
   } catch (e) {
-    log.e("Set up failed");
+    print("ERROR: App main function failed with error: ${e.toString()}");
   }
 }
 
@@ -37,16 +37,18 @@ class MyApp extends StatelessWidget {
     log.i("Building MaterialApp...");
     return Unfocuser(
       child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'The Good Dollars Marketplace',
-          navigatorKey: StackedService.navigatorKey,
-          onGenerateRoute: StackedRouter().onGenerateRoute,
-          theme: MyThemeData.myTheme(),
-          initialRoute: kIsWeb
-              ? auto_router.Routes.welcomeView
-              : auto_router.Routes.startUpLogicView,
-          builder: (context, child) =>
-              isDesktop(context) ? LayoutTemplate(childView: child) : child!),
+        debugShowCheckedModeBanner: false,
+        title: 'The Good Dollars Marketplace',
+        navigatorKey: StackedService.navigatorKey,
+        onGenerateRoute: StackedRouter().onGenerateRoute,
+        theme: MyThemeData.myTheme(),
+        initialRoute: auto_router.Routes.startUpLogicView,
+        //kIsWeb
+        //? auto_router.Routes.welcomeView
+        //: auto_router.Routes.startUpLogicView,
+        builder: (context, child) => child!,
+      ),
+      //    isDesktop(context) ? LayoutTemplate(childView: child) : child!),
     );
   }
 }

@@ -64,7 +64,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: TransactionsView),
     MaterialRoute(page: QRCodeViewMobile),
     MaterialRoute(page: RaiseMoneyView),
-    MaterialRoute(page: StartUpLogicView, initial: true),
+    MaterialRoute(page: StartUpLogicView),
   ],
   dependencies: [
     // Registers all singletons
@@ -88,14 +88,16 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(
       classType: FirebaseAuthenticationService,
     ),
-    LazySingleton(classType: DummyPaymentService),
+    Singleton(classType: DummyPaymentService),
     LazySingleton(classType: QRCodeService),
-    Presolve(
-      classType: LocalStorageService,
-      presolveUsing: LocalStorageService.getInstance,
-    ),
 
-    Singleton(classType: UserDataService),
+    // We don't really need local storage atm! (maybe for offline support at some point)
+    // Presolve(
+    //   classType: LocalStorageService,
+    //   presolveUsing: LocalStorageService.getInstance,
+    // ),
+
+    LazySingleton(classType: UserDataService),
 
     // don't register the auth service lazily because we want it
     // to be initialized at the start of the app. This needs

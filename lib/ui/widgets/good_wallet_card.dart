@@ -41,11 +41,11 @@ class GoodWalletCard extends StatelessWidget {
         ),
         color: Colors.white,
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.0),
-            border: Border.all(
-                color: ColorSettings.primaryColor.withOpacity(0.8), width: 2),
-          ),
+          // decoration: BoxDecoration(
+          //   borderRadius: BorderRadius.circular(16.0),
+          //   border: Border.all(
+          //       color: ColorSettings.primaryColor.withOpacity(0.8), width: 2),
+          // ),
           width: screenWidthWithoutPadding(context) - 8.0,
           height: 220,
           child: Stack(
@@ -69,8 +69,8 @@ class GoodWalletCard extends StatelessWidget {
                     colors: [
                       // Colors.white.withOpacity(0.2),
                       // Colors.white.withOpacity(0.9),
-                      ColorSettings.primaryColor.withOpacity(0.2),
-                      ColorSettings.primaryColor.withOpacity(0.1),
+                      MyColors.paletteBlue.withOpacity(0.8),
+                      MyColors.paletteBlue.withOpacity(0.8),
                     ],
                   ),
                 ),
@@ -90,18 +90,28 @@ class GoodWalletCard extends StatelessWidget {
                           children: [
                             Text(
                               "Your Balance",
-                              style: textTheme(context).bodyText2!.copyWith(
-                                  fontSize: 18,
-                                  color: ColorSettings.greyTextColor),
+                              style: textTheme(context).bodyText1!.copyWith(
+                                    fontSize: 18,
+                                  ),
                             ),
                             verticalSpaceTiny,
                             Text("\$" + (currentBalance / 100).toString(),
-                                style: textTheme(context).headline2!.copyWith(
-                                    fontSize: 32,
-                                    color: ColorSettings.greyTextColor)),
+                                style: textTheme(context).headline1!.copyWith(
+                                      fontSize: 32,
+                                    )),
                           ],
                         ),
-                        GoodWalletLogo(),
+                        Row(
+                          children: [
+                            // GoodWalletLogo(
+                            //     textColor: ColorSettings.whiteTextColor),
+                            // horizontalSpaceSmall,
+                            Icon(
+                              Icons.more_vert_rounded,
+                              color: ColorSettings.whiteTextColor,
+                            )
+                          ],
+                        ),
                       ],
                     ),
                     verticalSpaceSmall,
@@ -113,8 +123,8 @@ class GoodWalletCard extends StatelessWidget {
                           height: 45,
                           width: 45,
                           child: QrImage(
-                            foregroundColor: ColorSettings.greyTextColor!,
-                            backgroundColor: ColorSettings.qrCodeOnWalletColor,
+                            foregroundColor: ColorSettings.qrCodeOnWalletColor,
+                            backgroundColor: ColorSettings.greyTextColor!,
                             padding: const EdgeInsets.all(2.0),
                             data: userInfo,
                           ),
@@ -133,21 +143,19 @@ class GoodWalletCard extends StatelessWidget {
                                     Text(
                                       "Good Wallet Goodometer: ",
                                       style: textTheme(context)
-                                          .bodyText2!
+                                          .bodyText1!
                                           .copyWith(
-                                              fontSize: 18,
-                                              color:
-                                                  ColorSettings.greyTextColor),
+                                            fontSize: 18,
+                                          ),
                                     ),
                                     Text(
                                       "\$ 10789",
                                       style: textTheme(context)
-                                          .bodyText2!
+                                          .bodyText1!
                                           .copyWith(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w600,
-                                              color:
-                                                  ColorSettings.greyTextColor),
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -160,15 +168,15 @@ class GoodWalletCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               _buildStatItem(
-                                  context,
-                                  "Total donations",
-                                  "\$" + (totalDonations / 100).toString(),
-                                  ColorSettings.greyTextColor),
+                                context,
+                                "Total donations",
+                                "\$" + (totalDonations / 100).toString(),
+                              ),
                               _buildStatItem(
-                                  context,
-                                  "Total raised",
-                                  "\$" + (totalRaised / 100).toString(),
-                                  ColorSettings.greyTextColor),
+                                context,
+                                "Total raised",
+                                "\$" + (totalRaised / 100).toString(),
+                              ),
                             ],
                           )
                   ],
@@ -181,20 +189,20 @@ class GoodWalletCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatItem(
-      BuildContext context, String label, String count, Color? color) {
+  Widget _buildStatItem(BuildContext context, String label, String count) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
           label,
-          style: textTheme(context).bodyText2!.copyWith(color: color),
+          style: textTheme(context).bodyText1!,
         ),
         Text(
           count,
-          style: textTheme(context).bodyText2!.copyWith(
-              fontWeight: FontWeight.bold, fontSize: 18, color: color),
+          style: textTheme(context)
+              .bodyText1!
+              .copyWith(fontWeight: FontWeight.bold, fontSize: 18),
         ),
       ],
     );

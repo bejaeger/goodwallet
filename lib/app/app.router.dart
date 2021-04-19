@@ -62,7 +62,7 @@ class Routes {
   static const String transactionsView = '/transactions-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String raiseMoneyView = '/raise-money-view';
-  static const String startUpLogicView = '/';
+  static const String startUpLogicView = '/start-up-logic-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -216,7 +216,6 @@ class StackedRouter extends RouterBase {
         builder: (context) => LayoutTemplateViewMobile(
           key: args.key,
           index: args.index,
-          snackBarString: args.snackBarString,
         ),
         settings: data,
       );
@@ -369,9 +368,7 @@ class CreateMoneyPoolFormViewArguments {
 class LayoutTemplateViewMobileArguments {
   final Key? key;
   final int? index;
-  final String? snackBarString;
-  LayoutTemplateViewMobileArguments(
-      {this.key, this.index, this.snackBarString});
+  LayoutTemplateViewMobileArguments({this.key, this.index});
 }
 
 /// SingleProjectViewMobile arguments holder class
