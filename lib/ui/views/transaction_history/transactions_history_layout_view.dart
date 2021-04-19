@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/enums/transaction_type.dart';
+import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/transactions_history_entry_style.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
@@ -38,52 +39,56 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
           ? model.isBusy
               ? Center(child: CircularProgressIndicator())
               : Center(child: Text("No transactions on record!"))
-          : Shimmer(
-              interval: Duration(hours: 1),
-              child: RefreshIndicator(
-                onRefresh: () => model.initialize(type),
-                child: ListView(
-                  children: [
-                    verticalSpaceRegular,
-                    Card(
-                      margin: const EdgeInsets.all(0.0),
-                      elevation: 2.0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+          : ConstrainedWidthLayout(
+              child: Shimmer(
+                interval: Duration(hours: 1),
+                child: RefreshIndicator(
+                  onRefresh: () => model.initialize(type),
+                  child: ListView(
+                    children: [
+                      verticalSpaceRegular,
+                      Card(
+                        margin: const EdgeInsets.all(0.0),
+                        elevation: 2.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        color: Colors.white,
+                        child: Container(
+                          padding: const EdgeInsets.only(
+                              top: 15.0, bottom: 15.0, left: 10.0),
+                          width: screenWidthWithoutPadding(context),
+                          child: _getMainStatisticsDisplay(model, context) ??
+                              Container(),
+                        ),
                       ),
-                      color: Colors.white,
-                      child: Container(
-                        padding: const EdgeInsets.only(
-                            top: 15.0, bottom: 15.0, left: 10.0),
-                        width: screenWidthWithoutPadding(context),
-                        child: _getMainStatisticsDisplay(model, context) ??
-                            Container(),
+                      verticalSpaceRegular,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: SizedBox(
+                          width:
+                              screenWidthPercentage(context, percentage: 0.7),
+                          child: description ?? Container(),
+                        ),
                       ),
-                    ),
-                    verticalSpaceRegular,
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: SizedBox(
-                        width: screenWidthPercentage(context, percentage: 0.7),
-                        child: description ?? Container(),
+                      verticalSpaceMediumLarge,
+                      ListView.builder(
+                        itemCount:
+                            model.getTransactions(type)!.length > maximumLength
+                                ? maximumLength
+                                : model.getTransactions(type)!.length,
+                        shrinkWrap: true,
+                        physics: ScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return TransactionListTile(
+                            transactionData:
+                                model.getTransactions(type)![index],
+                            inferEntryTypeFunction: model.inferTransactionType,
+                          );
+                        },
                       ),
-                    ),
-                    verticalSpaceMediumLarge,
-                    ListView.builder(
-                      itemCount:
-                          model.getTransactions(type)!.length > maximumLength
-                              ? maximumLength
-                              : model.getTransactions(type)!.length,
-                      shrinkWrap: true,
-                      physics: ScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return TransactionListTile(
-                          transactionData: model.getTransactions(type)![index],
-                          inferEntryTypeFunction: model.inferTransactionType,
-                        );
-                      },
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

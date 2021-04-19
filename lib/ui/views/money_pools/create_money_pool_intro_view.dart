@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/money_pools/create_money_pool_intro_viewmodel.dart';
@@ -43,8 +44,8 @@ class CreateMoneyPoolIntroView extends StatelessWidget {
       viewModelBuilder: () => CreateMoneyPoolIntroViewModel(),
       builder: (context, model, child) {
         List<Widget> _pages = getPages(context);
-        return Scaffold(
-          body: Padding(
+        return ConstrainedWidthWithScaffoldLayout(
+          child: Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: LayoutSettings.horizontalPadding),
             child: ListView(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/bottom_sheets/raise_money_bottom_sheet_viewmodel.dart';
@@ -26,51 +27,53 @@ class BottomSheetLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<RaiseMoneyBottomSheetViewModel>.reactive(
       viewModelBuilder: () => RaiseMoneyBottomSheetViewModel(),
-      builder: (context, model, child) => Container(
-        padding: EdgeInsets.only(top: 2),
-        constraints: BoxConstraints(
-            maxWidth:
-                screenWidth(context) - 2 * LayoutSettings.horizontalPadding),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              width: 40,
-              child: Divider(
-                thickness: 4,
-                color: Colors.grey[400],
-              ),
-            ),
-            verticalSpaceSmall,
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: ColorSettings.blackTextColor,
-                  ),
+      builder: (context, model, child) => ConstrainedWidthLayout(
+        child: Container(
+          padding: EdgeInsets.only(top: 2),
+          constraints: BoxConstraints(
+              maxWidth:
+                  screenWidth(context) - 2 * LayoutSettings.horizontalPadding),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 40,
+                child: Divider(
+                  thickness: 4,
+                  color: Colors.grey[400],
                 ),
-                verticalSpaceMedium,
-                if (widgetBeforeButtons != null) widgetBeforeButtons!,
-                if (widgetBeforeButtons != null) verticalSpaceRegular,
-                if (buttons != null)
-                  Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: buttons!),
-                if (widgetAfterButtons != null) verticalSpaceMedium,
-                if (widgetAfterButtons != null) widgetAfterButtons!,
-                verticalSpaceMedium,
-              ],
-            ),
-          ],
+              ),
+              verticalSpaceSmall,
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: ColorSettings.blackTextColor,
+                    ),
+                  ),
+                  verticalSpaceMedium,
+                  if (widgetBeforeButtons != null) widgetBeforeButtons!,
+                  if (widgetBeforeButtons != null) verticalSpaceRegular,
+                  if (buttons != null)
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: buttons!),
+                  if (widgetAfterButtons != null) verticalSpaceMedium,
+                  if (widgetAfterButtons != null) widgetAfterButtons!,
+                  verticalSpaceMedium,
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

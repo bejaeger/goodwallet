@@ -62,7 +62,7 @@ class MyThemeData {
       primaryColor: Color(0xFF941305),
       primaryColorLight: Color(0xFFcc492f), // light red
       primaryColorDark: Color(0xFF600000), // dark red
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.grey[100],
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
         elevation: 2.0,

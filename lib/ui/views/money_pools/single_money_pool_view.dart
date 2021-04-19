@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
+import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/money_pools/single_money_pool_viewmodel.dart';
@@ -18,8 +19,8 @@ class SingleMoneyPoolView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<SingleMoneyPoolViewModel>.reactive(
       viewModelBuilder: () => SingleMoneyPoolViewModel(),
-      builder: (context, model, child) => Scaffold(
-        body: model.isBusy
+      builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
+        child: model.isBusy
             ? Center(
                 child: CircularProgressIndicator(),
               )

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/money_pools/create_money_pool_form_viewmodel.dart';
@@ -21,8 +22,8 @@ class CreateMoneyPoolFormView extends StatelessWidget
     return ViewModelBuilder<CreateMoneyPoolFormViewModel>.reactive(
       viewModelBuilder: () => CreateMoneyPoolFormViewModel(),
       onModelReady: (model) => listenToFormUpdated(model),
-      builder: (context, model, child) => Scaffold(
-        body: model.isBusy
+      builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
+        child: model.isBusy
             ? Center(child: CircularProgressIndicator())
             : Padding(
                 padding: const EdgeInsets.symmetric(

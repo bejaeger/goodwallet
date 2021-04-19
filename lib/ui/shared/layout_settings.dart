@@ -3,5 +3,5 @@ class LayoutSettings {
   static const double bottomNavigationBarHeight = 55.0;
   static const double horizontalPadding = 20.0;
   static const double tabBarPreferredHeight = 50.0;
-  static const double maxAppWidth = 600;
+  static const double maxAppWidth = 500;
 }

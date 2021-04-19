@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
+import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/money_pools/manage_money_pools_viewmodel.dart';
@@ -23,8 +24,8 @@ class ManageMoneyPoolsView extends StatelessWidget {
       onModelReady: (model) async {
         model.fetchMoneyPools(force: forceReload);
       },
-      builder: (context, model, child) => Scaffold(
-        body: RefreshIndicator(
+      builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
+        child: RefreshIndicator(
           onRefresh: () async => await model.fetchMoneyPools(force: true),
           child: CustomScrollView(
             key: PageStorageKey('storage-key'),
@@ -54,13 +55,12 @@ class ManageMoneyPoolsView extends StatelessWidget {
                                   physics: ScrollPhysics(),
                                   shrinkWrap: true,
                                   gridDelegate:
-                                      SliverGridDelegateWithMaxCrossAxisExtent(
-                                          maxCrossAxisExtent:
-                                              screenWidthWithoutPadding(context,
-                                                  percentage: 0.45),
-                                          childAspectRatio: 1,
-                                          crossAxisSpacing: 20,
-                                          mainAxisSpacing: 20),
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    childAspectRatio: 1,
+                                    crossAxisSpacing: 20,
+                                    mainAxisSpacing: 20,
+                                    crossAxisCount: 2,
+                                  ),
                                   itemCount: model.moneyPools.length + 1,
                                   itemBuilder: (context, index) {
                                     var showCreateNew =
