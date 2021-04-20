@@ -15,7 +15,8 @@ import 'package:stacked/stacked.dart';
 // CausesViewMobile sets up tab bar view
 
 class CausesViewMobile extends StatelessWidget {
-  const CausesViewMobile({Key? key}) : super(key: key); //
+  final int? initialIndex;
+  const CausesViewMobile({Key? key, this.initialIndex = 0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +26,7 @@ class CausesViewMobile extends StatelessWidget {
       fireOnModelReadyOnce: true,
       onModelReady: (model) async => await model.fetchCauses(),
       builder: (context, model, child) => TabBarLayout(
+        initialIndex: initialIndex!,
         title: "Social Projects",
         titleTrailingWidget: SmallWalletCard(
             onTap: model.navigateToTransactionsHistoryView,

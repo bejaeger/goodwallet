@@ -4,6 +4,7 @@
 //
 
 import 'package:flutter/material.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
@@ -35,6 +36,9 @@ class SectionHeader extends StatelessWidget {
               onPressed: onTextButtonTap,
               child: Text(
                 textButtonText,
+                style: textTheme(context)
+                    .headline6!
+                    .copyWith(color: ColorSettings.primaryColor, fontSize: 16),
               ),
             ),
           if (trailingIcon != null) trailingIcon!,

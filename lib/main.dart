@@ -79,7 +79,7 @@ class MyThemeData {
       ),
       tabBarTheme: TabBarTheme(
         indicator: UnderlineTabIndicator(
-          borderSide: BorderSide(color: MyColors.lightRed, width: 5.0),
+          borderSide: BorderSide(color: Colors.grey[100]!, width: 3.0),
         ),
       ),
       iconTheme: IconThemeData(

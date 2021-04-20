@@ -215,7 +215,8 @@ class StackedRouter extends RouterBase {
       return MaterialPageRoute<dynamic>(
         builder: (context) => LayoutTemplateViewMobile(
           key: args.key,
-          index: args.index,
+          initialBottomNavBarIndex: args.initialBottomNavBarIndex,
+          initialTabBarIndex: args.initialTabBarIndex,
         ),
         settings: data,
       );
@@ -367,8 +368,10 @@ class CreateMoneyPoolFormViewArguments {
 /// LayoutTemplateViewMobile arguments holder class
 class LayoutTemplateViewMobileArguments {
   final Key? key;
-  final int? index;
-  LayoutTemplateViewMobileArguments({this.key, this.index});
+  final int? initialBottomNavBarIndex;
+  final int? initialTabBarIndex;
+  LayoutTemplateViewMobileArguments(
+      {this.key, this.initialBottomNavBarIndex, this.initialTabBarIndex = 0});
 }
 
 /// SingleProjectViewMobile arguments holder class

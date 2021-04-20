@@ -164,11 +164,19 @@ class UserDataService {
     try {
       _usersCollectionReference.doc(uid).snapshots().listen((userData) {
         if (userData.exists) {
-          userWalletSubject.add(WalletBalancesModel.fromData({
-            'currentBalance': userData["balance"] as num?,
-            'donations': userData["donations"] as num?,
-            'transferredToPeers': userData["implicitDonations"] as num?,
-          }));
+          try {
+            userWalletSubject.add(
+              WalletBalancesModel.fromData(
+                {
+                  'currentBalance': userData["balance"] as num?,
+                  'donations': userData["donations"] as num?,
+                  'transferredToPeers': userData["implicitDonations"] as num?,
+                },
+              ),
+            );
+          } catch (e) {
+            log.e("Could not use update wallet balance due to unkown error");
+          }
         } else {
           log.e("Wallet data could not be retrieved from firebase");
         }

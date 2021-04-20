@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
+import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/causes/single_project_viewmodel.dart';
@@ -18,8 +19,8 @@ class SingleProjectViewMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<SingleProjectViewModel>.reactive(
       viewModelBuilder: () => SingleProjectViewModel(),
-      builder: (context, model, child) => Scaffold(
-        body: ListView(
+      builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
+        child: ListView(
           children: <Widget>[
             AlternativeScreenHeaderImage(
               backgroundWidget:

@@ -7,6 +7,7 @@ import 'package:good_wallet/services/qrcode/qr_code_service.dart';
 import 'package:good_wallet/services/userdata/local_storage_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/causes/causes_view.dart';
+import 'package:good_wallet/ui/views/causes/causes_view_mobile.dart';
 import 'package:good_wallet/ui/views/causes/causes_viewmodel.dart';
 import 'package:good_wallet/ui/views/causes/single_project_view_mobile.dart';
 import 'package:good_wallet/ui/views/featured_applications/single_featured_app_view.dart';

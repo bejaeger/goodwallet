@@ -21,7 +21,7 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
   const TransactionsHistoryLayoutView(
       {Key? key,
       required this.type,
-      this.maximumLength = 5,
+      this.maximumLength = 25,
       this.userName,
       this.description})
       : super(key: key);

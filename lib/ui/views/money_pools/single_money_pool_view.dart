@@ -44,7 +44,9 @@ class SingleMoneyPoolView extends StatelessWidget {
                       itemBuilder: (context) => [
                         PopupMenuItem(
                           value: 1,
-                          child: Text("Share"),
+                          child: TextButton(
+                              onPressed: model.showNotImplementedSnackbar,
+                              child: Text("Share")),
                         ),
                         PopupMenuItem(
                           value: 2,

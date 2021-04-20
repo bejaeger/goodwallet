@@ -22,7 +22,7 @@ class HomeViewModel extends BaseModel {
   Future navigateToDonationView() async {
     await _navigationService!.replaceWith(Routes.layoutTemplateViewMobile,
         arguments: LayoutTemplateViewMobileArguments(
-            index: BottomNavigatorIndex.Give.index));
+            initialBottomNavBarIndex: BottomNavigatorIndex.Give.index));
   }
 
   String getQRCodeUserInfoString() {
@@ -89,5 +89,12 @@ class HomeViewModel extends BaseModel {
 
   Future navigateToSendMoneyViewMobile() async {
     await _navigationService!.navigateTo(Routes.sendMoneyViewMobile);
+  }
+
+  Future navigateToFavoriteCharitiesView() async {
+    await _navigationService!.navigateTo(Routes.layoutTemplateViewMobile,
+        arguments: LayoutTemplateViewMobileArguments(
+            initialBottomNavBarIndex: BottomNavigatorIndex.Give.index,
+            initialTabBarIndex: 2));
   }
 }

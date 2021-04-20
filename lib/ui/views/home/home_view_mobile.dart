@@ -83,12 +83,22 @@ class HomeViewMobile extends StatelessWidget {
                                   onCardTap:
                                       model.navigateToTransactionsHistoryView,
                                   onQRCodeTap: model.navigateToQRCodeView,
+                                  onShowTransactionsPressed:
+                                      model.navigateToTransactionsHistoryView,
+                                  onFavoriteCharitiesPressed:
+                                      model.navigateToFavoriteCharitiesView,
+                                  //onReceiveButtonPressed:
+                                  //    model.navigateToAcceptPaymentsView,
+                                  onDonateButtonPressed:
+                                      model.navigateToDonationView,
+                                  onCommitButtonPressed:
+                                      model.navigateToSendMoneyViewMobile,
                                   currentBalance:
                                       model.userWallet.currentBalance!,
                                   totalDonations: model.userWallet.donations!,
                                   totalRaised: 7800,
                                   userInfo: model.getQRCodeUserInfoString(),
-                                  showGoodometer: true,
+                                  showGoodometer: false,
                                 ),
                                 verticalSpaceRegular,
                                 Text("Services",
@@ -97,30 +107,19 @@ class HomeViewMobile extends StatelessWidget {
                                 SizedBox(
                                   width: screenWidthWithoutPadding(context),
                                   child: FittedBox(
+                                    fit: BoxFit.contain,
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceAround,
                                       children: [
                                         CallToActionButtonRound(
-                                          text: "Receive",
-                                          onPressed: model
-                                              .navigateToAcceptPaymentsView,
-                                          color: MyColors.paletteBlue
+                                          text: "Send money",
+                                          onPressed:
+                                              model.showSendMoneyBottomSheet,
+                                          color: MyColors.lightRed
                                               .withOpacity(0.3),
-                                          icon: Image.asset(
-                                              ImageIconPaths.handAcceptingMoney,
-                                              color: MyColors.paletteBlue),
-                                        ),
-                                        CallToActionButtonRound(
-                                          text: "Commit",
-                                          onPressed: model
-                                              .navigateToSendMoneyViewMobile,
-                                          color:
-                                              MyColors.paletteBlue.withOpacity(0.3),
-                                          icon: Icon(
-                                              Icons.attach_money_outlined,
-                                              color: MyColors.paletteBlue,
-                                              size: 28),
+                                          icon: Icon(Icons.send_rounded,
+                                              color: MyColors.lightRed),
                                         ),
                                         CallToActionButtonRound(
                                           text: "Money pools",
@@ -141,6 +140,16 @@ class HomeViewMobile extends StatelessWidget {
                                               ImageIconPaths.huggingPeople,
                                               color: MyColors.gold),
                                         ),
+                                        CallToActionButtonRound(
+                                          text: "Explore apps",
+                                          onPressed:
+                                              model.showNotImplementedSnackbar,
+                                          color: MyColors.paletteBlue
+                                              .withOpacity(0.3),
+                                          icon: Image.asset(
+                                            ImageIconPaths.appsAroundGlobus,
+                                          ),
+                                        ),
                                         // CallToActionButtonRound(
                                         //   text: "Send money",
                                         //   onPressed:
@@ -159,8 +168,8 @@ class HomeViewMobile extends StatelessWidget {
                             SizedBox(width: LayoutSettings.horizontalPadding),
                           ],
                         ),
-                        verticalSpaceTiny,
-                        _sendMoneyButton(context, model),
+                        //verticalSpaceTiny,
+                        //_sendMoneyButton(context, model),
                         verticalSpaceRegular,
                         SectionHeader(
                             title: "Projects you supported",

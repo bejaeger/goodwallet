@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
@@ -12,9 +11,12 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:stacked/stacked.dart';
 
 class LayoutTemplateViewMobile extends StatefulWidget {
-  final int? index;
+  final int? initialBottomNavBarIndex;
+  final int? initialTabBarIndex;
 
-  const LayoutTemplateViewMobile({Key? key, this.index}) : super(key: key);
+  const LayoutTemplateViewMobile(
+      {Key? key, this.initialBottomNavBarIndex, this.initialTabBarIndex = 0})
+      : super(key: key);
 
   @override
   _LayoutTemplateViewMobileState createState() =>
@@ -26,7 +28,8 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
 
   @override
   void initState() {
-    _controller = PersistentTabController(initialIndex: widget.index ?? 0);
+    _controller = PersistentTabController(
+        initialIndex: widget.initialBottomNavBarIndex ?? 0);
     super.initState();
   }
 
@@ -77,7 +80,11 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
   }
 
   List<Widget> _buildScreens() {
-    return [HomeViewMobile(), CausesViewMobile(), RaiseMoneyView()];
+    return [
+      HomeViewMobile(),
+      CausesViewMobile(initialIndex: widget.initialTabBarIndex),
+      RaiseMoneyView()
+    ];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -85,7 +92,7 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
       PersistentBottomNavBarItem(
         icon: Icon(Icons.home_rounded),
         title: ("Home"),
-        activeColorPrimary: ColorSettings.primaryColorLight,
+        activeColorPrimary: ColorSettings.primaryColor,
         inactiveColorPrimary: ColorSettings.greyTextColor,
       ),
       PersistentBottomNavBarItem(
@@ -93,13 +100,13 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
           Icons.favorite,
         ),
         title: ("Donate"),
-        activeColorPrimary: ColorSettings.primaryColorLight,
+        activeColorPrimary: ColorSettings.primaryColor,
         inactiveColorPrimary: ColorSettings.greyTextColor!,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.arrow_upward),
         title: ("Raise Money"),
-        activeColorPrimary: ColorSettings.primaryColorLight,
+        activeColorPrimary: ColorSettings.primaryColor,
         inactiveColorPrimary: ColorSettings.greyTextColor,
       ),
     ];
