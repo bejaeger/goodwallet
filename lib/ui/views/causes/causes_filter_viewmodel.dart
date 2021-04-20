@@ -23,9 +23,10 @@ class CausesFilterViewModel extends BaseModel {
     final UserDataService? _userDataService = locator<UserDataService>();
 
   final log = getLogger("causes_viewmodel.dart");
-
   List<GoodWalletProjectModel>? projects;
   List<GoodWalletFundModel>? goodWalletFunds;
+  List? uniqueThemes;
+
 
   Future fetchCauses() async {
     setBusy(true);
@@ -36,6 +37,10 @@ class CausesFilterViewModel extends BaseModel {
     }
     setBusy(false);
     notifyListeners();
+    int numberProjects = projects!.length;
+    for (int i = 0; i < numberProjects; i++) {
+      uniqueThemes?[i] = projects![i].themeName;
+    }
   }
    
 
@@ -49,6 +54,9 @@ class CausesFilterViewModel extends BaseModel {
       projects = projectsSnapshot.docs
           .map((snapshot) => GoodWalletProjectModel.fromMap(snapshot.data()!))
           .toList();
+
+      
+
     } else {
       log.i("Get global giving projects from API");
       // No data stored on firestore yet, use global giving API
@@ -59,4 +67,5 @@ class CausesFilterViewModel extends BaseModel {
   Future navigateToTransactionsHistoryView() async {
     _navigationService!.navigateTo(Routes.transactionsView);
   }
+
 }
