@@ -11,15 +11,14 @@ import 'package:good_wallet/ui/widgets/small_wallet_card.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:stacked/stacked.dart';
-      
 
- class CausesFilterViewMobile extends StatelessWidget {
- const CausesFilterViewMobile({Key? key}) : super(key: key);
- 
- @override
- Widget build(BuildContext context) {
-   return ViewModelBuilder<CausesFilterViewModel>.reactive(
-     viewModelBuilder: () => locator<CausesFilterViewModel>(),
+class CausesFilterViewMobile extends StatelessWidget {
+  const CausesFilterViewMobile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<CausesFilterViewModel>.reactive(
+      viewModelBuilder: () => locator<CausesFilterViewModel>(),
       disposeViewModel: false,
       fireOnModelReadyOnce: true,
       onModelReady: (model) async => await model.fetchCauses(),
@@ -31,8 +30,7 @@ import 'package:stacked/stacked.dart';
             balance: model.userWallet.currentBalance!),
         tabs: [
           Container(
-              width: screenWidth(context) * 0.25,
-              child: Tab(text: "Themes")),
+              width: screenWidth(context) * 0.25, child: Tab(text: "Themes")),
           Container(
               width: screenWidth(context) * 0.3,
               child: Tab(text: "Good Wallet Funds")),
@@ -40,7 +38,7 @@ import 'package:stacked/stacked.dart';
               width: screenWidth(context) * 0.25,
               child: Tab(text: "Favorites")),
         ],
-        views: [ 
+        views: [
           CausesFilterListViewMobile(
             type: CausesFilterListType.Themes,
             description: Text("High-impact charities provided by GlobalGiving"),
@@ -63,17 +61,15 @@ import 'package:stacked/stacked.dart';
 class CausesFilterListViewMobile extends StatelessWidget {
   final CausesFilterListType type;
   final Widget? description;
-  
 
-
-
-  const CausesFilterListViewMobile({Key? key, required this.type, this.description})
+  const CausesFilterListViewMobile(
+      {Key? key, required this.type, this.description})
       : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<CausesViewModel>.reactive(
-      viewModelBuilder: () => locator<CausesViewModel>(),
+    return ViewModelBuilder<CausesFilterViewModel>.reactive(
+      viewModelBuilder: () => locator<CausesFilterViewModel>(),
       disposeViewModel: false,
       fireOnModelReadyOnce: true,
       onModelReady: (model) async => await model.fetchCauses(),
@@ -95,57 +91,59 @@ class CausesFilterListViewMobile extends StatelessWidget {
                     ),
                     verticalSpaceMediumLarge,
                     if (type == CausesFilterListType.Themes)
-                    // For some reason this is not working, but I will leave it for now, because gridview would be better, way better
-                    // GridView.builder(
-                    //     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    //         maxCrossAxisExtent: 200,
-                    //         childAspectRatio: 3 / 2,
-                    //         crossAxisSpacing: 20,
-                    //         mainAxisSpacing: 20),
-                    //     itemCount: content.length,
-                    //     itemBuilder: (BuildContext context, int index) {
-                    //       return Container(
-                    //         alignment: Alignment.center,
-                    //         child: Text(content[index]),
-                    //         //decoration: BoxDecoration(
-                    //             //color: Colors.amber,
-                    //             //borderRadius: BorderRadius.circular(15)),
-                    //       );
-                    //     }),
+                      // For some reason this is not working, but I will leave it for now, because gridview would be better, way better
+                      // GridView.builder(
+                      //     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      //         maxCrossAxisExtent: 200,
+                      //         childAspectRatio: 3 / 2,
+                      //         crossAxisSpacing: 20,
+                      //         mainAxisSpacing: 20),
+                      //     itemCount: model.uniqueThemes.length,
+                      //     itemBuilder: (BuildContext context, int index) {
+                      //       return Container(
+                      //         alignment: Alignment.center,
+                      //         child: Text(model.uniqueThemes[index]),
+                      //         //decoration: BoxDecoration(
+                      //             //color: Colors.amber,
+                      //             //borderRadius: BorderRadius.circular(15)),
+                      //       );
+                      //     }),
+                      
+                     
 
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: ScrollPhysics(),
-                        itemCount: model.projects!.length,
-                        itemBuilder: (BuildContext context, int index)  => Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: ListTile(
-                            title: Text(model.projects![index].themeName!),
-                            onTap: null,
-                          ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: ScrollPhysics(),
+                      itemCount: model.uniqueThemes.length,
+                      itemBuilder: (BuildContext context, int index)  => Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: ListTile(
+                          title: Text(model.uniqueThemes[index]),
+                          onTap: model.navigateToCausesViewMobile,
                         ),
                       ),
-                        
-                        // {
-                        //   return ListTile(
-                        //     title: Text(content[index]),
-                        //   );
-                        // }
+                    ),
 
-                        // //itemBuilder: (context, index) => Padding(
-                        //   padding: const EdgeInsets.only(bottom: 8.0),
-                        //   child: RaisedButton(
-                        //     onPressed: null,
-                        //     child: Text(model.projects![index]),
-                           // ), // add a list with the project themes
-                          // child: GlobalGivingProjectCardMobile(
-                          //   project: model.projects![index],
-                          //   onTap: () async =>
-                          //       await model.navigateToProjectScreen(index),
-                          //   onTapFavorite: model.showNotImplementedSnackbar,
-                          // ),
-                        //),
-                     // ),
+                    // {
+                    //   return ListTile(
+                    //     title: Text(content[index]),
+                    //   );
+                    // }
+
+                    // //itemBuilder: (context, index) => Padding(
+                    //   padding: const EdgeInsets.only(bottom: 8.0),
+                    //   child: RaisedButton(
+                    //     onPressed: null,
+                    //     child: Text(model.projects![index]),
+                    // ), // add a list with the project themes
+                    // child: GlobalGivingProjectCardMobile(
+                    //   project: model.projects![index],
+                    //   onTap: () async =>
+                    //       await model.navigateToProjectScreen(index),
+                    //   onTapFavorite: model.showNotImplementedSnackbar,
+                    // ),
+                    //),
+                    // ),
                     if (type == CausesFilterListType.GoodWalletFund)
                       ListView.builder(
                           shrinkWrap: true,

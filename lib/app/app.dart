@@ -9,6 +9,7 @@ import 'package:good_wallet/style/page_transitions.dart';
 import 'package:good_wallet/ui/views/causes/causes_filter_view_mobile.dart';
 import 'package:good_wallet/ui/views/causes/causes_filter_viewmodel.dart';
 import 'package:good_wallet/ui/views/causes/causes_view.dart';
+import 'package:good_wallet/ui/views/causes/causes_view_mobile.dart';
 import 'package:good_wallet/ui/views/causes/causes_viewmodel.dart';
 import 'package:good_wallet/ui/views/causes/single_project_view_mobile.dart';
 import 'package:good_wallet/ui/views/featured_applications/single_featured_app_view.dart';
@@ -64,6 +65,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: CreateMoneyPoolView),
     MaterialRoute(page: RaiseMoneyView),
     MaterialRoute(page: CausesFilterViewMobile),
+    MaterialRoute(page: CausesViewMobile),
     MaterialRoute(page: StartUpLogicView, initial: true),
   ],
   dependencies: [

@@ -15,6 +15,7 @@ import '../enums/featured_app_type.dart';
 import '../enums/transaction_type.dart';
 import '../ui/views/causes/causes_filter_view_mobile.dart';
 import '../ui/views/causes/causes_view.dart';
+import '../ui/views/causes/causes_view_mobile.dart';
 import '../ui/views/causes/single_project_view_mobile.dart';
 import '../ui/views/featured_applications/single_featured_app_view.dart';
 import '../ui/views/home/home_view_mobile.dart';
@@ -58,6 +59,7 @@ class Routes {
   static const String createMoneyPoolView = '/create-money-pool-view';
   static const String raiseMoneyView = '/raise-money-view';
   static const String causesFilterViewMobile = '/causes-filter-view-mobile';
+  static const String causesViewMobile = '/causes-view-mobile';
   static const String startUpLogicView = '/';
   static const all = <String>{
     welcomeView,
@@ -81,6 +83,7 @@ class Routes {
     createMoneyPoolView,
     raiseMoneyView,
     causesFilterViewMobile,
+    causesViewMobile,
     startUpLogicView,
   };
 }
@@ -110,6 +113,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.createMoneyPoolView, page: CreateMoneyPoolView),
     RouteDef(Routes.raiseMoneyView, page: RaiseMoneyView),
     RouteDef(Routes.causesFilterViewMobile, page: CausesFilterViewMobile),
+    RouteDef(Routes.causesViewMobile, page: CausesViewMobile),
     RouteDef(Routes.startUpLogicView, page: StartUpLogicView),
   ];
   @override
@@ -288,6 +292,12 @@ class StackedRouter extends RouterBase {
     CausesFilterViewMobile: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => const CausesFilterViewMobile(),
+        settings: data,
+      );
+    },
+    CausesViewMobile: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const CausesViewMobile(),
         settings: data,
       );
     },

@@ -25,7 +25,7 @@ class CausesFilterViewModel extends BaseModel {
   final log = getLogger("causes_viewmodel.dart");
   List<GoodWalletProjectModel>? projects;
   List<GoodWalletFundModel>? goodWalletFunds;
-  List? uniqueThemes;
+  List uniqueThemes = [];
 
 
   Future fetchCauses() async {
@@ -35,12 +35,14 @@ class CausesFilterViewModel extends BaseModel {
       log.i("Fetched project list with length ${projects!.length}");
       // TODO: Add user info when no projects could be retrieved..e.g. network issues
     }
+    uniqueThemes = projects!.map(((e) => e.themeName)).toList();
+    print(uniqueThemes);
+    uniqueThemes = uniqueThemes.toSet().toList();
+    print(uniqueThemes);
+    
     setBusy(false);
     notifyListeners();
-    int numberProjects = projects!.length;
-    for (int i = 0; i < numberProjects; i++) {
-      uniqueThemes?[i] = projects![i].themeName;
-    }
+    
   }
    
 
@@ -66,6 +68,13 @@ class CausesFilterViewModel extends BaseModel {
   }
   Future navigateToTransactionsHistoryView() async {
     _navigationService!.navigateTo(Routes.transactionsView);
+  }
+
+  Future navigateToCausesViewMobile() async {
+    _navigationService!.navigateTo(Routes.causesViewMobile);
+    // change argument to the uniqueTheme. 
+    //await _navigationService!.navigateTo(Routes.causesViewMobile,
+      //  arguments: SingleProjectViewMobileArguments(project: projects![index]));
   }
 
 }
