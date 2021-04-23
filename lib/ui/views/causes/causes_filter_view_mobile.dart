@@ -119,7 +119,8 @@ class CausesFilterListViewMobile extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: ListTile(
                           title: Text(model.uniqueThemes[index]),
-                          onTap: model.navigateToCausesViewMobile,
+                          onTap: () async => 
+                              await model.navigateToCausesViewMobile(index),
                         ),
                       ),
                     ),

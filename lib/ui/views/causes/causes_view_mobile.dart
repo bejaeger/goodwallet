@@ -15,7 +15,10 @@ import 'package:stacked/stacked.dart';
 // CausesViewMobile sets up tab bar view
 
 class CausesViewMobile extends StatelessWidget {
-  const CausesViewMobile({Key? key}) : super(key: key); //
+  final String? Theme;
+
+  const CausesViewMobile({Key? key, required this.Theme})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +67,8 @@ class CausesViewMobile extends StatelessWidget {
 class CausesListViewMobile extends StatelessWidget {
   final CausesListType type;
   final Widget? description;
-
-  const CausesListViewMobile({Key? key, required this.type, this.description})
+  final String? Theme;
+  const CausesListViewMobile({Key? key, required this.type, this.description, this.Theme})
       : super(key: key);
 
   @override

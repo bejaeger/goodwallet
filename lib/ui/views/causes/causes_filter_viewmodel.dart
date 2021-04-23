@@ -70,11 +70,9 @@ class CausesFilterViewModel extends BaseModel {
     _navigationService!.navigateTo(Routes.transactionsView);
   }
 
-  Future navigateToCausesViewMobile() async {
-    _navigationService!.navigateTo(Routes.causesViewMobile);
-    // change argument to the uniqueTheme. 
-    //await _navigationService!.navigateTo(Routes.causesViewMobile,
-      //  arguments: SingleProjectViewMobileArguments(project: projects![index]));
+  Future navigateToCausesViewMobile(index) async {
+    await _navigationService!.navigateTo(Routes.causesViewMobile,
+       arguments: CausesViewMobileArguments(Theme: uniqueThemes[index]));
   }
 
 }

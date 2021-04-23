@@ -296,8 +296,12 @@ class StackedRouter extends RouterBase {
       );
     },
     CausesViewMobile: (data) {
+      var args = data.getArgs<CausesViewMobileArguments>(nullOk: false);
       return MaterialPageRoute<dynamic>(
-        builder: (context) => const CausesViewMobile(),
+        builder: (context) => CausesViewMobile(
+          key: args.key,
+          Theme: args.Theme,
+        ),
         settings: data,
       );
     },
@@ -385,4 +389,11 @@ class QRCodeViewMobileArguments {
   final Key? key;
   final int initialIndex;
   QRCodeViewMobileArguments({this.key, this.initialIndex = 0});
+}
+
+/// CausesViewMobile arguments holder class
+class CausesViewMobileArguments {
+  final Key? key;
+  final String? Theme;
+  CausesViewMobileArguments({this.key, required this.Theme});
 }
