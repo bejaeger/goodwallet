@@ -35,9 +35,8 @@ class DummyPaymentService {
   }
 
   Future processTransaction(TransactionModel transactionModelDummy) async {
-    // to be implemented
-    // similar to processDonation above but use add TransactionModel to firestore
-    // collection 'payments' not 'users/<userId>/donations/{donationId}' as above
+    // Pushed the data to firestore which will trigger a firebase cloud function
+    // that updates the good wallets!
     try {
       _paymentsCollectionReference.add(transactionModelDummy.toJson());
     } catch (e) {

@@ -12,6 +12,10 @@ import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
+///////////////////////////////////////////
+///// Might be deprecated
+////////////////////////////////////////////
+
 class RaiseMoneyView extends StatelessWidget {
   const RaiseMoneyView({Key? key}) : super(key: key);
 
@@ -96,46 +100,6 @@ class MoneyPoolsGridView extends StatelessWidget {
             onCreateMoneyPoolTapped: model.navigateToCreateMoneyPoolView,
           );
         },
-      ),
-    );
-  }
-}
-
-class FeaturedAppsCarousel extends StatelessWidget {
-  final dynamic model;
-
-  const FeaturedAppsCarousel({Key? key, this.model}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          SizedBox(width: LayoutSettings.horizontalPadding),
-          CarouselCard(
-            title: "Marketplace",
-            explanation: "Sell items in exchange for Good Dollars",
-            onTap: () => model
-                .navigateToSingleFeaturedAppView(FeaturedAppType.Marketplace),
-          ),
-          SizedBox(width: LayoutSettings.horizontalPadding),
-          CarouselCard(
-            title: "Sportsbetting",
-            explanation: "Bet with friends and win Good Gollars",
-            onTap: model.showNotImplementedSnackbar,
-            backgroundColor: MyColors.paletteTurquoise,
-          ),
-          SizedBox(width: LayoutSettings.horizontalPadding),
-          CarouselCard(
-            title: "Your Application",
-            explanation:
-                "This could be your application that leverages the Good Wallet to do good",
-            onTap: model.showNotImplementedSnackbar,
-            backgroundColor: MyColors.palettePurple,
-          ),
-          SizedBox(width: LayoutSettings.horizontalPadding),
-        ],
       ),
     );
   }

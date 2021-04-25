@@ -71,8 +71,11 @@ class _TabBarLayoutState extends State<TabBarLayout>
               child: Container(
                 child: TabBar(
                   controller: _tabController,
-                  isScrollable: true,
                   tabs: widget.tabs,
+                  labelPadding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                  labelStyle: textTheme(context)
+                      .bodyText1!
+                      .copyWith(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
               ),
             ),

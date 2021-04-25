@@ -5,6 +5,8 @@ import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/transactions_history_entry_style.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
+import 'package:good_wallet/ui/widgets/show_balance_card.dart';
+import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -16,7 +18,7 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
   final TransactionType type;
   final int maximumLength;
   final String? userName;
-  final Widget? description;
+  final String? description;
 
   const TransactionsHistoryLayoutView(
       {Key? key,
@@ -47,31 +49,13 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
                   child: ListView(
                     children: [
                       verticalSpaceRegular,
-                      Card(
-                        margin: const EdgeInsets.all(0.0),
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        color: Colors.white,
-                        child: Container(
-                          padding: const EdgeInsets.only(
-                              top: 15.0, bottom: 15.0, left: 10.0),
-                          width: screenWidthWithoutPadding(context),
-                          child: _getMainStatisticsDisplay(model, context) ??
-                              Container(),
-                        ),
+                      ShowBalanceCard(
+                        balance: _getBalanceForType(type, model),
+                        title: _getTitleForType(type),
+                        //height: 90,
+                        shortDescription: description,
                       ),
-                      verticalSpaceRegular,
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width:
-                              screenWidthPercentage(context, percentage: 0.7),
-                          child: description ?? Container(),
-                        ),
-                      ),
-                      verticalSpaceMediumLarge,
+                      verticalSpaceMedium,
                       ListView.builder(
                         itemCount:
                             model.getTransactions(type)!.length > maximumLength
@@ -95,27 +79,30 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
     );
   }
 
-  Widget? _getMainStatisticsDisplay(dynamic model, BuildContext context) {
-    var textStyle = textTheme(context).headline2!.copyWith(fontSize: 28);
+  num _getBalanceForType(TransactionType type, dynamic model) {
     if (type == TransactionType.Donation) {
-      return Text(
-          "Total donations: \$ " +
-              (model.userWallet.donations / 100).toString(),
-          style: textStyle);
+      return model.userWallet.donations;
     } else if (type == TransactionType.Incoming) {
-      return Text("Raised: TBI", style: textStyle);
-      ;
+      return -1;
     } else if (type == TransactionType.TransferredToPeers) {
-      return Text(
-          "Total gifted: \$ " +
-              (model.userWallet.transferredToPeers / 100).toString(),
-          style: textStyle);
+      return model.userWallet.transferredToPeers;
     } else if (type == TransactionType.InOrOut) {
-      return Text(
-          "Balance: \$ " + (model.userWallet.currentBalance / 100).toString(),
-          style: textStyle);
-    }
-    return null;
+      return model.userWallet.currentBalance;
+    } else
+      return -1;
+  }
+
+  String _getTitleForType(TransactionType type) {
+    if (type == TransactionType.Donation) {
+      return "Total Donations";
+    } else if (type == TransactionType.Incoming) {
+      return "Total Raised";
+    } else if (type == TransactionType.TransferredToPeers) {
+      return "Total Gifted";
+    } else if (type == TransactionType.InOrOut) {
+      return "Good Wallet Balance";
+    } else
+      return "";
   }
 }
 

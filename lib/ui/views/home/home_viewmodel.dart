@@ -6,7 +6,8 @@ import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
-import 'package:good_wallet/services/qrcode/qr_code_service.dart';
+import 'package:good_wallet/enums/fund_transfer_type.dart';
+import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -18,6 +19,13 @@ class HomeViewModel extends BaseModel {
   final QRCodeService? _qrCodeService = locator<QRCodeService>();
 
   final log = getLogger("home_viewmodel.dart");
+
+  Future fetchData() async {
+    // Dummy so far...could consider changing the balance!
+    // so far we listen to the wallet with a stream
+    Future.delayed(Duration(milliseconds: 500));
+    notifyListeners();
+  }
 
   Future navigateToDonationView() async {
     await _navigationService!.replaceWith(Routes.layoutTemplateViewMobile,
@@ -35,7 +43,7 @@ class HomeViewModel extends BaseModel {
       barrierDismissible: true,
     );
     if (sheetResponse != null) {
-      print("Response data: ${sheetResponse.responseData}");
+      log.i("Response data from bottom sheet: ${sheetResponse.responseData}");
       if (sheetResponse.responseData is Function) sheetResponse.responseData();
     }
   }
@@ -46,7 +54,18 @@ class HomeViewModel extends BaseModel {
       barrierDismissible: true,
     );
     if (sheetResponse != null) {
-      print("Response data: ${sheetResponse.responseData}");
+      log.i("Response data from bottom sheet: ${sheetResponse.responseData}");
+      if (sheetResponse.responseData is Function) sheetResponse.responseData();
+    }
+  }
+
+  Future showDonationBottomSheet() async {
+    var sheetResponse = await _bottomSheetService!.showCustomSheet(
+      variant: BottomSheetType.donate,
+      barrierDismissible: true,
+    );
+    if (sheetResponse != null) {
+      log.i("Response data: ${sheetResponse.responseData}");
       if (sheetResponse.responseData is Function) sheetResponse.responseData();
     }
   }
@@ -80,15 +99,21 @@ class HomeViewModel extends BaseModel {
         arguments: QRCodeViewMobileArguments(initialIndex: 1));
   }
 
-  Future navigateToManageMoneyPoolsView() async {
+  Future navigateToCreateMoneyPoolsView() async {
     // await _navigationService!.navigateTo(Routes.layoutTemplateViewMobile,
     //     arguments: LayoutTemplateViewMobileArguments(
     //         index: BottomNavigatorIndex.ManageMoneyPools.index));
-    await _navigationService!.navigateTo(Routes.manageMoneyPoolsView);
+    await _navigationService!.navigateTo(Routes.createMoneyPoolIntroView);
   }
 
   Future navigateToSendMoneyViewMobile() async {
     await _navigationService!.navigateTo(Routes.sendMoneyViewMobile);
+  }
+
+  Future navigateToTransferFundAmountView() async {
+    await _navigationService!.navigateTo(Routes.transferFundsAmountView,
+        arguments: TransferFundsAmountViewArguments(
+            type: FundTransferType.commitment));
   }
 
   Future navigateToFavoriteCharitiesView() async {

@@ -31,6 +31,7 @@ class MyColors {
   static const Color paletteBlue = Color(0xFF145b9c);
   static const Color paletteBlack = Color(0xFF030303);
   static const Color paletteGrey = Color(0xFF747d90);
+  static const Color paletteGreen = Color(0xFF008301);
 
   // @see https://material.io/design/color/the-color-system.html#tools-for-picking-colors
   static const Color paletteTurquoise = Color(0xFF149c9a);

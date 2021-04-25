@@ -38,7 +38,7 @@ class MoneyPoolPreview extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        moneyPool!.name,
+                        moneyPool!.name!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: textTheme(context)

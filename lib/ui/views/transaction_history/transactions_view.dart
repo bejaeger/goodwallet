@@ -14,6 +14,7 @@ class TransactionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TabBarLayout(
+      initialIndex: historyType.index,
       title: "Transactions History",
       titleSize: 20,
       tabs: [
@@ -24,6 +25,7 @@ class TransactionsView extends StatelessWidget {
         Container(
           width: screenWidth(context) * 0.2,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Tab(text: "Donations"),
               // SizedBox(width: 5),
@@ -48,20 +50,19 @@ class TransactionsView extends StatelessWidget {
       views: [
         TransactionsHistoryLayoutView(
           type: TransactionType.InOrOut,
-          description:
-              Text("Your Good Wallet's incoming and outgoing transactions"),
+          description: "Your Good Wallet's incoming and outgoing transactions",
         ),
         TransactionsHistoryLayoutView(
           type: TransactionType.TransferredToPeers,
-          description: Text("Money you gifted to friends"),
+          description: "Money you gifted to friends",
         ),
         TransactionsHistoryLayoutView(
           type: TransactionType.Donation,
-          description: Text("History of your charitable givings"),
+          description: "The total of your charitable givings",
         ),
         TransactionsHistoryLayoutView(
           type: TransactionType.Incoming,
-          description: Text("Money you raised into your Good Wallet"),
+          description: "Money you raised into your Good Wallet",
         ),
       ],
     );

@@ -1,5 +1,5 @@
 // Created with  @https://javiercbk.github.io/json_to_dart/
-// from json
+// from json (outdated, just left here as an example)
 //
 // {
 //     "name": "name",
@@ -30,16 +30,17 @@
 // }
 //
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class MoneyPoolModel {
-  String name;
-  String adminUID;
-  String adminName;
-  double total;
+  String? name;
+  String? adminUID;
+  String? adminName;
+  double? total;
   String? description;
   String? moneyPoolId;
-  bool showTotalAmount;
-  List<ContributingUser>? invitedUsers;
-  List<ContributingUser>? contributingUsers;
+  bool? showTotalAmount;
+  dynamic? createdAt;
 
   MoneyPoolModel.empty()
       : this.name = "",
@@ -48,20 +49,19 @@ class MoneyPoolModel {
         this.moneyPoolId = "",
         this.total = -1.0,
         this.description = "",
-        this.showTotalAmount = false,
-        this.invitedUsers = [],
-        this.contributingUsers = [];
+        this.createdAt = "",
+        this.showTotalAmount = false;
 
-  MoneyPoolModel(
-      {required this.name,
-      required this.adminName,
-      required this.adminUID,
-      this.moneyPoolId,
-      this.total = 0,
-      this.description,
-      this.showTotalAmount = true,
-      this.invitedUsers,
-      this.contributingUsers});
+  MoneyPoolModel({
+    this.name,
+    this.adminName,
+    this.adminUID,
+    this.createdAt,
+    this.moneyPoolId,
+    this.total = 0,
+    this.description,
+    this.showTotalAmount = true,
+  });
 
   MoneyPoolModel.fromJson(Map<String, dynamic> json)
       : name = json['name'],
@@ -69,21 +69,11 @@ class MoneyPoolModel {
         adminName = json['adminName'],
         moneyPoolId = json['moneyPoolId'],
         showTotalAmount = json['showTotalAmount'],
-        total = json['total'] {
-    description = json['description'];
-    if (json['invitedUsers'] != null) {
-      invitedUsers = [];
-      json['invitedUsers'].forEach((v) {
-        invitedUsers!.add(ContributingUser.fromJson(v));
-      });
-    }
-    if (json['contributingUsers'] != null) {
-      contributingUsers = [];
-      json['contributingUsers'].forEach(
-        (v) {
-          contributingUsers!.add(new ContributingUser.fromJson(v));
-        },
-      );
+        createdAt = json['createdAt'] as Timestamp?,
+        total = json['total'],
+        description = json['description'] {
+    if (moneyPoolId == null) {
+      throw Exception("Money pool ID can't be null! Fetched data not valid");
     }
   }
 
@@ -95,21 +85,15 @@ class MoneyPoolModel {
     data['moneyPoolId'] = this.moneyPoolId;
     data['adminName'] = this.adminName;
     data['total'] = this.total;
+    data['createdAt'] = this.createdAt as FieldValue?;
     data['showTotalAmount'] = this.showTotalAmount;
-    if (this.invitedUsers != null) {
-      data['invitedUsers'] = this.invitedUsers!.map((v) => v.toJson()).toList();
-    }
-    if (this.contributingUsers != null) {
-      data['contributingUsers'] =
-          this.contributingUsers!.map((v) => v.toJson()).toList();
-    }
     return data;
   }
 }
 
 class ContributingUser {
-  String uid;
   String name;
+  String uid;
 
   ContributingUser({required this.uid, required this.name});
 

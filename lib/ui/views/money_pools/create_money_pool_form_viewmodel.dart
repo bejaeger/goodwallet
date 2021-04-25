@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
@@ -5,7 +6,6 @@ import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
-import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/ui/views/money_pools/create_money_pool_form_view.form.dart';
@@ -44,6 +44,7 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
         adminUID: currentUser.id,
         name: nameValue!,
         description: descriptionValue,
+        createdAt: FieldValue.serverTimestamp(),
       );
 
       try {
@@ -58,11 +59,8 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
       // This will be the implementation of the money pool!
       await Future.delayed(Duration(seconds: 1));
       // this will create the money pool.
-      await _navigationService!.clearTillFirstAndShow(
+      _navigationService!.clearTillFirstAndShow(
         Routes.singleMoneyPoolView,
-        // predicate: (Route<dynamic> route) =>
-        //     route.settings.name == Routes.manageMoneyPoolsView,
-        //predicate: ModalRoute.withName(Routes.manageMoneyPoolsView),
         arguments: SingleMoneyPoolViewArguments(moneyPool: moneyPool),
       );
       setBusy(false);

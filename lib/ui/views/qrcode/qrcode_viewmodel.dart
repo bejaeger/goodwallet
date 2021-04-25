@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/user/qr_code_user_info_model.dart';
-import 'package:good_wallet/services/qrcode/qr_code_service.dart';
+import 'package:good_wallet/datamodels/user/public_user_info.dart';
+import 'package:good_wallet/enums/fund_transfer_type.dart';
+import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -19,6 +20,10 @@ class QRCodeViewModel extends BaseModel {
     return _qrCodeService!.getEncodedUserInfo(currentUser);
   }
 
+  Future navigateToSearchViewMobile() async {
+    await _navigationService!.replaceWith(Routes.searchView);
+  }
+
   Future analyzeScanResult([Barcode? result]) async {
     if (isBusy) {
       return null;
@@ -27,7 +32,7 @@ class QRCodeViewModel extends BaseModel {
     var deadTime = Duration(seconds: 3);
     log.i(
         "Scanned code with result '${result?.code}' and format '${result?.format}");
-    QRCodeUserInfo userInfo = _qrCodeService!.analyzeScanResult(result);
+    PublicUserInfo userInfo = _qrCodeService!.analyzeScanResult(result);
     if (userInfo.hasError()) {
       log.e("Error when reading QR Code");
       // set busy to avoid showing snack bar multiple times
@@ -39,8 +44,9 @@ class QRCodeViewModel extends BaseModel {
     } else {
       log.i(
           "Successfully read user information from QR Code, navigate to send money view");
-      await _navigationService!.navigateTo(Routes.sendMoneyViewMobile,
-          arguments: SendMoneyViewMobileArguments(userInfo: userInfo));
+      _navigationService!.replaceWith(Routes.transferFundsAmountView,
+          arguments: TransferFundsAmountViewArguments(
+              type: FundTransferType.transferToPeer, receiverInfo: userInfo));
     }
 
     setBusy(false);

@@ -11,8 +11,10 @@ final String defaultLocale = "en-US";
 // In firestore we store currencies multiplied by 100
 // so we need to divide them by 100 again
 // (if they are non-zero-decimal currencies)
-String formatAmount(amount) {
-  num returnAmount = isNonZeroDecimalCurrency() ? (amount / 100) : amount;
+String formatAmount(amount, [userInput = false]) {
+  num returnAmount = (isNonZeroDecimalCurrency() && userInput == false)
+      ? (amount / 100)
+      : amount;
   return NumberFormat.simpleCurrency(locale: defaultLocale)
       .format(returnAmount);
 }

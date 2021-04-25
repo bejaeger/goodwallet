@@ -3,7 +3,7 @@ import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
-import 'package:good_wallet/services/qrcode/qr_code_service.dart';
+import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/userdata/local_storage_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/causes/causes_view.dart';
@@ -20,7 +20,7 @@ import 'package:good_wallet/ui/views/login/create_account_view.dart';
 import 'package:good_wallet/ui/views/login/login_view.dart';
 import 'package:good_wallet/ui/views/money_pools/create_money_pool_form_view.dart';
 import 'package:good_wallet/ui/views/money_pools/create_money_pool_intro_view.dart';
-import 'package:good_wallet/ui/views/money_pools/manage_money_pools_view.dart';
+import 'package:good_wallet/ui/views/money_pools/money_pools_view.dart';
 import 'package:good_wallet/ui/views/money_pools/single_money_pool_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_cancel_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_success_view.dart';
@@ -30,9 +30,11 @@ import 'package:good_wallet/ui/views/payments/send_money_viewmodel.dart';
 import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
 import 'package:good_wallet/ui/views/qrcode/qrcode_view_mobile.dart';
 import 'package:good_wallet/ui/views/raise_money/raise_money_view.dart';
+import 'package:good_wallet/ui/views/search_view/search_view.dart';
 import 'package:good_wallet/ui/views/startup_logic/startup_logic_view.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_view.dart';
+import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_viewmodel.dart';
 import 'package:stacked/stacked_annotations.dart';
@@ -59,13 +61,16 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: SingleProjectViewMobile),
     MaterialRoute(page: ProfileViewMobile),
     MaterialRoute(page: CreateAccountView),
+
     MaterialRoute(page: SingleFeaturedAppView),
-    MaterialRoute(page: ManageMoneyPoolsView),
+    MaterialRoute(page: MoneyPoolsView),
     MaterialRoute(page: SendMoneyViewMobile),
     MaterialRoute(page: TransactionsView),
     MaterialRoute(page: QRCodeViewMobile),
     MaterialRoute(page: RaiseMoneyView),
     MaterialRoute(page: StartUpLogicView),
+    MaterialRoute(page: SearchView),
+    MaterialRoute(page: TransferFundsAmountView),
   ],
   dependencies: [
     // Registers all singletons

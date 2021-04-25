@@ -9,7 +9,6 @@ import 'package:stacked_services/stacked_services.dart';
 
 class BottomSheetLayout extends StatelessWidget {
   final String title;
-  final SheetRequest? request;
   final List<BottomSheetListEntry>? buttons;
   final Widget? widgetBeforeButtons;
   final Widget? widgetAfterButtons;
@@ -17,7 +16,6 @@ class BottomSheetLayout extends StatelessWidget {
   const BottomSheetLayout({
     Key? key,
     required this.title,
-    this.request,
     this.buttons,
     this.widgetBeforeButtons,
     this.widgetAfterButtons,
@@ -108,6 +106,8 @@ class BottomSheetListEntry extends StatelessWidget {
                 child: icon,
               )
             : null,
+        trailing: Icon(Icons.arrow_forward_ios_rounded,
+            size: 18, color: ColorSettings.greyTextColor),
         title: Text(
           title,
           style: TextStyle(

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
+import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/causes/causes_view_mobile.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_viewmodel.dart';
+import 'package:good_wallet/ui/views/money_pools/money_pools_view.dart';
 import 'package:good_wallet/ui/views/raise_money/raise_money_view.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -44,7 +46,7 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
                 context,
                 controller: _controller,
                 screens: _buildScreens(),
-                items: _navBarsItems(),
+                items: _navBarsItems(model),
                 confineInSafeArea: true,
                 backgroundColor: Colors.white, // Default is Colors.white.
                 handleAndroidBackButtonPress: true, // Default is true.
@@ -83,11 +85,11 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
     return [
       HomeViewMobile(),
       CausesViewMobile(initialIndex: widget.initialTabBarIndex),
-      RaiseMoneyView()
+      MoneyPoolsView()
     ];
   }
 
-  List<PersistentBottomNavBarItem> _navBarsItems() {
+  List<PersistentBottomNavBarItem> _navBarsItems(dynamic model) {
     return [
       PersistentBottomNavBarItem(
         icon: Icon(Icons.home_rounded),
@@ -99,13 +101,39 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
         icon: Icon(
           Icons.favorite,
         ),
-        title: ("Donate"),
+        title: ("Projects"),
         activeColorPrimary: ColorSettings.primaryColor,
         inactiveColorPrimary: ColorSettings.greyTextColor!,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.arrow_upward),
-        title: ("Raise Money"),
+        icon: Stack(
+          children: <Widget>[
+            Center(
+              child: Icon(Icons.people),
+            ),
+            if (model.moneyPoolsInvitedTo.length > 0)
+              Stack(
+                children: [
+                  Align(
+                    alignment: Alignment(0.25, 0.5),
+                    child: Icon(Icons.circle,
+                        size: 15, color: ColorSettings.primaryColorLight),
+                  ),
+                  Align(
+                    alignment: Alignment(0.24, 0.0),
+                    child: Text(
+                      model.numberInvitedMoneyPoolsSubject.toString(),
+                      style: TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                          color: ColorSettings.whiteTextColor),
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
+        title: ("Money Pools"),
         activeColorPrimary: ColorSettings.primaryColor,
         inactiveColorPrimary: ColorSettings.greyTextColor,
       ),

@@ -53,7 +53,9 @@ class CustomAppBarSmall extends StatelessWidget {
 class CustomSliverAppBarSmall extends StatelessWidget {
   final String title;
   final void Function()? onRightIconPressed;
+  final void Function()? onSecondRightIconPressed;
   final Widget? rightIcon;
+  final Widget? secondRightIcon;
   final bool pinned;
   final PreferredSize? bottom;
 
@@ -63,7 +65,9 @@ class CustomSliverAppBarSmall extends StatelessWidget {
       this.onRightIconPressed,
       this.rightIcon,
       this.pinned = true,
-      this.bottom})
+      this.bottom,
+      this.onSecondRightIconPressed,
+      this.secondRightIcon})
       : super(key: key);
 
   @override
@@ -77,16 +81,32 @@ class CustomSliverAppBarSmall extends StatelessWidget {
             children: [
               Text(title,
                   style: textTheme(context).headline3!.copyWith(fontSize: 22)),
-              if (onRightIconPressed != null)
-                GestureDetector(
-                  onTap: onRightIconPressed,
-                  child: rightIcon ??
-                      Icon(
-                        Icons.person,
-                        color: ColorSettings.whiteTextColor,
-                        size: 25,
-                      ),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (onRightIconPressed != null)
+                    GestureDetector(
+                      onTap: onRightIconPressed,
+                      child: rightIcon ??
+                          Icon(
+                            Icons.person,
+                            color: ColorSettings.whiteTextColor,
+                            size: 25,
+                          ),
+                    ),
+                  if (onSecondRightIconPressed != null) horizontalSpaceRegular,
+                  if (onSecondRightIconPressed != null)
+                    GestureDetector(
+                      onTap: onSecondRightIconPressed,
+                      child: secondRightIcon ??
+                          Icon(
+                            Icons.person,
+                            color: ColorSettings.whiteTextColor,
+                            size: 25,
+                          ),
+                    ),
+                ],
+              ),
             ],
           ),
         ],

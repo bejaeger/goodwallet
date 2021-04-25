@@ -14,6 +14,7 @@ import 'package:good_wallet/datamodels/payments/transaction_model.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/user_status.dart';
+import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
@@ -29,6 +30,7 @@ class UserDataService {
 
   final FirebaseAuthenticationService? _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
+  final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
 
   // controller to expose stream of wallet transactions and payments
   final StreamController<List<dynamic>> _transactionsController =
@@ -105,11 +107,6 @@ class UserDataService {
         // This means no user has been created yet in cloud firestore
         // This happens for example when loggin in with google, facebook, ...
         // We first have to create a user and then
-        //
-        // HERE we need the user to be passed to this function
-        // If this code will never execute the user Id is enough.
-        // Do this e.g. when authenticating from local token
-        //
 
         log.w(
             "Create user because this seems to be the first time a user is logging in with third-party authentification");
@@ -413,6 +410,8 @@ class UserDataService {
     userWalletSubject.add(WalletBalancesModel.empty());
     // set current user to null
     _currentUser = MyUser.empty();
+    // remove money Pools
+    _moneyPoolService!.clearData();
     // actually log out from firebase
     await _firebaseAuthenticationService!.logout();
     // set auth state to signed out

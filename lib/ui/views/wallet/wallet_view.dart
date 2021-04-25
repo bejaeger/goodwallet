@@ -146,14 +146,14 @@ class WalletView extends StatelessWidget {
             Expanded(
               child: Column(
                 children: [
-                  CallToActionButton(
+                  CallToActionButtonSimple(
                     color: Colors.grey[800],
                     onTap: model.navigateToSendMoneyView,
                     text: "Commit",
                     icon: Icon(Icons.arrow_circle_up, color: Colors.grey[800]),
                   ),
                   verticalSpace(15),
-                  CallToActionButton(
+                  CallToActionButtonSimple(
                     color: Colors.grey[800],
                     onTap: model.navigateToSendMoneyView,
                     text: "Receive",

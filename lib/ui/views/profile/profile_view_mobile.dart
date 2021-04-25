@@ -241,6 +241,11 @@ class ProfileViewMobile extends StatelessWidget {
                           ),
                           verticalSpaceSmall,
                           ProfileListItem(
+                            title: "Payment Methods",
+                            onPressed: model.navigateToDonationsHistoryView,
+                          ),
+                          verticalSpaceSmall,
+                          ProfileListItem(
                               title: "Invite Friends",
                               onPressed: model.showNotImplementedSnackbar),
                           verticalSpaceSmall,

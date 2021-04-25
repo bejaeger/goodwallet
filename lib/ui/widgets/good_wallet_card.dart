@@ -1,12 +1,8 @@
 // widget looking like a credit card providing the balances of the Good Wallet
 
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/user/qr_code_user_info_model.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_icon_paths.dart';
-import 'package:good_wallet/ui/shared/image_paths.dart';
-import 'package:good_wallet/ui/shared/layout_settings.dart';
-import 'package:good_wallet/ui/widgets/good_wallet_logo.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -16,9 +12,9 @@ import 'call_to_action_button.dart';
 class GoodWalletCard extends StatelessWidget {
   final void Function() onCardTap;
   final void Function() onQRCodeTap;
-  final void Function() onShowTransactionsPressed;
-  final void Function() onFavoriteCharitiesPressed;
-  final void Function()? onReceiveButtonPressed;
+  final void Function()? onShowTransactionsPressed;
+  final void Function()? onFavoriteCharitiesPressed;
+  final void Function()? onHistoryButtonPressed;
   final void Function()? onCommitButtonPressed;
   final void Function()? onDonateButtonPressed;
   final num currentBalance;
@@ -36,9 +32,9 @@ class GoodWalletCard extends StatelessWidget {
       required this.userInfo,
       required this.onQRCodeTap,
       this.showGoodometer = false,
-      required this.onShowTransactionsPressed,
-      required this.onFavoriteCharitiesPressed,
-      this.onReceiveButtonPressed,
+      this.onShowTransactionsPressed,
+      this.onFavoriteCharitiesPressed,
+      this.onHistoryButtonPressed,
       this.onCommitButtonPressed,
       this.onDonateButtonPressed})
       : super(key: key);
@@ -111,11 +107,13 @@ class GoodWalletCard extends StatelessWidget {
                                     ),
                               ),
                               verticalSpaceTiny,
-                              Text(formatAmount(currentBalance),
-                                  maxLines: 1,
-                                  style: textTheme(context).headline1!.copyWith(
-                                        fontSize: 32,
-                                      )),
+                              Text(
+                                formatAmount(currentBalance),
+                                maxLines: 1,
+                                style: textTheme(context).headline1!.copyWith(
+                                      fontSize: 32,
+                                    ),
+                              ),
                             ],
                           ),
                         ),
@@ -128,19 +126,6 @@ class GoodWalletCard extends StatelessWidget {
                           //     textColor: ColorSettings.whiteTextColor),
                           // horizontalSpaceSmall,
                           //
-                          if (onReceiveButtonPressed != null)
-                            CallToActionIcon(
-                              text: "Receive",
-                              showText: true,
-                              onPressed: onReceiveButtonPressed,
-                              textColor: ColorSettings.whiteTextColor,
-                              backgroundColor: MyColors.paletteBlue,
-                              icon: Image.asset(
-                                  ImageIconPaths.handAcceptingMoney,
-                                  color: ColorSettings.whiteTextColor),
-                            ),
-                          if (onReceiveButtonPressed != null)
-                            horizontalSpaceTiny,
                           if (onDonateButtonPressed != null)
                             CallToActionIcon(
                               text: "Give",
@@ -166,35 +151,50 @@ class GoodWalletCard extends StatelessWidget {
                             ),
                           if (onCommitButtonPressed != null)
                             horizontalSpaceTiny,
-                          Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16.0),
-                                color: MyColors.paletteBlue.withOpacity(0.3)),
-                            child: PopupMenuButton(
-                              padding: const EdgeInsets.all(8.0),
-                              onSelected: (int index) {
-                                if (index == 0) {
-                                  onShowTransactionsPressed();
-                                } else if (index == 1) {
-                                  onFavoriteCharitiesPressed();
-                                }
-                              },
-                              icon: Icon(
-                                Icons.more_vert_rounded,
-                                color: ColorSettings.whiteTextColor,
-                              ),
-                              itemBuilder: (context) => [
-                                PopupMenuItem(
-                                  value: 0,
-                                  child: Text("All transactions"),
-                                ),
-                                PopupMenuItem(
-                                  value: 1,
-                                  child: Text("Your supported projects"),
-                                ),
-                              ],
+                          if (onHistoryButtonPressed != null)
+                            CallToActionIcon(
+                              text: "History",
+                              showText: true,
+                              onPressed: onHistoryButtonPressed,
+                              textColor: ColorSettings.whiteTextColor,
+                              backgroundColor: MyColors.paletteBlue,
+                              icon: Icon(Icons.history_rounded,
+                                  color: ColorSettings.whiteTextColor),
                             ),
-                          ),
+                          if (onShowTransactionsPressed != null &&
+                              onFavoriteCharitiesPressed != null)
+                            horizontalSpaceTiny,
+                          if (onShowTransactionsPressed != null &&
+                              onFavoriteCharitiesPressed != null)
+                            Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  color: MyColors.paletteBlue.withOpacity(0.3)),
+                              child: PopupMenuButton(
+                                padding: const EdgeInsets.all(8.0),
+                                onSelected: (int index) {
+                                  if (index == 0) {
+                                    onShowTransactionsPressed!();
+                                  } else if (index == 1) {
+                                    onFavoriteCharitiesPressed!();
+                                  }
+                                },
+                                icon: Icon(
+                                  Icons.more_vert_rounded,
+                                  color: ColorSettings.whiteTextColor,
+                                ),
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    value: 0,
+                                    child: Text("All transactions"),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 1,
+                                    child: Text("Your supported projects"),
+                                  ),
+                                ],
+                              ),
+                            ),
                         ],
                       ),
                     ],

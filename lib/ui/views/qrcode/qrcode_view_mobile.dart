@@ -20,22 +20,28 @@ class QRCodeViewMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<QRCodeViewModel>.reactive(
       viewModelBuilder: () => QRCodeViewModel(),
-      builder: (context, model, child) =>
-          TabBarLayout(initialIndex: initialIndex, title: "QR Code", tabs: [
-        SizedBox(
-          width: screenWidth(context) * 0.4,
-          child: Tab(text: "Scan"),
-        ),
-        SizedBox(
-          width: screenWidth(context) * 0.4,
-          child: Tab(text: "Get paid"),
-        ),
-      ], views: [
-        ScanQRCode(
-          analyzeScanResult: model.analyzeScanResult,
-        ),
-        MyQRCode(userInfo: model.getUserInfo()),
-      ]),
+      builder: (context, model, child) => TabBarLayout(
+          initialIndex: initialIndex,
+          title: "QR Code",
+          titleTrailingWidget: IconButton(
+              icon: Icon(Icons.search_rounded),
+              onPressed: model.navigateToSearchViewMobile),
+          tabs: [
+            SizedBox(
+              width: screenWidth(context) * 0.4,
+              child: Tab(text: "Scan"),
+            ),
+            SizedBox(
+              width: screenWidth(context) * 0.4,
+              child: Tab(text: "Get paid"),
+            ),
+          ],
+          views: [
+            ScanQRCode(
+              analyzeScanResult: model.analyzeScanResult,
+            ),
+            MyQRCode(userInfo: model.getUserInfo()),
+          ]),
     );
   }
 }

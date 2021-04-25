@@ -11,8 +11,10 @@ import 'package:stacked/stacked.dart';
 
 import '../datamodels/causes/good_wallet_project_model.dart';
 import '../datamodels/money_pools/money_pool_model.dart';
-import '../datamodels/user/qr_code_user_info_model.dart';
+import '../datamodels/user/public_user_info.dart';
 import '../enums/featured_app_type.dart';
+import '../enums/fund_transfer_type.dart';
+import '../enums/search_type.dart';
 import '../enums/transaction_type.dart';
 import '../ui/views/causes/causes_view.dart';
 import '../ui/views/causes/single_project_view_mobile.dart';
@@ -25,7 +27,7 @@ import '../ui/views/login/create_account_view.dart';
 import '../ui/views/login/login_view.dart';
 import '../ui/views/money_pools/create_money_pool_form_view.dart';
 import '../ui/views/money_pools/create_money_pool_intro_view.dart';
-import '../ui/views/money_pools/manage_money_pools_view.dart';
+import '../ui/views/money_pools/money_pools_view.dart';
 import '../ui/views/money_pools/single_money_pool_view.dart';
 import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
@@ -34,8 +36,10 @@ import '../ui/views/payments/send_money_view_mobile.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
 import '../ui/views/qrcode/qrcode_view_mobile.dart';
 import '../ui/views/raise_money/raise_money_view.dart';
+import '../ui/views/search_view/search_view.dart';
 import '../ui/views/startup_logic/startup_logic_view.dart';
 import '../ui/views/transaction_history/transactions_view.dart';
+import '../ui/views/transfer_funds/transfer_funds_amount_view.dart';
 import '../ui/views/wallet/wallet_view.dart';
 
 class Routes {
@@ -57,12 +61,14 @@ class Routes {
   static const String profileViewMobile = '/profile-view-mobile';
   static const String createAccountView = '/create-account-view';
   static const String singleFeaturedAppView = '/single-featured-app-view';
-  static const String manageMoneyPoolsView = '/manage-money-pools-view';
+  static const String moneyPoolsView = '/money-pools-view';
   static const String sendMoneyViewMobile = '/send-money-view-mobile';
   static const String transactionsView = '/transactions-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String raiseMoneyView = '/raise-money-view';
   static const String startUpLogicView = '/start-up-logic-view';
+  static const String searchView = '/search-view';
+  static const String transferFundsAmountView = '/transfer-funds-amount-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -81,12 +87,14 @@ class Routes {
     profileViewMobile,
     createAccountView,
     singleFeaturedAppView,
-    manageMoneyPoolsView,
+    moneyPoolsView,
     sendMoneyViewMobile,
     transactionsView,
     qRCodeViewMobile,
     raiseMoneyView,
     startUpLogicView,
+    searchView,
+    transferFundsAmountView,
   };
 }
 
@@ -111,12 +119,14 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.profileViewMobile, page: ProfileViewMobile),
     RouteDef(Routes.createAccountView, page: CreateAccountView),
     RouteDef(Routes.singleFeaturedAppView, page: SingleFeaturedAppView),
-    RouteDef(Routes.manageMoneyPoolsView, page: ManageMoneyPoolsView),
+    RouteDef(Routes.moneyPoolsView, page: MoneyPoolsView),
     RouteDef(Routes.sendMoneyViewMobile, page: SendMoneyViewMobile),
     RouteDef(Routes.transactionsView, page: TransactionsView),
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
     RouteDef(Routes.raiseMoneyView, page: RaiseMoneyView),
     RouteDef(Routes.startUpLogicView, page: StartUpLogicView),
+    RouteDef(Routes.searchView, page: SearchView),
+    RouteDef(Routes.transferFundsAmountView, page: TransferFundsAmountView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -262,12 +272,12 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
-    ManageMoneyPoolsView: (data) {
-      var args = data.getArgs<ManageMoneyPoolsViewArguments>(
-        orElse: () => ManageMoneyPoolsViewArguments(),
+    MoneyPoolsView: (data) {
+      var args = data.getArgs<MoneyPoolsViewArguments>(
+        orElse: () => MoneyPoolsViewArguments(),
       );
       return MaterialPageRoute<dynamic>(
-        builder: (context) => ManageMoneyPoolsView(
+        builder: (context) => MoneyPoolsView(
           key: args.key,
           forceReload: args.forceReload,
         ),
@@ -323,6 +333,30 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    SearchView: (data) {
+      var args = data.getArgs<SearchViewArguments>(
+        orElse: () => SearchViewArguments(),
+      );
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => SearchView(
+          key: args.key,
+          searchType: args.searchType,
+        ),
+        settings: data,
+      );
+    },
+    TransferFundsAmountView: (data) {
+      var args = data.getArgs<TransferFundsAmountViewArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => TransferFundsAmountView(
+          key: args.key,
+          type: args.type,
+          receiverInfo: args.receiverInfo,
+          onContinuePressed: args.onContinuePressed,
+        ),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -333,7 +367,7 @@ class StackedRouter extends RouterBase {
 /// SendMoneyView arguments holder class
 class SendMoneyViewArguments {
   final Key? key;
-  final QRCodeUserInfo? userInfoMap;
+  final PublicUserInfo? userInfoMap;
   final dynamic openSearchBarOnBuild;
   SendMoneyViewArguments(
       {this.key, this.userInfoMap, this.openSearchBarOnBuild = false});
@@ -394,17 +428,17 @@ class SingleFeaturedAppViewArguments {
   SingleFeaturedAppViewArguments({this.key, required this.type});
 }
 
-/// ManageMoneyPoolsView arguments holder class
-class ManageMoneyPoolsViewArguments {
+/// MoneyPoolsView arguments holder class
+class MoneyPoolsViewArguments {
   final Key? key;
   final bool forceReload;
-  ManageMoneyPoolsViewArguments({this.key, this.forceReload = false});
+  MoneyPoolsViewArguments({this.key, this.forceReload = false});
 }
 
 /// SendMoneyViewMobile arguments holder class
 class SendMoneyViewMobileArguments {
   final Key? key;
-  final QRCodeUserInfo? userInfo;
+  final PublicUserInfo? userInfo;
   final dynamic openSearchBarOnBuild;
   SendMoneyViewMobileArguments(
       {this.key, this.userInfo, this.openSearchBarOnBuild = false});
@@ -423,4 +457,25 @@ class QRCodeViewMobileArguments {
   final Key? key;
   final int initialIndex;
   QRCodeViewMobileArguments({this.key, this.initialIndex = 0});
+}
+
+/// SearchView arguments holder class
+class SearchViewArguments {
+  final Key? key;
+  final SearchType searchType;
+  SearchViewArguments(
+      {this.key, this.searchType = SearchType.userToTransferTo});
+}
+
+/// TransferFundsAmountView arguments holder class
+class TransferFundsAmountViewArguments {
+  final Key? key;
+  final FundTransferType type;
+  final dynamic receiverInfo;
+  final void Function()? onContinuePressed;
+  TransferFundsAmountViewArguments(
+      {this.key,
+      required this.type,
+      this.receiverInfo,
+      this.onContinuePressed});
 }

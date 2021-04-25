@@ -13,13 +13,12 @@ class RaiseMoneyViewModel extends BaseModel {
 
   final log = getLogger("raise_money_viewmodel.dart");
 
-  List<MoneyPoolModel> moneyPools = [];
+  List<MoneyPoolModel> get moneyPools => _moneyPoolService!.moneyPools;
 
   Future fetchMoneyPools({bool force = false}) async {
     setBusy(true);
     try {
-      moneyPools =
-          await _moneyPoolService!.getMoneyPools(currentUser.id, force);
+      await _moneyPoolService!.loadMoneyPools(currentUser.id, force);
     } catch (e) {
       // Need to set some validation
       log.e("Could not fetch money pools, error: ${e.toString()}");
@@ -42,7 +41,7 @@ class RaiseMoneyViewModel extends BaseModel {
   }
 
   Future navigateToManageMoneyPoolView() async {
-    await _navigationService!.navigateTo(Routes.manageMoneyPoolsView);
+    await _navigationService!.navigateTo(Routes.moneyPoolsView);
   }
 
   Future navigateToSingleFeaturedAppView(FeaturedAppType type) async {

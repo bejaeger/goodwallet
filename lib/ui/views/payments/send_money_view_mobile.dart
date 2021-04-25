@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:good_wallet/datamodels/user/qr_code_user_info_model.dart';
+import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
@@ -11,7 +11,7 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class SendMoneyViewMobile extends StatelessWidget {
-  final QRCodeUserInfo? userInfo;
+  final PublicUserInfo? userInfo;
   final openSearchBarOnBuild;
 
   SendMoneyViewMobile(
@@ -32,17 +32,16 @@ class SendMoneyViewMobile extends StatelessWidget {
       builder: (context, model, child) => model.isBusy
           ? CircularProgressIndicator()
           : ConstrainedWidthWithScaffoldLayout(
-            child:
-              Padding(
+              child: Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: LayoutSettings.horizontalPadding),
                 child: ListView(
                   children: [
                     AlternativeScreenHeader(
-                        title: "Send Money",
-                        onBackButtonPressed: model.navigateBack,
-                        onRightButtonPressed: model.showNotImplementedSnackbar,
-                        ),
+                      title: "Send Money",
+                      onBackButtonPressed: model.navigateBack,
+                      onRightButtonPressed: model.showNotImplementedSnackbar,
+                    ),
                     verticalSpaceLarge,
                     Column(
                       children: [
