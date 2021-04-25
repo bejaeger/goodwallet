@@ -7,40 +7,54 @@ import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:good_wallet/enums/causes_type.dart';
 import 'package:good_wallet/services/causes/causes_data_service.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
+import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
-import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
+import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
-class CausesViewModel extends BaseModel {
-  final GlobalGivingAPIService? _globalGivingAPIservice =
-      locator<GlobalGivingAPIService>();
+class CausesFilterViewModel extends BaseModel {
   final NavigationService? _navigationService = locator<NavigationService>();
-  final CollectionReference _causesCollectionReference =
-      FirebaseFirestore.instance.collection("causes");
+
   final CausesDataService? _causesDataService = locator<CausesDataService>();
 
   final log = getLogger("causes_viewmodel.dart");
-
   List<GoodWalletProjectModel> get projects => _causesDataService!.projects;
+
   List<GoodWalletFundModel>? goodWalletFunds;
-  List<GoodWalletProjectModel> filteredProjects = [];
+  List<String> get uniqueThemes => _causesDataService!.uniqueThemes;
 
-  void loadFilteredProjects(String? theme) {
+  Future fetchCauses() async {
     setBusy(true);
-    if (theme != null)
-      filteredProjects =
-          projects.where((element) => element.themeName == theme).toList();
-    log.i("Found ${filteredProjects.length} projects with theme $theme");
+    await _causesDataService!.loadProjects();
+    if (goodWalletFunds == null) {
+      goodWalletFunds = [
+        GoodWalletFundModel(
+          title: "Friend Referral Fund",
+          description:
+              "This fund is used to raise money when referring the Good Wallet to your peers",
+          imagePath: ImagePath.peopleHoldingHands,
+        ),
+        GoodWalletFundModel(
+          title: "The Developer Fund",
+          description:
+              "Support further developments of the Good Wallet to offer better services",
+          imagePath: ImagePath.workNextToCreek,
+        ),
+      ];
+      log.i(
+          "Fetched good wallet fund list with length ${goodWalletFunds!.length}");
+    }
     setBusy(false);
-  }
-
-  Future navigateToProjectScreen(index) async {
-    await _navigationService!.navigateTo(Routes.singleProjectViewMobile,
-        arguments: SingleProjectViewMobileArguments(project: projects[index]));
   }
 
   Future navigateToTransactionsHistoryView() async {
     _navigationService!.navigateTo(Routes.transactionsView);
+  }
+
+  Future navigateToCausesViewMobile(index) async {
+    await _navigationService!.navigateTo(Routes.causesViewMobile,
+        arguments: CausesViewMobileArguments(theme: uniqueThemes[index]));
   }
 }

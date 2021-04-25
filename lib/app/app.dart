@@ -1,11 +1,13 @@
+import 'package:good_wallet/services/causes/causes_data_service.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
-import 'package:good_wallet/services/userdata/local_storage_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
+import 'package:good_wallet/ui/views/causes/causes_filter_view_mobile.dart';
+import 'package:good_wallet/ui/views/causes/causes_filter_viewmodel.dart';
 import 'package:good_wallet/ui/views/causes/causes_view.dart';
 import 'package:good_wallet/ui/views/causes/causes_view_mobile.dart';
 import 'package:good_wallet/ui/views/causes/causes_viewmodel.dart';
@@ -68,6 +70,8 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: TransactionsView),
     MaterialRoute(page: QRCodeViewMobile),
     MaterialRoute(page: RaiseMoneyView),
+    MaterialRoute(page: CausesFilterViewMobile),
+    MaterialRoute(page: CausesViewMobile),
     MaterialRoute(page: StartUpLogicView),
     MaterialRoute(page: SearchView),
     MaterialRoute(page: TransferFundsAmountView),
@@ -85,6 +89,7 @@ import 'package:stacked_services/stacked_services.dart';
     // viewmodels
     LazySingleton(classType: WalletViewModel),
     LazySingleton(classType: CausesViewModel),
+    LazySingleton(classType: CausesFilterViewModel),
     LazySingleton(classType: SendMoneyViewModel),
     LazySingleton(classType: TransactionHistoryLayoutViewModel),
     // TODO: Check whether this is deprecated
@@ -96,6 +101,7 @@ import 'package:stacked_services/stacked_services.dart';
     ),
     Singleton(classType: DummyPaymentService),
     LazySingleton(classType: QRCodeService),
+    LazySingleton(classType: CausesDataService),
 
     // We don't really need local storage atm! (maybe for offline support at some point)
     // Presolve(

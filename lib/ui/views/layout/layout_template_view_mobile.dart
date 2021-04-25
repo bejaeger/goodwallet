@@ -3,6 +3,7 @@ import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
+import 'package:good_wallet/ui/views/causes/causes_filter_view_mobile.dart';
 import 'package:good_wallet/ui/views/causes/causes_view_mobile.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_viewmodel.dart';
@@ -84,7 +85,7 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
   List<Widget> _buildScreens() {
     return [
       HomeViewMobile(),
-      CausesViewMobile(initialIndex: widget.initialTabBarIndex),
+      CausesFilterViewMobile(initialIndex: widget.initialTabBarIndex),
       MoneyPoolsView()
     ];
   }

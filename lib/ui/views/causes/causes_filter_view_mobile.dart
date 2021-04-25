@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_fund_model.dart';
-import 'package:good_wallet/enums/causes_list_type.dart';
+import 'package:good_wallet/enums/causes_filter_list_type.dart';
 import 'package:good_wallet/ui/layout_widgets/tabbar_layout.dart';
-import 'package:good_wallet/ui/shared/layout_settings.dart';
+import 'package:good_wallet/ui/views/causes/causes_filter_viewmodel.dart';
 import 'package:good_wallet/ui/views/causes/causes_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/causes/global_giving_project_card.dart';
 import 'package:good_wallet/ui/widgets/causes/good_wallet_fund_card.dart';
@@ -12,18 +12,18 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:stacked/stacked.dart';
 
-// CausesViewMobile sets up tab bar view
+class CausesFilterViewMobile extends StatelessWidget {
+  final int? initialIndex;
 
-class CausesViewMobile extends StatelessWidget {
-  final String theme;
-
-  const CausesViewMobile({Key? key, required this.theme}) : super(key: key);
+  const CausesFilterViewMobile({Key? key, this.initialIndex}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<CausesViewModel>.reactive(
-      viewModelBuilder: () => CausesViewModel(),
+    return ViewModelBuilder<CausesFilterViewModel>.reactive(
+      viewModelBuilder: () => CausesFilterViewModel(),
+      onModelReady: (model) async => await model.fetchCauses(),
       builder: (context, model, child) => TabBarLayout(
+        initialIndex: initialIndex!,
         title: "Social Projects",
         titleTrailingWidget: SmallWalletCard(
             onTap: model.navigateToTransactionsHistoryView,
@@ -31,8 +31,7 @@ class CausesViewMobile extends StatelessWidget {
             balance: model.userWallet.currentBalance!),
         tabs: [
           Container(
-              width: screenWidth(context) * 0.25,
-              child: Tab(text: "All Projects")),
+              width: screenWidth(context) * 0.25, child: Tab(text: "Themes")),
           Container(
               width: screenWidth(context) * 0.3,
               child: Tab(text: "Good Wallet Funds")),
@@ -41,18 +40,17 @@ class CausesViewMobile extends StatelessWidget {
               child: Tab(text: "Favorites")),
         ],
         views: [
-          CausesListViewMobile(
-            theme: theme,
-            type: CausesListType.GlobalGivingProjects,
+          CausesFilterListViewMobile(
+            type: CausesFilterListType.Themes,
             description: Text("High-impact charities provided by GlobalGiving"),
           ),
-          CausesListViewMobile(
-            type: CausesListType.GoodWalletFund,
+          CausesFilterListViewMobile(
+            type: CausesFilterListType.GoodWalletFund,
             description: Text(
                 "Support one of our Good Wallet funds and help grow our community"),
           ),
-          CausesListViewMobile(
-            type: CausesListType.Favorites,
+          CausesFilterListViewMobile(
+            type: CausesFilterListType.Favorites,
             description: Text("Your favorite projects"),
           ),
         ],
@@ -61,19 +59,19 @@ class CausesViewMobile extends StatelessWidget {
   }
 }
 
-class CausesListViewMobile extends StatelessWidget {
-  final CausesListType type;
+class CausesFilterListViewMobile extends StatelessWidget {
+  final CausesFilterListType type;
   final Widget? description;
-  final String? theme;
-  const CausesListViewMobile(
-      {Key? key, required this.type, this.description, this.theme})
+
+  const CausesFilterListViewMobile(
+      {Key? key, required this.type, this.description})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<CausesViewModel>.reactive(
-      viewModelBuilder: () => CausesViewModel(),
-      onModelReady: (model) => model.loadFilteredProjects(theme),
+    return ViewModelBuilder<CausesFilterViewModel>.reactive(
+      viewModelBuilder: () => CausesFilterViewModel(),
+      onModelReady: (model) async => await model.fetchCauses(),
       builder: (context, model, child) => model.isBusy
           ? Center(child: CircularProgressIndicator())
           : Shimmer(
@@ -91,22 +89,61 @@ class CausesListViewMobile extends StatelessWidget {
                       ),
                     ),
                     verticalSpaceMediumLarge,
-                    if (type == CausesListType.GlobalGivingProjects)
+                    if (type == CausesFilterListType.Themes)
+                      // For some reason this is not working, but I will leave it for now, because gridview would be better, way better
+                      // GridView.builder(
+                      //     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      //         maxCrossAxisExtent: 200,
+                      //         childAspectRatio: 3 / 2,
+                      //         crossAxisSpacing: 20,
+                      //         mainAxisSpacing: 20),
+                      //     itemCount: model.uniqueThemes.length,
+                      //     itemBuilder: (BuildContext context, int index) {
+                      //       return Container(
+                      //         alignment: Alignment.center,
+                      //         child: Text(model.uniqueThemes[index]),
+                      //         //decoration: BoxDecoration(
+                      //             //color: Colors.amber,
+                      //             //borderRadius: BorderRadius.circular(15)),
+                      //       );
+                      //     }),
+
                       ListView.builder(
                         shrinkWrap: true,
                         physics: ScrollPhysics(),
-                        itemCount: model.filteredProjects.length,
-                        itemBuilder: (context, index) => Padding(
+                        itemCount: model.uniqueThemes.length,
+                        itemBuilder: (BuildContext context, int index) =>
+                            Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: GlobalGivingProjectCardMobile(
-                            project: model.filteredProjects[index],
+                          child: ListTile(
+                            title: Text(model.uniqueThemes[index]),
                             onTap: () async =>
-                                await model.navigateToProjectScreen(index),
-                            onTapFavorite: model.showNotImplementedSnackbar,
+                                await model.navigateToCausesViewMobile(index),
                           ),
                         ),
                       ),
-                    if (type == CausesListType.GoodWalletFund)
+
+                    // {
+                    //   return ListTile(
+                    //     title: Text(content[index]),
+                    //   );
+                    // }
+
+                    // //itemBuilder: (context, index) => Padding(
+                    //   padding: const EdgeInsets.only(bottom: 8.0),
+                    //   child: RaisedButton(
+                    //     onPressed: null,
+                    //     child: Text(model.projects![index]),
+                    // ), // add a list with the project themes
+                    // child: GlobalGivingProjectCardMobile(
+                    //   project: model.projects![index],
+                    //   onTap: () async =>
+                    //       await model.navigateToProjectScreen(index),
+                    //   onTapFavorite: model.showNotImplementedSnackbar,
+                    // ),
+                    //),
+                    // ),
+                    if (type == CausesFilterListType.GoodWalletFund)
                       ListView.builder(
                           shrinkWrap: true,
                           physics: ScrollPhysics(),

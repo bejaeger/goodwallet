@@ -6,6 +6,7 @@
 
 // ignore_for_file: public_member_api_docs
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
@@ -16,7 +17,9 @@ import '../enums/featured_app_type.dart';
 import '../enums/fund_transfer_type.dart';
 import '../enums/search_type.dart';
 import '../enums/transaction_type.dart';
+import '../ui/views/causes/causes_filter_view_mobile.dart';
 import '../ui/views/causes/causes_view.dart';
+import '../ui/views/causes/causes_view_mobile.dart';
 import '../ui/views/causes/single_project_view_mobile.dart';
 import '../ui/views/featured_applications/single_featured_app_view.dart';
 import '../ui/views/home/home_view_mobile.dart';
@@ -66,6 +69,8 @@ class Routes {
   static const String transactionsView = '/transactions-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String raiseMoneyView = '/raise-money-view';
+  static const String causesFilterViewMobile = '/causes-filter-view-mobile';
+  static const String causesViewMobile = '/causes-view-mobile';
   static const String startUpLogicView = '/start-up-logic-view';
   static const String searchView = '/search-view';
   static const String transferFundsAmountView = '/transfer-funds-amount-view';
@@ -92,6 +97,8 @@ class Routes {
     transactionsView,
     qRCodeViewMobile,
     raiseMoneyView,
+    causesFilterViewMobile,
+    causesViewMobile,
     startUpLogicView,
     searchView,
     transferFundsAmountView,
@@ -124,6 +131,8 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.transactionsView, page: TransactionsView),
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
     RouteDef(Routes.raiseMoneyView, page: RaiseMoneyView),
+    RouteDef(Routes.causesFilterViewMobile, page: CausesFilterViewMobile),
+    RouteDef(Routes.causesViewMobile, page: CausesViewMobile),
     RouteDef(Routes.startUpLogicView, page: StartUpLogicView),
     RouteDef(Routes.searchView, page: SearchView),
     RouteDef(Routes.transferFundsAmountView, page: TransferFundsAmountView),
@@ -327,6 +336,28 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    CausesFilterViewMobile: (data) {
+      var args = data.getArgs<CausesFilterViewMobileArguments>(
+        orElse: () => CausesFilterViewMobileArguments(),
+      );
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => CausesFilterViewMobile(
+          key: args.key,
+          initialIndex: args.initialIndex,
+        ),
+        settings: data,
+      );
+    },
+    CausesViewMobile: (data) {
+      var args = data.getArgs<CausesViewMobileArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => CausesViewMobile(
+          key: args.key,
+          theme: args.theme,
+        ),
+        settings: data,
+      );
+    },
     StartUpLogicView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => const StartUpLogicView(),
@@ -457,6 +488,20 @@ class QRCodeViewMobileArguments {
   final Key? key;
   final int initialIndex;
   QRCodeViewMobileArguments({this.key, this.initialIndex = 0});
+}
+
+/// CausesFilterViewMobile arguments holder class
+class CausesFilterViewMobileArguments {
+  final Key? key;
+  final int? initialIndex;
+  CausesFilterViewMobileArguments({this.key, this.initialIndex});
+}
+
+/// CausesViewMobile arguments holder class
+class CausesViewMobileArguments {
+  final Key? key;
+  final String theme;
+  CausesViewMobileArguments({this.key, required this.theme});
 }
 
 /// SearchView arguments holder class

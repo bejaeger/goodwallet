@@ -122,4 +122,5 @@ class HomeViewModel extends BaseModel {
             initialBottomNavBarIndex: BottomNavigatorIndex.Give.index,
             initialTabBarIndex: 2));
   }
+
 }
