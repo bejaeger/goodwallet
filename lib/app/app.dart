@@ -1,3 +1,4 @@
+import 'package:good_wallet/services/causes/causes_data_service.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
@@ -100,6 +101,7 @@ import 'package:stacked_services/stacked_services.dart';
     ),
     Singleton(classType: DummyPaymentService),
     LazySingleton(classType: QRCodeService),
+    LazySingleton(classType: CausesDataService),
 
     // We don't really need local storage atm! (maybe for offline support at some point)
     // Presolve(

@@ -13,16 +13,17 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:stacked/stacked.dart';
 
 class CausesFilterViewMobile extends StatelessWidget {
-  const CausesFilterViewMobile({Key? key}) : super(key: key);
+  final int? initialIndex;
+
+  const CausesFilterViewMobile({Key? key, this.initialIndex}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<CausesFilterViewModel>.reactive(
-      viewModelBuilder: () => locator<CausesFilterViewModel>(),
-      disposeViewModel: false,
-      fireOnModelReadyOnce: true,
+      viewModelBuilder: () => CausesFilterViewModel(),
       onModelReady: (model) async => await model.fetchCauses(),
       builder: (context, model, child) => TabBarLayout(
+        initialIndex: initialIndex!,
         title: "Social Projects",
         titleTrailingWidget: SmallWalletCard(
             onTap: model.navigateToTransactionsHistoryView,
@@ -69,9 +70,7 @@ class CausesFilterListViewMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<CausesFilterViewModel>.reactive(
-      viewModelBuilder: () => locator<CausesFilterViewModel>(),
-      disposeViewModel: false,
-      fireOnModelReadyOnce: true,
+      viewModelBuilder: () => CausesFilterViewModel(),
       onModelReady: (model) async => await model.fetchCauses(),
       builder: (context, model, child) => model.isBusy
           ? Center(child: CircularProgressIndicator())
@@ -108,22 +107,21 @@ class CausesFilterListViewMobile extends StatelessWidget {
                       //             //borderRadius: BorderRadius.circular(15)),
                       //       );
                       //     }),
-                      
-                     
 
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: ScrollPhysics(),
-                      itemCount: model.uniqueThemes.length,
-                      itemBuilder: (BuildContext context, int index)  => Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: ListTile(
-                          title: Text(model.uniqueThemes[index]),
-                          onTap: () async => 
-                              await model.navigateToCausesViewMobile(index),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: ScrollPhysics(),
+                        itemCount: model.uniqueThemes.length,
+                        itemBuilder: (BuildContext context, int index) =>
+                            Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: ListTile(
+                            title: Text(model.uniqueThemes[index]),
+                            onTap: () async =>
+                                await model.navigateToCausesViewMobile(index),
+                          ),
                         ),
                       ),
-                    ),
 
                     // {
                     //   return ListTile(

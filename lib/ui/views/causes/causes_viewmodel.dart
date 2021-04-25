@@ -5,6 +5,7 @@ import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_fund_model.dart';
 import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
 import 'package:good_wallet/enums/causes_type.dart';
+import 'package:good_wallet/services/causes/causes_data_service.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
@@ -17,62 +18,26 @@ class CausesViewModel extends BaseModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final CollectionReference _causesCollectionReference =
       FirebaseFirestore.instance.collection("causes");
+  final CausesDataService? _causesDataService = locator<CausesDataService>();
 
   final log = getLogger("causes_viewmodel.dart");
 
-  List<GoodWalletProjectModel>? projects;
+  List<GoodWalletProjectModel> get projects => _causesDataService!.projects;
   List<GoodWalletFundModel>? goodWalletFunds;
+  List<GoodWalletProjectModel> filteredProjects = [];
 
-  Future fetchCauses() async {
+  void loadFilteredProjects(String? theme) {
     setBusy(true);
-    if (projects == null) {
-      await fetchGlobalGivingProjects();
-      log.i("Fetched project list with length ${projects!.length}");
-      // TODO: Add user info when no projects could be retrieved..e.g. network issues
-    }
-    if (goodWalletFunds == null) {
-      goodWalletFunds = [
-        GoodWalletFundModel(
-          title: "Friend Referral Fund",
-          description:
-              "This fund is used to raise money when referring the Good Wallet to your peers",
-          imagePath: ImagePath.peopleHoldingHands,
-        ),
-        GoodWalletFundModel(
-          title: "The Developer Fund",
-          description:
-              "Support further developments of the Good Wallet to offer better services",
-          imagePath: ImagePath.workNextToCreek,
-        ),
-      ];
-      log.i(
-          "Fetched good wallet fund list with length ${goodWalletFunds!.length}");
-    }
+    if (theme != null)
+      filteredProjects =
+          projects.where((element) => element.themeName == theme).toList();
+    log.i("Found ${filteredProjects.length} projects with theme $theme");
     setBusy(false);
-    notifyListeners();
-  }
-
-  Future fetchGlobalGivingProjects() async {
-    QuerySnapshot projectsSnapshot = await _causesCollectionReference
-        .where("causeType",
-            isEqualTo: describeEnum(CauseType.GlobalGivingProject))
-        .get();
-    if (projectsSnapshot.docs.isNotEmpty) {
-      log.i("Found data of global giving projects on firestore");
-      projects = projectsSnapshot.docs
-          .map((snapshot) => GoodWalletProjectModel.fromMap(snapshot.data()))
-          .toList();
-    } else {
-      log.i("Get global giving projects from API");
-      // No data stored on firestore yet, use global giving API
-      projects = await _globalGivingAPIservice!
-          .getProjectsOfTheMonth(addToFirestore: false);
-    }
   }
 
   Future navigateToProjectScreen(index) async {
     await _navigationService!.navigateTo(Routes.singleProjectViewMobile,
-        arguments: SingleProjectViewMobileArguments(project: projects![index]));
+        arguments: SingleProjectViewMobileArguments(project: projects[index]));
   }
 
   Future navigateToTransactionsHistoryView() async {

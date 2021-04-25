@@ -85,34 +85,11 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
   List<Widget> _buildScreens() {
     return [
       HomeViewMobile(),
-      CausesViewMobile(initialIndex: widget.initialTabBarIndex),
+      CausesFilterViewMobile(initialIndex: widget.initialTabBarIndex),
       MoneyPoolsView()
     ];
   }
 
-<<<<<<< HEAD
-  Widget getViewForIndex(int index) {
-    if (index == BottomNavigatorIndex.Home.index) {
-      return HomeViewMobile();
-    } else if (index == BottomNavigatorIndex.Give.index) {
-      return CausesFilterViewMobile();
-    } else if (index == BottomNavigatorIndex.RaiseMoney.index) {
-      return RaiseMoneyView();
-    } else {
-      return HomeViewMobile();
-    }
-||||||| c7e05cc
-  Widget getViewForIndex(int index) {
-    if (index == BottomNavigatorIndex.Home.index) {
-      return HomeViewMobile();
-    } else if (index == BottomNavigatorIndex.Give.index) {
-      return CausesViewMobile();
-    } else if (index == BottomNavigatorIndex.RaiseMoney.index) {
-      return RaiseMoneyView();
-    } else {
-      return HomeViewMobile();
-    }
-=======
   List<PersistentBottomNavBarItem> _navBarsItems(dynamic model) {
     return [
       PersistentBottomNavBarItem(
@@ -162,6 +139,5 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
         inactiveColorPrimary: ColorSettings.greyTextColor,
       ),
     ];
->>>>>>> origin/master
   }
 }

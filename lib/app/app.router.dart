@@ -6,6 +6,7 @@
 
 // ignore_for_file: public_member_api_docs
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
@@ -68,17 +69,11 @@ class Routes {
   static const String transactionsView = '/transactions-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String raiseMoneyView = '/raise-money-view';
-<<<<<<< HEAD
   static const String causesFilterViewMobile = '/causes-filter-view-mobile';
   static const String causesViewMobile = '/causes-view-mobile';
-  static const String startUpLogicView = '/';
-||||||| c7e05cc
-  static const String startUpLogicView = '/';
-=======
   static const String startUpLogicView = '/start-up-logic-view';
   static const String searchView = '/search-view';
   static const String transferFundsAmountView = '/transfer-funds-amount-view';
->>>>>>> origin/master
   static const all = <String>{
     welcomeView,
     walletView,
@@ -342,8 +337,14 @@ class StackedRouter extends RouterBase {
       );
     },
     CausesFilterViewMobile: (data) {
+      var args = data.getArgs<CausesFilterViewMobileArguments>(
+        orElse: () => CausesFilterViewMobileArguments(),
+      );
       return MaterialPageRoute<dynamic>(
-        builder: (context) => const CausesFilterViewMobile(),
+        builder: (context) => CausesFilterViewMobile(
+          key: args.key,
+          initialIndex: args.initialIndex,
+        ),
         settings: data,
       );
     },
@@ -352,7 +353,7 @@ class StackedRouter extends RouterBase {
       return MaterialPageRoute<dynamic>(
         builder: (context) => CausesViewMobile(
           key: args.key,
-          Theme: args.Theme,
+          theme: args.theme,
         ),
         settings: data,
       );
@@ -488,16 +489,20 @@ class QRCodeViewMobileArguments {
   final int initialIndex;
   QRCodeViewMobileArguments({this.key, this.initialIndex = 0});
 }
-<<<<<<< HEAD
+
+/// CausesFilterViewMobile arguments holder class
+class CausesFilterViewMobileArguments {
+  final Key? key;
+  final int? initialIndex;
+  CausesFilterViewMobileArguments({this.key, this.initialIndex});
+}
 
 /// CausesViewMobile arguments holder class
 class CausesViewMobileArguments {
   final Key? key;
-  final String? Theme;
-  CausesViewMobileArguments({this.key, required this.Theme});
+  final String theme;
+  CausesViewMobileArguments({this.key, required this.theme});
 }
-||||||| c7e05cc
-=======
 
 /// SearchView arguments holder class
 class SearchViewArguments {
@@ -519,4 +524,3 @@ class TransferFundsAmountViewArguments {
       this.receiverInfo,
       this.onContinuePressed});
 }
->>>>>>> origin/master

@@ -15,21 +15,15 @@ import 'package:stacked/stacked.dart';
 // CausesViewMobile sets up tab bar view
 
 class CausesViewMobile extends StatelessWidget {
-  final String? theme;
+  final String theme;
 
-  final int? initialIndex;
-  const CausesViewMobile({Key? key, required this.theme, this.initialIndex = 0})
-      : super(key: key);
+  const CausesViewMobile({Key? key, required this.theme}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<CausesViewModel>.reactive(
-      viewModelBuilder: () => locator<CausesViewModel>(),
-      disposeViewModel: false,
-      fireOnModelReadyOnce: true,
-      onModelReady: (model) async => await model.fetchCauses(),
+      viewModelBuilder: () => CausesViewModel(),
       builder: (context, model, child) => TabBarLayout(
-        initialIndex: initialIndex!,
         title: "Social Projects",
         titleTrailingWidget: SmallWalletCard(
             onTap: model.navigateToTransactionsHistoryView,
@@ -48,6 +42,7 @@ class CausesViewMobile extends StatelessWidget {
         ],
         views: [
           CausesListViewMobile(
+            theme: theme,
             type: CausesListType.GlobalGivingProjects,
             description: Text("High-impact charities provided by GlobalGiving"),
           ),
@@ -77,10 +72,8 @@ class CausesListViewMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<CausesViewModel>.reactive(
-      viewModelBuilder: () => locator<CausesViewModel>(),
-      disposeViewModel: false,
-      fireOnModelReadyOnce: true,
-      onModelReady: (model) async => await model.fetchCauses(),
+      viewModelBuilder: () => CausesViewModel(),
+      onModelReady: (model) => model.loadFilteredProjects(theme),
       builder: (context, model, child) => model.isBusy
           ? Center(child: CircularProgressIndicator())
           : Shimmer(
@@ -102,11 +95,11 @@ class CausesListViewMobile extends StatelessWidget {
                       ListView.builder(
                         shrinkWrap: true,
                         physics: ScrollPhysics(),
-                        itemCount: model.projects!.length,
+                        itemCount: model.filteredProjects.length,
                         itemBuilder: (context, index) => Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: GlobalGivingProjectCardMobile(
-                            project: model.projects![index],
+                            project: model.filteredProjects[index],
                             onTap: () async =>
                                 await model.navigateToProjectScreen(index),
                             onTapFavorite: model.showNotImplementedSnackbar,
