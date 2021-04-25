@@ -33,7 +33,7 @@ class ProfileViewModel extends BaseModel {
   }
 
   Future navigateToManageMoneyPoolsView() async {
-    _navigationService!.navigateTo(Routes.manageMoneyPoolsView);
+    _navigationService!.navigateTo(Routes.moneyPoolsView);
   }
 
   void navigateBack() => _navigationService!.back();

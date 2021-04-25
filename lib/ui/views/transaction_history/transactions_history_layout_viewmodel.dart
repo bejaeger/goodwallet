@@ -105,7 +105,7 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
     var tmpVar;
     try {
       tmpVar = transactionData.recipientUid;
-      var incoming = (transactionData.recipientUid == currentUser!.id);
+      var incoming = (transactionData.recipientUid == currentUser.id);
       type = incoming
           ? TransactionType.Incoming
           : TransactionType.TransferredToPeers;

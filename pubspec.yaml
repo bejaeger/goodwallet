@@ -41,14 +41,14 @@ dependencies:
   path_provider: ^2.0.1
 
   # Stacked State Management
-  stacked: ^2.0.2
-  stacked_services: ^0.8.2
+  stacked: ^2.1.0
+  stacked_services: ^0.8.3
   stacked_firebase_auth: ^0.2.1
 
   # storage
   shared_preferences: ^2.0.5
 
-  get_it: ^6.0.0
+  get_it: ^6.1.1
   image_picker: ^0.7.4
   cached_network_image: ^3.0.0
   observable_ish: ^3.0.0
@@ -56,7 +56,7 @@ dependencies:
   material_floating_search_bar: ^0.3.3
   uuid: ^3.0.3
   flutter_hooks: ^0.16.0
-  auto_route: ^1.0.2 
+  # auto_route: ^0.6.9 # using stacked generator instead
   http: ^0.13.1
   webview_flutter: ^2.0.3
   js: ^0.6.3
@@ -69,6 +69,8 @@ dependencies:
   flutter_signin_button: ^2.0.0
   shimmer_animation: ^2.0.0
 
+  persistent_bottom_nav_bar: ^4.0.2
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -76,9 +78,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: 
+  build_runner:
   # auto_route_generator: 
-  stacked_generator: ^0.3.2
+  stacked_generator: ^0.4.1
+  #auto_route_generator:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -116,6 +119,7 @@ flutter:
     - assets/images/work-next-to-creek.jpeg
     - assets/icons/holding-hands.png
     - assets/images/credit-card-background.png
+    - assets/icons/bank-institution.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

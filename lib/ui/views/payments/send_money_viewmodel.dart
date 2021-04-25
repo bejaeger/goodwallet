@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
-import 'package:good_wallet/datamodels/user/qr_code_user_info_model.dart';
+import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
@@ -36,6 +36,8 @@ class SendMoneyViewModel extends BaseModel {
   TextEditingController get userSelectionController => _userSelectionController;
   final DummyPaymentService _dummyPaymentService =
       locator<DummyPaymentService>();
+  final CollectionReference _usersCollectionReference =
+      FirebaseFirestore.instance.collection("users");
 
   final log = getLogger("send_money_viewmodel.dart");
 
@@ -47,7 +49,7 @@ class SendMoneyViewModel extends BaseModel {
     notifyListeners();
   }
 
-  void selectUser(QRCodeUserInfo userInfo) {
+  void selectUser(dynamic userInfo) {
     selectedUserInfo = userInfo;
     userSelectionController.text = userInfo.name;
     setPaymentReady(true);
@@ -55,8 +57,8 @@ class SendMoneyViewModel extends BaseModel {
   }
 
   @override
-  List<QRCodeUserInfo> userInfoMaps = [];
-  QRCodeUserInfo? selectedUserInfo;
+  List<dynamic> userInfoMaps = [];
+  dynamic? selectedUserInfo;
 
   List<String> _nameList = [];
   List<String> get nameList => _nameList;
@@ -104,8 +106,8 @@ class SendMoneyViewModel extends BaseModel {
       data = TransactionModel(
         recipientUid: recipientUid,
         recipientName: recipientName,
-        senderUid: currentUser!.id,
-        senderName: currentUser!.fullName,
+        senderUid: currentUser.id,
+        senderName: currentUser.fullName,
         createdAt: FieldValue.serverTimestamp(),
         amount: amount * 100,
         currency: "cad",
@@ -124,8 +126,8 @@ class SendMoneyViewModel extends BaseModel {
     var data = TransactionModel(
       recipientUid: "3QrVvwOmrraFMl3EaSzn6byLpFu2",
       recipientName: "Hans",
-      senderUid: currentUser!.id,
-      senderName: currentUser!.fullName,
+      senderUid: currentUser.id,
+      senderName: currentUser.fullName,
       amount: 700,
       createdAt: FieldValue.serverTimestamp(),
       currency: "cad",
@@ -152,7 +154,7 @@ class SendMoneyViewModel extends BaseModel {
   Future processPayment(TransactionModel data) async {
     setBusy(true);
     var resultCreatePaymentIntent = await _firestorePaymentDataService!
-        .createPaymentIntent(data, currentUser!.id);
+        .createPaymentIntent(data, currentUser.id);
 
     if (resultCreatePaymentIntent is String) {
       // string is document id which is payId, so
@@ -192,7 +194,7 @@ class SendMoneyViewModel extends BaseModel {
     _userDataService!.userStateSubject.listen((state) async {
       if (state == UserStatus.SignedIn) {
         bool result = await _firestorePaymentDataService!
-            .handlePaymentSuccess(currentUser!.id);
+            .handlePaymentSuccess(currentUser.id);
         if (result)
           _paymentStatus = "success";
         else
@@ -212,7 +214,7 @@ class SendMoneyViewModel extends BaseModel {
     _userDataService!.userStateSubject.listen((state) async {
       if (state == UserStatus.SignedIn) {
         await _firestorePaymentDataService!
-            .handlePaymentFailure(currentUser!.id);
+            .handlePaymentFailure(currentUser.id);
         _paymentStatus = "failure";
         notifyListeners();
       }
@@ -221,20 +223,19 @@ class SendMoneyViewModel extends BaseModel {
 
   // TODO: Put in service!
   Future queryUsers(String query) async {
-    QuerySnapshot foundUsers = await FirebaseFirestore.instance
-        .collection("users")
+    QuerySnapshot foundUsers = await _usersCollectionReference
         .where("searchKeywords", arrayContains: query.toLowerCase())
         .get();
     userInfoMaps = foundUsers.docs.map((DocumentSnapshot doc) {
-      return QRCodeUserInfo(
-          name: doc.get("fullName") as String, id: doc.get("id") as String);
+      return PublicUserInfo(
+          name: doc.get("fullName") as String, uid: doc.get("id") as String);
     }).toList();
   }
 
   // TODO: Put in service and catch errors
   List<String?> getNamesFromuserInfo() {
-    List<String?> returnValue = userInfoMaps.map((QRCodeUserInfo userInfo) {
-      return userInfo.name;
+    List<String?> returnValue = userInfoMaps.map((dynamic userInfo) {
+      return userInfo.name as String;
     }).toList();
     return returnValue;
   }

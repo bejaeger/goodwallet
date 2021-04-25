@@ -27,7 +27,7 @@ class SingleProjectViewModel extends BaseModel {
       );
       if (response!.confirmed) {
         _dummyPaymentService!.processDonation(
-            currentUser!.id, projectTitle, int.parse(donationAmount * 100));
+            currentUser.id, projectTitle, int.parse(donationAmount * 100));
       }
       print('DialogResponse: ${response.confirmed}');
     } catch (e) {

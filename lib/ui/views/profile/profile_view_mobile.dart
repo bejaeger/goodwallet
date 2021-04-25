@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/enums/user_status.dart';
+import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
@@ -179,8 +180,8 @@ class ProfileViewMobile extends StatelessWidget {
       },
       builder: (context, model, child) {
         _model = model;
-        return Scaffold(
-          body: !model.isUserSignedIn || model.isBusy
+        return ConstrainedWidthWithScaffoldLayout(
+          child: !model.isUserSignedIn || model.isBusy
               ? Center(child: CircularProgressIndicator())
               : ListView(
                   children: [
@@ -236,6 +237,11 @@ class ProfileViewMobile extends StatelessWidget {
                         children: [
                           ProfileListItem(
                             title: "Donations History",
+                            onPressed: model.navigateToDonationsHistoryView,
+                          ),
+                          verticalSpaceSmall,
+                          ProfileListItem(
+                            title: "Payment Methods",
                             onPressed: model.navigateToDonationsHistoryView,
                           ),
                           verticalSpaceSmall,

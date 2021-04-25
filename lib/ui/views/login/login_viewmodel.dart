@@ -32,9 +32,16 @@ class LoginViewModel extends AuthenticationViewModel {
     } else if (method == AuthenticationMethod.google) {
       log.i("Login with google");
       return _firebaseAuthenticationService!.signInWithGoogle();
+<<<<<<< HEAD
     // } else if (method == AuthenticationMethod.apple) {
     //   log.i("Login with apple");
     //   return _firebaseAuthenticationService!.signInWithApple();
+||||||| c7e05cc
+    } else if (method == AuthenticationMethod.apple) {
+      log.i("Login with apple");
+      return _firebaseAuthenticationService!.signInWithApple();
+=======
+>>>>>>> origin/master
     } else if (method == AuthenticationMethod.dummy) {
       log.i("Login with dummy account");
       return _firebaseAuthenticationService!

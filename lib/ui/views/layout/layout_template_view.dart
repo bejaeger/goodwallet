@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/enums/user_status.dart';
+import 'package:good_wallet/ui/shared/setup_bottom_sheet_ui.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_viewmodel.dart';
 import 'package:good_wallet/ui/views/layout/navigation_bar_view.dart';
@@ -49,15 +50,15 @@ class LayoutTemplate extends StatelessWidget {
               ),
             )
           : Scaffold(
-            body: Align(
-              alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: screenWidth(context),
-                  ),
-                  child: LayoutTemplateViewMobile()),
+              body: Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: screenWidth(context),
+                    ),
+                    child: LayoutTemplateViewMobile()),
+              ),
             ),
-          ),
     );
   }
 }

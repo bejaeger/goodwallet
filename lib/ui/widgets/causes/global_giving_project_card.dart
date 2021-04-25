@@ -139,7 +139,7 @@ class GlobalGivingProjectCard extends StatelessWidget {
           ButtonBar(
             alignment: MainAxisAlignment.spaceBetween,
             children: [
-              CallToActionButton(
+              CallToActionButtonSimple(
                 color: ColorSettings.primaryColor,
                 onTap: onTap,
                 text: "Give",

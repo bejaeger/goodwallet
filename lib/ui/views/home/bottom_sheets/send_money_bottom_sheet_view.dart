@@ -55,7 +55,7 @@ class SendMoneyBottomSheetView extends StatelessWidget {
         buttons: [
           BottomSheetListEntry(
             completer: completer,
-            responseData: model.navigateToSendMoneyViewMobile,
+            responseData: model.navigateToSearchViewMobile,
             title: "Search for user",
             icon: Image.asset(ImageIconPaths.magnifyingGlass),
           ),

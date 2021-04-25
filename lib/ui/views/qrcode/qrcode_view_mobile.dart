@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/layout_widgets/tabbar_layout.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
+import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/qrcode/qrcode_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -18,22 +20,28 @@ class QRCodeViewMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<QRCodeViewModel>.reactive(
       viewModelBuilder: () => QRCodeViewModel(),
-      builder: (context, model, child) =>
-          TabBarLayout(initialIndex: initialIndex, title: "QR Code", tabs: [
-        SizedBox(
-          width: screenWidth(context) * 0.4,
-          child: Tab(text: "Scan QR Code"),
-        ),
-        SizedBox(
-          width: screenWidth(context) * 0.4,
-          child: Tab(text: "My QR Code"),
-        ),
-      ], views: [
-        ScanQRCode(
-          analyzeScanResult: model.analyzeScanResult,
-        ),
-        MyQRCode(userInfo: model.getUserInfo()),
-      ]),
+      builder: (context, model, child) => TabBarLayout(
+          initialIndex: initialIndex,
+          title: "QR Code",
+          titleTrailingWidget: IconButton(
+              icon: Icon(Icons.search_rounded),
+              onPressed: model.navigateToSearchViewMobile),
+          tabs: [
+            SizedBox(
+              width: screenWidth(context) * 0.4,
+              child: Tab(text: "Scan"),
+            ),
+            SizedBox(
+              width: screenWidth(context) * 0.4,
+              child: Tab(text: "Get paid"),
+            ),
+          ],
+          views: [
+            ScanQRCode(
+              analyzeScanResult: model.analyzeScanResult,
+            ),
+            MyQRCode(userInfo: model.getUserInfo()),
+          ]),
     );
   }
 }
@@ -51,6 +59,12 @@ class ScanQRCode extends StatefulWidget {
 class _ScanQRCodeState extends State<ScanQRCode> {
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  bool isFlashOn = false;
+
+  void toggleFlash() {
+    isFlashOn = !isFlashOn;
+    setState(() {});
+  }
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -65,38 +79,65 @@ class _ScanQRCodeState extends State<ScanQRCode> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        verticalSpaceLarge,
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
+    return SafeArea(
+      child: Column(
+        children: [
+          verticalSpaceRegular,
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            clipBehavior: Clip.hardEdge,
+            height: screenHeightPercentage(context, percentage: 0.7),
+            width: screenWidth(context),
+            child: _buildQrView(context),
+            // SizedBox.expand(
+            //     child: Image.asset(ImageIconPaths.qrcodeScanning)),
           ),
-          clipBehavior: Clip.hardEdge,
-          height: screenHeightPercentage(context, percentage: 0.6),
-          width: screenWidth(context),
-          child: _buildQrView(context),
-          // SizedBox.expand(
-          //     child: Image.asset(ImageIconPaths.qrcodeScanning)),
-        ),
-        verticalSpaceMedium,
-        Text("Scan a users QR Code"),
-      ],
+          verticalSpaceRegular,
+        ],
+      ),
     );
   }
 
   Widget _buildQrView(BuildContext context) {
     // To ensure the Scanner view is properly sizes after rotation
     // we need to listen for Flutter SizeChanged notification and update controller
-    return QRView(
-      key: qrKey,
-      onQRViewCreated: _onQRViewCreated,
-      overlay: QrScannerOverlayShape(
-          borderColor: Colors.red,
-          borderRadius: 10,
-          borderLength: 30,
-          borderWidth: 10,
-          cutOutSize: 250),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: QRView(
+            key: qrKey,
+            onQRViewCreated: _onQRViewCreated,
+            overlay: QrScannerOverlayShape(
+                borderColor: ColorSettings.primaryColor,
+                borderRadius: 10,
+                borderLength: 30,
+                borderWidth: 10,
+                cutOutSize: 250),
+          ),
+        ),
+        Align(
+          alignment: Alignment(0.0, 0.7),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Text("Scan a Good Wallet QR Code",
+                style: textTheme(context).bodyText1),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: IconButton(
+              icon: isFlashOn ? Icon(Icons.flash_on) : Icon(Icons.flash_off),
+              onPressed: toggleFlash,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

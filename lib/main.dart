@@ -20,12 +20,12 @@ void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-    await setupLocator();
+    setupLocator();
     setupBottomSheetUi();
     Logger.level = Level.info;
     runApp(MyApp());
   } catch (e) {
-    log.e("Set up failed");
+    print("ERROR: App main function failed with error: ${e.toString()}");
   }
 }
 
@@ -37,16 +37,18 @@ class MyApp extends StatelessWidget {
     log.i("Building MaterialApp...");
     return Unfocuser(
       child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'The Good Dollars Marketplace',
-          navigatorKey: StackedService.navigatorKey,
-          onGenerateRoute: StackedRouter().onGenerateRoute,
-          theme: MyThemeData.myTheme(),
-          initialRoute: kIsWeb
-              ? auto_router.Routes.welcomeView
-              : auto_router.Routes.startUpLogicView,
-          builder: (context, child) =>
-              isDesktop(context) ? LayoutTemplate(childView: child) : child!),
+        debugShowCheckedModeBanner: false,
+        title: 'The Good Dollars Marketplace',
+        navigatorKey: StackedService.navigatorKey,
+        onGenerateRoute: StackedRouter().onGenerateRoute,
+        theme: MyThemeData.myTheme(),
+        initialRoute: auto_router.Routes.startUpLogicView,
+        //kIsWeb
+        //? auto_router.Routes.welcomeView
+        //: auto_router.Routes.startUpLogicView,
+        builder: (context, child) => child!,
+      ),
+      //    isDesktop(context) ? LayoutTemplate(childView: child) : child!),
     );
   }
 }
@@ -60,7 +62,7 @@ class MyThemeData {
       primaryColor: Color(0xFF941305),
       primaryColorLight: Color(0xFFcc492f), // light red
       primaryColorDark: Color(0xFF600000), // dark red
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.grey[100],
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
         elevation: 2.0,
@@ -77,7 +79,7 @@ class MyThemeData {
       ),
       tabBarTheme: TabBarTheme(
         indicator: UnderlineTabIndicator(
-          borderSide: BorderSide(color: MyColors.lightRed, width: 5.0),
+          borderSide: BorderSide(color: Colors.grey[100]!, width: 3.0),
         ),
       ),
       iconTheme: IconThemeData(

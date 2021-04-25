@@ -12,14 +12,14 @@ import 'package:stacked_services/stacked_services.dart';
 // put everything here that needs to be available throughout the
 // entire App
 
-class BaseModel extends IndexTrackingViewModel {
+class BaseModel extends BaseViewModel {
   final UserDataService? _userDataService = locator<UserDataService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
   final NavigationService? _navigationService = locator<NavigationService>();
 
   final baseModelLog = getLogger("BaseModel");
 
-  MyUser? get currentUser => _userDataService!.currentUser;
+  MyUser get currentUser => _userDataService!.currentUser;
 
   UserStatus? userStatus;
   bool get isUserSignedIn =>

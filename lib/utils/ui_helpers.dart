@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 
@@ -26,7 +28,8 @@ Color getBkgColor(context) => Theme.of(context).backgroundColor;
 
 Widget verticalSpace(double height) => SizedBox(height: height);
 
-double screenWidth(BuildContext context) => MediaQuery.of(context).size.width;
+double screenWidth(BuildContext context) =>
+    min(MediaQuery.of(context).size.width, LayoutSettings.maxAppWidth);
 double screenHeight(BuildContext context) => MediaQuery.of(context).size.height;
 Size screenSize(BuildContext context) => MediaQuery.of(context).size;
 

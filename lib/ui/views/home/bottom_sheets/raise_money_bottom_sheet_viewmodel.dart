@@ -16,10 +16,10 @@ class RaiseMoneyBottomSheetViewModel extends BaseModel {
   }
 
   Future navigateToManageMoneyPoolsView() async {
-    await _navigationService!.navigateTo(Routes.manageMoneyPoolsView);
+    await _navigationService!.navigateTo(Routes.moneyPoolsView);
   }
 
   void navigateToCreateMoneyPoolView() {
-    _navigationService!.navigateTo(Routes.createMoneyPoolView);
+    _navigationService!.navigateTo(Routes.createMoneyPoolIntroView);
   }
 }

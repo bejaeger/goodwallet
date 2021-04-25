@@ -39,7 +39,7 @@ class WalletView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildFullName(model.currentUser!.fullName!),
+                        _buildFullName(model.currentUser.fullName),
                         verticalSpace(25),
                         _buildDonationBalanceView(model),
                         Row(
@@ -146,14 +146,14 @@ class WalletView extends StatelessWidget {
             Expanded(
               child: Column(
                 children: [
-                  CallToActionButton(
+                  CallToActionButtonSimple(
                     color: Colors.grey[800],
                     onTap: model.navigateToSendMoneyView,
                     text: "Commit",
                     icon: Icon(Icons.arrow_circle_up, color: Colors.grey[800]),
                   ),
                   verticalSpace(15),
-                  CallToActionButton(
+                  CallToActionButtonSimple(
                     color: Colors.grey[800],
                     onTap: model.navigateToSendMoneyView,
                     text: "Receive",
