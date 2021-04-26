@@ -75,7 +75,7 @@ class _TabBarLayoutState extends State<TabBarLayout>
                   labelPadding: const EdgeInsets.only(left: 10.0, right: 10.0),
                   labelStyle: textTheme(context)
                       .bodyText1!
-                      .copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+                      .copyWith(fontSize: 13, fontWeight: FontWeight.w600),
                 ),
               ),
             ),

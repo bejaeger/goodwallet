@@ -6,50 +6,56 @@ class MyUser {
   final String id;
   final String fullName;
   final String email;
-  final num balance;
-  final num implicitDonations;
+  final num currentBalance;
+  final num transferredToPeers;
   final num donations;
+  final num raised;
 
   MyUser(
-      {required this.implicitDonations,
+      {required this.transferredToPeers,
       required this.donations,
       required this.id,
       required this.fullName,
       required this.email,
-      required this.balance});
+      required this.currentBalance,
+      required this.raised});
 
   MyUser.empty()
       : id = "",
         fullName = "",
         email = "",
-        balance = 0,
-        implicitDonations = 0,
-        donations = 0;
+        currentBalance = 0,
+        transferredToPeers = 0,
+        donations = 0,
+        raised = 0;
 
   MyUser.dummy()
       : id = "USERID",
         fullName = "USERNAME",
         email = "dummy@gmail.com",
-        balance = 0,
-        implicitDonations = 0,
-        donations = 0;
+        currentBalance = 0,
+        transferredToPeers = 0,
+        donations = 0,
+        raised = 0;
 
   MyUser.fromData(Map<String, dynamic> data)
       : id = data['id'],
         fullName = data['fullName'],
         email = data['email'],
-        balance = data['balance'],
-        implicitDonations = data['implicitDonations'],
-        donations = data['donations'];
+        currentBalance = data['currentBalance'],
+        transferredToPeers = data['transferredToPeers'],
+        donations = data['donations'],
+        raised = data['raised'];
 
   Map<String, dynamic> toJson([bool addSearchKeywords = false]) {
     var returnJson = {
       'id': id,
       'fullName': fullName,
       'email': email,
-      'balance': balance,
-      'implicitDonations': implicitDonations,
+      'currentBalance': currentBalance,
+      'transferredToPeers': transferredToPeers,
       'donations': donations,
+      'raised': raised
     };
     // create search keywords for user
     if (addSearchKeywords) {
@@ -74,9 +80,10 @@ class MyUser {
         id: map['id'],
         fullName: map['fullName'],
         email: map['email'],
-        balance: map['balance'],
-        implicitDonations: map['implicitDonations'],
-        donations: map['donations']);
+        currentBalance: map['currentBalance'],
+        transferredToPeers: map['transferredToPeers'],
+        donations: map['donations'],
+        raised: map['raised']);
     return data;
   }
 }

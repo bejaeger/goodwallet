@@ -121,9 +121,16 @@ class UserDataService {
         }
       }
       // populate current User
-      MyUser myUser = MyUser.fromData(userData.data()!);
-      _currentUser = myUser;
-      return UserDataServiceResult();
+      if (userData.data() == null) {
+        log.wtf(
+            "user data document could be found but it does not have any data! Something is seriously wrong");
+        return UserDataServiceResult.error(
+            errorMessage: "Something is seriously wrong! Please check logs");
+      } else {
+        MyUser myUser = MyUser.fromData(userData.data()!);
+        _currentUser = myUser;
+        return UserDataServiceResult();
+      }
     } catch (e) {
       log.e("Error in _populateCurrentUser(): ${e.toString()}");
       rethrow;
@@ -133,9 +140,10 @@ class UserDataService {
   // User ------------------------------------------------->>
   Future createUser(User user, [String? fullName]) async {
     // create a new user profile on firestore`
-    num balance = 0;
-    num implicitDonations = 0;
+    num currentBalance = 0;
+    num transferredToPeers = 0;
     num donations = 0;
+    num raised = 0;
     try {
       String name = fullName ?? (user.displayName ?? "");
       String email = user.email ?? "";
@@ -143,9 +151,10 @@ class UserDataService {
         id: user.uid,
         email: email,
         fullName: name,
-        balance: balance,
-        implicitDonations: implicitDonations,
+        currentBalance: currentBalance,
+        transferredToPeers: transferredToPeers,
         donations: donations,
+        raised: raised,
       );
       await _usersCollectionReference.doc(user.uid).set(myuser.toJson(true));
       return UserDataServiceResult();
@@ -162,17 +171,16 @@ class UserDataService {
       _usersCollectionReference.doc(uid).snapshots().listen((userData) {
         if (userData.exists) {
           try {
-            userWalletSubject.add(
-              WalletBalancesModel.fromData(
-                {
-                  'currentBalance': userData["balance"] as num?,
-                  'donations': userData["donations"] as num?,
-                  'transferredToPeers': userData["implicitDonations"] as num?,
-                },
-              ),
-            );
+            if (userData.data() == null) {
+              log.wtf(
+                  "User data document found but data is null. Something is seriously messed up! Adding empty wallet");
+            } else {
+              userWalletSubject.add(
+                WalletBalancesModel.fromData(userData.data()!),
+              );
+            }
           } catch (e) {
-            log.e("Could not use update wallet balance due to unkown error");
+            log.e("Could not fetch wallet data due to error ${e.toString()}");
           }
         } else {
           log.e("Wallet data could not be retrieved from firebase");

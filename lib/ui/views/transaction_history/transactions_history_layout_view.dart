@@ -37,7 +37,9 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
         model.initialize();
       },
       fireOnModelReadyOnce: true,
-      builder: (context, model, child) => model.getTransactions(type)!.isEmpty
+      builder: (context, model, child) => model
+              .getTransactionsCorrespondingToType(type)!
+              .isEmpty
           ? model.isBusy
               ? Center(child: CircularProgressIndicator())
               : Center(child: Text("No transactions on record!"))
@@ -50,23 +52,28 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
                     children: [
                       verticalSpaceRegular,
                       ShowBalanceCard(
-                        balance: _getBalanceForType(type, model),
-                        title: _getTitleForType(type),
+                        balance: model.getBalanceCorrespondingToType(type),
+                        title: model.getTitleCorrespondingToType(type),
                         //height: 90,
                         shortDescription: description,
                       ),
                       verticalSpaceMedium,
                       ListView.builder(
-                        itemCount:
-                            model.getTransactions(type)!.length > maximumLength
-                                ? maximumLength
-                                : model.getTransactions(type)!.length,
+                        itemCount: model
+                                    .getTransactionsCorrespondingToType(type)!
+                                    .length >
+                                maximumLength
+                            ? maximumLength
+                            : model
+                                .getTransactionsCorrespondingToType(type)!
+                                .length,
                         shrinkWrap: true,
                         physics: ScrollPhysics(),
                         itemBuilder: (context, index) {
                           return TransactionListTile(
                             transactionData:
-                                model.getTransactions(type)![index],
+                                model.getTransactionsCorrespondingToType(
+                                    type)![index],
                             inferEntryTypeFunction: model.inferTransactionType,
                           );
                         },
@@ -77,32 +84,6 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
               ),
             ),
     );
-  }
-
-  num _getBalanceForType(TransactionType type, dynamic model) {
-    if (type == TransactionType.Donation) {
-      return model.userWallet.donations;
-    } else if (type == TransactionType.Incoming) {
-      return -1;
-    } else if (type == TransactionType.TransferredToPeers) {
-      return model.userWallet.transferredToPeers;
-    } else if (type == TransactionType.InOrOut) {
-      return model.userWallet.currentBalance;
-    } else
-      return -1;
-  }
-
-  String _getTitleForType(TransactionType type) {
-    if (type == TransactionType.Donation) {
-      return "Total Donations";
-    } else if (type == TransactionType.Incoming) {
-      return "Total Raised";
-    } else if (type == TransactionType.TransferredToPeers) {
-      return "Total Gifted";
-    } else if (type == TransactionType.InOrOut) {
-      return "Good Wallet Balance";
-    } else
-      return "";
   }
 }
 
@@ -119,8 +100,9 @@ class TransactionListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var amountFormatted = "\$ ${transactionData.amount * 0.01}";
-    TransactionHistoryEntryStyle style = _getTransactionsHistoryEntryStyle(
-        inferEntryTypeFunction(transactionData));
+    TransactionHistoryEntryStyle style =
+        _getTransactionsCorrespondingToTypeHistoryEntryStyle(
+            inferEntryTypeFunction(transactionData));
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -162,7 +144,7 @@ class TransactionListTile extends StatelessWidget {
     );
   }
 
-  _getTransactionsHistoryEntryStyle(TransactionType? type) {
+  _getTransactionsCorrespondingToTypeHistoryEntryStyle(TransactionType? type) {
     if (type == TransactionType.Donation) {
       return TransactionHistoryEntryStyle(
           color: ColorSettings.primaryColor,

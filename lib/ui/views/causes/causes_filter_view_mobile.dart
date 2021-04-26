@@ -28,12 +28,12 @@ class CausesFilterViewMobile extends StatelessWidget {
         titleTrailingWidget: SmallWalletCard(
             onTap: model.navigateToTransactionsHistoryView,
             width: 80,
-            balance: model.userWallet.currentBalance!),
+            balance: model.userWallet.currentBalance),
         tabs: [
           Container(
               width: screenWidth(context) * 0.25, child: Tab(text: "Themes")),
           Container(
-              width: screenWidth(context) * 0.3,
+              width: screenWidth(context) * 0.35,
               child: Tab(text: "Good Wallet Funds")),
           Container(
               width: screenWidth(context) * 0.25,

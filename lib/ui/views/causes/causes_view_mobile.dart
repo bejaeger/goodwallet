@@ -28,7 +28,7 @@ class CausesViewMobile extends StatelessWidget {
         titleTrailingWidget: SmallWalletCard(
             onTap: model.navigateToTransactionsHistoryView,
             width: 80,
-            balance: model.userWallet.currentBalance!),
+            balance: model.userWallet.currentBalance),
         tabs: [
           Container(
               width: screenWidth(context) * 0.25,

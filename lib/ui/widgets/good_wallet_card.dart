@@ -85,7 +85,7 @@ class GoodWalletCard extends StatelessWidget {
             ),
             Container(
               padding: const EdgeInsets.only(
-                  top: 20.0, bottom: 10.0, left: 25.0, right: 15.0),
+                  top: 15.0, bottom: 0.0, left: 25.0, right: 15.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -97,6 +97,7 @@ class GoodWalletCard extends StatelessWidget {
                       Container(
                         width: screenWidthPercentage(context, percentage: 0.28),
                         child: FittedBox(
+                          fit: BoxFit.none,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -106,12 +107,20 @@ class GoodWalletCard extends StatelessWidget {
                                       fontSize: 18,
                                     ),
                               ),
-                              verticalSpaceTiny,
+                              //verticalSpaceTiny,
                               Text(
                                 formatAmount(currentBalance),
                                 maxLines: 1,
                                 style: textTheme(context).headline1!.copyWith(
                                       fontSize: 32,
+                                    ),
+                              ),
+                              //verticalSpaceTiny,
+                              Text(
+                                "To be donated",
+                                maxLines: 1,
+                                style: textTheme(context).bodyText1!.copyWith(
+                                      fontSize: 12,
                                     ),
                               ),
                             ],
@@ -248,59 +257,63 @@ class GoodWalletCard extends StatelessWidget {
                             //     style: textTheme(context).bodyText2),
                           ],
                         )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            if (!showGoodometer)
-                              GestureDetector(
-                                onTap: onQRCodeTap,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(2.0),
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: ColorSettings
-                                                  .greyTextColor!)),
-                                      height: 55,
-                                      width: 55,
-                                      child: QrImage(
-                                        foregroundColor:
-                                            ColorSettings.qrCodeOnWalletColor,
-                                        backgroundColor:
-                                            ColorSettings.greyTextColor!,
-                                        padding: const EdgeInsets.all(0.0),
-                                        data: userInfo,
+                      : Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              if (!showGoodometer)
+                                GestureDetector(
+                                  onTap: onQRCodeTap,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(2.0),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: ColorSettings
+                                                    .greyTextColor!)),
+                                        height: 55,
+                                        width: 55,
+                                        child: QrImage(
+                                          foregroundColor:
+                                              ColorSettings.qrCodeOnWalletColor,
+                                          backgroundColor:
+                                              ColorSettings.greyTextColor!,
+                                          padding: const EdgeInsets.all(0.0),
+                                          data: userInfo,
+                                        ),
                                       ),
-                                    ),
-                                    Text("QR code",
-                                        style: textTheme(context)
-                                            .bodyText1!
-                                            .copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16))
-                                  ],
+                                      Text("QR code",
+                                          style: textTheme(context)
+                                              .bodyText1!
+                                              .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16))
+                                    ],
+                                  ),
                                 ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  _buildStatItem(
+                                    context,
+                                    "Total donations",
+                                    formatAmount(totalDonations),
+                                  ),
+                                  horizontalSpaceRegular,
+                                  _buildStatItem(
+                                    context,
+                                    "Total raised",
+                                    formatAmount(totalRaised),
+                                  ),
+                                ],
                               ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                _buildStatItem(
-                                  context,
-                                  "Total donations",
-                                  formatAmount(totalDonations),
-                                ),
-                                horizontalSpaceRegular,
-                                _buildStatItem(
-                                  context,
-                                  "Total raised",
-                                  formatAmount(totalRaised),
-                                ),
-                              ],
-                            ),
-                          ],
+                            ],
+                          ),
                         )
                 ],
               ),

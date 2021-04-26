@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
@@ -23,10 +25,11 @@ class TransferFundsAmountViewModel extends FormViewModel {
       locator<DummyPaymentService>();
   final log = getLogger("transfer_funds_amount_viewmodel.dart");
   WalletBalancesModel userWallet = WalletBalancesModel.empty();
+  StreamSubscription<WalletBalancesModel>? _walletSubscription;
 
   TransferFundsAmountViewModel() {
     // Listen to wallet similar to what is done in base viemodel
-    _userDataService!.userWalletSubject.listen(
+    _walletSubscription = _userDataService!.userWalletSubject.listen(
       (wallet) {
         userWallet = wallet;
         notifyListeners();
@@ -236,5 +239,11 @@ class TransferFundsAmountViewModel extends FormViewModel {
     await Future.delayed(Duration(seconds: 4));
     log.i("Set custom Form status");
     customValidationMessage = null;
+  }
+
+  @override
+  void dispose() {
+    _walletSubscription?.cancel();
+    super.dispose();
   }
 }

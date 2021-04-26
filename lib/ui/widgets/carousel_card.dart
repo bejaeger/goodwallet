@@ -78,7 +78,7 @@ class CarouselCard extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
                           width:
-                              screenWidthPercentage(context, percentage: 0.45),
+                              screenWidthPercentage(context, percentage: 0.55),
                           child: Text(explanation!,
                               style: textTheme(context)
                                   .bodyText1!

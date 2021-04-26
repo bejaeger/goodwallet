@@ -93,9 +93,9 @@ class HomeViewMobile extends StatelessWidget {
                                     onCommitButtonPressed:
                                         model.navigateToTransferFundAmountView,
                                     currentBalance:
-                                        model.userWallet.currentBalance!,
-                                    totalDonations: model.userWallet.donations!,
-                                    totalRaised: 7800,
+                                        model.userWallet.currentBalance,
+                                    totalDonations: model.userWallet.donations,
+                                    totalRaised: model.userWallet.raised,
                                     userInfo: model.getQRCodeUserInfoString(),
                                     showGoodometer: false,
                                   ),
@@ -174,6 +174,12 @@ class HomeViewMobile extends StatelessWidget {
                           //verticalSpaceTiny,
                           //_sendMoneyButton(context, model),
                           verticalSpaceTiny,
+                          SectionHeader(
+                              title: "Projects you supported",
+                              onTextButtonTap:
+                                  model.showNotImplementedSnackbar),
+                          FeaturedProjectsCarousel(model: model),
+                          verticalSpaceMedium,
                           SectionHeader(
                             title: "Stats",
                             //onTextButtonTap: model.showNotImplementedSnackbar,
@@ -319,14 +325,16 @@ class FeaturedProjectsCarousel extends StatelessWidget {
           children: [
             SizedBox(width: LayoutSettings.horizontalPadding),
             CarouselCard(
-              title: "Health and Development",
-              explanation: "Have an impact and change the world for the better",
+              title: "Climate Action",
+              explanation:
+                  "Continue to help turning the wheels and fight climate change",
               onTap: model.showNotImplementedSnackbar,
+              //
             ),
             SizedBox(width: LayoutSettings.horizontalPadding),
             CarouselCard(
-              title: "Climate Action",
-              explanation: "Help turning the wheels and fight climate change",
+              title: "Health and Development",
+              explanation: "Have an impact and help people in need",
               onTap: model.showNotImplementedSnackbar,
               backgroundColor: MyColors.paletteTurquoise,
             ),

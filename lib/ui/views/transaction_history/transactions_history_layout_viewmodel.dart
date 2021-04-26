@@ -124,7 +124,7 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
 
   void navigateBack() => _navigationService!.back();
 
-  List<dynamic>? getTransactions(TransactionType type) {
+  List<dynamic>? getTransactionsCorrespondingToType(TransactionType type) {
     if (type == TransactionType.Donation) {
       return listOfDonations;
     } else if (type == TransactionType.Incoming) {
@@ -137,17 +137,31 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
     return null;
   }
 
-  num? getBalanceStringCorrespondingToType(TransactionType type) {
+  num getBalanceCorrespondingToType(TransactionType type) {
     if (type == TransactionType.Donation) {
       return userWallet.donations;
     } else if (type == TransactionType.Incoming) {
-      return 0;
+      return userWallet.raised;
     } else if (type == TransactionType.TransferredToPeers) {
       return userWallet.transferredToPeers;
     } else if (type == TransactionType.InOrOut) {
       return userWallet.currentBalance;
+    } else {
+      return -1;
     }
-    return null;
+  }
+
+  String getTitleCorrespondingToType(TransactionType type) {
+    if (type == TransactionType.Donation) {
+      return "Total Donations";
+    } else if (type == TransactionType.Incoming) {
+      return "Total Raised";
+    } else if (type == TransactionType.TransferredToPeers) {
+      return "Total Gifted";
+    } else if (type == TransactionType.InOrOut) {
+      return "Good Wallet Balance";
+    } else
+      return "";
   }
 
   //===================================================
