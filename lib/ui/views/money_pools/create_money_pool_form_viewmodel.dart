@@ -48,7 +48,8 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
       );
 
       try {
-        await _moneyPoolService!.createMoneyPool(moneyPool);
+        await _moneyPoolService!
+            .createMoneyPool(moneyPool, currentUser.id, currentUser.fullName);
       } catch (e) {
         log.e("Could not create money pool, error: ${e.toString()}");
         setValidationMessage(
@@ -59,7 +60,7 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
       // This will be the implementation of the money pool!
       await Future.delayed(Duration(seconds: 1));
       // this will create the money pool.
-      _navigationService!.clearTillFirstAndShow(
+      await _navigationService!.clearTillFirstAndShow(
         Routes.singleMoneyPoolView,
         arguments: SingleMoneyPoolViewArguments(moneyPool: moneyPool),
       );

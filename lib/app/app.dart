@@ -88,8 +88,6 @@ import 'package:stacked_services/stacked_services.dart';
 
     // viewmodels
     LazySingleton(classType: WalletViewModel),
-    LazySingleton(classType: CausesViewModel),
-    LazySingleton(classType: CausesFilterViewModel),
     LazySingleton(classType: SendMoneyViewModel),
     LazySingleton(classType: TransactionHistoryLayoutViewModel),
     // TODO: Check whether this is deprecated

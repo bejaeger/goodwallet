@@ -61,7 +61,7 @@ class AlternativeScreenHeaderImage extends StatelessWidget {
                   icon: topLeftWidget ??
                       Icon(
                         Icons.arrow_back_ios,
-                        color: MyColors.almostWhite,
+                        color: ColorSettings.whiteTextColor,
                         size: 25,
                       ),
                   onPressed: onTopLeftButtonPressed,

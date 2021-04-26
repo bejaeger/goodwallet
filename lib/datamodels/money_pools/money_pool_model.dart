@@ -36,10 +36,11 @@ class MoneyPoolModel {
   String? name;
   String? adminUID;
   String? adminName;
-  double? total;
+  num? total;
+  String? currency;
   String? description;
   String? moneyPoolId;
-  bool? showTotalAmount;
+  bool? showTotal;
   dynamic? createdAt;
 
   MoneyPoolModel.empty()
@@ -48,9 +49,10 @@ class MoneyPoolModel {
         this.adminName = "",
         this.moneyPoolId = "",
         this.total = -1.0,
+        this.currency = "",
         this.description = "",
         this.createdAt = "",
-        this.showTotalAmount = false;
+        this.showTotal = false;
 
   MoneyPoolModel({
     this.name,
@@ -59,8 +61,9 @@ class MoneyPoolModel {
     this.createdAt,
     this.moneyPoolId,
     this.total = 0,
+    this.currency = "cad",
     this.description,
-    this.showTotalAmount = true,
+    this.showTotal = true,
   });
 
   MoneyPoolModel.fromJson(Map<String, dynamic> json)
@@ -68,9 +71,10 @@ class MoneyPoolModel {
         adminUID = json['adminUID'],
         adminName = json['adminName'],
         moneyPoolId = json['moneyPoolId'],
-        showTotalAmount = json['showTotalAmount'],
+        showTotal = json['showTotal'],
         createdAt = json['createdAt'] as Timestamp?,
         total = json['total'],
+        currency = json['currency'],
         description = json['description'] {
     if (moneyPoolId == null) {
       throw Exception("Money pool ID can't be null! Fetched data not valid");
@@ -85,8 +89,9 @@ class MoneyPoolModel {
     data['moneyPoolId'] = this.moneyPoolId;
     data['adminName'] = this.adminName;
     data['total'] = this.total;
+    data['currency'] = this.currency;
     data['createdAt'] = this.createdAt as FieldValue?;
-    data['showTotalAmount'] = this.showTotalAmount;
+    data['showTotal'] = this.showTotal;
     return data;
   }
 }
@@ -94,17 +99,21 @@ class MoneyPoolModel {
 class ContributingUser {
   String name;
   String uid;
+  num contribution;
 
-  ContributingUser({required this.uid, required this.name});
+  ContributingUser(
+      {required this.uid, required this.name, this.contribution = 0.0});
 
   ContributingUser.fromJson(Map<String, dynamic> json)
       : uid = json['uid'],
-        name = json['name'];
+        name = json['name'],
+        contribution = json['contribution'];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['uid'] = this.uid;
     data['name'] = this.name;
+    data['contribution'] = this.contribution;
     return data;
   }
 }

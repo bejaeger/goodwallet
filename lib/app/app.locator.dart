@@ -18,8 +18,6 @@ import '../services/payments/firestore_payment_data_service.dart';
 import '../services/payments/stripe_payment_service.dart';
 import '../services/qrcode/qrcode_service.dart';
 import '../services/userdata/user_data_service.dart';
-import '../ui/views/causes/causes_filter_viewmodel.dart';
-import '../ui/views/causes/causes_viewmodel.dart';
 import '../ui/views/layout/navigation_bar_viewmodel.dart';
 import '../ui/views/payments/send_money_viewmodel.dart';
 import '../ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
@@ -36,8 +34,6 @@ void setupLocator() {
   locator.registerLazySingleton(() => StripePaymentService());
   locator.registerLazySingleton(() => GlobalGivingAPIService());
   locator.registerLazySingleton(() => WalletViewModel());
-  locator.registerLazySingleton(() => CausesViewModel());
-  locator.registerLazySingleton(() => CausesFilterViewModel());
   locator.registerLazySingleton(() => SendMoneyViewModel());
   locator.registerLazySingleton(() => TransactionHistoryLayoutViewModel());
   locator.registerLazySingleton(() => NavigationBarViewModel());

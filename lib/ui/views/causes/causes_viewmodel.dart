@@ -23,7 +23,8 @@ class CausesViewModel extends BaseModel {
   final log = getLogger("causes_viewmodel.dart");
 
   List<GoodWalletProjectModel> get projects => _causesDataService!.projects;
-  List<GoodWalletFundModel>? goodWalletFunds;
+  List<GoodWalletFundModel> get goodWalletFunds =>
+      _causesDataService!.goodWalletFunds;
   List<GoodWalletProjectModel> filteredProjects = [];
 
   void loadFilteredProjects(String? theme) {
@@ -37,7 +38,8 @@ class CausesViewModel extends BaseModel {
 
   Future navigateToProjectScreen(index) async {
     await _navigationService!.navigateTo(Routes.singleProjectViewMobile,
-        arguments: SingleProjectViewMobileArguments(project: projects[index]));
+        arguments:
+            SingleProjectViewMobileArguments(project: filteredProjects[index]));
   }
 
   Future navigateToTransactionsHistoryView() async {

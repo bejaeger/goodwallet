@@ -8,6 +8,7 @@ import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_view.f
 import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/alternative_screen_header.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
+import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/datamodel_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -56,6 +57,7 @@ class TransferFundsAmountView extends StatelessWidget
         else
           headline = "Transfer";
         return ConstrainedWidthWithScaffoldLayout(
+          resizeToAvoidBottomInset: false,
           child: Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: LayoutSettings.horizontalPadding),
@@ -82,86 +84,106 @@ class TransferFundsAmountView extends StatelessWidget
                   ],
                 ),
                 verticalSpaceRegular,
-                SizedBox(
-                  height: 350,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Source of transaction
+                        if (type == FundTransferType.transferToPeer ||
+                            type == FundTransferType.commitment ||
+                            type == FundTransferType.prepaidFundTopUp ||
+                            type == FundTransferType.donationFromBank)
+                          bankInstituteIcon(context),
+                        if (type == FundTransferType.moneyPoolContribution)
+                          prepaidFundIcon(context),
+                        if (type == FundTransferType.donation)
+                          goodWalletIcon(
+                              context, model.userWallet.currentBalance),
+
+                        // Arrow
+                        horizontalSpaceRegular,
+                        Icon(Icons.arrow_forward_rounded, size: 40),
+                        horizontalSpaceRegular,
+
+                        // Receiver
+                        if (type == FundTransferType.transferToPeer)
+                          avatarWithUserName(context),
+                        if (type == FundTransferType.commitment)
+                          hashTagCommitForGood(context),
+                        if (type == FundTransferType.prepaidFundTopUp)
+                          topUp(context),
+                        if (type == FundTransferType.donation ||
+                            type == FundTransferType.donationFromBank)
+                          projectSummary(context),
+                      ],
+                    ),
+                    verticalSpaceMedium,
+                    SizedBox(
+                      width: 300,
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Source of transaction
-                          if (type == FundTransferType.transferToPeer ||
-                              type == FundTransferType.commitment ||
-                              type == FundTransferType.prepaidFundTopUp)
-                            bankInstituteIcon(context),
-                          if (type == FundTransferType.moneyPoolContribution)
-                            prepaidFundIcon(context),
-
-                          // Arrow
-                          horizontalSpaceRegular,
-                          Icon(Icons.arrow_forward_rounded, size: 40),
-                          horizontalSpaceRegular,
-
-                          // Receiver
-                          if (type == FundTransferType.transferToPeer)
-                            avatarWithUserName(context),
-                          if (type == FundTransferType.commitment)
-                            hashTagCommitForGood(context),
-                          if (type == FundTransferType.prepaidFundTopUp)
-                            topUp(context),
+                          Flexible(
+                            child: Text(
+                              "\$",
+                              style: textTheme(context).bodyText2!.copyWith(
+                                  fontSize: 35,
+                                  color: ColorSettings.blackHeadlineColor),
+                            ),
+                          ),
+                          Flexible(
+                            child: TextField(
+                              focusNode: amountFocusNode,
+                              controller: amountController,
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.center,
+                              style: textTheme(context).bodyText2!.copyWith(
+                                  fontSize: 35,
+                                  color: ColorSettings.blackHeadlineColor),
+                              autofocus: true,
+                            ),
+                          ),
                         ],
                       ),
-                      verticalSpaceMedium,
-                      SizedBox(
-                        width: 300,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                "\$",
-                                style: textTheme(context).bodyText2!.copyWith(
-                                    fontSize: 35,
-                                    color: ColorSettings.blackHeadlineColor),
-                              ),
-                            ),
-                            Flexible(
-                              child: TextField(
-                                focusNode: amountFocusNode,
-                                controller: amountController,
-                                keyboardType: TextInputType.number,
-                                textAlign: TextAlign.center,
-                                style: textTheme(context).bodyText2!.copyWith(
-                                    fontSize: 35,
-                                    color: ColorSettings.blackHeadlineColor),
-                                autofocus: true,
-                              ),
-                            ),
-                          ],
+                    ),
+                    verticalSpaceLarge,
+                    if (model.customValidationMessage != null)
+                      Text(
+                        model.customValidationMessage!,
+                        style: TextStyle(
+                          color: Colors.red,
+                          //fontSize: kBodyTextSize,
                         ),
                       ),
-                      verticalSpaceLarge,
-                      if (model.customValidationMessage != null)
-                        Text(
-                          model.customValidationMessage!,
-                          style: TextStyle(
-                            color: Colors.red,
-                            //fontSize: kBodyTextSize,
+                    if (model.customValidationMessage != null)
+                      verticalSpaceTiny,
+                    model.isBusy
+                        ? Center(child: CircularProgressIndicator())
+                        : CallToActionButtonRectangular(
+                            color: MyColors.paletteGreen.withOpacity(0.9),
+                            maxWidth:
+                                screenWidthPercentage(context, percentage: 0.6),
+                            title: "Send",
+                            onPressed: () async {
+                              await model.showPaymentMethodBottomSheet();
+                            },
                           ),
+                    if (type == FundTransferType.donation ||
+                        type == FundTransferType.donationFromBank)
+                      TextButton(
+                        onPressed: () async {
+                          await model.changePaymentMethod();
+                        },
+                        child: Text(
+                          "Change Payment Source",
+                          style: textTheme(context)
+                              .headline4!
+                              .copyWith(fontSize: 16),
                         ),
-                      if (model.customValidationMessage != null)
-                        verticalSpaceTiny,
-                      CallToActionButtonRectangular(
-                          color: MyColors.paletteGreen.withOpacity(0.9),
-                          maxWidth:
-                              screenWidthPercentage(context, percentage: 0.6),
-                          title: "Send",
-                          onPressed: () async {
-                            await model.showPaymentMethodBottomSheet();
-                          })
-                    ],
-                  ),
+                      ),
+                  ],
                 ),
               ],
             ),
@@ -185,12 +207,15 @@ class TransferFundsAmountView extends StatelessWidget
     );
   }
 
-  Widget goodWalletIcon(BuildContext context) {
+  Widget goodWalletIcon(BuildContext context, [num? balance]) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Good", style: textTheme(context).headline4),
         Text("Wallet", style: textTheme(context).headline4),
+        if (balance != null)
+          Text("Available: " + formatAmount(balance),
+              style: textTheme(context).bodyText2),
       ],
     );
   }
@@ -216,7 +241,32 @@ class TransferFundsAmountView extends StatelessWidget
         ),
         verticalSpaceSmall,
         Text(receiverInfo.name,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: textTheme(context).headline6!.copyWith(fontSize: 15)),
+      ],
+    );
+  }
+
+  Widget projectSummary(BuildContext context) {
+    return Column(
+      children: [
+        //Text("Gift money to", style: textTheme(context).headline4),
+        //verticalSpaceSmall,
+        CircleAvatar(
+          radius: 28,
+          backgroundColor: MyColors.primaryRed,
+          child: Text(getInitialsFromName(receiverInfo.title),
+              style: TextStyle(color: Colors.white, fontSize: 16)),
+        ),
+        verticalSpaceSmall,
+        SizedBox(
+          width: screenWidthWithoutPadding(context, percentage: 0.35),
+          child: Text(receiverInfo.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: textTheme(context).headline6!.copyWith(fontSize: 14)),
+        ),
       ],
     );
   }

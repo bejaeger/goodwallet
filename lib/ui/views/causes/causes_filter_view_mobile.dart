@@ -147,10 +147,10 @@ class CausesFilterListViewMobile extends StatelessWidget {
                       ListView.builder(
                           shrinkWrap: true,
                           physics: ScrollPhysics(),
-                          itemCount: model.goodWalletFunds!.length,
+                          itemCount: model.goodWalletFunds.length,
                           itemBuilder: (context, index) {
                             GoodWalletFundModel fund =
-                                model.goodWalletFunds![index];
+                                model.goodWalletFunds[index];
                             Alignment alignment =
                                 fund.title == "Friend Referral Fund"
                                     ? Alignment.bottomCenter

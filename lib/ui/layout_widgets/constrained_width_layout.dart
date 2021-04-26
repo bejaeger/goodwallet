@@ -26,8 +26,10 @@ class ConstrainedWidthLayout extends StatelessWidget {
 
 class ConstrainedWidthWithScaffoldLayout extends StatelessWidget {
   final Widget child;
+  final bool? resizeToAvoidBottomInset;
 
-  const ConstrainedWidthWithScaffoldLayout({Key? key, required this.child})
+  const ConstrainedWidthWithScaffoldLayout(
+      {Key? key, required this.child, this.resizeToAvoidBottomInset})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,8 @@ class ConstrainedWidthWithScaffoldLayout extends StatelessWidget {
       child: Align(
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: LayoutSettings.maxAppWidth),
-          child: Scaffold(body: child),
+          child: Scaffold(
+              resizeToAvoidBottomInset: resizeToAvoidBottomInset, body: child),
         ),
       ),
     );

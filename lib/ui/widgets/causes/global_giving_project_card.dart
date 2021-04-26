@@ -16,88 +16,80 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
       {required this.project, this.onTap, this.onTapFavorite});
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          SizedBox(
-            //width: screenWidthPercentage(context, percentage: 0.8),
-            height: 150,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.transparent,
-                          MyColors.black87.withOpacity(0.5)
-                        ],
-                      ),
-                      image: DecorationImage(
-                        image: NetworkImage(project.imageUrl!),
-                        fit: BoxFit.cover,
-                      )),
-                ),
-                DecoratedBox(
-                  decoration: BoxDecoration(
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: SizedBox(
+          //width: screenWidthPercentage(context, percentage: 0.8),
+          height: 150,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Container(
+                decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      //stops: [0.0, 1.0],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                       colors: [
                         Colors.transparent,
-                        MyColors.black54.withOpacity(0.6)
+                        MyColors.black87.withOpacity(0.5)
                       ],
+                    ),
+                    image: DecorationImage(
+                      image: NetworkImage(project.imageUrl!),
+                      fit: BoxFit.cover,
+                    )),
+              ),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    //stops: [0.0, 1.0],
+                    colors: [
+                      Colors.transparent,
+                      MyColors.black54.withOpacity(0.4)
+                    ],
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.arrow_forward_ios_rounded,
+                      size: 22, color: ColorSettings.whiteTextColor),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: IconButton(
+                  icon: Icon(Icons.favorite_border,
+                      size: 22, color: ColorSettings.whiteTextColor),
+                  onPressed: onTapFavorite,
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+                  child: SizedBox(
+                    width: screenWidthWithoutPadding(context, percentage: 0.7),
+                    child: Text(
+                      project.title!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme(context).headline5,
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    icon: Icon(Icons.favorite_border,
-                        size: 25, color: MyColors.almostWhite),
-                    onPressed: onTapFavorite,
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              flex: 10,
-                              child: Text(
-                                project.title!,
-                                style: textTheme(context).headline5,
-                              ),
-                            ),
-                            Spacer(flex: 1),
-                            Flexible(
-                              flex: 3,
-                              child:
-                                  PledgeButton(title: "Give", onPressed: onTap),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

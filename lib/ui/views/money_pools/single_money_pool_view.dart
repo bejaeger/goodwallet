@@ -7,6 +7,7 @@ import 'package:good_wallet/ui/views/money_pools/single_money_pool_viewmodel.dar
 import 'package:good_wallet/ui/widgets/alternative_screen_header_image.dart';
 import 'package:good_wallet/ui/widgets/horizontal_central_button.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
+import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/datamodel_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -115,6 +116,8 @@ class SingleMoneyPoolView extends StatelessWidget {
                           ? model.invitedUsers[index]
                           : model.contributingUsers[
                               index - model.invitedUsers.length];
+                      var displayName =
+                          user.uid == model.currentUser.id ? "You" : user.name;
                       return ListTile(
                         leading: CircleAvatar(
                           radius: 20,
@@ -124,7 +127,7 @@ class SingleMoneyPoolView extends StatelessWidget {
                                   TextStyle(color: Colors.white, fontSize: 14)),
                         ),
                         title: Text(
-                          user.name,
+                          displayName,
                           style: TextStyle(
                             fontSize: 16.0,
                             color: Colors.black,
@@ -132,7 +135,7 @@ class SingleMoneyPoolView extends StatelessWidget {
                         ),
                         trailing: isInvitedUser
                             ? Text("Pending invitation")
-                            : Text(""),
+                            : Text(formatAmount(user.contribution)),
                       );
                     },
                   ),

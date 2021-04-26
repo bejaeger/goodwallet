@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
+import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
@@ -20,12 +22,25 @@ class TransferFundsAmountViewModel extends FormViewModel {
   final DummyPaymentService _dummyPaymentService =
       locator<DummyPaymentService>();
   final log = getLogger("transfer_funds_amount_viewmodel.dart");
+  WalletBalancesModel userWallet = WalletBalancesModel.empty();
+
+  TransferFundsAmountViewModel() {
+    // Listen to wallet similar to what is done in base viemodel
+    _userDataService!.userWalletSubject.listen(
+      (wallet) {
+        userWallet = wallet;
+        notifyListeners();
+      },
+    );
+  }
+
   FundTransferType? _type;
   dynamic? _receiverInfo;
   setTransferFundTypeAndReceiverInfo(
       FundTransferType type, dynamic receiverInfo) {
     _type = type;
     _receiverInfo = receiverInfo;
+    log.i("Active transfer type: ${_type.toString()}");
   }
 
   // The functionality from stacked's form view is
@@ -48,6 +63,8 @@ class TransferFundsAmountViewModel extends FormViewModel {
         await handleTopUpPayment();
       else if (_type == FundTransferType.transferToPeer) {
         await handleSendMoneyPayment();
+      } else if (_type == FundTransferType.donation) {
+        await handleDonationPayment();
       } else {
         _snackbarService!.showSnackbar(
             title: "Not yet implemented.", message: "I know... it's sad");
@@ -55,17 +72,39 @@ class TransferFundsAmountViewModel extends FormViewModel {
     }
   }
 
+  Future changePaymentMethod() async {
+    SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
+        title: "Select Payment Method",
+        description: "OR add new payment method +",
+        confirmButtonTitle: "Bank Account",
+        cancelButtonTitle: "Good Wallet");
+    if (sheetResponse?.confirmed == true &&
+        _type != FundTransferType.donationFromBank) {
+      await _navigationService!.replaceWith(Routes.transferFundsAmountView,
+          arguments: TransferFundsAmountViewArguments(
+              type: FundTransferType.donationFromBank,
+              receiverInfo: _receiverInfo));
+    }
+    if (sheetResponse?.confirmed == false &&
+        _type != FundTransferType.donation) {
+      await _navigationService!.replaceWith(Routes.transferFundsAmountView,
+          arguments: TransferFundsAmountViewArguments(
+              type: FundTransferType.donation, receiverInfo: _receiverInfo));
+    }
+  }
+
   bool isValidData() {
     // check if amount is valid!
-    if (amountValue == null || amountValue == "") {
+    if (amountValue == null) {
       log.i("No valid amount");
       setCustomValidationMessage("Please enter valid amount.");
-    }
-    if (double.parse(amountValue!) < 0) {
+    } else if (amountValue == "") {
+      log.i("No valid amount");
+      setCustomValidationMessage("Please enter valid amount.");
+    } else if (double.parse(amountValue!) < 0) {
       log.i("Amount < 0");
       setCustomValidationMessage("Please enter valid amount.");
-    }
-    if (double.parse(amountValue!) > 1000) {
+    } else if (double.parse(amountValue!) > 1000) {
       log.i("Amount = ${double.parse(amountValue!)}  > 1000");
       setCustomValidationMessage(
           "Are you sure you want to top up as much as ${formatAmount(double.parse(amountValue!), true)}");
@@ -107,6 +146,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
         confirmButtonTitle: "Credit Card / Google Pay",
         cancelButtonTitle: "Dummy Payment");
     log.i("Response data from bottom sheet: ${sheetResponse?.confirmed}");
+    setBusy(true);
     if (sheetResponse?.confirmed == false) {
       // FOR now, implemented dummy payment processing here
       var amount = double.parse(amountValue!);
@@ -119,6 +159,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
         _snackbarService!.showCustomSnackBar(
             title: "Could not process payment", message: "");
       }
+      await Future.delayed(Duration(seconds: 1));
       _snackbarService!.showSnackbar(
           title:
               "Transferred ${formatAmount(amount, true)} to ${_receiverInfo!.name}!",
@@ -128,6 +169,32 @@ class TransferFundsAmountViewModel extends FormViewModel {
       _snackbarService!.showSnackbar(
           title: "Not yet implemented.", message: "I know... it's sad");
     }
+    setBusy(false);
+  }
+
+  Future handleDonationPayment() async {
+    var amount = double.parse(amountValue!);
+    SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
+      title: 'Confirmation',
+      description:
+          "Are you sure you want to donate ${formatAmount(amount, true)} from your Good Wallet to the project '${_receiverInfo.title}'",
+      confirmButtonTitle: 'Yes',
+      cancelButtonTitle: 'No',
+    );
+    setBusy(true);
+    if (sheetResponse?.confirmed == true) {
+      // FOR now, implemented dummy payment processing here
+      _dummyPaymentService.processDonation(currentUser.id, _receiverInfo.title,
+          scaleAmountForStripe(amount) as int);
+      await Future.delayed(Duration(seconds: 1));
+      log.i("Processed donation");
+      _snackbarService!.showSnackbar(
+          title: "Succesfully donated!", message: "I know... it's great!");
+    } else if (sheetResponse?.confirmed == false) {
+      _snackbarService!.showSnackbar(
+          title: "Cancelled payment", message: "I know... it's sad");
+    }
+    setBusy(false);
   }
 
   Future prepareTransactionModel() async {

@@ -5,10 +5,9 @@ import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/causes/single_project_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/alternative_screen_header_image.dart';
+import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
-
-final _donationAmountController = TextEditingController();
 
 class SingleProjectViewMobile extends StatelessWidget {
   final GoodWalletProjectModel? project;
@@ -29,73 +28,28 @@ class SingleProjectViewMobile extends StatelessWidget {
               onTopLeftButtonPressed: model.navigateBack,
               topRightWidget: IconButton(
                 icon: Icon(Icons.favorite_border,
-                    size: 25, color: MyColors.almostWhite),
+                    size: 25, color: ColorSettings.whiteTextColor),
                 onPressed: model.showNotImplementedSnackbar,
               ),
             ),
-            verticalSpaceMedium,
+            verticalSpaceRegular,
             Container(
               padding: const EdgeInsets.symmetric(
                   horizontal: LayoutSettings.horizontalPadding),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Expanded(
-                    flex: 5,
-                    child: TextField(
-                      controller: _donationAmountController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        prefix: Text("\$ "),
-                        suffix: Text("Amount "),
-                      ),
-                    ),
-                  ),
-                  Spacer(
-                    flex: 1,
-                  ),
-                  Expanded(
-                    flex: 5,
-                    child: ElevatedButton(
+                  CallToActionButtonRectangular(
+                      maxWidth:
+                          screenWidthPercentage(context, percentage: 0.45),
+                      color: ColorSettings.primaryColorLight,
+                      title: "Donate",
                       onPressed: () =>
-                          model.confirmationOrCancellationDistributor(
-                              project!.title,
-                              int.parse(_donationAmountController.text)),
-                      child: Text('Donate'),
-                    ),
-                  ),
-                  // Expanded(
-                  //   child: ElevatedButton(
-                  //       onPressed: () {
-                  //         print('Surprise Motherfucker');
-                  //       },
-                  //       child: Text("Donate")),
-                  // ),
-                  // IconButton(
-                  //   iconSize: 60.0,
-                  //   onPressed: () {
-                  //     print("Liked");
-                  //   },
-                  //   icon: Icon(
-                  //     Icons.favorite_border,
-                  //     color: Colors.red,
-                  //   ),
-                  // ),
+                          model.navigateToTransferFundAmountView(project)),
                 ],
               ),
             ),
-            Container(
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: LayoutSettings.horizontalPadding),
-                  child: Text(
-                    "Balance: \$ " +
-                        (model.userWallet.currentBalance! / 100).toString(),
-                    style:
-                        textTheme(context).bodyText2!.copyWith(fontSize: 16.0),
-                  )),
-            ),
-            verticalSpaceMediumLarge,
+            verticalSpaceMedium,
             Padding(
               padding: const EdgeInsets.symmetric(
                   horizontal: LayoutSettings.horizontalPadding),

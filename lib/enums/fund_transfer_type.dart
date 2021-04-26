@@ -3,5 +3,6 @@ enum FundTransferType {
   transferToPeer,
   moneyPoolContribution,
   commitment,
-  prepaidFundTopUp
+  prepaidFundTopUp,
+  donationFromBank
 }

@@ -3,6 +3,7 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
+import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
@@ -39,10 +40,10 @@ class SingleMoneyPoolViewModel extends BaseModel {
 
   Future deleteMoneyPool(String poolId) async {
     setBusy(true);
-    _navigationService!.clearStackAndShow(
-      Routes.layoutTemplateViewMobile,
-    );
     await _moneyPoolService!.deleteMoneyPool(poolId);
+    _navigationService!.clearStackAndShow(Routes.layoutTemplateViewMobile,
+        arguments: LayoutTemplateViewMobileArguments(
+            initialBottomNavBarIndex: BottomNavigatorIndex.RaiseMoney.index));
     setBusy(false);
   }
 

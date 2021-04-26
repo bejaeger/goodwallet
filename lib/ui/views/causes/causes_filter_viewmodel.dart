@@ -22,30 +22,14 @@ class CausesFilterViewModel extends BaseModel {
   final log = getLogger("causes_viewmodel.dart");
   List<GoodWalletProjectModel> get projects => _causesDataService!.projects;
 
-  List<GoodWalletFundModel>? goodWalletFunds;
+  List<GoodWalletFundModel> get goodWalletFunds =>
+      _causesDataService!.goodWalletFunds;
   List<String> get uniqueThemes => _causesDataService!.uniqueThemes;
 
   Future fetchCauses() async {
     setBusy(true);
     await _causesDataService!.loadProjects();
-    if (goodWalletFunds == null) {
-      goodWalletFunds = [
-        GoodWalletFundModel(
-          title: "Friend Referral Fund",
-          description:
-              "This fund is used to raise money when referring the Good Wallet to your peers",
-          imagePath: ImagePath.peopleHoldingHands,
-        ),
-        GoodWalletFundModel(
-          title: "The Developer Fund",
-          description:
-              "Support further developments of the Good Wallet to offer better services",
-          imagePath: ImagePath.workNextToCreek,
-        ),
-      ];
-      log.i(
-          "Fetched good wallet fund list with length ${goodWalletFunds!.length}");
-    }
+    await _causesDataService!.loadGoodWalletFunds();
     setBusy(false);
   }
 

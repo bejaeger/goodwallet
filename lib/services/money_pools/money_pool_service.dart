@@ -132,29 +132,21 @@ class MoneyPoolService {
         "Added document to contributingUsers collection with info ${userInfo.toJson()}");
   }
 
-  // Future pushMoneyPool(MoneyPoolModel moneyPool) async {
-  //   if (moneyPool.moneyPoolId == null) {
-  //     DocumentReference docRef = _moneyPoolsCollectionReference.doc();
-  //     moneyPool.moneyPoolId = docRef.id;
-  //     await docRef.set(moneyPool.toJson());
-  //   } else {
-  //     _moneyPoolsCollectionReference
-  //         .doc(moneyPool.moneyPoolId)
-  //         .set(moneyPool.toJson());
-  //   }
-  // }
-
-  Future createMoneyPool(MoneyPoolModel moneyPool) async {
+  Future createMoneyPool(
+      MoneyPoolModel moneyPool, String uid, String name) async {
     // probably we want to call a cloud function instead
     log.i("Creating money pool: ${moneyPool.toJson()}");
-    //pushMoneyPool(moneyPool);
-    //
     try {
       DocumentReference docRef = _moneyPoolsCollectionReference.doc();
       moneyPool.moneyPoolId = docRef.id;
       await docRef.set(moneyPool.toJson());
+      await docRef
+          .collection(contributingUsersKey)
+          .add(ContributingUser(uid: uid, name: name).toJson());
+      // update local money pool list
+      moneyPools.add(moneyPool);
     } catch (e) {
-      log.e("Could not create document");
+      log.e("Could not create document, exiting with error ${e.toString()}");
       rethrow;
     }
   }
@@ -167,7 +159,7 @@ class MoneyPoolService {
           .doc(moneyPool.moneyPoolId)
           .update(moneyPool.toJson());
     } catch (e) {
-      log.e("Failed to update money pool document");
+      log.e("Failed to update money pool document with error ${e.toString()}");
       rethrow;
     }
   }
@@ -175,76 +167,75 @@ class MoneyPoolService {
   Future deleteMoneyPool(String moneyPoolId) async {
     // probably we want to call a cloud function instead
     log.i("Deleting money pool with id: $moneyPoolId");
+    // need to delete subcollections first
+    await _moneyPoolsCollectionReference
+        .doc(moneyPoolId)
+        .collection(contributingUsersKey)
+        .get()
+        .then(
+      (snp) {
+        for (DocumentSnapshot ds in snp.docs) ds.reference.delete();
+      },
+    );
+    await _moneyPoolsCollectionReference
+        .doc(moneyPoolId)
+        .collection(invitedUsersKey)
+        .get()
+        .then(
+      (snp) {
+        for (DocumentSnapshot ds in snp.docs) ds.reference.delete();
+      },
+    );
     await _moneyPoolsCollectionReference.doc(moneyPoolId).delete();
+
+    // update local state
+    moneyPools.removeWhere((element) => element.moneyPoolId == moneyPoolId);
   }
 
   Future fetchMoneyPools(String uid) async {
     // fetches existing money pools both created by the user
-    // or contributed by the user with user id uid
-    // TODO: The last one in the above sentence!
-    // Need to add another collection group query huuiiii
+    // or contributed by the user by querying for contributingUsers
+    // collection in a collectionGroup query.
 
     List<MoneyPoolModel>? returnList = <MoneyPoolModel>[];
 
-    // First load all money pools the user is admin of
-    QuerySnapshot snapshot = await _moneyPoolsCollectionReference
-        .where("adminUID", isEqualTo: uid)
-        .get();
-    if (snapshot.docs.isNotEmpty) {
-      try {
-        returnList.addAll(snapshot.docs
-            .map((s) => MoneyPoolModel.fromJson(s.data()))
-            .toList());
-      } catch (e) {
-        log.e(
-            "For an unknown reason, couldn't fetch existing money pools, error: ${e.toString()}");
-        rethrow;
-      }
-    } else {
-      log.w(
-          "Snapshot of money pools is empty, user has no current money pools active");
-    }
-
-    // Then load all money pools the user is contributing to
-    // with collectionGroup query
-
     // collection group query to search for money pools the user contributes to
-    // QuerySnapshot snapshot2 = await _contributingUsersCollectionGroup
-    //     .where("uid", isEqualTo: uid)
-    //     .get();
+    QuerySnapshot snapshot2 = await _contributingUsersCollectionGroup
+        .where("uid", isEqualTo: uid)
+        .get();
 
-    // var moneyPoolsContributingTo =
-    //     await Future.wait(snapshot2.docs.map((element) async {
-    //   DocumentReference? moneyPoolDocRef = element.reference.parent.parent;
-    //   if (moneyPoolDocRef == null) {
-    //     log.e(
-    //         "Something went severely wrong, did your Firestore collection setup change?");
-    //     return MoneyPoolModel.empty();
-    //   } else {
-    //     DocumentSnapshot? docSnapshot = await moneyPoolDocRef.get();
-    //     if (docSnapshot.data() != null) {
-    //       try {
-    //         MoneyPoolModel moneyPool =
-    //             MoneyPoolModel.fromJson(docSnapshot.data()!);
-    //         log.i(
-    //             "User is contributing to money pool with name ${moneyPool.name}");
-    //         return moneyPool;
-    //       } catch (e) {
-    //         log.e(
-    //             "Could not load data into MoneyPoolModel due to error: ${e.toString()}");
-    //         rethrow;
-    //       }
-    //     } else {
-    //       log.e(
-    //           "Somehow no data was found in money pool document snapshot. This is very unexpected and needs fixed!");
-    //       return MoneyPoolModel.empty();
-    //     }
-    //   }
-    // }).toList());
-    // log.i(
-    //     "Found ${moneyPoolsContributingTo.length} money pools the user is contributing to");
-    // // TODO: probably we have to remove duplicates ?
-    // returnList.addAll(moneyPoolsContributingTo);
+    var moneyPoolsContributingTo =
+        await Future.wait(snapshot2.docs.map((element) async {
+      DocumentReference? moneyPoolDocRef = element.reference.parent.parent;
+      if (moneyPoolDocRef == null) {
+        log.e(
+            "Something went severely wrong, did your Firestore collection setup change?");
+        return MoneyPoolModel.empty();
+      } else {
+        DocumentSnapshot? docSnapshot = await moneyPoolDocRef.get();
+        if (docSnapshot.data() != null) {
+          try {
+            MoneyPoolModel moneyPool =
+                MoneyPoolModel.fromJson(docSnapshot.data()!);
+            log.i(
+                "User is contributing to money pool with name ${moneyPool.name}");
+            return moneyPool;
+          } catch (e) {
+            log.e(
+                "Could not load data into MoneyPoolModel due to error: ${e.toString()}");
+            rethrow;
+          }
+        } else {
+          log.e(
+              "Somehow no data was found in money pool document snapshot. This is very unexpected and needs to be fixed!");
+          return MoneyPoolModel.empty();
+        }
+      }
+    }).toList());
+    log.i(
+        "Found ${moneyPoolsContributingTo.length} money pools the user is contributing to");
+    // TODO: probably we have to remove duplicates ?
+    returnList.addAll(moneyPoolsContributingTo);
 
     log.i("Fetched ${returnList.length} money pools from firestore!");
     return returnList;
