@@ -1,5 +1,6 @@
 // PMs job
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:good_wallet/datamodels/money_pools/money_pool_contribution.dart';
 import 'package:good_wallet/datamodels/payments/donation_model.dart';
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -10,6 +11,8 @@ class DummyPaymentService {
       FirebaseFirestore.instance.collection("users");
   final CollectionReference _paymentsCollectionReference =
       FirebaseFirestore.instance.collection("payments");
+  final CollectionReference _moneyPoolsCollectionReference =
+      FirebaseFirestore.instance.collection("moneypools");
 
   Future processDonation(String? uid, String projectTitle, int amount) async {
     try {
@@ -34,11 +37,26 @@ class DummyPaymentService {
     }
   }
 
+  // Pushed the data to firestore which will trigger a firebase cloud function
+  // that updates the good wallets!
   Future processTransaction(TransactionModel transactionModelDummy) async {
-    // Pushed the data to firestore which will trigger a firebase cloud function
-    // that updates the good wallets!
     try {
       _paymentsCollectionReference.add(transactionModelDummy.toJson());
+    } catch (e) {
+      log.e("Couldn't process dummy transaction: ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  // Pushes the data to firestore which will trigger a firebase cloud function
+  // that updates the good wallets!
+  Future processMoneyPoolContribution(
+      MoneyPoolContributionModel contribution) async {
+    try {
+      _moneyPoolsCollectionReference
+          .doc(contribution.moneyPoolId)
+          .collection("contributions")
+          .add(contribution.toJson());
     } catch (e) {
       log.e("Couldn't process dummy transaction: ${e.toString()}");
       rethrow;

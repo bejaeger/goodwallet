@@ -4,14 +4,12 @@ import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/money_pools/money_pools_viewmodel.dart';
-import 'package:good_wallet/ui/widgets/alternative_screen_header.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/ui/widgets/money_pool_preview.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 
 import 'package:stacked/stacked.dart';
 

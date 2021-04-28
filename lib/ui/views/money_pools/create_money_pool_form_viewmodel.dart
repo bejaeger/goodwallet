@@ -44,6 +44,12 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
         adminUID: currentUser.id,
         name: nameValue!,
         description: descriptionValue,
+        contributingUserIds: [currentUser.id],
+        contributingUsers: [
+          ContributingUser(uid: currentUser.id, name: currentUser.fullName)
+        ],
+        invitedUserIds: [],
+        invitedUsers: [],
         createdAt: FieldValue.serverTimestamp(),
       );
 

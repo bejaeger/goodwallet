@@ -6,6 +6,7 @@ import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/profile/profile_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/donation_dashboard_card.dart';
+import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
@@ -134,14 +135,17 @@ class ProfileViewMobile extends StatelessWidget {
           _buildStatItem(
               context,
               "Total donations",
-              "\$ " + (_model.userWallet.donations / 100).toString(),
+              formatAmount(_model.userWallet.donations),
               ColorSettings.primaryColor),
           _buildStatItem(
-              context, "Total raised", "\$ TBI", ColorSettings.primaryColor),
+              context,
+              "Total raised",
+              formatAmount(_model.userWallet.raised),
+              ColorSettings.primaryColor),
           _buildStatItem(
               context,
               "Total gifted",
-              "\$ " + (_model.userWallet.transferredToPeers / 100).toString(),
+              formatAmount(_model.userWallet.transferredToPeers),
               ColorSettings.primaryColor),
 
           // Row(

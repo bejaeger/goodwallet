@@ -3,6 +3,7 @@
 // Some of this will call cloud functions!
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:good_wallet/datamodels/money_pools/money_pool_contribution.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -12,12 +13,7 @@ class MoneyPoolService {
   final CollectionReference _moneyPoolsCollectionReference =
       FirebaseFirestore.instance.collection("moneypools");
 
-  final String contributingUsersKey = "contributingUsers";
-  final String invitedUsersKey = "invitedUsers";
-  final Query _invitedUsersCollectionGroup =
-      FirebaseFirestore.instance.collectionGroup("invitedUsers");
-  final Query _contributingUsersCollectionGroup =
-      FirebaseFirestore.instance.collectionGroup("contributingUsers");
+  final String contributionsKey = "contributionsKey";
   final log = getLogger("money_pool_service.dart");
 
   List<MoneyPoolModel> moneyPools = [];
@@ -30,108 +26,83 @@ class MoneyPoolService {
     loadMoneyPoolsInvitedTo(uid);
   }
 
-  Future loadMoneyPoolsInvitedTo(String uid) async {
-    // collection group query to search for money pools the user has been invited to
-    QuerySnapshot snapshot =
-        await _invitedUsersCollectionGroup.where("uid", isEqualTo: uid).get();
-
-    // Get money pool data for each invited one!
-    moneyPoolsInvitedTo = await Future.wait(snapshot.docs.map((element) async {
-      DocumentReference? moneyPoolDocRef = element.reference.parent.parent;
-      if (moneyPoolDocRef == null) {
-        log.e(
-            "Something went severely wrong, did your Firestore collection setup change?");
-        return MoneyPoolModel.empty();
-      } else {
-        DocumentSnapshot? docSnapshot = await moneyPoolDocRef.get();
-        if (docSnapshot.data() != null) {
-          try {
-            MoneyPoolModel moneyPool =
-                MoneyPoolModel.fromJson(docSnapshot.data()!);
-            log.i(
-                "User has been invited to money pool with name ${moneyPool.name}");
-            return moneyPool;
-          } catch (e) {
-            log.e(
-                "Could not load data into MoneyPoolModel due to error: ${e.toString()}");
-            rethrow;
-          }
-        } else {
-          log.e(
-              "Somehow no data was found in money pool document snapshot. This is very unexpected and needs fixed!");
-          return MoneyPoolModel.empty();
-        }
-      }
-    }).toList());
-    _updateNumberInvitedMoneyPools(moneyPoolsInvitedTo.length);
-    log.i(
-        "Found ${moneyPoolsInvitedTo.length} money pools the user is invited to");
-  }
-
+  // updates the number of invites for notifications
   void _updateNumberInvitedMoneyPools(int number) {
     numberInvitedMoneyPoolsSubject.add(number);
   }
 
-// (snapshot.docs.isNotEmpty) {
-//       try {
-//         returnList.addAll(snapshot.docs
-//             .map((s) => MoneyPoolModel.fromJson(s.data()))
-//             .toList());
-//       } catch (e) {
-//         log.e(
-//             "For an unknown reason, couldn't fetch existing money pools, error: ${e.toString()}");
-//         rethrow;
-//       }
-
+  // loads the money pools into an array owned and exposed by this service
   Future loadMoneyPools(String uid, [bool force = false]) async {
     if (moneyPools.isEmpty || force) {
       moneyPools = await fetchMoneyPools(uid);
     }
   }
 
-  Future<List<PublicUserInfo>> getInvitedUsers(String mpid) async {
+  // Queries for invitations
+  Future loadMoneyPoolsInvitedTo(String uid) async {
+    List<MoneyPoolModel>? moneyPoolsInvitedToTmp = <MoneyPoolModel>[];
     QuerySnapshot snapshot = await _moneyPoolsCollectionReference
-        .doc(mpid)
-        .collection(invitedUsersKey)
+        .where("invitedUserIds", arrayContains: uid)
         .get();
-    var returnList =
-        snapshot.docs.map((s) => PublicUserInfo.fromJson(s.data())).toList();
+    if (snapshot.docs.isNotEmpty) {
+      try {
+        moneyPoolsInvitedToTmp.addAll(snapshot.docs
+            .map((snapshot) => MoneyPoolModel.fromJson(snapshot.data()))
+            .toList());
+      } catch (e) {
+        log.e(
+            "Could not map firestore data into MoneyPoolInvitationModel due to error ${e.toString()}");
+        rethrow;
+      }
+    }
+    moneyPoolsInvitedTo = moneyPoolsInvitedToTmp;
+    log.i(
+        "Found ${moneyPoolsInvitedTo.length} money pools the user is invited to");
+    _updateNumberInvitedMoneyPools(moneyPoolsInvitedTo.length);
+  }
+
+  // returns list of invited users for specific money pool
+  Future<List<PublicUserInfo>> getInvitedUsers(String mpid) async {
+    DocumentSnapshot snapshot =
+        await _moneyPoolsCollectionReference.doc(mpid).get();
+    List invitedUsers = snapshot.get("invitedUsers");
+    List<PublicUserInfo> returnList =
+        invitedUsers.map((s) => PublicUserInfo.fromJson(s.data())).toList();
     log.i("Fetched ${returnList.length} invited users");
     return returnList;
   }
 
-  Future<List<ContributingUser>> getContributingUsers(String mpid) async {
-    QuerySnapshot snapshot = await _moneyPoolsCollectionReference
-        .doc(mpid)
-        .collection(contributingUsersKey)
-        .get();
-    var returnList =
-        snapshot.docs.map((s) => ContributingUser.fromJson(s.data())).toList();
-    log.i("Fetched ${returnList.length} contributing users");
-    return returnList;
+  // Get list of contributing users for given money pool
+  Future<List> getContributingUsers(String mpid) async {
+    DocumentSnapshot snapshot =
+        await _moneyPoolsCollectionReference.doc(mpid).get();
+    List contributingUsers = [];
+    try {
+      List contributingUsersList = snapshot.get("contributingUsers");
+      contributingUsers.addAll(contributingUsersList.map((element) {
+        ContributingUser.fromJson(element);
+      }).toList());
+    } on StateError catch (e) {
+      log.e(
+          "Returning empty list, likely because array with name 'contributingUsers' could not be found in document. Error thrown: ${e.toString()}");
+      return [];
+    }
+    log.i("Fetched ${contributingUsers.length} contributing users");
+    return contributingUsers;
   }
 
-  Future addInviteUserDocument(String mpid, PublicUserInfo userInfo) async {
-    await _moneyPoolsCollectionReference
-        .doc(mpid)
-        .collection(invitedUsersKey)
-        .doc(userInfo.uid)
-        .set(userInfo.toJson());
-    log.i(
-        "Added document to invitedUsers collection with info ${userInfo.toJson()}");
+  // Invites user by adding user info to money pool document
+  // Adds to: invitedUserIds and invitedUsers (PublicFacingUserInfo)
+  Future addInvitedUserToMoneyPool(
+      {required PublicUserInfo userInfo,
+      required MoneyPoolModel moneyPool}) async {
+    // also updates local state!
+    moneyPool.invitedUserIds.add(userInfo.uid);
+    moneyPool.invitedUsers.add(userInfo);
+    updateMoneyPool(moneyPool);
   }
 
-  Future addContributingUserDocument(
-      String mpid, ContributingUser userInfo) async {
-    await _moneyPoolsCollectionReference
-        .doc(mpid)
-        .collection(contributingUsersKey)
-        .doc(userInfo.uid)
-        .set(userInfo.toJson());
-    log.i(
-        "Added document to contributingUsers collection with info ${userInfo.toJson()}");
-  }
-
+  // Adds document to moneypools collection
   Future createMoneyPool(
       MoneyPoolModel moneyPool, String uid, String name) async {
     // probably we want to call a cloud function instead
@@ -140,9 +111,6 @@ class MoneyPoolService {
       DocumentReference docRef = _moneyPoolsCollectionReference.doc();
       moneyPool.moneyPoolId = docRef.id;
       await docRef.set(moneyPool.toJson());
-      await docRef
-          .collection(contributingUsersKey)
-          .add(ContributingUser(uid: uid, name: name).toJson());
       // update local money pool list
       moneyPools.add(moneyPool);
     } catch (e) {
@@ -151,8 +119,10 @@ class MoneyPoolService {
     }
   }
 
+  // Updates money pool document
   Future updateMoneyPool(MoneyPoolModel moneyPool) async {
     // probably we want to call a cloud function instead
+
     log.i("Updating money pool: ${moneyPool.toJson()}");
     try {
       _moneyPoolsCollectionReference
@@ -164,22 +134,14 @@ class MoneyPoolService {
     }
   }
 
+  // deletes money pool documents
   Future deleteMoneyPool(String moneyPoolId) async {
     // probably we want to call a cloud function instead
     log.i("Deleting money pool with id: $moneyPoolId");
     // need to delete subcollections first
     await _moneyPoolsCollectionReference
         .doc(moneyPoolId)
-        .collection(contributingUsersKey)
-        .get()
-        .then(
-      (snp) {
-        for (DocumentSnapshot ds in snp.docs) ds.reference.delete();
-      },
-    );
-    await _moneyPoolsCollectionReference
-        .doc(moneyPoolId)
-        .collection(invitedUsersKey)
+        .collection(contributionsKey)
         .get()
         .then(
       (snp) {
@@ -192,78 +154,59 @@ class MoneyPoolService {
     moneyPools.removeWhere((element) => element.moneyPoolId == moneyPoolId);
   }
 
+  // fetches existing money pools both created by the user
+  // or contributed by the user by querying for contributingUserIDs
   Future fetchMoneyPools(String uid) async {
-    // fetches existing money pools both created by the user
-    // or contributed by the user by querying for contributingUsers
-    // collection in a collectionGroup query.
-
-    List<MoneyPoolModel>? returnList = <MoneyPoolModel>[];
-
-    // collection group query to search for money pools the user contributes to
-    QuerySnapshot snapshot2 = await _contributingUsersCollectionGroup
-        .where("uid", isEqualTo: uid)
+    List<MoneyPoolModel>? moneyPoolsContributingTo = <MoneyPoolModel>[];
+    QuerySnapshot snapshot = await _moneyPoolsCollectionReference
+        .where("contributingUserIds", arrayContains: uid)
         .get();
-
-    var moneyPoolsContributingTo =
-        await Future.wait(snapshot2.docs.map((element) async {
-      DocumentReference? moneyPoolDocRef = element.reference.parent.parent;
-      if (moneyPoolDocRef == null) {
+    if (snapshot.docs.isNotEmpty) {
+      try {
+        moneyPoolsContributingTo.addAll(snapshot.docs
+            .map((snapshot) => MoneyPoolModel.fromJson(snapshot.data()))
+            .toList());
+      } catch (e) {
         log.e(
-            "Something went severely wrong, did your Firestore collection setup change?");
-        return MoneyPoolModel.empty();
-      } else {
-        DocumentSnapshot? docSnapshot = await moneyPoolDocRef.get();
-        if (docSnapshot.data() != null) {
-          try {
-            MoneyPoolModel moneyPool =
-                MoneyPoolModel.fromJson(docSnapshot.data()!);
-            log.i(
-                "User is contributing to money pool with name ${moneyPool.name}");
-            return moneyPool;
-          } catch (e) {
-            log.e(
-                "Could not load data into MoneyPoolModel due to error: ${e.toString()}");
-            rethrow;
-          }
-        } else {
-          log.e(
-              "Somehow no data was found in money pool document snapshot. This is very unexpected and needs to be fixed!");
-          return MoneyPoolModel.empty();
-        }
+            "Could not map firestore data into MoneyPoolModel due to error ${e.toString()}");
+        rethrow;
       }
-    }).toList());
+    }
     log.i(
         "Found ${moneyPoolsContributingTo.length} money pools the user is contributing to");
-    // TODO: probably we have to remove duplicates ?
-    returnList.addAll(moneyPoolsContributingTo);
-
-    log.i("Fetched ${returnList.length} money pools from firestore!");
-    return returnList;
+    return moneyPoolsContributingTo;
   }
 
+  ////////////////////////////////////////////////////////
+  //
+  // Called when an invitation to a money view has been accepted.
+  // Updates documents to handle acceptance of invitation.
+  //
+  // What needs to happen?
+  // 1. Update Firestore:
+  //    A: remove invited user form list in money pool main document
+  //    B: Add new contributingUsers to array in main document
+  //       (eventually needs to happen in cloud function for security reasons!)
+  // 2. Update state:
+  //    A: remove money pool from moneyPoolsInvitedTo list
+  //    B: add money pool to moneyPools list
   Future acceptInvitation(
       String uid, String name, MoneyPoolModel moneyPool) async {
-    // Called when an invitation to a money view has been accepted
-    // What needs to happen?
-    // 1. Update Firestore:
-    //    A: delete invitedUsers document
-    //    B: Add contributingUsers document
-    // 2. Update state:
-    //    A: remove money pool from moneyPoolsInvitedTo list
-    //    B: add money pool to moneyPools list
-
     // 1. Update Firestore
-    await _moneyPoolsCollectionReference
-        .doc(moneyPool.moneyPoolId)
-        .collection(invitedUsersKey)
-        .doc(uid)
-        .delete();
-    ContributingUser contributingUser = ContributingUser(name: name, uid: uid);
-    await _moneyPoolsCollectionReference
-        .doc(moneyPool.moneyPoolId)
-        .collection(contributingUsersKey)
-        .doc(uid)
-        .set(contributingUser.toJson());
+    //
+    // A. remove invited user from lists
+    moneyPool.invitedUsers.removeWhere((element) => element.uid == uid);
+    moneyPool.invitedUserIds.removeWhere((element) => element == uid);
+
+    // B. add contributing user to list
+    ContributingUser newContributingUser =
+        ContributingUser(name: name, uid: uid);
+    moneyPool.contributingUsers.add(newContributingUser);
+    moneyPool.contributingUserIds.add(uid);
+
+    // update money pool
+    // This call should be made with a cloud function!
+    await updateMoneyPool(moneyPool);
 
     // 2. Update state
     moneyPoolsInvitedTo
@@ -271,27 +214,56 @@ class MoneyPoolService {
     _updateNumberInvitedMoneyPools(moneyPoolsInvitedTo.length);
 
     moneyPools.add(moneyPool);
+    return true;
   }
 
+  //////////////////////////////////////////////////////////////////
+  // Called when an invitation to a money view has been accepted
+  // Updates documents to handle decline of invitation
+  //
+  // What needs to happen?
+  // 1. Update Firestore:
+  //    remove invited User from lists in main document
+  // 2. Update state:
+  //    remove money pool from moneyPoolsInvitedTo list
   Future declineInvitation(String uid, MoneyPoolModel moneyPool) async {
-    // Called when an invitation to a money view has been accepted
-    // What needs to happen?
-    // 1. Update Firestore:
-    //    delete invitedUsers document
-    // 2. Update state:
-    //    remove money pool from moneyPoolsInvitedTo list
-
     // 1. Update Firestore
-    await _moneyPoolsCollectionReference
-        .doc(moneyPool.moneyPoolId)
-        .collection(invitedUsersKey)
-        .doc(uid)
-        .delete();
+    moneyPool.invitedUsers.removeWhere((element) => element.uid == uid);
+    moneyPool.invitedUserIds.removeWhere((element) => element == uid);
+    await updateMoneyPool(moneyPool);
 
     // 2. Update state
     moneyPoolsInvitedTo
         .removeWhere((element) => element.moneyPoolId == moneyPool.moneyPoolId);
     _updateNumberInvitedMoneyPools(moneyPoolsInvitedTo.length);
+  }
+
+  // Gets and returns money pool from firestore
+  Future getMoneyPool(String mpid) async {
+    DocumentSnapshot snapshot =
+        await _moneyPoolsCollectionReference.doc(mpid).get();
+    if (snapshot.data() != null) {
+      return MoneyPoolModel.fromJson(snapshot.data()!);
+    } else {
+      log.wtf(
+          "Could not find data of money pool with id $mpid, returning empty pool");
+      return MoneyPoolModel.empty();
+    }
+  }
+
+  Future getMoneyPoolContributions(String mpid) async {
+    List<MoneyPoolContributionModel> returnList = [];
+    QuerySnapshot snapshot = await _moneyPoolsCollectionReference
+        .doc(mpid)
+        .collection("contributions")
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+      returnList = snapshot.docs
+          .map((element) => MoneyPoolContributionModel.fromJson(element.data()))
+          .toList();
+    }
+    log.i("Fetched ${returnList.length} money pool contributions");
+    return returnList;
   }
 
   void clearData() {

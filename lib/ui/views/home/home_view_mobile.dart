@@ -179,27 +179,27 @@ class HomeViewMobile extends StatelessWidget {
                               onTextButtonTap:
                                   model.showNotImplementedSnackbar),
                           FeaturedProjectsCarousel(model: model),
-                          verticalSpaceMedium,
-                          SectionHeader(
-                            title: "Stats",
-                            //onTextButtonTap: model.showNotImplementedSnackbar,
-                          ),
-                          verticalSpaceTiny,
-                          StatisticsDisplay(model: model),
+                          // verticalSpaceMedium,
+                          // SectionHeader(
+                          //   title: "Stats",
+                          //   //onTextButtonTap: model.showNotImplementedSnackbar,
+                          // ),
+                          // verticalSpaceTiny,
+                          // StatisticsDisplay(model: model),
                           verticalSpaceRegular,
                           SectionHeader(
                             title: "Featured apps",
                             onTextButtonTap: model.showNotImplementedSnackbar,
                           ),
                           FeaturedAppsCarousel(model: model),
-                          verticalSpaceRegular,
-                          SectionHeader(
-                              title: "Projects you supported",
-                              onTextButtonTap:
-                                  model.showNotImplementedSnackbar),
-                          FeaturedProjectsCarousel(model: model),
-                          //FeaturedAppsCarousel(model: model),
-                          verticalSpaceMedium,
+                          // verticalSpaceRegular,
+                          // SectionHeader(
+                          //     title: "Projects you supported",
+                          //     onTextButtonTap:
+                          //         model.showNotImplementedSnackbar),
+                          // FeaturedProjectsCarousel(model: model),
+                          // //FeaturedAppsCarousel(model: model),
+                          // verticalSpaceMedium,
                           verticalSpaceMassive,
                         ],
                       ),

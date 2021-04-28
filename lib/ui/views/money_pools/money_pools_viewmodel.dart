@@ -54,25 +54,23 @@ class MoneyPoolsViewModel extends BaseModel {
 
       if (sheetResponse.confirmed) {
         setBusy(true);
-        // accepted invitation...a lot needs to happen here, see money pool service
-
-        //await Future.delayed(Duration(seconds: 2));
-        await _moneyPoolService!.acceptInvitation(
+        // accepted invitation
+        bool success = await _moneyPoolService!.acceptInvitation(
             currentUser.id, currentUser.fullName, moneyPoolsInvitedTo[index]);
-        _snackbarService!.showSnackbar(message: "Accepted invitation");
+        if (success is String)
+          _snackbarService!.showSnackbar(
+              title: "Invitation could not be accepted",
+              message: success as String);
+        else
+          _snackbarService!.showSnackbar(message: "Accepted invitation");
         setBusy(false);
       } else {
-        // invitation declined...a lot needs to happen here, see money pool service
+        // devlined invitation
         await _moneyPoolService!
             .declineInvitation(currentUser.id, moneyPoolsInvitedTo[index]);
         _snackbarService!.showSnackbar(message: "Declined invitation");
       }
     }
-  }
-
-  Future showSuccessfulDeletionOverlay() async {
-    // _snackbarService!
-    //   .showSnackbar(title: "Success", message: "deleted money pool");
   }
 
   Future navigateToSingleMoneyPoolView(MoneyPoolModel moneyPool) async {

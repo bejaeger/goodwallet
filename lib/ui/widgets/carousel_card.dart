@@ -44,8 +44,8 @@ class CarouselCard extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        backgroundColor,
-                        backgroundColor.withOpacity(0.7)
+                        backgroundColor.withOpacity(0.8),
+                        backgroundColor.withOpacity(0.8)
                       ],
                     ),
                     image: backgroundImage != null

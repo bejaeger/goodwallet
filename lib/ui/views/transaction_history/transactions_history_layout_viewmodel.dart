@@ -46,16 +46,15 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
       await fetchListOfIncomingTransactions();
       await buildListOfWalletTransactions();
     } else if (type == TransactionType.Donation) {
-      fetchListOfDonations();
+      await fetchListOfDonations();
     } else if (type == TransactionType.TransferredToPeers) {
-      fetchListOfTransactionsToPeers();
+      await fetchListOfTransactionsToPeers();
     } else if (type == TransactionType.Incoming) {
-      fetchListOfIncomingTransactions();
+      await fetchListOfIncomingTransactions();
     } else if (type == TransactionType.InOrOut) {
-      buildListOfWalletTransactions();
+      await buildListOfWalletTransactions();
     }
     setBusy(false);
-    notifyListeners();
   }
 
   Future buildListOfWalletTransactions() async {

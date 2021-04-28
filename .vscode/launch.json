@@ -13,7 +13,7 @@
       ],
       "flutterMode": "debug",
     },
-    {
+    { 
       "name": "Flutter Mobile",
       "request": "launch",
       "type": "dart",

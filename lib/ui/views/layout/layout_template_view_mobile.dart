@@ -112,7 +112,7 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
             Center(
               child: Icon(Icons.people),
             ),
-            if (model.moneyPoolsInvitedTo.length > 0)
+            if (model.numberInvitedMoneyPoolsSubject > 0)
               Stack(
                 children: [
                   Align(

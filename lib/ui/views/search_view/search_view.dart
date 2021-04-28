@@ -14,7 +14,7 @@ import 'package:stacked/stacked.dart';
 
 class SearchView extends StatelessWidget {
   final SearchType searchType;
-  final _debouncer = Debouncer(milliseconds: 500);
+  final _debouncer = Debouncer(milliseconds: 100);
 
   SearchView({Key? key, this.searchType = SearchType.userToTransferTo})
       : super(key: key);

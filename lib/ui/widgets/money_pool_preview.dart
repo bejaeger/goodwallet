@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
+import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
 class MoneyPoolPreview extends StatelessWidget {
@@ -38,7 +39,7 @@ class MoneyPoolPreview extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        moneyPool!.name!,
+                        moneyPool!.name,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: textTheme(context)
@@ -61,7 +62,7 @@ class MoneyPoolPreview extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(moneyPool!.total.toString(),
+                    Text(formatAmount(moneyPool!.total),
                         style: textTheme(context).headline3),
                     Text("Collected", style: textTheme(context).bodyText1),
                   ],

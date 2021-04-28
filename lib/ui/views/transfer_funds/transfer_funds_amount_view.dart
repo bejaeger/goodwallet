@@ -54,6 +54,8 @@ class TransferFundsAmountView extends StatelessWidget
           headline = "#Give";
         else if (type == FundTransferType.moneyPoolContribution)
           headline = "#RaiseTogether";
+        else if (type == FundTransferType.moneyPoolContributionFromBank)
+          headline = "#RaiseTogether";
         else
           headline = "Transfer";
         return ConstrainedWidthWithScaffoldLayout(
@@ -98,6 +100,10 @@ class TransferFundsAmountView extends StatelessWidget
                           bankInstituteIcon(context),
                         if (type == FundTransferType.moneyPoolContribution)
                           prepaidFundIcon(context),
+                        if (type ==
+                            FundTransferType.moneyPoolContributionFromBank)
+                          bankInstituteIcon(context),
+
                         if (type == FundTransferType.donation)
                           goodWalletIcon(
                               context, model.userWallet.currentBalance),
@@ -117,6 +123,10 @@ class TransferFundsAmountView extends StatelessWidget
                         if (type == FundTransferType.donation ||
                             type == FundTransferType.donationFromBank)
                           projectSummary(context),
+                        if (type == FundTransferType.moneyPoolContribution ||
+                            type ==
+                                FundTransferType.moneyPoolContributionFromBank)
+                          moneyPoolSummary(context),
                       ],
                     ),
                     verticalSpaceMedium,
@@ -167,11 +177,14 @@ class TransferFundsAmountView extends StatelessWidget
                                 screenWidthPercentage(context, percentage: 0.6),
                             title: "Send",
                             onPressed: () async {
-                              await model.showPaymentMethodBottomSheet();
+                              await model
+                                  .showConfirmationBottomSheetAndProcessPayment();
                             },
                           ),
                     if (type == FundTransferType.donation ||
-                        type == FundTransferType.donationFromBank)
+                        type == FundTransferType.donationFromBank ||
+                        type == FundTransferType.moneyPoolContribution ||
+                        type == FundTransferType.moneyPoolContributionFromBank)
                       TextButton(
                         onPressed: () async {
                           await model.changePaymentMethod();
@@ -223,7 +236,8 @@ class TransferFundsAmountView extends StatelessWidget
   Widget prepaidFundIcon(BuildContext context) {
     return Column(
       children: [
-        Text("Prepaid Balance", style: textTheme(context).headline4),
+        Text("Prepaid", style: textTheme(context).headline4),
+        Text("Balance", style: textTheme(context).headline4),
       ],
     );
   }
@@ -263,6 +277,30 @@ class TransferFundsAmountView extends StatelessWidget
         SizedBox(
           width: screenWidthWithoutPadding(context, percentage: 0.35),
           child: Text(receiverInfo.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: textTheme(context).headline6!.copyWith(fontSize: 14)),
+        ),
+      ],
+    );
+  }
+
+  Widget moneyPoolSummary(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        //Text("Gift money to", style: textTheme(context).headline4),
+        //verticalSpaceSmall,
+        CircleAvatar(
+          radius: 28,
+          backgroundColor: MyColors.paletteTurquoise,
+          child: Text(getInitialsFromName(receiverInfo.name),
+              style: TextStyle(color: Colors.white, fontSize: 16)),
+        ),
+        verticalSpaceSmall,
+        SizedBox(
+          width: screenWidthWithoutPadding(context, percentage: 0.35),
+          child: Text(receiverInfo.name,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: textTheme(context).headline6!.copyWith(fontSize: 14)),

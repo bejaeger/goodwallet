@@ -30,20 +30,22 @@ class StartUpLogicViewModel extends BaseModel {
           log.i("User already signed in, navigating to home view");
           await _moneyPoolService!.init(currentUser.id);
           Future.delayed(Duration(seconds: 1));
-          await _navigationService!.replaceWithTransition(
-              LayoutTemplateViewMobile(),
-              duration: Duration(milliseconds: 1500));
+          await _navigationService!.replaceWith(
+            Routes.layoutTemplateViewMobile,
+          );
           _userStateSubscription?.cancel();
         }
         if (state == UserStatus.SignedOut) {
-          _navigationService!.replaceWithTransition(LoginView(),
-              duration: Duration(seconds: 1500));
+          _navigationService!.replaceWith(
+            Routes.loginView,
+          );
           // _userStateSubscription?.cancel();
         }
         if (state == UserStatus.SignedInNotInitialized) {
           log.e(
               "Found user in SignedInNotInitialized state. Please check the code, this is bad!");
         }
+        log.i("Listened to user state!");
         // cancel afterwards
       },
     );

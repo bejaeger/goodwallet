@@ -82,10 +82,11 @@ exports.updateGoodWallet = functions.firestore
 
       const increment = admin.firestore.FieldValue.increment(amount);
       await db.collection("users").doc(recipientUid).update({
-        balance: increment
+        currentBalance: increment,
+        raised: increment
       });
       await db.collection("users").doc(senderUid).update({
-        implicitDonations: increment
+        transferredToPeers: increment
       });
 
       return;
@@ -109,7 +110,7 @@ exports.updateGoodWalletAfterDonation = functions.firestore
       const deduct = admin.firestore.FieldValue.increment(-amount);
       const add = admin.firestore.FieldValue.increment(amount);
       await db.collection("users").doc(context.params.userId).update({
-        balance: deduct,
+        currentBalance: deduct,
         donations: add
       });
 
@@ -124,7 +125,43 @@ exports.updateGoodWalletAfterDonation = functions.firestore
   }
   );
 
+/* -------------- Money Pool Updates ------------------ */
 
+/* This needs to be changed to onUpdate after the entire stripe transaction has been dealt with! */
+exports.processMoneyPoolContribution = functions.firestore
+  .document('moneypools/{poolId}/contributions/{contributionId}')
+  .onCreate(async (snap, context) => {
+    try {
+      // Add payment_method here and so to transaction model!
+      const { amount, currency, uid, userName } = snap.data();
+
+      // update contributingUsers array
+      let snapshot = await db.collection("moneypools").doc(context.params.poolId).get();
+      if (snapshot.exists) {
+        let userList = snapshot.data()['contributingUsers'];
+        let newContributingUsers = userList.map(function (element) {
+          if (element["uid"] === uid) element["contribution"] = element["contribution"] + amount;
+          return element;
+        });
+        const increment = admin.firestore.FieldValue.increment(amount);
+        await db.collection("moneypools").doc(context.params.poolId).update(
+          {
+            total: increment,
+            contributingUsers: newContributingUsers,
+          }
+        );
+      }
+
+      return;
+    } catch (error) {
+      await snap.ref.set({ error: userFacingMessage(error) }, { merge: true });
+      reportError(error, { poolId: context.params.poolId });
+      reportError(error.message, { poolId: context.params.poolId });
+      reportError(error.data, { poolId: context.params.poolId });
+    }
+
+  }
+  );
 
 /* ------------------ Helpers ------------------ */
 

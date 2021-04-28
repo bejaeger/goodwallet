@@ -31,24 +31,23 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<TransactionHistoryLayoutViewModel>.reactive(
-      viewModelBuilder: () => locator<TransactionHistoryLayoutViewModel>(),
-      disposeViewModel: false,
+      viewModelBuilder: () => TransactionHistoryLayoutViewModel(),
+      //disposeViewModel: false,
       onModelReady: (model) async {
-        model.initialize();
+        await model.initialize(type);
       },
-      fireOnModelReadyOnce: true,
-      builder: (context, model, child) => model
-              .getTransactionsCorrespondingToType(type)!
-              .isEmpty
-          ? model.isBusy
-              ? Center(child: CircularProgressIndicator())
-              : Center(child: Text("No transactions on record!"))
-          : ConstrainedWidthLayout(
-              child: Shimmer(
-                interval: Duration(hours: 1),
-                child: RefreshIndicator(
-                  onRefresh: () => model.initialize(type),
-                  child: ListView(
+      //fireOnModelReadyOnce: true,
+      builder: (context, model, child) => ConstrainedWidthLayout(
+        child: Shimmer(
+          interval: Duration(hours: 1),
+          child: RefreshIndicator(
+            onRefresh: () async => await model.initialize(type),
+            child: model.getTransactionsCorrespondingToType(type)!.isEmpty
+                ? model.isBusy
+                    ? Center(child: CircularProgressIndicator())
+                    : Center(child: Text("No transactions on record!"))
+                : ListView(
+                    physics: AlwaysScrollableScrollPhysics(),
                     children: [
                       verticalSpaceRegular,
                       ShowBalanceCard(
@@ -80,9 +79,9 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
-              ),
-            ),
+          ),
+        ),
+      ),
     );
   }
 }

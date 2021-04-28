@@ -47,12 +47,13 @@ class MoneyPoolInvitationBottomSheetView extends StatelessWidget {
                 Text("Admin: ",
                     style:
                         textTheme(context).headline6!.copyWith(fontSize: 18)),
-                Text(request.customData.adminName!,
+                Text(request.customData.adminName,
                     style:
                         textTheme(context).bodyText2!.copyWith(fontSize: 18)),
               ],
             ),
-            if (request.customData.description != "")
+            if (request.customData.description != null) verticalSpaceTiny,
+            if (request.customData.description != null)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

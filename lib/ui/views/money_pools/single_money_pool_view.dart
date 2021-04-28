@@ -10,6 +10,7 @@ import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/datamodel_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
+import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 
 class SingleMoneyPoolView extends StatelessWidget {
@@ -20,127 +21,174 @@ class SingleMoneyPoolView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<SingleMoneyPoolViewModel>.reactive(
-      viewModelBuilder: () => SingleMoneyPoolViewModel(),
+      viewModelBuilder: () => SingleMoneyPoolViewModel(moneyPool: moneyPool),
       onModelReady: (model) async {
-        model.setMoneyPool(moneyPool);
-        model.fetchUserContributions();
+        await model.fetchUserContributions();
       },
       builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
-        child: ListView(
-          physics: ScrollPhysics(),
-          children: <Widget>[
-            AlternativeScreenHeaderImage(
-              // TODO: Add picture if it's added by the user!
-              backgroundWidget: Container(
-                color: MyColors.paletteTurquoise.withOpacity(0.9),
-              ),
-              imageHeight: 220,
-              title: moneyPool.name!,
-              onTopLeftButtonPressed: model.navigateBack,
-              topLeftWidget: Icon(Icons.close_rounded,
-                  size: 28, color: ColorSettings.whiteTextColor),
-              topRightWidget: PopupMenuButton(
-                icon: Icon(
-                  Icons.menu,
-                  size: 28,
-                  color: ColorSettings.whiteTextColor,
+        child: RefreshIndicator(
+          onRefresh: () async => await model.updateMoneyPool(),
+          child: ListView(
+            key: PageStorageKey('storage-key'),
+            physics: AlwaysScrollableScrollPhysics(),
+            children: <Widget>[
+              AlternativeScreenHeaderImage(
+                // TODO: Add picture if it's added by the user!
+                backgroundWidget: Container(
+                  color: MyColors.paletteTurquoise.withOpacity(0.9),
                 ),
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 1,
-                    child: TextButton(
-                        onPressed: model.showNotImplementedSnackbar,
-                        child: Text("Share")),
+                imageHeight: 200,
+                title: model.moneyPool.name,
+                onTopLeftButtonPressed: model.navigateBack,
+                topLeftWidget: Icon(Icons.close_rounded,
+                    size: 28, color: ColorSettings.whiteTextColor),
+                topRightWidget: PopupMenuButton(
+                  icon: Icon(
+                    Icons.menu,
+                    size: 28,
+                    color: ColorSettings.whiteTextColor,
                   ),
-                  PopupMenuItem(
-                    value: 2,
-                    child: TextButton(
-                      onPressed: () async =>
-                          await model.deleteMoneyPool(moneyPool.moneyPoolId!),
-                      child: Text("Delete"),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 1,
+                      child: TextButton(
+                          onPressed: model.showNotImplementedSnackbar,
+                          child: Text("Share")),
                     ),
-                  ),
-                ],
-              ),
-              bottomRightWidget: IconButton(
-                color: ColorSettings.whiteTextColor,
-                icon: Icon(Icons.add_a_photo_outlined, size: 20.0),
-                onPressed: model.showNotImplementedSnackbar,
-              ),
-            ),
-            verticalSpaceSmall,
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: LayoutSettings.horizontalPadding),
-              child: Text("Money pool started by ${moneyPool.adminName}"),
-            ),
-            verticalSpaceMedium,
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: LayoutSettings.horizontalPadding),
-              child: Column(
-                children: [
-                  HorizontalCentralButton(
-                    onPressed: model.showNotImplementedSnackbar,
-                    title: "Contribute",
-                    minWidth: screenWidthPercentage(context, percentage: 0.6),
-                  ),
-                  verticalSpaceRegular,
-                  Text(moneyPool.total.toString(),
-                      style: textTheme(context).headline2),
-                  Text("Current amount")
-                ],
-              ),
-            ),
-            verticalSpaceLarge,
-            SectionHeader(
-              title: "Members",
-              trailingIcon: IconButton(
-                onPressed: () => model.showSearchViewAndInviteUser(moneyPool),
-                icon: Icon(
-                  Icons.add_circle_outline_rounded,
+                    PopupMenuItem(
+                      value: 2,
+                      child: TextButton(
+                        onPressed: () async => await model
+                            .deleteMoneyPool(model.moneyPool.moneyPoolId!),
+                        child: Text("Delete"),
+                      ),
+                    ),
+                  ],
+                ),
+                bottomRightWidget: IconButton(
+                  color: ColorSettings.whiteTextColor,
+                  icon: Icon(Icons.add_a_photo_outlined, size: 20.0),
+                  onPressed: model.showNotImplementedSnackbar,
                 ),
               ),
-            ),
-            model.isBusy
-                ? Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    physics: ScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: model.invitedUsers.length +
-                        model.contributingUsers.length,
-                    itemBuilder: (context, index) {
-                      bool isInvitedUser =
-                          index >= model.invitedUsers.length ? false : true;
-                      dynamic user = isInvitedUser
-                          ? model.invitedUsers[index]
-                          : model.contributingUsers[
-                              index - model.invitedUsers.length];
-                      var displayName =
-                          user.uid == model.currentUser.id ? "You" : user.name;
-                      return ListTile(
+              verticalSpaceSmall,
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: LayoutSettings.horizontalPadding),
+                child:
+                    Text("Money pool started by ${model.moneyPool.adminName}"),
+              ),
+              verticalSpaceMedium,
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: LayoutSettings.horizontalPadding),
+                child: Column(
+                  children: [
+                    HorizontalCentralButton(
+                      onPressed: () => model
+                          .navigateToTransferFundAmountView(model.moneyPool),
+                      title: "Contribute",
+                      minWidth: screenWidthPercentage(context, percentage: 0.6),
+                    ),
+                    verticalSpaceRegular,
+                    Text(formatAmount(model.moneyPool.total),
+                        style: textTheme(context).headline2),
+                    Text("Current total")
+                  ],
+                ),
+              ),
+              verticalSpaceMedium,
+              SectionHeader(
+                title: "Members",
+                trailingIcon: IconButton(
+                  onPressed: () =>
+                      model.showSearchViewAndInviteUser(model.moneyPool),
+                  icon: Icon(
+                    Icons.add_circle_outline_rounded,
+                  ),
+                ),
+              ),
+              model.isBusy
+                  ? Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                      physics: ScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: model.moneyPool.invitedUsers.length +
+                          model.moneyPool.contributingUsers.length,
+                      itemBuilder: (context, index) {
+                        bool isInvitedUser =
+                            index >= model.moneyPool.invitedUsers.length
+                                ? false
+                                : true;
+                        dynamic user = isInvitedUser
+                            ? model.moneyPool.invitedUsers[index]
+                            : model.moneyPool.contributingUsers[
+                                index - model.moneyPool.invitedUsers.length];
+                        var displayName = user.uid == model.currentUser.id
+                            ? "You"
+                            : user.name;
+                        return ListTile(
+                          leading: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: MyColors.paletteBlue,
+                            child: Text(getInitialsFromName(user.name),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 14)),
+                          ),
+                          title: Text(
+                            displayName,
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.black,
+                            ),
+                          ),
+                          trailing: isInvitedUser
+                              ? Text("Pending invitation")
+                              : Text(formatAmount(user.contribution)),
+                        );
+                      },
+                    ),
+              verticalSpaceMedium,
+              if (model.contributions.length > 0)
+                SectionHeader(
+                  title: "Contributions",
+                ),
+              if (model.contributions.length > 0)
+                ListView.builder(
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: model.contributions.length,
+                  itemBuilder: (context, index) {
+                    var contribution = model.contributions[index];
+                    return ListTile(
                         leading: CircleAvatar(
                           radius: 20,
                           backgroundColor: MyColors.paletteBlue,
-                          child: Text(getInitialsFromName(user.name),
+                          child: Text(
+                              getInitialsFromName(contribution.userName),
                               style:
                                   TextStyle(color: Colors.white, fontSize: 14)),
                         ),
                         title: Text(
-                          displayName,
+                          contribution.userName,
                           style: TextStyle(
                             fontSize: 16.0,
                             color: Colors.black,
                           ),
                         ),
-                        trailing: isInvitedUser
-                            ? Text("Pending invitation")
-                            : Text(formatAmount(user.contribution)),
-                      );
-                    },
-                  ),
-            verticalSpaceLarge,
-          ],
+                        subtitle: Text(
+                          DateFormat.MMMEd()
+                              .format(contribution.createdAt.toDate()),
+                          style: textTheme(context).bodyText2!.copyWith(
+                                fontSize: 15,
+                              ),
+                        ),
+                        trailing: Text(formatAmount(contribution.amount)));
+                  },
+                ),
+              verticalSpaceLarge,
+            ],
+          ),
         ),
       ),
     );
