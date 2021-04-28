@@ -7,6 +7,7 @@ import 'package:good_wallet/datamodels/money_pools/money_pool_contribution.dart'
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
+import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
@@ -198,13 +199,13 @@ class TransferFundsAmountViewModel extends FormViewModel {
             title: "Could not process payment", message: "");
       }
       await Future.delayed(Duration(seconds: 1));
-
-      // _dialogService
-
       _snackbarService!.showSnackbar(
+          duration: Duration(seconds: 2),
           title:
               "Transferred ${formatAmount(amount, true)} to ${_receiverInfo!.name}!",
           message: "I know... it's great!");
+      await Future.delayed(Duration(seconds: 2));
+      await anotherPaymentConfirmationDialog();
     } else {
       // Properly add Gpay / Credit card pay / ...
       _snackbarService!.showSnackbar(
@@ -310,6 +311,27 @@ class TransferFundsAmountViewModel extends FormViewModel {
     await Future.delayed(Duration(seconds: 4));
     log.i("Set custom Form status");
     customValidationMessage = null;
+  }
+
+  Future anotherPaymentConfirmationDialog() async {
+    try {
+      DialogResponse? response = await _dialogService!.showConfirmationDialog(
+        title: 'Confirmation',
+        description: "Would you like to make another payment?",
+        confirmationTitle: 'Yes',
+        dialogPlatform: DialogPlatform.Material,
+        cancelTitle: 'No',
+      );
+      if (response?.confirmed == false) {
+        _navigationService!.clearTillFirstAndShow(Routes.layoutTemplateViewMobile,
+            arguments: LayoutTemplateViewMobileArguments(
+                initialBottomNavBarIndex: BottomNavigatorIndex.Home.index));
+      }
+      print('DialogResponse: ${response?.confirmed}');
+    } catch (e) {
+      log.e("Couldn't process payment: ${e.toString()}");
+      rethrow;
+    }
   }
 
   @override
