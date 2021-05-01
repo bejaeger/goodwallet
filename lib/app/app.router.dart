@@ -30,6 +30,7 @@ import '../ui/views/login/create_account_view.dart';
 import '../ui/views/login/login_view.dart';
 import '../ui/views/money_pools/create_money_pool_form_view.dart';
 import '../ui/views/money_pools/create_money_pool_intro_view.dart';
+import '../ui/views/money_pools/disburse_money_pool_view.dart';
 import '../ui/views/money_pools/money_pools_view.dart';
 import '../ui/views/money_pools/single_money_pool_view.dart';
 import '../ui/views/payments/payment_cancel_view.dart';
@@ -74,6 +75,7 @@ class Routes {
   static const String startUpLogicView = '/start-up-logic-view';
   static const String searchView = '/search-view';
   static const String transferFundsAmountView = '/transfer-funds-amount-view';
+  static const String disburseMoneyPoolView = '/disburse-money-pool-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -102,6 +104,7 @@ class Routes {
     startUpLogicView,
     searchView,
     transferFundsAmountView,
+    disburseMoneyPoolView,
   };
 }
 
@@ -136,6 +139,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.startUpLogicView, page: StartUpLogicView),
     RouteDef(Routes.searchView, page: SearchView),
     RouteDef(Routes.transferFundsAmountView, page: TransferFundsAmountView),
+    RouteDef(Routes.disburseMoneyPoolView, page: DisburseMoneyPoolView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -388,6 +392,16 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    DisburseMoneyPoolView: (data) {
+      var args = data.getArgs<DisburseMoneyPoolViewArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => DisburseMoneyPoolView(
+          key: args.key,
+          moneyPool: args.moneyPool,
+        ),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -523,4 +537,11 @@ class TransferFundsAmountViewArguments {
       required this.type,
       this.receiverInfo,
       this.onContinuePressed});
+}
+
+/// DisburseMoneyPoolView arguments holder class
+class DisburseMoneyPoolViewArguments {
+  final Key? key;
+  final MoneyPoolModel moneyPool;
+  DisburseMoneyPoolViewArguments({this.key, required this.moneyPool});
 }

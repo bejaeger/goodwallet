@@ -22,6 +22,7 @@ import 'package:good_wallet/ui/views/login/create_account_view.dart';
 import 'package:good_wallet/ui/views/login/login_view.dart';
 import 'package:good_wallet/ui/views/money_pools/create_money_pool_form_view.dart';
 import 'package:good_wallet/ui/views/money_pools/create_money_pool_intro_view.dart';
+import 'package:good_wallet/ui/views/money_pools/disburse_money_pool_view.dart';
 import 'package:good_wallet/ui/views/money_pools/money_pools_view.dart';
 import 'package:good_wallet/ui/views/money_pools/single_money_pool_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_cancel_view.dart';
@@ -75,6 +76,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: StartUpLogicView),
     MaterialRoute(page: SearchView),
     MaterialRoute(page: TransferFundsAmountView),
+    MaterialRoute(page: DisburseMoneyPoolView),
   ],
   dependencies: [
     // Registers all singletons

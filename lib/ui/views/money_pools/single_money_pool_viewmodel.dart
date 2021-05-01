@@ -98,4 +98,12 @@ class SingleMoneyPoolViewModel extends BaseModel {
         .getMoneyPoolContributions(moneyPool.moneyPoolId!);
     notifyListeners();
   }
+
+  ////////////////////////////////////////////////////
+  /// Navigations
+  ///
+  Future navigateToDisburseMoneyPoolView() async {
+    await _navigationService!.navigateTo(Routes.disburseMoneyPoolView,
+        arguments: DisburseMoneyPoolViewArguments(moneyPool: moneyPool));
+  }
 }

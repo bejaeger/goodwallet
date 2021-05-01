@@ -91,6 +91,17 @@ class SingleMoneyPoolView extends StatelessWidget {
                       minWidth: screenWidthPercentage(context, percentage: 0.6),
                     ),
                     verticalSpaceRegular,
+                    if (model.moneyPool.adminUID == model.currentUser.id)
+                      HorizontalCentralButton(
+                        color: MyColors.paletteBlue.withOpacity(0.9),
+                        onPressed: () =>
+                            model.navigateToDisburseMoneyPoolView(),
+                        title: "Disburse",
+                        minWidth:
+                            screenWidthPercentage(context, percentage: 0.6),
+                      ),
+                    if (model.moneyPool.adminUID == model.currentUser.id)
+                      verticalSpaceRegular,
                     Text(formatAmount(model.moneyPool.total),
                         style: textTheme(context).headline2),
                     Text("Current total")
@@ -142,6 +153,10 @@ class SingleMoneyPoolView extends StatelessWidget {
                               color: Colors.black,
                             ),
                           ),
+                          subtitle:
+                              model.moneyPool.adminUID == model.currentUser.id
+                                  ? Text("Admin")
+                                  : null,
                           trailing: isInvitedUser
                               ? Text("Pending invitation")
                               : Text(formatAmount(user.contribution)),

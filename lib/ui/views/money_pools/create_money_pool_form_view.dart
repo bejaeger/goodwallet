@@ -89,8 +89,7 @@ class CreateMoneyPoolFormView extends StatelessWidget
                         style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(0.0),
                             elevation: 0.0,
-                            primary:
-                                MyColors.paletteTurquoise.withOpacity(0.8)),
+                            primary: MyColors.paletteGreen.withOpacity(0.8)),
                         child: Padding(
                           padding: const EdgeInsets.only(
                               top: 12.0, bottom: 12.0, left: 20.0, right: 20.0),

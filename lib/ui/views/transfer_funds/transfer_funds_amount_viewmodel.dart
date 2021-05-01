@@ -17,6 +17,14 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_view.form.dart';
 
+/////////////////////////////////////////////////////////////////
+///
+/// Viewmodel handling the logic for different types of payments
+///
+/// This has lot of if () {} else if () {} logic!
+/// This can be improved by thinking about a cleaner configuration
+///
+
 class TransferFundsAmountViewModel extends FormViewModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
@@ -60,7 +68,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
     customValidationMessage = msg;
   }
 
-  Future showConfirmationBottomSheetAndProcessPayment() async {
+  Future showBottomSheetAndProcessPayment() async {
     if (!isValidData()) {
       log.e("Entered amount not valid");
       notifyListeners();
@@ -80,6 +88,34 @@ class TransferFundsAmountViewModel extends FormViewModel {
     }
   }
 
+  // Validate user input, very important function, should be unit tested!
+  bool isValidData() {
+    // check if amount is valid!
+    if (amountValue == null) {
+      log.i("No valid amount");
+      setCustomValidationMessage("Please enter valid amount.");
+    } else if (amountValue == "") {
+      log.i("No valid amount");
+      setCustomValidationMessage("Please enter valid amount.");
+    } else if (double.parse(amountValue!) < 0) {
+      log.i("Amount < 0");
+      setCustomValidationMessage("Please enter valid amount.");
+    } else if (double.parse(amountValue!) > 1000) {
+      log.i("Amount = ${double.parse(amountValue!)}  > 1000");
+      setCustomValidationMessage(
+          "Are you sure you want to top up as much as ${formatAmount(double.parse(amountValue!), true)}");
+    } else if (_type == FundTransferType.donation &&
+        scaleAmountForStripe(double.parse(amountValue!)) >
+            userWallet.currentBalance) {
+      setCustomValidationMessage(
+          "Your requested donation is higher than your account balance. You can donate from your bank account directly, or choose a smaller amount.");
+    }
+    return customValidationMessage == null;
+  }
+
+  // Function for the user to change the money source for the payment
+  // Will replace the current view with the one corresponding to the
+  // selected payment method
   Future changePaymentMethod() async {
     if (_type == FundTransferType.moneyPoolContribution ||
         _type == FundTransferType.moneyPoolContributionFromBank) {
@@ -127,126 +163,72 @@ class TransferFundsAmountViewModel extends FormViewModel {
     }
   }
 
-  bool isValidData() {
-    // check if amount is valid!
-    if (amountValue == null) {
-      log.i("No valid amount");
-      setCustomValidationMessage("Please enter valid amount.");
-    } else if (amountValue == "") {
-      log.i("No valid amount");
-      setCustomValidationMessage("Please enter valid amount.");
-    } else if (double.parse(amountValue!) < 0) {
-      log.i("Amount < 0");
-      setCustomValidationMessage("Please enter valid amount.");
-    } else if (double.parse(amountValue!) > 1000) {
-      log.i("Amount = ${double.parse(amountValue!)}  > 1000");
-      setCustomValidationMessage(
-          "Are you sure you want to top up as much as ${formatAmount(double.parse(amountValue!), true)}");
-    } else if (_type == FundTransferType.donation &&
-        scaleAmountForStripe(double.parse(amountValue!)) >
-            userWallet.currentBalance) {
-      setCustomValidationMessage(
-          "Your requested donation is higher than your account balance. You can donate from your bank account directly, or choose a smaller amount.");
-    }
-    return customValidationMessage == null;
-  }
-
   Future handleTopUpPayment() async {
-    SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
-        title: "Select Payment Method",
-        description: "OR add new payment method +",
-        confirmButtonTitle: "Credit Card / Google Pay",
-        cancelButtonTitle: "Test Payment");
-
+    SheetResponse? sheetResponse = await _showPaymentMethodBottomSheet();
     log.i("Response data from bottom sheet: ${sheetResponse?.confirmed}");
-
     if (sheetResponse?.confirmed == false) {
       // FOR now, implemented dummy payment processing here
       var amount = double.parse(amountValue!);
-
-      _snackbarService!.showSnackbar(
-          title:
-              "Transfer ${formatAmount(amount, true)}. This is not yet processed in the backend, however!",
-          message: "I know... it's sad");
-      ///////////////////////////////////////////////////////
-      /// TODO
-      ///////////////////////////////////////////////////////////
+      showNotYetImplementedSnackbar();
     } else {
       // Properly add Gpay / Credit card pay / ...
-      _snackbarService!.showSnackbar(
-          title: "Not yet implemented.", message: "I know... it's sad");
+      showNotYetImplementedSnackbar();
     }
   }
 
   Future handleSendMoneyPayment() async {
-    SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
-        title: "Select Payment Method",
-        description: "OR add new payment method +",
-        confirmButtonTitle: "Credit Card / Google Pay",
-        cancelButtonTitle: "Test Payment");
+    SheetResponse? sheetResponse = await _showPaymentMethodBottomSheet();
     log.i("Response data from bottom sheet: ${sheetResponse?.confirmed}");
-    setBusy(true);
     if (sheetResponse?.confirmed == false) {
       // FOR now, implemented dummy payment processing here
       var amount = double.parse(amountValue!);
       try {
         var data = await prepareTransactionModel();
-        await _dummyPaymentService.processTransaction(data);
+        SheetResponse? sheetResponse =
+            await _showConfirmationBottomSheet(amount, _receiverInfo.name);
+        if (sheetResponse?.confirmed == true) {
+          setBusy(true);
+          await _dummyPaymentService.processTransaction(data);
+          setBusy(false);
+          _snackbarService!.showSnackbar(
+              duration: Duration(seconds: 2),
+              title:
+                  "Transferred ${formatAmount(amount, true)} to ${_receiverInfo!.name}!",
+              message: "I know... it's great!");
+          await Future.delayed(Duration(seconds: 2));
+          await anotherPaymentConfirmationDialog();
+        }
       } catch (e) {
         log.e(
             "Something went wrong processing the dummy payment, error: ${e.toString()}");
-        _snackbarService!.showCustomSnackBar(
-            title: "Could not process payment", message: "");
+        await _showAndAwaitSnackbar("Could not process payment!");
       }
-      await Future.delayed(Duration(seconds: 1));
-      _snackbarService!.showSnackbar(
-          duration: Duration(seconds: 2),
-          title:
-              "Transferred ${formatAmount(amount, true)} to ${_receiverInfo!.name}!",
-          message: "I know... it's great!");
-      await Future.delayed(Duration(seconds: 2));
-      await anotherPaymentConfirmationDialog();
-    } else {
+    } else if (sheetResponse?.confirmed == false) {
       // Properly add Gpay / Credit card pay / ...
-      _snackbarService!.showSnackbar(
-          title: "Not yet implemented.", message: "I know... it's sad");
     }
-    setBusy(false);
   }
 
   Future handleDonationPayment() async {
     var amount = double.parse(amountValue!);
-    SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
-      title: 'Confirmation',
-      description:
-          "Are you sure you want to donate ${formatAmount(amount, true)} from your Good Wallet to the project '${_receiverInfo.title}'",
-      confirmButtonTitle: 'Yes',
-      cancelButtonTitle: 'No',
-    );
+    SheetResponse? sheetResponse =
+        await _showConfirmationBottomSheet(amount, _receiverInfo.title);
     setBusy(true);
     if (sheetResponse?.confirmed == true) {
       // FOR now, implemented dummy payment processing here
       _dummyPaymentService.processDonation(currentUser.id, _receiverInfo.title,
           scaleAmountForStripe(amount) as int);
-      await Future.delayed(Duration(seconds: 1));
       log.i("Processed donation");
-
-      _snackbarService!.showSnackbar(
-          title: "Succesfully donated!", message: "I know... it's great!");
+      await _showAndAwaitSnackbar("You just made an impact!");
+      clearTillFirstAndShowHomeScreen();
     } else if (sheetResponse?.confirmed == false) {
-      _snackbarService!.showSnackbar(
-          title: "Cancelled payment", message: "I know... it's sad");
+      await _showAndAwaitSnackbar("Cancelled donation process");
     }
     setBusy(false);
   }
 
   Future handleMoneyPoolPayment() async {
     var amount = double.parse(amountValue!);
-    SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
-        title: "Select Payment Method",
-        description: "OR add new payment method +",
-        confirmButtonTitle: "Credit Card / Google Pay",
-        cancelButtonTitle: "Test Payment");
+    SheetResponse? sheetResponse = await _showPaymentMethodBottomSheet();
     setBusy(true);
     if (sheetResponse?.confirmed == false) {
       // FOR now, implemented dummy payment processing here
@@ -260,14 +242,11 @@ class TransferFundsAmountViewModel extends FormViewModel {
           createdAt: FieldValue.serverTimestamp(),
           status: "initialized");
       _dummyPaymentService.processMoneyPoolContribution(contribution);
-      await Future.delayed(Duration(seconds: 1));
       log.i("Processed donation");
-      _snackbarService!.showSnackbar(
-          title: "Succesfully contributed to money pool!",
-          message: "I know... it's great!");
+      await _showAndAwaitSnackbar("Succesfully contributed to money pool!");
+      navigateBack();
     } else if (sheetResponse?.confirmed == true) {
-      _snackbarService!.showSnackbar(
-          title: "Cancelled payment", message: "I know... it's sad");
+      await _showAndAwaitSnackbar("Cancelled contributed to money pool!");
     }
     setBusy(false);
   }
@@ -303,15 +282,8 @@ class TransferFundsAmountViewModel extends FormViewModel {
     _navigationService!.back();
   }
 
-  @override
-  void setFormStatus() async {
-    // THIS IS A HACK!
-    // Otherwise the customvalidation message is overwritten before showing!
-    // Need to fix this properly at some point!
-    await Future.delayed(Duration(seconds: 4));
-    log.i("Set custom Form status");
-    customValidationMessage = null;
-  }
+  /////////////////////////////////////////////////////////////////////
+  // Pop-ups!
 
   Future anotherPaymentConfirmationDialog() async {
     try {
@@ -323,9 +295,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
         cancelTitle: 'No',
       );
       if (response?.confirmed == false) {
-        _navigationService!.clearTillFirstAndShow(Routes.layoutTemplateViewMobile,
-            arguments: LayoutTemplateViewMobileArguments(
-                initialBottomNavBarIndex: BottomNavigatorIndex.Home.index));
+        clearTillFirstAndShowHomeScreen();
       }
       print('DialogResponse: ${response?.confirmed}');
     } catch (e) {
@@ -334,9 +304,60 @@ class TransferFundsAmountViewModel extends FormViewModel {
     }
   }
 
+  Future _showAndAwaitSnackbar(String message) async {
+    _snackbarService!.showSnackbar(
+        duration: Duration(seconds: 2), title: message, message: "");
+    await Future.delayed(Duration(seconds: 2));
+  }
+
+  Future _showPaymentMethodBottomSheet() async {
+    return await _bottomSheetService!.showBottomSheet(
+        title: "Select Payment Method",
+        description: "OR add new payment method +",
+        confirmButtonTitle: "Credit Card / Google Pay",
+        cancelButtonTitle: "Test Payment");
+  }
+
+  Future _showConfirmationBottomSheet(num amount, dynamic receiverName) async {
+    return await _bottomSheetService!.showBottomSheet(
+      title: 'Confirmation',
+      description:
+          "Are you sure you want to donate ${formatAmount(amount, true)} from your Good Wallet to the project '$receiverName'",
+      confirmButtonTitle: 'Yes',
+      cancelButtonTitle: 'No',
+    );
+  }
+
+  Future showNotYetImplementedSnackbar() async {
+    _snackbarService!.showSnackbar(
+        title: "Not yet implemented.", message: "I know... it's sad");
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // Navigations
+  //
+  void clearTillFirstAndShowHomeScreen() {
+    _navigationService!.clearTillFirstAndShow(Routes.layoutTemplateViewMobile,
+        arguments: LayoutTemplateViewMobileArguments(
+            initialBottomNavBarIndex: BottomNavigatorIndex.Home.index));
+  }
+
+  ////////////////////////////////////////////////////////////////
+  /// Technicalities
+  //
   @override
   void dispose() {
     _walletSubscription?.cancel();
     super.dispose();
+  }
+
+  @override
+  void setFormStatus() async {
+    // THIS IS A HACK!
+    // Otherwise the customvalidation message is overwritten before showing!
+    // Need to fix this properly at some point!
+    await Future.delayed(Duration(seconds: 4));
+    log.i("Set custom Form status");
+    customValidationMessage = null;
   }
 }

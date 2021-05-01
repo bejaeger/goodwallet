@@ -177,8 +177,7 @@ class TransferFundsAmountView extends StatelessWidget
                                 screenWidthPercentage(context, percentage: 0.6),
                             title: "Send",
                             onPressed: () async {
-                              await model
-                                  .showConfirmationBottomSheetAndProcessPayment();
+                              await model.showBottomSheetAndProcessPayment();
                             },
                           ),
                     if (type == FundTransferType.donation ||
@@ -235,6 +234,7 @@ class TransferFundsAmountView extends StatelessWidget
 
   Widget prepaidFundIcon(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Prepaid", style: textTheme(context).headline4),
         Text("Balance", style: textTheme(context).headline4),
@@ -265,8 +265,6 @@ class TransferFundsAmountView extends StatelessWidget
   Widget projectSummary(BuildContext context) {
     return Column(
       children: [
-        //Text("Gift money to", style: textTheme(context).headline4),
-        //verticalSpaceSmall,
         CircleAvatar(
           radius: 28,
           backgroundColor: MyColors.primaryRed,
@@ -287,13 +285,10 @@ class TransferFundsAmountView extends StatelessWidget
 
   Widget moneyPoolSummary(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        //Text("Gift money to", style: textTheme(context).headline4),
-        //verticalSpaceSmall,
         CircleAvatar(
           radius: 28,
-          backgroundColor: MyColors.paletteTurquoise,
+          backgroundColor: MyColors.paletteGreen,
           child: Text(getInitialsFromName(receiverInfo.name),
               style: TextStyle(color: Colors.white, fontSize: 16)),
         ),
@@ -302,6 +297,7 @@ class TransferFundsAmountView extends StatelessWidget
           width: screenWidthWithoutPadding(context, percentage: 0.35),
           child: Text(receiverInfo.name,
               maxLines: 2,
+              textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: textTheme(context).headline6!.copyWith(fontSize: 14)),
         ),
@@ -323,8 +319,8 @@ class TransferFundsAmountView extends StatelessWidget
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Prepaid fund", style: textTheme(context).headline4),
-        //Text("#Topup", style: textTheme(context).headline6),
+        Text("Prepaid", style: textTheme(context).headline4),
+        Text("fund", style: textTheme(context).headline4),
       ],
     );
   }
