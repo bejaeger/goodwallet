@@ -7,6 +7,7 @@ import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/money_pools/components/user_payout_form.dart';
 import 'package:good_wallet/ui/views/money_pools/disburse_money_pool_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/alternative_screen_header_small.dart';
+import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -22,43 +23,86 @@ class DisburseMoneyPoolView extends StatelessWidget {
       viewModelBuilder: () => DisburseMoneyPoolViewModel(moneyPool: moneyPool),
       builder: (context, model, child) {
         return ConstrainedWidthWithScaffoldLayout(
-          resizeToAvoidBottomInset: false,
           child: Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: LayoutSettings.horizontalPadding),
-            child: model.userPayoutForms.length > 100
-                ? Container()
-                : ListView(
-                    physics: AlwaysScrollableScrollPhysics(),
+            child: RefreshIndicator(
+              onRefresh: model.updateAvailableBalance,
+              child: ListView(
+                physics: AlwaysScrollableScrollPhysics(),
+                children: [
+                  AlternativeScreenHeaderSmall(
+                      title: "Select Payouts",
+                      onBackButtonPressed: model.navigateBack),
+                  verticalSpaceSmall,
+                  Column(
                     children: [
-                      AlternativeScreenHeaderSmall(
-                          title: "Select Payouts",
-                          onBackButtonPressed: model.navigateBack),
-                      verticalSpaceMedium,
-                      Column(
-                        children: [
-                          Text(formatAmount(model.getCurrentBalance()),
-                              style: textTheme(context).headline2),
-                          Text("Available"),
-                        ],
-                      ),
-                      verticalSpaceMedium,
-                      Column(
-                        children: _getUserPayoutFormRows(context,
-                            model.userPayoutForms, model.removeUserPayoutForm),
-                      ),
-                      verticalSpaceMedium,
-                      IconButton(
-                        padding: const EdgeInsets.all(0.0),
-                        color: MyColors.paletteGreen,
-                        onPressed: () => model.addUserPayoutForm(),
-                        icon: Icon(
-                          Icons.add_circle_outline_rounded,
-                          size: 35,
-                        ),
-                      ),
+                      Text(formatAmount(model.availableBalance),
+                          style: textTheme(context).headline2),
+                      Text("Available",
+                          style: textTheme(context)
+                              .bodyText2!
+                              .copyWith(fontSize: 16)),
                     ],
                   ),
+                  verticalSpaceSmall,
+                  Divider(
+                    thickness: 2,
+                  ),
+                  verticalSpaceSmall,
+                  Column(
+                    children: _getUserPayoutFormRows(context,
+                        model.userPayoutForms, model.removeUserPayoutForm),
+                  ),
+                  // verticalSpaceMedium,
+                  Align(
+                    child: Column(
+                      children: [
+                        IconButton(
+                          color: MyColors.paletteGreen,
+                          onPressed: () => model.addUserPayoutForm(),
+                          icon: Icon(
+                            Icons.add_circle_outline_rounded,
+                            size: 40,
+                          ),
+                        ),
+                        Text("Add Member",
+                            style: textTheme(context).bodyText2!.copyWith(
+                                color: ColorSettings.blackHeadlineColor,
+                                fontSize: 16)),
+                      ],
+                    ),
+                  ),
+                  verticalSpaceMedium,
+                  if (model.validationMessage != null)
+                    Align(
+                      child: SizedBox(
+                        width: screenWidth(context, percentage: 0.8),
+                        child: Text(
+                          model.validationMessage!,
+                          style: textTheme(context)
+                              .bodyText2!
+                              .copyWith(fontSize: 16, color: Colors.red),
+                        ),
+                      ),
+                    ),
+                  if (model.validationMessage != null) verticalSpaceSmall,
+                  Align(
+                    child: model.isBusy
+                        ? Center(child: CircularProgressIndicator())
+                        : CallToActionButtonRectangular(
+                            maxWidth:
+                                screenWidthPercentage(context, percentage: 0.6),
+                            color: MyColors.paletteGreen.withOpacity(0.9),
+                            title: "Payout",
+                            onPressed: model.isValidPayoutData()
+                                ? model.submitMoneyPoolPayout
+                                : null),
+                  ),
+                  verticalSpaceMassive,
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -72,6 +116,7 @@ class DisburseMoneyPoolView extends StatelessWidget {
     List<dynamic> rows = userPayoutForms.map((element) {
       return Column(
         children: [
+          verticalSpaceSmall,
           DelayedDisplay(
             fadingDuration: Duration(milliseconds: 300),
             slidingBeginOffset: const Offset(0.0, -0.2),
@@ -94,7 +139,7 @@ class DisburseMoneyPoolView extends StatelessWidget {
               ],
             ),
           ),
-          Divider(height: 20, thickness: 2.0),
+          verticalSpaceSmall,
         ],
       );
     }).toList();

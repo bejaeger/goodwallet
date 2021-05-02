@@ -27,12 +27,12 @@ class UserPayoutForm extends StatelessWidget with $UserPayoutForm {
   Widget build(BuildContext context) {
     return ViewModelBuilder<UserPayoutFormModel>.reactive(
       viewModelBuilder: () => userPayoutFormModel,
-      disposeViewModel: false,
+      onModelReady: (model) => listenToFormUpdated(model),
       builder: (context, model, child) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            width: screenWidthPercentage(context, percentage: 0.6),
+            width: screenWidthPercentage(context, percentage: 0.55),
             height: 50,
             child: model.hasSelectedUser
                 ? GestureDetector(
@@ -56,6 +56,8 @@ class UserPayoutForm extends StatelessWidget with $UserPayoutForm {
                                   TextStyle(color: Colors.white, fontSize: 14)),
                         ),
                         title: Text(model.selectedUserName!,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: textTheme(context)
                                 .headline6!
                                 .copyWith(fontSize: 16.0)),
@@ -93,7 +95,7 @@ class UserPayoutForm extends StatelessWidget with $UserPayoutForm {
                   ),
                 ),
               ),
-              focusNode: amountFocusNode,
+              //focusNode: amountFocusNode,
               controller: amountController,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,

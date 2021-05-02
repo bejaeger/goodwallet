@@ -23,6 +23,7 @@ class CallToActionButtonRectangular extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double maxWidthActual = maxWidth ?? screenWidthWithoutPadding(context);
+    Color colorActual = color ?? ColorSettings.primaryColor.withOpacity(0.8);
     return Container(
       constraints: BoxConstraints(
         minWidth: minWidth ??
@@ -36,16 +37,19 @@ class CallToActionButtonRectangular extends StatelessWidget {
         style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.all(0.0),
             elevation: 0.0,
-            primary: color ?? ColorSettings.primaryColor.withOpacity(0.8)),
+            primary: colorActual),
         child: Padding(
           padding: const EdgeInsets.only(
               top: 12.0, bottom: 12.0, left: 20.0, right: 20.0),
           child: Text(
             title,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: textTheme(context)
-                .headline5!
-                .copyWith(fontSize: 18, color: ColorSettings.whiteTextColor),
+            style: textTheme(context).headline5!.copyWith(
+                fontSize: 18,
+                color: onPressed != null
+                    ? ColorSettings.whiteTextColor
+                    : ColorSettings.lightGreyTextColor),
           ),
         ),
         onPressed: onPressed,

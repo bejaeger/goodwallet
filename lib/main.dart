@@ -22,7 +22,7 @@ void main() async {
     await Firebase.initializeApp();
     setupLocator();
     setupBottomSheetUi();
-    Logger.level = Level.info;
+    Logger.level = Level.verbose;
     runApp(MyApp());
   } catch (e) {
     print("ERROR: App main function failed with error: ${e.toString()}");

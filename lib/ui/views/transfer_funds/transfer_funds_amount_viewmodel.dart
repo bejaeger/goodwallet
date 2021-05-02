@@ -38,7 +38,10 @@ class TransferFundsAmountViewModel extends FormViewModel {
   WalletBalancesModel userWallet = WalletBalancesModel.empty();
   StreamSubscription<WalletBalancesModel>? _walletSubscription;
 
-  TransferFundsAmountViewModel() {
+  FundTransferType type;
+  dynamic receiverInfo;
+  TransferFundsAmountViewModel(
+      {required this.type, required this.receiverInfo}) {
     // Listen to wallet similar to what is done in base viemodel
     _walletSubscription = _userDataService!.userWalletSubject.listen(
       (wallet) {
@@ -46,15 +49,6 @@ class TransferFundsAmountViewModel extends FormViewModel {
         notifyListeners();
       },
     );
-  }
-
-  FundTransferType? _type;
-  dynamic? _receiverInfo;
-  setTransferFundTypeAndReceiverInfo(
-      FundTransferType type, dynamic receiverInfo) {
-    _type = type;
-    _receiverInfo = receiverInfo;
-    log.i("Active transfer type: ${_type.toString()}");
   }
 
   // The functionality from stacked's form view is
@@ -73,13 +67,13 @@ class TransferFundsAmountViewModel extends FormViewModel {
       log.e("Entered amount not valid");
       notifyListeners();
     } else {
-      if (_type == FundTransferType.prepaidFundTopUp)
+      if (type == FundTransferType.prepaidFundTopUp)
         await handleTopUpPayment();
-      else if (_type == FundTransferType.transferToPeer) {
+      else if (type == FundTransferType.transferToPeer) {
         await handleSendMoneyPayment();
-      } else if (_type == FundTransferType.donation) {
+      } else if (type == FundTransferType.donation) {
         await handleDonationPayment();
-      } else if (_type == FundTransferType.moneyPoolContributionFromBank) {
+      } else if (type == FundTransferType.moneyPoolContributionFromBank) {
         await handleMoneyPoolPayment();
       } else {
         _snackbarService!.showSnackbar(
@@ -104,7 +98,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       log.i("Amount = ${double.parse(amountValue!)}  > 1000");
       setCustomValidationMessage(
           "Are you sure you want to top up as much as ${formatAmount(double.parse(amountValue!), true)}");
-    } else if (_type == FundTransferType.donation &&
+    } else if (type == FundTransferType.donation &&
         scaleAmountForStripe(double.parse(amountValue!)) >
             userWallet.currentBalance) {
       setCustomValidationMessage(
@@ -117,48 +111,48 @@ class TransferFundsAmountViewModel extends FormViewModel {
   // Will replace the current view with the one corresponding to the
   // selected payment method
   Future changePaymentMethod() async {
-    if (_type == FundTransferType.moneyPoolContribution ||
-        _type == FundTransferType.moneyPoolContributionFromBank) {
+    if (type == FundTransferType.moneyPoolContribution ||
+        type == FundTransferType.moneyPoolContributionFromBank) {
       SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
           title: "Select Payment Method",
           description: "OR add new payment method +",
           confirmButtonTitle: "Bank Account",
           cancelButtonTitle: "Prepaid Fund");
       if (sheetResponse?.confirmed == true &&
-          _type != FundTransferType.moneyPoolContributionFromBank) {
+          type != FundTransferType.moneyPoolContributionFromBank) {
         await _navigationService!.replaceWith(Routes.transferFundsAmountView,
             arguments: TransferFundsAmountViewArguments(
                 type: FundTransferType.moneyPoolContributionFromBank,
-                receiverInfo: _receiverInfo));
+                receiverInfo: receiverInfo));
       }
       if (sheetResponse?.confirmed == false &&
-          _type != FundTransferType.moneyPoolContribution) {
+          type != FundTransferType.moneyPoolContribution) {
         await _navigationService!.replaceWith(Routes.transferFundsAmountView,
             arguments: TransferFundsAmountViewArguments(
                 type: FundTransferType.moneyPoolContribution,
-                receiverInfo: _receiverInfo));
+                receiverInfo: receiverInfo));
       }
     }
 
-    if (_type == FundTransferType.donation ||
-        _type == FundTransferType.donationFromBank) {
+    if (type == FundTransferType.donation ||
+        type == FundTransferType.donationFromBank) {
       SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
           title: "Select Payment Method",
           description: "OR add new payment method +",
           confirmButtonTitle: "Bank Account",
           cancelButtonTitle: "Good Wallet");
       if (sheetResponse?.confirmed == true &&
-          _type != FundTransferType.donationFromBank) {
+          type != FundTransferType.donationFromBank) {
         await _navigationService!.replaceWith(Routes.transferFundsAmountView,
             arguments: TransferFundsAmountViewArguments(
                 type: FundTransferType.donationFromBank,
-                receiverInfo: _receiverInfo));
+                receiverInfo: receiverInfo));
       }
       if (sheetResponse?.confirmed == false &&
-          _type != FundTransferType.donation) {
+          type != FundTransferType.donation) {
         await _navigationService!.replaceWith(Routes.transferFundsAmountView,
             arguments: TransferFundsAmountViewArguments(
-                type: FundTransferType.donation, receiverInfo: _receiverInfo));
+                type: FundTransferType.donation, receiverInfo: receiverInfo));
       }
     }
   }
@@ -185,7 +179,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       try {
         var data = await prepareTransactionModel();
         SheetResponse? sheetResponse =
-            await _showConfirmationBottomSheet(amount, _receiverInfo.name);
+            await _showConfirmationBottomSheet(amount, receiverInfo.name);
         if (sheetResponse?.confirmed == true) {
           setBusy(true);
           await _dummyPaymentService.processTransaction(data);
@@ -193,7 +187,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
           _snackbarService!.showSnackbar(
               duration: Duration(seconds: 2),
               title:
-                  "Transferred ${formatAmount(amount, true)} to ${_receiverInfo!.name}!",
+                  "Transferred ${formatAmount(amount, true)} to ${receiverInfo!.name}!",
               message: "I know... it's great!");
           await Future.delayed(Duration(seconds: 2));
           await anotherPaymentConfirmationDialog();
@@ -211,11 +205,11 @@ class TransferFundsAmountViewModel extends FormViewModel {
   Future handleDonationPayment() async {
     var amount = double.parse(amountValue!);
     SheetResponse? sheetResponse =
-        await _showConfirmationBottomSheet(amount, _receiverInfo.title);
+        await _showConfirmationBottomSheet(amount, receiverInfo.title);
     setBusy(true);
     if (sheetResponse?.confirmed == true) {
       // FOR now, implemented dummy payment processing here
-      _dummyPaymentService.processDonation(currentUser.id, _receiverInfo.title,
+      _dummyPaymentService.processDonation(currentUser.id, receiverInfo.title,
           scaleAmountForStripe(amount) as int);
       log.i("Processed donation");
       await _showAndAwaitSnackbar("You just made an impact!");
@@ -233,8 +227,8 @@ class TransferFundsAmountViewModel extends FormViewModel {
     if (sheetResponse?.confirmed == false) {
       // FOR now, implemented dummy payment processing here
       MoneyPoolContributionModel contribution = MoneyPoolContributionModel(
-          moneyPoolId: _receiverInfo.moneyPoolId,
-          moneyPoolName: _receiverInfo.name,
+          moneyPoolId: receiverInfo.moneyPoolId,
+          moneyPoolName: receiverInfo.name,
           uid: currentUser.id,
           userName: currentUser.fullName,
           amount: scaleAmountForStripe(amount),
@@ -255,8 +249,8 @@ class TransferFundsAmountViewModel extends FormViewModel {
     var recipientUid, recipientName, amount;
     TransactionModel data;
     try {
-      recipientUid = _receiverInfo!.uid;
-      recipientName = _receiverInfo!.name;
+      recipientUid = receiverInfo!.uid;
+      recipientName = receiverInfo!.name;
       amount = double.parse(amountValue!);
       //msg = optionalMessageController.text;
       data = TransactionModel(

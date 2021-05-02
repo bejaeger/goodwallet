@@ -39,9 +39,9 @@ class TransferFundsAmountView extends StatelessWidget
     return ViewModelBuilder<TransferFundsAmountViewModel>.reactive(
       onModelReady: (model) {
         listenToFormUpdated(model);
-        model.setTransferFundTypeAndReceiverInfo(type, receiverInfo);
       },
-      viewModelBuilder: () => TransferFundsAmountViewModel(),
+      viewModelBuilder: () =>
+          TransferFundsAmountViewModel(type: type, receiverInfo: receiverInfo),
       builder: (context, model, child) {
         late String headline;
         if (type == FundTransferType.transferToPeer)

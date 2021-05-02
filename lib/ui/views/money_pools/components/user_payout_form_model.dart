@@ -8,13 +8,31 @@ import 'package:good_wallet/utils/logger.dart';
 
 class UserPayoutFormModel extends FormViewModel {
   final List<ContributingUser> usersInfo;
-  UserPayoutFormModel({required this.usersInfo});
+  final void Function() onSetFormStatus;
+  UserPayoutFormModel({required this.usersInfo, required this.onSetFormStatus});
 
   final log = getLogger("user_payout_form_model.dart");
 
   ContributingUser? selectedUser;
   bool get hasSelectedUser => selectedUser != null;
   String? selectedUserName;
+
+  // Gets current user input
+  // Called from DisburseMoneyPoolModel
+  num getAmount() {
+    if (amountValue != null && amountValue != "") {
+      try {
+        num valueToParse = num.parse(amountValue!);
+        return valueToParse;
+      } catch (e) {
+        log.v(
+            "Returning zero because somehow string is not formatted correctly! Error thrown ${e.toString()}");
+        return 0;
+      }
+    } else {
+      return 0;
+    }
+  }
 
   List<String> getUserNames() {
     return usersInfo.map((e) => e.name).toList();
@@ -39,8 +57,18 @@ class UserPayoutFormModel extends FormViewModel {
     notifyListeners();
   }
 
+  // Check if inputs are valid
+  bool isValidInput() {
+    if (!hasSelectedUser) return false;
+    if (amountValue == null) return false;
+    if (getAmount() == 0) return false;
+    if (getAmount() < 0) return false;
+    return true;
+  }
+
+  // Implement callback function to change values in DisburseMoneyPoolViewModel
   @override
   void setFormStatus() {
-    // TODO: implement setFormStatus
+    onSetFormStatus();
   }
 }
