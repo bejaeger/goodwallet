@@ -1,15 +1,14 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
-import 'package:good_wallet/datamodels/user/public_user_info.dart';
+import 'package:good_wallet/datamodels/money_pools/money_pool_payout_model.dart';
+import 'package:good_wallet/datamodels/money_pools/paid_out_user.dart';
+import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/ui/views/money_pools/components/user_payout_form.dart';
-import 'package:good_wallet/ui/views/money_pools/components/user_payout_form.form.dart';
 import 'package:good_wallet/ui/views/money_pools/components/user_payout_form_model.dart';
-import 'package:good_wallet/ui/views/money_pools/disburse_money_pool_view.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -17,7 +16,7 @@ import 'package:stacked_services/stacked_services.dart';
 class DisburseMoneyPoolViewModel extends BaseModel {
   MoneyPoolModel moneyPool;
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
-
+  final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
   // Available balance
   late num availableBalance;
   DisburseMoneyPoolViewModel({required this.moneyPool}) {
@@ -51,10 +50,8 @@ class DisburseMoneyPoolViewModel extends BaseModel {
     return scaleAmountForStripe(returnValue);
   }
 
-  // Add user to payout
+  // Add payment form with user input and input for amount
   void addUserPayoutForm() {
-    // userPayoutForms.add(UserPayoutForm(
-    //     key: ValueKey(formCounter), usersInfo: moneyPool.contributingUsers));
     userPayoutForms.add(UserPayoutForm(
         key: ValueKey(formCounter),
         userPayoutFormModel: UserPayoutFormModel(
@@ -85,19 +82,43 @@ class DisburseMoneyPoolViewModel extends BaseModel {
     return true;
   }
 
-  // Sets validation method if filled form is not valid
+  // Sets validation method; if filled form is not valid
   void setValidationMessage(String? msg) {
     validationMessage = msg;
   }
 
-  // Function constructing the MoneyPoolPayoutModel from the available forms
+  //
+  MoneyPoolPayoutModel _getPayoutDataFromForms() {
+    List<PaidOutUser> paidOutUsers = [];
+    List<String> paidOutIds = [];
+    try {
+      userPayoutForms.forEach((element) {
+        PaidOutUser user = PaidOutUser(
+            uid: element.userPayoutFormModel.selectedUser!.uid,
+            name: element.userPayoutFormModel.selectedUser!.name,
+            amount: element.userPayoutFormModel.getAmount());
+        paidOutUsers.add(user);
+        paidOutIds.add(user.uid);
+      });
+      MoneyPoolPayoutModel data = MoneyPoolPayoutModel(
+          moneyPool: moneyPool,
+          paidOutUsers: paidOutUsers,
+          paidOutUsersIds: paidOutIds);
+      return data;
+    } catch (e) {
+      log.e(
+          "Could not construct payout data from forms, error thrown: ${e.toString()}");
+      rethrow;
+    }
+  }
 
-  // Function called when confirming payout
+  // Function constructing the MoneyPoolPayoutModel from the available forms.
+  // Is called when pressing payout button
   // 1. check if inputs are valid
   // 2. show bottom sheet and ask for confirmation
   // 3. then construct money pool payout object
   // 4. push to firebase
-  // 5. write cloud function that takes care of the payouts
+  // 5. cloud function takes care of the payouts
   Future submitMoneyPoolPayout() async {
     // 1
     if (!isValidPayoutData()) {
@@ -111,11 +132,24 @@ class DisburseMoneyPoolViewModel extends BaseModel {
     await Future.delayed(Duration(milliseconds: 300));
     var sheetResponse = await _showConfirmationBottomSheet();
     if (sheetResponse?.confirmed == true) {
-      log.wtf("THIS NEEDS TO BE IMPLEMENTED STILL!");
+      // 3
+      try {
+        setBusy(true);
+        MoneyPoolPayoutModel data = _getPayoutDataFromForms();
+        // 4
+        await _moneyPoolService!.submitMoneyPoolPayout(data);
+        setBusy(false);
+      } catch (e) {
+        log.e("Could not submit payment, error: ${e.toString()}");
+        await _showErrorBottomSheet();
+        setBusy(false);
+      }
     }
   }
 
+  //////////////////////////////////////////////////////////////////
   // Some helper functions
+
   Future _showConfirmationBottomSheet() async {
     String description =
         "Are you sure you would like to disburse this money pool? No fees apply on this transaction.";
@@ -127,6 +161,14 @@ class DisburseMoneyPoolViewModel extends BaseModel {
       description: description,
       confirmButtonTitle: 'Yes',
       cancelButtonTitle: 'No',
+    );
+  }
+
+  Future _showErrorBottomSheet() async {
+    return await _bottomSheetService!.showBottomSheet(
+      title: 'Error',
+      description:
+          "There was an error when processing the payout. We apologize! Please try again later.",
     );
   }
 }

@@ -5,6 +5,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_contribution.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
+import 'package:good_wallet/datamodels/money_pools/money_pool_payout_model.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:rxdart/subjects.dart';
@@ -12,6 +13,8 @@ import 'package:rxdart/subjects.dart';
 class MoneyPoolService {
   final CollectionReference _moneyPoolsCollectionReference =
       FirebaseFirestore.instance.collection("moneypools");
+  final CollectionReference _moneyPoolPayoutsCollectionReference =
+      FirebaseFirestore.instance.collection("moneyPoolPayouts");
 
   final String contributionsKey = "contributionsKey";
   final log = getLogger("money_pool_service.dart");
@@ -251,6 +254,7 @@ class MoneyPoolService {
     }
   }
 
+  // returns list of money pool contributions
   Future getMoneyPoolContributions(String mpid) async {
     List<MoneyPoolContributionModel> returnList = [];
     QuerySnapshot snapshot = await _moneyPoolsCollectionReference
@@ -264,6 +268,19 @@ class MoneyPoolService {
     }
     log.i("Fetched ${returnList.length} money pool contributions");
     return returnList;
+  }
+
+  // adds payout data to firestore which will trigger a cloud function
+  // to update all the good wallets
+  Future submitMoneyPoolPayout(MoneyPoolPayoutModel data) async {
+    try {
+      DocumentReference docRef = _moneyPoolPayoutsCollectionReference.doc();
+      final newData = data.copyWith(payoutId: docRef.id);
+      await docRef.set(newData.toJson());
+    } catch (e) {
+      log.e("Error when pushing data to firestore: ${e.toString()}");
+      rethrow;
+    }
   }
 
   void clearData() {

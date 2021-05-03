@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:good_wallet/utils/datamodel_helpers.dart';
 
 // class holding public info of user
