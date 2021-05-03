@@ -61,6 +61,8 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
     List<dynamic> newListOfWalletTransactions = <dynamic>[];
     var outgoing = await _userDataService!.getListOfDonations();
     var incoming = await _userDataService!.getListOfIncomingTransactions();
+    var moneyPools = await _userDataService!.getListOfMoneyPoolPayouts();
+
     newListOfWalletTransactions.addAll(outgoing);
     newListOfWalletTransactions.addAll(incoming);
     try {
@@ -70,6 +72,8 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
       log.e(
           "List of transactions could not be sorted properly! Possibly the field createdAt is missing! Check transactions in the backend!");
     }
+    newListOfWalletTransactions.addAll(moneyPools);
+
     listOfWalletTransactions = newListOfWalletTransactions;
     log.i(
         "Fetched list of in/out transactions with length = ${listOfWalletTransactions.length}");
@@ -81,8 +85,14 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
   }
 
   Future fetchListOfIncomingTransactions() async {
-    listOfIncomingTransactions =
-        await _userDataService!.getListOfIncomingTransactions();
+    List<dynamic> newListOfTransactions = <dynamic>[];
+    var fromPeers = await _userDataService!.getListOfIncomingTransactions();
+    var moneyPools = await _userDataService!.getListOfMoneyPoolPayouts();
+
+    newListOfTransactions.addAll(fromPeers);
+    newListOfTransactions.addAll(moneyPools);
+    listOfIncomingTransactions = newListOfTransactions;
+    //TODO: Sort by date!
     log.i(
         "Fetched list of incoming transfers with length = ${listOfIncomingTransactions.length}");
   }
@@ -108,6 +118,8 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
       type = incoming
           ? TransactionType.Incoming
           : TransactionType.TransferredToPeers;
+      if (transactionData.message == "From Money Pool")
+        type = TransactionType.MoneyPoolPayout;
     } catch (e) {
       tmpVar = transactionData
           .projectName; // only applicable if the transaction is a donation, i.e. outgoing
@@ -118,6 +130,7 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
           "Could not find type of transaction data, returning TransactionType.Invalid");
       return TransactionType.Invalid;
     }
+    log.v("Inferred type $type for transaction data");
     return type;
   }
 

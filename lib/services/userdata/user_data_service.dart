@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/datamodels/money_pools/money_pool_payout_model.dart';
 import 'package:good_wallet/datamodels/payments/donation_model.dart';
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
@@ -27,6 +28,8 @@ class UserDataService {
       FirebaseFirestore.instance.collection("payments");
   final CollectionReference _usersCollectionReference =
       FirebaseFirestore.instance.collection("users");
+  final CollectionReference _moneyPoolPayoutsCollectionReference =
+      FirebaseFirestore.instance.collection("moneyPoolPayouts");
 
   final FirebaseAuthenticationService? _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
@@ -407,10 +410,54 @@ class UserDataService {
         log.e("Could not map firestore data into TransactionModel");
       }
     } else {
-      log.e("Snapshot of donations collectin is empty");
+      log.e("Snapshot of donations collection is empty");
     }
 
     return listOfTransactions;
+  }
+
+  Future<List<dynamic>> getListOfMoneyPoolPayouts() async {
+    // TODO: Add limit to this query and only load more
+    // when user asks for it!
+    // keyword: pagination
+    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
+
+    if (userStateSubject.value != UserStatus.Initialized)
+      log.i("User not initialized, the following code will break!");
+
+    List<dynamic> listOfTransactions = <dynamic>[];
+    QuerySnapshot transactionsSnapshot =
+        await _moneyPoolPayoutsCollectionReference
+            .where("paidOutUsersIds", arrayContains: currentUser.id)
+            .get();
+    if (transactionsSnapshot.docs.isNotEmpty) {
+      try {
+        listOfTransactions.addAll(transactionsSnapshot.docs
+            .map((snapshot) => MoneyPoolPayoutModel.fromJson(snapshot.data()))
+            .toList());
+      } catch (e) {
+        log.e("Could not map firestore data into TransactionModel");
+      }
+    } else {
+      log.e("Snapshot of donations collection is empty");
+    }
+    // TODO: Improve this and the display of transactions!
+    var newListOfTransactions = listOfTransactions
+        .map((element) => TransactionModel(
+            message: "From Money Pool",
+            recipientUid: currentUser.id,
+            recipientName: currentUser.fullName,
+            senderUid: element.moneyPool.moneyPoolId,
+            senderName: element.moneyPool.name,
+            amount: element.paidOutUsers
+                .where((e) => e.uid == currentUser.id)
+                .first
+                .amount,
+            currency: element.moneyPool.currency,
+            createdAt: Timestamp.now()))
+        .toList();
+
+    return newListOfTransactions;
   }
 
   Future handleLogoutEvent() async {

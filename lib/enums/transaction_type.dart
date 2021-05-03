@@ -5,4 +5,5 @@ enum TransactionType {
   Incoming, // incoming to good wallet = raised money
   InOrTransferred, // incoming to good wallet or transferred to peers ^= everything in firestore payment collection. potentially not needed
   Invalid,
+  MoneyPoolPayout,
 }

@@ -163,6 +163,13 @@ class TransactionListTile extends StatelessWidget {
           descriptor: "Gifted to",
           nameToDisplay: transactionData.recipientName,
           icon: Icon(Icons.person, color: ColorSettings.whiteTextColor));
+    } else if (type == TransactionType.MoneyPoolPayout) {
+      return TransactionHistoryEntryStyle(
+          color: MyColors.paletteGreen,
+          descriptor: "From money pool",
+          nameToDisplay: transactionData.senderName,
+          icon:
+              Icon(Icons.people_rounded, color: ColorSettings.whiteTextColor));
     }
     return null;
   }

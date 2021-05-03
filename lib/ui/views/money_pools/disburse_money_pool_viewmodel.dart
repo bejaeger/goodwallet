@@ -96,7 +96,8 @@ class DisburseMoneyPoolViewModel extends BaseModel {
         PaidOutUser user = PaidOutUser(
             uid: element.userPayoutFormModel.selectedUser!.uid,
             name: element.userPayoutFormModel.selectedUser!.name,
-            amount: element.userPayoutFormModel.getAmount());
+            amount:
+                scaleAmountForStripe(element.userPayoutFormModel.getAmount()));
         paidOutUsers.add(user);
         paidOutIds.add(user.uid);
       });

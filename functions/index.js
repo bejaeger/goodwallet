@@ -127,7 +127,7 @@ exports.updateGoodWalletAfterDonation = functions.firestore
 
 /* -------------- Money Pool Updates ------------------ */
 
-/* This needs to be changed to onUpdate after the entire stripe transaction has been dealt with! */
+// takes money pool contribution data and updates money pool document
 exports.processMoneyPoolContribution = functions.firestore
   .document('moneypools/{poolId}/contributions/{contributionId}')
   .onCreate(async (snap, context) => {
@@ -139,7 +139,7 @@ exports.processMoneyPoolContribution = functions.firestore
       let snapshot = await db.collection("moneypools").doc(context.params.poolId).get();
       if (snapshot.exists) {
         let userList = snapshot.data()['contributingUsers'];
-        let newContributingUsers = userList.map(function (element) {
+        let newContributingUsers = userList.map(element => {
           if (element["uid"] === uid) element["contribution"] = element["contribution"] + amount;
           return element;
         });
@@ -162,6 +162,37 @@ exports.processMoneyPoolContribution = functions.firestore
 
   }
   );
+
+
+// takes money pool payout data and updates user good wallets
+exports.processMoneyPoolPayout = functions.firestore
+  .document('moneyPoolPayouts/{payoutId}')
+  .onCreate(async (snap, context) => {
+    try {
+
+      // update balances for each user
+      const { paidOutUsers } = snap.data();
+
+      paidOutUsers.forEach(async user => {
+        const increment = admin.firestore.FieldValue.increment(user.amount);
+        await db.collection("users").doc(user.uid).update({
+          currentBalance: increment,
+          raised: increment
+        });
+      });
+
+      return;
+    } catch (error) {
+      await snap.ref.set({ error: userFacingMessage(error) }, { merge: true });
+      reportError(error, { payoutId: context.params.payoutId });
+      reportError(error.message, { payoutId: context.params.payoutId });
+      reportError(error.data, { payoutId: context.params.payoutId });
+    }
+
+  }
+  );
+
+  
 
 /* ------------------ Helpers ------------------ */
 
