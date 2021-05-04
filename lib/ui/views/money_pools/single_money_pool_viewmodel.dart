@@ -3,6 +3,7 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_contribution.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
+import 'package:good_wallet/datamodels/money_pools/money_pool_payout_model.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
@@ -20,6 +21,7 @@ class SingleMoneyPoolViewModel extends BaseModel {
   final log = getLogger("single_money_pool_viewmodel.dart");
 
   List<MoneyPoolContributionModel> contributions = [];
+  List<MoneyPoolPayoutModel> payouts = [];
 
   MoneyPoolModel moneyPool;
   SingleMoneyPoolViewModel({required this.moneyPool});
@@ -29,6 +31,15 @@ class SingleMoneyPoolViewModel extends BaseModel {
     if (contributions.isEmpty || force) {
       contributions = await _moneyPoolService!
           .getMoneyPoolContributions(moneyPool.moneyPoolId!);
+    }
+    setBusy(false);
+  }
+
+  Future fetchPayouts([bool force = false]) async {
+    setBusy(true);
+    if (payouts.isEmpty || force) {
+      payouts =
+          await _moneyPoolService!.getMoneyPoolPayouts(moneyPool.moneyPoolId!);
     }
     setBusy(false);
   }
@@ -82,20 +93,24 @@ class SingleMoneyPoolViewModel extends BaseModel {
   }
 
   Future navigateToTransferFundAmountView(dynamic moneyPool) async {
-    await _navigationService!.navigateTo(Routes.transferFundsAmountView,
+    var result = await _navigationService!.navigateTo(
+        Routes.transferFundsAmountView,
         arguments: TransferFundsAmountViewArguments(
             type: FundTransferType.moneyPoolContributionFromBank,
             receiverInfo: moneyPool));
+    if (result == "contributed") {
+      updateMoneyPool();
+    }
   }
 
-  // update money pool
+  // Fetch and thus update money pool e.g. after contribution has been made
   Future updateMoneyPool() async {
     this.moneyPool =
         await _moneyPoolService!.getMoneyPool(moneyPool.moneyPoolId!);
 
     // can already be done for transfer_view
-    contributions = await _moneyPoolService!
-        .getMoneyPoolContributions(moneyPool.moneyPoolId!);
+    fetchUserContributions(true);
+    fetchPayouts(true);
     notifyListeners();
   }
 
@@ -103,7 +118,12 @@ class SingleMoneyPoolViewModel extends BaseModel {
   /// Navigations
   ///
   Future navigateToDisburseMoneyPoolView() async {
-    await _navigationService!.navigateTo(Routes.disburseMoneyPoolView,
+    var result = await _navigationService!.navigateTo(
+        Routes.disburseMoneyPoolView,
         arguments: DisburseMoneyPoolViewArguments(moneyPool: moneyPool));
+    if (result == "paidOut") {
+      // could have a fancy animation here
+      updateMoneyPool();
+    }
   }
 }

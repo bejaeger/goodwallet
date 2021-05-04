@@ -7,6 +7,7 @@ import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_view.form.dart';
 import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/alternative_screen_header.dart';
+import 'package:good_wallet/ui/widgets/alternative_screen_header_small.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/datamodel_helpers.dart';
@@ -65,26 +66,8 @@ class TransferFundsAmountView extends StatelessWidget
                 horizontal: LayoutSettings.horizontalPadding),
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      alignment: Alignment.centerLeft,
-                      icon: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.black,
-                      ),
-                      onPressed: model.navigateBack,
-                    ),
-                    Text(
-                      headline,
-                      style:
-                          textTheme(context).bodyText2!.copyWith(fontSize: 16),
-                    ),
-                    Icon(Icons.help_outline_rounded),
-                  ],
-                ),
+                AlternativeScreenHeaderSmall(
+                    title: headline, onBackButtonPressed: model.navigateBack),
                 verticalSpaceRegular,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,

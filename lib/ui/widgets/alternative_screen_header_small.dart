@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
 class AlternativeScreenHeaderSmall extends StatelessWidget {
@@ -23,7 +24,7 @@ class AlternativeScreenHeaderSmall extends StatelessWidget {
           alignment: Alignment.centerLeft,
           icon: Icon(
             Icons.arrow_back_ios,
-            color: Colors.black,
+            color: ColorSettings.blackHeadlineColor,
           ),
           onPressed: onBackButtonPressed,
         ),
@@ -31,7 +32,8 @@ class AlternativeScreenHeaderSmall extends StatelessWidget {
           title,
           style: textTheme(context).bodyText2!.copyWith(fontSize: 16),
         ),
-        Icon(Icons.help_outline_rounded),
+        Icon(Icons.help_outline_rounded,
+            color: ColorSettings.blackHeadlineColor),
       ],
     );
   }

@@ -19,7 +19,7 @@ _$_MoneyPoolPayoutModel _$_$_MoneyPoolPayoutModelFromJson(
         .toList(),
     payoutId: json['payoutId'] as String?,
     status: json['status'] as String?,
-    keepMoneyPoolAlive: json['keepMoneyPoolAlive'] as bool?,
+    keepMoneyPoolAlive: json['keepMoneyPoolAlive'] as bool? ?? false,
   );
 }
 

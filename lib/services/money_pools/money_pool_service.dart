@@ -254,7 +254,7 @@ class MoneyPoolService {
     }
   }
 
-  // returns list of money pool contributions
+  // returns list of user money pool contributions
   Future getMoneyPoolContributions(String mpid) async {
     List<MoneyPoolContributionModel> returnList = [];
     QuerySnapshot snapshot = await _moneyPoolsCollectionReference
@@ -267,6 +267,23 @@ class MoneyPoolService {
           .toList();
     }
     log.i("Fetched ${returnList.length} money pool contributions");
+    return returnList;
+  }
+
+  // returns list of money pool payouts
+  // likely there will be none or little because
+  // probably usually the money pool is deleted after disbursement
+  Future getMoneyPoolPayouts(String mpid) async {
+    List<MoneyPoolPayoutModel> returnList = [];
+    QuerySnapshot snapshot = await _moneyPoolPayoutsCollectionReference
+        .where("moneyPool.moneyPoolId", isEqualTo: mpid)
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+      returnList = snapshot.docs
+          .map((element) => MoneyPoolPayoutModel.fromJson(element.data()))
+          .toList();
+    }
+    log.i("Fetched ${returnList.length} money pool payout documents");
     return returnList;
   }
 

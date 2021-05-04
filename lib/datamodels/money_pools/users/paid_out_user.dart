@@ -4,10 +4,10 @@ part 'paid_out_user.freezed.dart';
 part 'paid_out_user.g.dart';
 
 @freezed
-abstract class PaidOutUser with _$PaidOutUser {
+class PaidOutUser with _$PaidOutUser {
   factory PaidOutUser({
-    required String uid,
     required String name,
+    required String uid,
     required num amount,
   }) = _PaidOutUser;
 

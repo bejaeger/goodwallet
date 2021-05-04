@@ -55,7 +55,9 @@ class BaseModel extends BaseViewModel {
 
   void showNotImplementedSnackbar() {
     _snackbarService!.showSnackbar(
-        title: "Not yet implemented.", message: "I know... it's sad");
+        title: "Not yet implemented.",
+        message: "I know... it's sad",
+        duration: Duration(seconds: 2));
   }
 
   void navigateBack() {

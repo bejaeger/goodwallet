@@ -171,15 +171,30 @@ exports.processMoneyPoolPayout = functions.firestore
     try {
 
       // update balances for each user
-      const { paidOutUsers } = snap.data();
+      const { paidOutUsers, moneyPool } = snap.data();
 
+      // Get a new write batch
+      const batch = db.batch();
+
+      let totalAmount = 0;
       paidOutUsers.forEach(async user => {
+        totalAmount = totalAmount + user.amount;
         const increment = admin.firestore.FieldValue.increment(user.amount);
-        await db.collection("users").doc(user.uid).update({
+        const docRef = db.collection("users").doc(user.uid);
+        // update users good wallets
+        batch.update(docRef, {
           currentBalance: increment,
           raised: increment
         });
       });
+
+      const deduct = admin.firestore.FieldValue.increment(-totalAmount);
+      const moneyPoolRef = db.collection('moneypools').doc(moneyPool['moneyPoolId']);
+      batch.update(moneyPoolRef, {
+        total: deduct,
+      });
+
+      await batch.commit();
 
       return;
     } catch (error) {
@@ -192,7 +207,7 @@ exports.processMoneyPoolPayout = functions.firestore
   }
   );
 
-  
+
 
 /* ------------------ Helpers ------------------ */
 

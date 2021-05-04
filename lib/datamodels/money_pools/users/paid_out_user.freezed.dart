@@ -21,10 +21,10 @@ class _$PaidOutUserTearOff {
   const _$PaidOutUserTearOff();
 
   _PaidOutUser call(
-      {required String uid, required String name, required num amount}) {
+      {required String name, required String uid, required num amount}) {
     return _PaidOutUser(
-      uid: uid,
       name: name,
+      uid: uid,
       amount: amount,
     );
   }
@@ -39,8 +39,8 @@ const $PaidOutUser = _$PaidOutUserTearOff();
 
 /// @nodoc
 mixin _$PaidOutUser {
-  String get uid => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  String get uid => throw _privateConstructorUsedError;
   num get amount => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -54,7 +54,7 @@ abstract class $PaidOutUserCopyWith<$Res> {
   factory $PaidOutUserCopyWith(
           PaidOutUser value, $Res Function(PaidOutUser) then) =
       _$PaidOutUserCopyWithImpl<$Res>;
-  $Res call({String uid, String name, num amount});
+  $Res call({String name, String uid, num amount});
 }
 
 /// @nodoc
@@ -67,18 +67,18 @@ class _$PaidOutUserCopyWithImpl<$Res> implements $PaidOutUserCopyWith<$Res> {
 
   @override
   $Res call({
-    Object? uid = freezed,
     Object? name = freezed,
+    Object? uid = freezed,
     Object? amount = freezed,
   }) {
     return _then(_value.copyWith(
-      uid: uid == freezed
-          ? _value.uid
-          : uid // ignore: cast_nullable_to_non_nullable
-              as String,
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      uid: uid == freezed
+          ? _value.uid
+          : uid // ignore: cast_nullable_to_non_nullable
               as String,
       amount: amount == freezed
           ? _value.amount
@@ -95,7 +95,7 @@ abstract class _$PaidOutUserCopyWith<$Res>
           _PaidOutUser value, $Res Function(_PaidOutUser) then) =
       __$PaidOutUserCopyWithImpl<$Res>;
   @override
-  $Res call({String uid, String name, num amount});
+  $Res call({String name, String uid, num amount});
 }
 
 /// @nodoc
@@ -110,18 +110,18 @@ class __$PaidOutUserCopyWithImpl<$Res> extends _$PaidOutUserCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object? uid = freezed,
     Object? name = freezed,
+    Object? uid = freezed,
     Object? amount = freezed,
   }) {
     return _then(_PaidOutUser(
-      uid: uid == freezed
-          ? _value.uid
-          : uid // ignore: cast_nullable_to_non_nullable
-              as String,
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      uid: uid == freezed
+          ? _value.uid
+          : uid // ignore: cast_nullable_to_non_nullable
               as String,
       amount: amount == freezed
           ? _value.amount
@@ -134,31 +134,31 @@ class __$PaidOutUserCopyWithImpl<$Res> extends _$PaidOutUserCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_PaidOutUser implements _PaidOutUser {
-  _$_PaidOutUser({required this.uid, required this.name, required this.amount});
+  _$_PaidOutUser({required this.name, required this.uid, required this.amount});
 
   factory _$_PaidOutUser.fromJson(Map<String, dynamic> json) =>
       _$_$_PaidOutUserFromJson(json);
 
   @override
-  final String uid;
-  @override
   final String name;
+  @override
+  final String uid;
   @override
   final num amount;
 
   @override
   String toString() {
-    return 'PaidOutUser(uid: $uid, name: $name, amount: $amount)';
+    return 'PaidOutUser(name: $name, uid: $uid, amount: $amount)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _PaidOutUser &&
-            (identical(other.uid, uid) ||
-                const DeepCollectionEquality().equals(other.uid, uid)) &&
             (identical(other.name, name) ||
                 const DeepCollectionEquality().equals(other.name, name)) &&
+            (identical(other.uid, uid) ||
+                const DeepCollectionEquality().equals(other.uid, uid)) &&
             (identical(other.amount, amount) ||
                 const DeepCollectionEquality().equals(other.amount, amount)));
   }
@@ -166,8 +166,8 @@ class _$_PaidOutUser implements _PaidOutUser {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(uid) ^
       const DeepCollectionEquality().hash(name) ^
+      const DeepCollectionEquality().hash(uid) ^
       const DeepCollectionEquality().hash(amount);
 
   @JsonKey(ignore: true)
@@ -183,17 +183,17 @@ class _$_PaidOutUser implements _PaidOutUser {
 
 abstract class _PaidOutUser implements PaidOutUser {
   factory _PaidOutUser(
-      {required String uid,
-      required String name,
+      {required String name,
+      required String uid,
       required num amount}) = _$_PaidOutUser;
 
   factory _PaidOutUser.fromJson(Map<String, dynamic> json) =
       _$_PaidOutUser.fromJson;
 
   @override
-  String get uid => throw _privateConstructorUsedError;
-  @override
   String get name => throw _privateConstructorUsedError;
+  @override
+  String get uid => throw _privateConstructorUsedError;
   @override
   num get amount => throw _privateConstructorUsedError;
   @override

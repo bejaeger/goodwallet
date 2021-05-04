@@ -26,7 +26,7 @@ class _$MoneyPoolPayoutModelTearOff {
       required List<String> paidOutUsersIds,
       String? payoutId,
       String? status,
-      bool? keepMoneyPoolAlive}) {
+      bool keepMoneyPoolAlive = false}) {
     return _MoneyPoolPayoutModel(
       moneyPool: moneyPool,
       paidOutUsers: paidOutUsers,
@@ -60,7 +60,7 @@ mixin _$MoneyPoolPayoutModel {
       throw _privateConstructorUsedError; // NOT IMPLEMENTED YET
   String? get status =>
       throw _privateConstructorUsedError; // NOT IMPLEMENTED YET
-  bool? get keepMoneyPoolAlive => throw _privateConstructorUsedError;
+  bool get keepMoneyPoolAlive => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -79,7 +79,7 @@ abstract class $MoneyPoolPayoutModelCopyWith<$Res> {
       List<String> paidOutUsersIds,
       String? payoutId,
       String? status,
-      bool? keepMoneyPoolAlive});
+      bool keepMoneyPoolAlive});
 }
 
 /// @nodoc
@@ -124,7 +124,7 @@ class _$MoneyPoolPayoutModelCopyWithImpl<$Res>
       keepMoneyPoolAlive: keepMoneyPoolAlive == freezed
           ? _value.keepMoneyPoolAlive
           : keepMoneyPoolAlive // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as bool,
     ));
   }
 }
@@ -142,7 +142,7 @@ abstract class _$MoneyPoolPayoutModelCopyWith<$Res>
       List<String> paidOutUsersIds,
       String? payoutId,
       String? status,
-      bool? keepMoneyPoolAlive});
+      bool keepMoneyPoolAlive});
 }
 
 /// @nodoc
@@ -189,7 +189,7 @@ class __$MoneyPoolPayoutModelCopyWithImpl<$Res>
       keepMoneyPoolAlive: keepMoneyPoolAlive == freezed
           ? _value.keepMoneyPoolAlive
           : keepMoneyPoolAlive // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as bool,
     ));
   }
 }
@@ -204,7 +204,7 @@ class _$_MoneyPoolPayoutModel implements _MoneyPoolPayoutModel {
       required this.paidOutUsersIds,
       this.payoutId,
       this.status,
-      this.keepMoneyPoolAlive});
+      this.keepMoneyPoolAlive = false});
 
   factory _$_MoneyPoolPayoutModel.fromJson(Map<String, dynamic> json) =>
       _$_$_MoneyPoolPayoutModelFromJson(json);
@@ -221,8 +221,9 @@ class _$_MoneyPoolPayoutModel implements _MoneyPoolPayoutModel {
   final String? payoutId;
   @override // NOT IMPLEMENTED YET
   final String? status;
+  @JsonKey(defaultValue: false)
   @override // NOT IMPLEMENTED YET
-  final bool? keepMoneyPoolAlive;
+  final bool keepMoneyPoolAlive;
 
   @override
   String toString() {
@@ -281,7 +282,7 @@ abstract class _MoneyPoolPayoutModel implements MoneyPoolPayoutModel {
       required List<String> paidOutUsersIds,
       String? payoutId,
       String? status,
-      bool? keepMoneyPoolAlive}) = _$_MoneyPoolPayoutModel;
+      bool keepMoneyPoolAlive}) = _$_MoneyPoolPayoutModel;
 
   factory _MoneyPoolPayoutModel.fromJson(Map<String, dynamic> json) =
       _$_MoneyPoolPayoutModel.fromJson;
@@ -299,7 +300,7 @@ abstract class _MoneyPoolPayoutModel implements MoneyPoolPayoutModel {
   @override // NOT IMPLEMENTED YET
   String? get status => throw _privateConstructorUsedError;
   @override // NOT IMPLEMENTED YET
-  bool? get keepMoneyPoolAlive => throw _privateConstructorUsedError;
+  bool get keepMoneyPoolAlive => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$MoneyPoolPayoutModelCopyWith<_MoneyPoolPayoutModel> get copyWith =>

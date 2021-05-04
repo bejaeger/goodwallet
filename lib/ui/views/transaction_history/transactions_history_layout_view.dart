@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
-import 'package:good_wallet/enums/transaction_type.dart';
+import 'package:good_wallet/enums/transaction_direction.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/transactions_history_entry_style.dart';
@@ -15,7 +15,7 @@ import 'package:stacked/stacked.dart';
 // This is the body of transactions view with the history entries
 
 class TransactionsHistoryLayoutView extends StatelessWidget {
-  final TransactionType type;
+  final TransactionDirection type;
   final int maximumLength;
   final String? userName;
   final String? description;
@@ -143,27 +143,28 @@ class TransactionListTile extends StatelessWidget {
     );
   }
 
-  _getTransactionsCorrespondingToTypeHistoryEntryStyle(TransactionType? type) {
-    if (type == TransactionType.Donation) {
+  _getTransactionsCorrespondingToTypeHistoryEntryStyle(
+      TransactionDirection? type) {
+    if (type == TransactionDirection.Donation) {
       return TransactionHistoryEntryStyle(
           color: ColorSettings.primaryColor,
           descriptor: "Donated to",
           nameToDisplay: transactionData.projectName,
           icon: Icon(Icons.favorite, color: ColorSettings.primaryColorLight));
-    } else if (type == TransactionType.Incoming) {
+    } else if (type == TransactionDirection.Incoming) {
       return TransactionHistoryEntryStyle(
           color: MyColors.paletteTurquoise,
           descriptor: "Reveiced from",
           nameToDisplay: transactionData.senderName,
           icon:
               Icon(Icons.people_rounded, color: ColorSettings.whiteTextColor));
-    } else if (type == TransactionType.TransferredToPeers) {
+    } else if (type == TransactionDirection.TransferredToPeers) {
       return TransactionHistoryEntryStyle(
           color: ColorSettings.primaryColorLight,
           descriptor: "Gifted to",
           nameToDisplay: transactionData.recipientName,
           icon: Icon(Icons.person, color: ColorSettings.whiteTextColor));
-    } else if (type == TransactionType.MoneyPoolPayout) {
+    } else if (type == TransactionDirection.MoneyPoolPayout) {
       return TransactionHistoryEntryStyle(
           color: MyColors.paletteGreen,
           descriptor: "From money pool",

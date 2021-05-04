@@ -273,7 +273,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
   }
 
   void navigateBack() {
-    _navigationService!.back();
+    _navigationService!.back(result: "contributed");
   }
 
   /////////////////////////////////////////////////////////////////////

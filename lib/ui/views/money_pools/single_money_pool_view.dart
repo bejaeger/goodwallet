@@ -24,6 +24,7 @@ class SingleMoneyPoolView extends StatelessWidget {
       viewModelBuilder: () => SingleMoneyPoolViewModel(moneyPool: moneyPool),
       onModelReady: (model) async {
         await model.fetchUserContributions();
+        await model.fetchPayouts();
       },
       builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
         child: RefreshIndicator(
@@ -90,7 +91,7 @@ class SingleMoneyPoolView extends StatelessWidget {
                       title: "Contribute",
                       minWidth: screenWidthPercentage(context, percentage: 0.6),
                     ),
-                    verticalSpaceRegular,
+                    verticalSpaceSmall,
                     if (model.moneyPool.adminUID == model.currentUser.id)
                       HorizontalCentralButton(
                         color: MyColors.paletteBlue.withOpacity(0.9),
@@ -163,7 +164,47 @@ class SingleMoneyPoolView extends StatelessWidget {
                         );
                       },
                     ),
-              verticalSpaceMedium,
+              verticalSpaceRegular,
+              if (model.payouts.length > 0)
+                SectionHeader(
+                  title: "Payouts",
+                ),
+              if (model.payouts.length > 0) verticalSpaceSmall,
+              if (model.payouts.length > 0)
+                ListView.builder(
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: model.payouts.length,
+                  itemBuilder: (context, index) {
+                    var payout = model.payouts[index];
+                    return Container(
+                      color: MyColors.paletteGreen.withOpacity(0.3),
+                      child: ListTile(
+                          leading: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: MyColors.paletteGreen,
+                            child: Text("P",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 14)),
+                          ),
+                          title: Text(
+                            "Paid out money pool",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.black,
+                            ),
+                          ),
+                          subtitle: Text(
+                            "DATE",
+                            style: textTheme(context).bodyText2!.copyWith(
+                                  fontSize: 15,
+                                ),
+                          ),
+                          trailing: Text("Details")),
+                    );
+                  },
+                ),
+              if (model.payouts.length > 0) verticalSpaceRegular,
               if (model.contributions.length > 0)
                 SectionHeader(
                   title: "Contributions",

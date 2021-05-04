@@ -40,7 +40,7 @@ class TransactionModel {
       'currency': currency,
       'transactionId': transactionId,
       'message': message,
-      'createdAt': createdAt as FieldValue?,
+      'createdAt': createdAt,
       'status': status,
       'topUp': topUp,
     };
@@ -56,7 +56,7 @@ class TransactionModel {
         senderName: map['senderName'],
         amount: map['amount'],
         currency: map['currency'],
-        createdAt: map['createdAt'] as Timestamp?);
+        createdAt: map['createdAt']);
     data.transactionId = returnIfAvailable(map, "transactionId");
     data.message = returnIfAvailable(map, "message");
     data.status = returnIfAvailable(map, "status");

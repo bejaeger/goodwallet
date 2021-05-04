@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
-import 'package:good_wallet/datamodels/money_pools/paid_out_user.dart';
+import 'package:good_wallet/datamodels/money_pools/users/paid_out_user.dart';
 
 part 'money_pool_payout_model.freezed.dart';
 part 'money_pool_payout_model.g.dart';
@@ -22,8 +22,9 @@ abstract class MoneyPoolPayoutModel with _$MoneyPoolPayoutModel {
     // NOT IMPLEMENTED YET
     String? status,
     // NOT IMPLEMENTED YET
-    bool?
-        keepMoneyPoolAlive, // potential option for user to keep money pool in continuous use
+    @Default(false)
+        bool
+            keepMoneyPoolAlive, // potential option for user to keep money pool in continuous use
   }) = _MoneyPoolPayoutModel;
 
   factory MoneyPoolPayoutModel.fromJson(Map<String, dynamic> json) =>
