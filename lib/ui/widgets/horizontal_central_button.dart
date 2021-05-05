@@ -31,7 +31,7 @@ class HorizontalCentralButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.all(0.0),
           elevation: 0.0,
-          primary: color ?? ColorSettings.primaryColorLight.withOpacity(0.9),
+          primary: color ?? ColorSettings.primaryColor.withOpacity(0.9),
         ),
         child: Padding(
           padding: const EdgeInsets.only(

@@ -7,6 +7,7 @@ import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_view.form.dart';
 import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/alternative_screen_header.dart';
+import 'package:good_wallet/ui/widgets/alternative_screen_header_small.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/datamodel_helpers.dart';
@@ -39,9 +40,9 @@ class TransferFundsAmountView extends StatelessWidget
     return ViewModelBuilder<TransferFundsAmountViewModel>.reactive(
       onModelReady: (model) {
         listenToFormUpdated(model);
-        model.setTransferFundTypeAndReceiverInfo(type, receiverInfo);
       },
-      viewModelBuilder: () => TransferFundsAmountViewModel(),
+      viewModelBuilder: () =>
+          TransferFundsAmountViewModel(type: type, receiverInfo: receiverInfo),
       builder: (context, model, child) {
         late String headline;
         if (type == FundTransferType.transferToPeer)
@@ -65,26 +66,8 @@ class TransferFundsAmountView extends StatelessWidget
                 horizontal: LayoutSettings.horizontalPadding),
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      alignment: Alignment.centerLeft,
-                      icon: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.black,
-                      ),
-                      onPressed: model.navigateBack,
-                    ),
-                    Text(
-                      headline,
-                      style:
-                          textTheme(context).bodyText2!.copyWith(fontSize: 16),
-                    ),
-                    Icon(Icons.help_outline_rounded),
-                  ],
-                ),
+                AlternativeScreenHeaderSmall(
+                    title: headline, onBackButtonPressed: model.navigateBack),
                 verticalSpaceRegular,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -177,8 +160,7 @@ class TransferFundsAmountView extends StatelessWidget
                                 screenWidthPercentage(context, percentage: 0.6),
                             title: "Send",
                             onPressed: () async {
-                              await model
-                                  .showConfirmationBottomSheetAndProcessPayment();
+                              await model.showBottomSheetAndProcessPayment();
                             },
                           ),
                     if (type == FundTransferType.donation ||
@@ -235,6 +217,7 @@ class TransferFundsAmountView extends StatelessWidget
 
   Widget prepaidFundIcon(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Prepaid", style: textTheme(context).headline4),
         Text("Balance", style: textTheme(context).headline4),
@@ -265,8 +248,6 @@ class TransferFundsAmountView extends StatelessWidget
   Widget projectSummary(BuildContext context) {
     return Column(
       children: [
-        //Text("Gift money to", style: textTheme(context).headline4),
-        //verticalSpaceSmall,
         CircleAvatar(
           radius: 28,
           backgroundColor: MyColors.primaryRed,
@@ -287,13 +268,10 @@ class TransferFundsAmountView extends StatelessWidget
 
   Widget moneyPoolSummary(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        //Text("Gift money to", style: textTheme(context).headline4),
-        //verticalSpaceSmall,
         CircleAvatar(
           radius: 28,
-          backgroundColor: MyColors.paletteTurquoise,
+          backgroundColor: MyColors.paletteGreen,
           child: Text(getInitialsFromName(receiverInfo.name),
               style: TextStyle(color: Colors.white, fontSize: 16)),
         ),
@@ -302,6 +280,7 @@ class TransferFundsAmountView extends StatelessWidget
           width: screenWidthWithoutPadding(context, percentage: 0.35),
           child: Text(receiverInfo.name,
               maxLines: 2,
+              textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: textTheme(context).headline6!.copyWith(fontSize: 14)),
         ),
@@ -323,8 +302,8 @@ class TransferFundsAmountView extends StatelessWidget
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Prepaid fund", style: textTheme(context).headline4),
-        //Text("#Topup", style: textTheme(context).headline6),
+        Text("Prepaid", style: textTheme(context).headline4),
+        Text("fund", style: textTheme(context).headline4),
       ],
     );
   }

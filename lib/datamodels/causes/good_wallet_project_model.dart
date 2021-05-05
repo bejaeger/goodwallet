@@ -98,3 +98,15 @@ class GoodWalletProjectModel {
     }
   }
 }
+
+CauseType getCauseTypeFromString(String str) {
+  CauseType cause;
+  try {
+    cause = CauseType.values.firstWhere((e) => describeEnum(e) == str);
+  } catch (e) {
+    final log = getLogger("datamodel_helpers.dart");
+    log.e("Could not find matching element, error: ${e.toString()}");
+    rethrow;
+  }
+  return cause;
+}

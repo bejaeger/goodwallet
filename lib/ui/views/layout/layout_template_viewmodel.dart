@@ -1,5 +1,5 @@
 import 'package:good_wallet/app/app.locator.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -8,7 +8,7 @@ import 'package:rxdart/subjects.dart';
 class LayoutTemplateViewModel extends BaseModel {
   final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
 
-  List<MoneyPoolModel> get moneyPoolsInvitedTo =>
+  List<MoneyPool> get moneyPoolsInvitedTo =>
       _moneyPoolService!.moneyPoolsInvitedTo;
 
   int numberInvitedMoneyPoolsSubject = 0;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/enums/transaction_type.dart';
+import 'package:good_wallet/enums/transaction_direction.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';

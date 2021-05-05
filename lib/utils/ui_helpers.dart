@@ -28,8 +28,10 @@ Color getBkgColor(context) => Theme.of(context).backgroundColor;
 
 Widget verticalSpace(double height) => SizedBox(height: height);
 
-double screenWidth(BuildContext context) =>
-    min(MediaQuery.of(context).size.width, LayoutSettings.maxAppWidth);
+double screenWidth(BuildContext context, {double percentage = 1}) =>
+    min(MediaQuery.of(context).size.width, LayoutSettings.maxAppWidth) *
+    percentage;
+
 double screenHeight(BuildContext context) => MediaQuery.of(context).size.height;
 Size screenSize(BuildContext context) => MediaQuery.of(context).size;
 

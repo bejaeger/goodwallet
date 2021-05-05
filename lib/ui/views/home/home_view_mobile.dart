@@ -6,6 +6,7 @@ import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/home_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/ui/widgets/carousel_card.dart';
+import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/ui/widgets/good_wallet_card.dart';
 import 'package:good_wallet/ui/widgets/pledge_button.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
@@ -17,6 +18,7 @@ class HomeViewMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
       viewModelBuilder: () => HomeViewModel(),
+      onModelReady: (model) => model.listenToData(),
       builder: (context, model, child) => !model.isUserInitialized
           ? Center(child: CircularProgressIndicator())
           : Scaffold(
@@ -26,47 +28,16 @@ class HomeViewMobile extends StatelessWidget {
                   key: PageStorageKey('storage-key'),
                   physics: ScrollPhysics(),
                   slivers: [
-                    // Todo: create custom SliverAppPersistentHeader
-                    // SliverPersistentHeader(
-                    //   delegate: HomeCustomAppBarView(
-                    //     maxExtent: screenHeight(context) * 0.3,
-                    //     minExtent: LayoutSettings.minAppBarHeight,
-                    //     //minExtentCustom: LayoutSettings.minAppBarHeight,
-                    //   ),
-                    //   pinned: true,
-                    // ),
-                    SliverAppBar(
-                      automaticallyImplyLeading: false,
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Home",
-                                  style: textTheme(context)
-                                      .headline3!
-                                      .copyWith(fontSize: 25)),
-                              GestureDetector(
-                                onTap: model.navigateToProfileView,
-                                child: Icon(
-                                  Icons.person,
-                                  color: ColorSettings.whiteTextColor,
-                                  size: 25,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                    CustomSliverAppBarSmall(
+                      title: "Home",
+                      onSecondRightIconPressed: model.navigateToProfileView,
+                      secondRightIcon: Icon(
+                        Icons.person,
+                        size: 28,
                       ),
-                      titleSpacing: 20,
-                      expandedHeight: LayoutSettings.minAppBarHeight * 1,
-                      collapsedHeight: LayoutSettings.minAppBarHeight,
-                      backgroundColor:
-                          ColorSettings.primaryColor, //Colors.white,
-                      elevation: 2.0,
-                      toolbarHeight: LayoutSettings.minAppBarHeight,
-                      pinned: true,
+                      onRightIconPressed: model.showNotImplementedSnackbar,
+                      rightIcon:
+                          Icon(Icons.notifications_none_rounded, size: 28),
                     ),
                     SliverList(
                       delegate: SliverChildListDelegate(

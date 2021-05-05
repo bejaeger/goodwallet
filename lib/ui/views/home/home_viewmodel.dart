@@ -2,23 +2,48 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/datamodels/causes/preview_details/project_preview_details.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
+import 'package:good_wallet/enums/transaction_direction.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
+import 'package:good_wallet/datamodels/transactions/transaction.dart'
+    as gwmodel;
 
 class HomeViewModel extends BaseModel {
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
   final NavigationService? _navigationService = locator<NavigationService>();
   final QRCodeService? _qrCodeService = locator<QRCodeService>();
-
+  final UserDataService? _userDataService = locator<UserDataService>();
   final log = getLogger("home_viewmodel.dart");
+
+  // get latest peer 2 peer transactions for send money bottom sheet view
+  // Need to add listeners otherwise this will be empty
+  List<gwmodel.Peer2PeerTransaction> get latestTransactionToPeers =>
+      _userDataService!
+          .getTransactionsForDirection<gwmodel.Peer2PeerTransaction>(
+              direction: TransactionDirection.TransferredToPeers);
+
+  // get latest donations for give bottom sheet view
+  // Need to add listeners otherwise this will be empty
+  List<gwmodel.Donation> get latestDonations =>
+      _userDataService!.getTransactionsForDirection<gwmodel.Donation>(
+          direction: TransactionDirection.Donation);
+
+  // Listen to stream of latest donations and transactions
+  Future listenToData() async {
+    _userDataService!.addTransactionListener(
+        direction: TransactionDirection.TransferredToPeers, maxNumber: 10);
+    _userDataService!.addTransactionListener(
+        direction: TransactionDirection.Donation, maxNumber: 5);
+  }
 
   Future fetchData() async {
     // Dummy so far...could consider changing the balance!
@@ -52,6 +77,7 @@ class HomeViewModel extends BaseModel {
     var sheetResponse = await _bottomSheetService!.showCustomSheet(
       variant: BottomSheetType.sendMoney,
       barrierDismissible: true,
+      customData: latestTransactionToPeers,
     );
     if (sheetResponse != null) {
       log.i("Response data from bottom sheet: ${sheetResponse.responseData}");
@@ -63,6 +89,7 @@ class HomeViewModel extends BaseModel {
     var sheetResponse = await _bottomSheetService!.showCustomSheet(
       variant: BottomSheetType.donate,
       barrierDismissible: true,
+      customData: latestDonations,
     );
     if (sheetResponse != null) {
       log.i("Response data: ${sheetResponse.responseData}");
@@ -106,10 +133,6 @@ class HomeViewModel extends BaseModel {
     await _navigationService!.navigateTo(Routes.createMoneyPoolIntroView);
   }
 
-  Future navigateToSendMoneyViewMobile() async {
-    await _navigationService!.navigateTo(Routes.sendMoneyViewMobile);
-  }
-
   Future navigateToTransferFundAmountView() async {
     await _navigationService!.navigateTo(Routes.transferFundsAmountView,
         arguments: TransferFundsAmountViewArguments(
@@ -122,5 +145,4 @@ class HomeViewModel extends BaseModel {
             initialBottomNavBarIndex: BottomNavigatorIndex.Give.index,
             initialTabBarIndex: 2));
   }
-
 }

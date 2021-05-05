@@ -2,9 +2,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class ColorSettings extends MyColors {
-  static const Color primaryColor = MyColors.primaryRed;
-  static const Color primaryColorLight = MyColors.lightRed;
-  static const Color primaryColorDark = MyColors.darkRed;
+  static const Color primaryColor = MyColors.primaryRed2;
+  static const Color primaryColorLight = MyColors.lightRed2;
+  static const Color primaryColorDark = MyColors.darkRed2;
+
   static Color? whiteTextColor = MyColors.almostWhiteGrey;
   static Color? greyTextColor = MyColors.darkGrey;
   static Color? lightGreyTextColor = MyColors.lightGrey;
@@ -26,6 +27,12 @@ class MyColors {
   static const Color primaryRed = Color(0xFF941305);
   static const Color lightRed = Color(0xFFcc492f);
   static const Color darkRed = Color(0xFF600000);
+
+  // @see https://material.io/resources/color/#!/?view.left=0&view.right=1&primary.color=941305
+  static const Color primaryRed2 = Color(0xFFc53929);
+  static const Color lightRed2 = Color(0xFFfe6b53);
+  static const Color darkRed2 = Color(0xFF8d0000);
+  static const Color paletteGreen2 = Color(0xFF059413);
 
   // @see https://colorpalettes.net/color-palette-1849/
   static const Color paletteBlue = Color(0xFF145b9c);

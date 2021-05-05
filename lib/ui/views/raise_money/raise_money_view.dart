@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
@@ -95,7 +95,7 @@ class MoneyPoolsGridView extends StatelessWidget {
           var showCreateNew = index == itemCount - 1 ? true : false;
           return MoneyPoolPreview(
             moneyPool: showCreateNew ? null : model.moneyPools![index],
-            onTap: (MoneyPoolModel pool) =>
+            onTap: (MoneyPool pool) =>
                 model.navigateToSingleMoneyPoolView(pool),
             onCreateMoneyPoolTapped: model.navigateToCreateMoneyPoolView,
           );

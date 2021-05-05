@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
+import 'package:good_wallet/utils/datamodel_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
 class CallToActionButtonRectangular extends StatelessWidget {
@@ -23,6 +24,7 @@ class CallToActionButtonRectangular extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double maxWidthActual = maxWidth ?? screenWidthWithoutPadding(context);
+    Color colorActual = color ?? ColorSettings.primaryColor.withOpacity(0.8);
     return Container(
       constraints: BoxConstraints(
         minWidth: minWidth ??
@@ -36,16 +38,19 @@ class CallToActionButtonRectangular extends StatelessWidget {
         style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.all(0.0),
             elevation: 0.0,
-            primary: color ?? ColorSettings.primaryColor.withOpacity(0.8)),
+            primary: colorActual),
         child: Padding(
           padding: const EdgeInsets.only(
               top: 12.0, bottom: 12.0, left: 20.0, right: 20.0),
           child: Text(
             title,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: textTheme(context)
-                .headline5!
-                .copyWith(fontSize: 18, color: ColorSettings.whiteTextColor),
+            style: textTheme(context).headline5!.copyWith(
+                fontSize: 18,
+                color: onPressed != null
+                    ? ColorSettings.whiteTextColor
+                    : ColorSettings.lightGreyTextColor),
           ),
         ),
         onPressed: onPressed,
@@ -149,6 +154,51 @@ class CallToActionButtonRound extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// Round call to action button with text below round button
+class CallToActionButtonRoundInitials extends StatelessWidget {
+  final void Function() onPressed;
+  final String name;
+  final Color? color;
+
+  const CallToActionButtonRoundInitials(
+      {Key? key, required this.onPressed, required this.name, this.color})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 80,
+      child: GestureDetector(
+        onTap: onPressed,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              radius: 32,
+              backgroundColor: color,
+              child: Text(getInitialsFromName(name),
+                  style: textTheme(context).headline5!.copyWith(fontSize: 18)),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Text(
+                name,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme(context).bodyText2!.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: ColorSettings.blackHeadlineColor),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

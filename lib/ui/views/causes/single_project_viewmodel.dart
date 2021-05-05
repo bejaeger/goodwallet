@@ -20,44 +20,12 @@ class SingleProjectViewModel extends BaseModel {
             type: FundTransferType.donation, receiverInfo: project));
   }
 
-  Future showConfirmationDialog(
-      String projectTitle, String donationAmount) async {
-    try {
-      DialogResponse? response = await _dialogService!.showConfirmationDialog(
-        title: 'Confirmation',
-        description:
-            "Are you sure that you want to donate $donationAmount good dollars to $projectTitle",
-        confirmationTitle: 'Yes',
-        dialogPlatform: DialogPlatform.Material,
-        cancelTitle: 'No',
-      );
-      if (response!.confirmed) {
-        _dummyPaymentService!.processDonation(
-            currentUser.id, projectTitle, int.parse(donationAmount * 100));
-      }
-      log.i('DialogResponse: ${response.confirmed}');
-    } catch (e) {
-      log.e("Couldn't process donation: ${e.toString()}");
-      rethrow;
-    }
-  }
-
   Future showAmountTooHighDialog(String donationAmount) async {
     await _dialogService!.showConfirmationDialog(
       title: 'Donation Amount Too High',
       description:
           'You cannot donate \$ $donationAmount with just \$ ${userWallet.currentBalance / 100} in your account.',
     );
-  }
-
-  Future? confirmationOrCancellationDistributor(
-      String? projectTitle, int donationAmount) {
-    if ((userWallet.currentBalance / 100 - donationAmount) < 0) {
-      showAmountTooHighDialog(donationAmount.toString());
-    } else {
-      showConfirmationDialog(projectTitle!, donationAmount.toString());
-    }
-    return null;
   }
 
   void navigateBack() {

@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/payments/transaction_model.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
@@ -27,8 +26,6 @@ class SendMoneyViewModel extends BaseModel {
   final optionalMessageController = TextEditingController();
   final FirestorePaymentDataService? _firestorePaymentDataService =
       locator<FirestorePaymentDataService>();
-  final StripePaymentService? _stripePaymentService =
-      locator<StripePaymentService>();
   final UserDataService? _userDataService = locator<UserDataService>();
 
   final TextEditingController _userSelectionController =
@@ -75,120 +72,6 @@ class SendMoneyViewModel extends BaseModel {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  void addListenersToControllers() {
-    transferValueController.addListener(() {
-      _errorMessage = "";
-      notifyListeners();
-    });
-  }
-
-  num _getAmount() {
-    try {
-      var amount = double.parse(transferValueController.text);
-      return amount;
-    } catch (error) {
-      print("ERROR: Amount not valid!");
-      _errorMessage = "Please enter valid amount.";
-      setPaymentReady(false);
-      notifyListeners();
-      return -1;
-    }
-  }
-
-  Future fillTransactionModel() async {
-    var recipientUid, recipientName, amount, msg, currency;
-    TransactionModel data;
-    try {
-      recipientUid = selectedUserInfo!.id;
-      recipientName = selectedUserInfo!.name;
-      amount = _getAmount();
-      msg = optionalMessageController.text;
-      data = TransactionModel(
-        recipientUid: recipientUid,
-        recipientName: recipientName,
-        senderUid: currentUser.id,
-        senderName: currentUser.fullName,
-        createdAt: FieldValue.serverTimestamp(),
-        amount: amount * 100,
-        currency: "cad",
-        message: msg,
-        status: 'initialized',
-      );
-    } catch (e) {
-      print("ERROR: Could not fill transaction model!");
-      print(e.toString());
-      return false;
-    }
-    return data;
-  }
-
-  Future getTestPaymentData() async {
-    var data = TransactionModel(
-      recipientUid: "3QrVvwOmrraFMl3EaSzn6byLpFu2",
-      recipientName: "Hans",
-      senderUid: currentUser.id,
-      senderName: currentUser.fullName,
-      amount: 700,
-      createdAt: FieldValue.serverTimestamp(),
-      currency: "cad",
-      message: "Test Transfer",
-      status: 'initialized',
-    );
-    return data;
-  }
-
-  Future makeTestPayment() async {
-    await processPayment(await getTestPaymentData());
-  }
-
-  Future makePayment() async {
-    var data = await fillTransactionModel();
-    if (data is TransactionModel) {
-      if (isPaymentReady) {
-        await processPayment(data);
-      }
-    }
-    setPaymentReady(true);
-  }
-
-  Future processPayment(TransactionModel data) async {
-    setBusy(true);
-    var resultCreatePaymentIntent = await _firestorePaymentDataService!
-        .createPaymentIntent(data, currentUser.id);
-
-    if (resultCreatePaymentIntent is String) {
-      // string is document id which is payId, so
-      // let's get started
-      var sessionId = await _stripePaymentService!.createStripeSessionId(data);
-      if (sessionId is String) {
-        print("INFO: Redirecting to stripe checkout");
-        if (kIsWeb) {
-          // Maybe create a fake route for this??
-          await navigateToCheckoutWebView(sessionId);
-        } else {
-          await navigateToCheckoutMobileView(sessionId);
-        }
-      } else if (sessionId is bool) {
-        if (!sessionId) {
-          await _dialogService!.showDialog(
-            title: "Error! Stripe payment couldn't be processed",
-            description: "",
-          );
-        }
-      }
-    } else if (resultCreatePaymentIntent is bool) {
-      if (!resultCreatePaymentIntent) {
-        await _dialogService!.showDialog(
-          title: "Error! Payment couldn't be processed",
-          description: "",
-        );
-      }
-    }
-
-    setBusy(false);
-    return true;
-  }
-
   void handlePaymentSuccess() async {
     print("INFO: Stripe payment successfull. Handling it");
     _userDataService!.userStateSubject.listen((state) async {
@@ -221,31 +104,6 @@ class SendMoneyViewModel extends BaseModel {
     });
   }
 
-  // TODO: Put in service!
-  Future queryUsers(String query) async {
-    QuerySnapshot foundUsers = await _usersCollectionReference
-        .where("searchKeywords", arrayContains: query.toLowerCase())
-        .get();
-    userInfoMaps = foundUsers.docs.map((DocumentSnapshot doc) {
-      return PublicUserInfo(
-          name: doc.get("fullName") as String, uid: doc.get("id") as String);
-    }).toList();
-  }
-
-  // TODO: Put in service and catch errors
-  List<String?> getNamesFromuserInfo() {
-    List<String?> returnValue = userInfoMaps.map((dynamic userInfo) {
-      return userInfo.name as String;
-    }).toList();
-    return returnValue;
-  }
-
-  // TODO: Put in service and catch errors
-  Future<List<String?>> getQueriedUserNames(String pattern) async {
-    await queryUsers(pattern);
-    return getNamesFromuserInfo();
-  }
-
   Future navigateToCheckoutMobileView(String sessionId) async {
     throw ("Mobile version of checkout Not implemented!");
     // await _navigationService.navigateTo(Routes.checkoutMobileView,
@@ -266,57 +124,5 @@ class SendMoneyViewModel extends BaseModel {
 
   void navigateBack() {
     _navigationService!.back();
-  }
-
-  Future makeDummyPayment() async {
-    try {
-      var data = await fillTransactionModel();
-      await _dummyPaymentService.processTransaction(data);
-    } catch (e) {
-      log.e(
-          "Couldn't get fill transaction model or process dummy transaction: ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  Future anotherPaymentConfirmationDialog() async {
-    try {
-      DialogResponse? response = await _dialogService!.showConfirmationDialog(
-        title: 'Confirmation',
-        description: "Would you like to make another payment?",
-        confirmationTitle: 'Yes',
-        dialogPlatform: DialogPlatform.Material,
-        cancelTitle: 'No',
-      );
-      if (!response!.confirmed) {
-        _navigationService!.navigateTo(Routes.homeViewMobile);
-      }
-      print('DialogResponse: ${response.confirmed}');
-    } catch (e) {
-      log.e("Couldn't process payment: ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  Future dummyPaymentConfirmationDialog() async {
-    try {
-      var data = await fillTransactionModel();
-      DialogResponse? response = await _dialogService!.showConfirmationDialog(
-        title: 'Confirmation',
-        description:
-            "Are you sure that you want to send ${data.amount / 100}\$ to ${data.recipientName}",
-        confirmationTitle: 'Yes',
-        dialogPlatform: DialogPlatform.Material,
-        cancelTitle: 'No',
-      );
-      if (response!.confirmed) {
-        await _dummyPaymentService.processTransaction(data);
-        await anotherPaymentConfirmationDialog();
-      }
-      print('DialogResponse: ${response.confirmed}');
-    } catch (e) {
-      log.e("Couldn't process payment: ${e.toString()}");
-      rethrow;
-    }
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
@@ -14,7 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 
 class SingleMoneyPoolView extends StatelessWidget {
-  final MoneyPoolModel moneyPool;
+  final MoneyPool moneyPool;
   const SingleMoneyPoolView({Key? key, required this.moneyPool})
       : super(key: key);
 
@@ -24,6 +24,7 @@ class SingleMoneyPoolView extends StatelessWidget {
       viewModelBuilder: () => SingleMoneyPoolViewModel(moneyPool: moneyPool),
       onModelReady: (model) async {
         await model.fetchUserContributions();
+        await model.fetchPayouts();
       },
       builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
         child: RefreshIndicator(
@@ -59,7 +60,7 @@ class SingleMoneyPoolView extends StatelessWidget {
                       value: 2,
                       child: TextButton(
                         onPressed: () async => await model
-                            .deleteMoneyPool(model.moneyPool.moneyPoolId!),
+                            .deleteMoneyPool(model.moneyPool.moneyPoolId),
                         child: Text("Delete"),
                       ),
                     ),
@@ -90,7 +91,18 @@ class SingleMoneyPoolView extends StatelessWidget {
                       title: "Contribute",
                       minWidth: screenWidthPercentage(context, percentage: 0.6),
                     ),
-                    verticalSpaceRegular,
+                    verticalSpaceSmall,
+                    if (model.moneyPool.adminUID == model.currentUser.id)
+                      HorizontalCentralButton(
+                        color: MyColors.paletteBlue.withOpacity(0.9),
+                        onPressed: () =>
+                            model.navigateToDisburseMoneyPoolView(),
+                        title: "Disburse",
+                        minWidth:
+                            screenWidthPercentage(context, percentage: 0.6),
+                      ),
+                    if (model.moneyPool.adminUID == model.currentUser.id)
+                      verticalSpaceRegular,
                     Text(formatAmount(model.moneyPool.total),
                         style: textTheme(context).headline2),
                     Text("Current total")
@@ -101,8 +113,7 @@ class SingleMoneyPoolView extends StatelessWidget {
               SectionHeader(
                 title: "Members",
                 trailingIcon: IconButton(
-                  onPressed: () =>
-                      model.showSearchViewAndInviteUser(model.moneyPool),
+                  onPressed: () => model.showSearchViewAndInviteUser(),
                   icon: Icon(
                     Icons.add_circle_outline_rounded,
                   ),
@@ -142,13 +153,57 @@ class SingleMoneyPoolView extends StatelessWidget {
                               color: Colors.black,
                             ),
                           ),
+                          subtitle:
+                              model.moneyPool.adminUID == model.currentUser.id
+                                  ? Text("Admin")
+                                  : null,
                           trailing: isInvitedUser
                               ? Text("Pending invitation")
                               : Text(formatAmount(user.contribution)),
                         );
                       },
                     ),
-              verticalSpaceMedium,
+              verticalSpaceRegular,
+              if (model.payouts.length > 0)
+                SectionHeader(
+                  title: "Payouts",
+                ),
+              if (model.payouts.length > 0) verticalSpaceSmall,
+              if (model.payouts.length > 0)
+                ListView.builder(
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: model.payouts.length,
+                  itemBuilder: (context, index) {
+                    var payout = model.payouts[index];
+                    return Container(
+                      color: MyColors.paletteGreen.withOpacity(0.3),
+                      child: ListTile(
+                          leading: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: MyColors.paletteGreen,
+                            child: Text("P",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 14)),
+                          ),
+                          title: Text(
+                            "Paid out money pool",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.black,
+                            ),
+                          ),
+                          subtitle: Text(
+                            "DATE",
+                            style: textTheme(context).bodyText2!.copyWith(
+                                  fontSize: 15,
+                                ),
+                          ),
+                          trailing: Text("Details")),
+                    );
+                  },
+                ),
+              if (model.payouts.length > 0) verticalSpaceRegular,
               if (model.contributions.length > 0)
                 SectionHeader(
                   title: "Contributions",
@@ -165,12 +220,13 @@ class SingleMoneyPoolView extends StatelessWidget {
                           radius: 20,
                           backgroundColor: MyColors.paletteBlue,
                           child: Text(
-                              getInitialsFromName(contribution.userName),
+                              getInitialsFromName(
+                                  contribution.transactionDetails.senderName),
                               style:
                                   TextStyle(color: Colors.white, fontSize: 14)),
                         ),
                         title: Text(
-                          contribution.userName,
+                          contribution.transactionDetails.senderName,
                           style: TextStyle(
                             fontSize: 16.0,
                             color: Colors.black,
@@ -183,7 +239,8 @@ class SingleMoneyPoolView extends StatelessWidget {
                                 fontSize: 15,
                               ),
                         ),
-                        trailing: Text(formatAmount(contribution.amount)));
+                        trailing: Text(formatAmount(
+                            contribution.transactionDetails.amount)));
                   },
                 ),
               verticalSpaceLarge,

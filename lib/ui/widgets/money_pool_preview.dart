@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
 class MoneyPoolPreview extends StatelessWidget {
-  final MoneyPoolModel? moneyPool;
-  final void Function(MoneyPoolModel pool) onTap;
+  final MoneyPool? moneyPool;
+  final void Function(MoneyPool pool) onTap;
   final void Function() onCreateMoneyPoolTapped;
 
   const MoneyPoolPreview({

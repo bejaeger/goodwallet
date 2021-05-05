@@ -1,6 +1,6 @@
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
@@ -13,7 +13,7 @@ class RaiseMoneyViewModel extends BaseModel {
 
   final log = getLogger("raise_money_viewmodel.dart");
 
-  List<MoneyPoolModel> get moneyPools => _moneyPoolService!.moneyPools;
+  List<MoneyPool> get moneyPools => _moneyPoolService!.moneyPools;
 
   Future fetchMoneyPools({bool force = false}) async {
     setBusy(true);
@@ -27,7 +27,7 @@ class RaiseMoneyViewModel extends BaseModel {
     setBusy(false);
   }
 
-  Future navigateToSingleMoneyPoolView(MoneyPoolModel moneyPool) async {
+  Future navigateToSingleMoneyPoolView(MoneyPool moneyPool) async {
     await _navigationService!.navigateTo(Routes.singleMoneyPoolView,
         arguments: SingleMoneyPoolViewArguments(moneyPool: moneyPool));
   }
