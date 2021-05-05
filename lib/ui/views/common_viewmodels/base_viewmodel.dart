@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
@@ -28,6 +30,9 @@ class BaseModel extends BaseViewModel {
 
   WalletBalancesModel userWallet = WalletBalancesModel.empty();
 
+  StreamSubscription? _userState;
+  StreamSubscription? _userWallet;
+
   BaseModel() {
     baseModelLog.i("Initialized!");
 
@@ -35,7 +40,7 @@ class BaseModel extends BaseViewModel {
     // Set up top-level listeners
 
     //  listen to changes in auth state
-    _userDataService!.userStateSubject.listen(
+    _userState = _userDataService!.userStateSubject.listen(
       (state) {
         baseModelLog.v("Listened to auth state change update: state = $state");
         userStatus = state;
@@ -44,7 +49,7 @@ class BaseModel extends BaseViewModel {
     );
 
     // listen to changes in wallet
-    _userDataService!.userWalletSubject.listen(
+    _userWallet = _userDataService!.userWalletSubject.listen(
       (wallet) {
         baseModelLog.v("Listened to wallet update");
         userWallet = wallet;
@@ -62,5 +67,12 @@ class BaseModel extends BaseViewModel {
 
   void navigateBack() {
     _navigationService!.back();
+  }
+
+  @override
+  dispose() {
+    _userState?.cancel();
+    _userWallet?.cancel();
+    super.dispose();
   }
 }

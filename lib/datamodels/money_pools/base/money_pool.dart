@@ -17,8 +17,7 @@ class MoneyPool with _$MoneyPool {
     required String currency,
     String? description,
     required String moneyPoolId,
-    required MoneyPoolSettings
-        moneyPoolSettings, // convert this to a MoneyPoolSettings class!
+    required MoneyPoolSettings moneyPoolSettings,
     required dynamic createdAt,
     required List<ContributingUser> contributingUsers,
     required List<PublicUserInfo> invitedUsers,

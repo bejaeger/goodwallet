@@ -34,46 +34,51 @@ class _$TransactionTearOff {
 
   Peer2PeerTransaction peer2peer(
       {required TransactionDetails transactionDetails,
-      required String status,
-      required String transactionId,
       required dynamic createdAt,
-      TransactionType type = TransactionType.Peer2Peer}) {
+      TransactionStatus status = TransactionStatus.Initialized,
+      TransactionType type = TransactionType.Peer2Peer,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          String transactionId = "placeholder"}) {
     return Peer2PeerTransaction(
       transactionDetails: transactionDetails,
-      status: status,
-      transactionId: transactionId,
       createdAt: createdAt,
+      status: status,
       type: type,
+      transactionId: transactionId,
     );
   }
 
   Donation donation(
       {required TransactionDetails transactionDetails,
-      required String status,
-      required String transactionId,
+      required ProjectPreviewDetails projectPreviewDetails,
       required dynamic createdAt,
-      TransactionType type = TransactionType.Donation}) {
+      TransactionStatus status = TransactionStatus.Initialized,
+      TransactionType type = TransactionType.Donation,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          String transactionId = "placeholder"}) {
     return Donation(
       transactionDetails: transactionDetails,
-      status: status,
-      transactionId: transactionId,
+      projectPreviewDetails: projectPreviewDetails,
       createdAt: createdAt,
+      status: status,
       type: type,
+      transactionId: transactionId,
     );
   }
 
   MoneyPoolContribution moneyPoolContribution(
       {required TransactionDetails transactionDetails,
-      required String status,
-      required String transactionId,
       required dynamic createdAt,
-      TransactionType type = TransactionType.MoneyPoolContribution}) {
+      TransactionStatus status = TransactionStatus.Initialized,
+      TransactionType type = TransactionType.MoneyPoolContribution,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          String transactionId = "placeholder"}) {
     return MoneyPoolContribution(
       transactionDetails: transactionDetails,
-      status: status,
-      transactionId: transactionId,
       createdAt: createdAt,
+      status: status,
       type: type,
+      transactionId: transactionId,
     );
   }
 
@@ -81,18 +86,19 @@ class _$TransactionTearOff {
       {required List<TransactionDetails> transactionsDetails,
       required List<String> paidOutUsersIds,
       required MoneyPool moneyPool,
-      required String status,
-      required String transactionId,
       required dynamic createdAt,
-      TransactionType type = TransactionType.MoneyPoolPayout}) {
+      TransactionStatus status = TransactionStatus.Initialized,
+      TransactionType type = TransactionType.MoneyPoolPayout,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          String transactionId = "placeholder"}) {
     return MoneyPoolPayout(
       transactionsDetails: transactionsDetails,
       paidOutUsersIds: paidOutUsersIds,
       moneyPool: moneyPool,
-      status: status,
-      transactionId: transactionId,
       createdAt: createdAt,
+      status: status,
       type: type,
+      transactionId: transactionId,
     );
   }
 
@@ -106,64 +112,88 @@ const $Transaction = _$TransactionTearOff();
 
 /// @nodoc
 mixin _$Transaction {
-  String get status => throw _privateConstructorUsedError;
-  String get transactionId => throw _privateConstructorUsedError;
   dynamic get createdAt => throw _privateConstructorUsedError;
+  TransactionStatus get status => throw _privateConstructorUsedError;
   TransactionType get type => throw _privateConstructorUsedError;
+  @JsonKey(
+      name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+  String get transactionId => throw _privateConstructorUsedError;
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         peer2peer,
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
+            ProjectPreviewDetails projectPreviewDetails,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         donation,
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         moneyPoolContribution,
     required TResult Function(
             List<TransactionDetails> transactionsDetails,
             List<String> paidOutUsersIds,
             MoneyPool moneyPool,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         moneyPoolPayout,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         peer2peer,
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            ProjectPreviewDetails projectPreviewDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         donation,
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         moneyPoolContribution,
     TResult Function(
             List<TransactionDetails> transactionsDetails,
             List<String> paidOutUsersIds,
             MoneyPool moneyPool,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)?
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         moneyPoolPayout,
     required TResult orElse(),
   }) =>
@@ -198,10 +228,11 @@ abstract class $TransactionCopyWith<$Res> {
           Transaction value, $Res Function(Transaction) then) =
       _$TransactionCopyWithImpl<$Res>;
   $Res call(
-      {String status,
-      String transactionId,
-      dynamic createdAt,
-      TransactionType type});
+      {dynamic createdAt,
+      TransactionStatus status,
+      TransactionType type,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          String transactionId});
 }
 
 /// @nodoc
@@ -214,28 +245,28 @@ class _$TransactionCopyWithImpl<$Res> implements $TransactionCopyWith<$Res> {
 
   @override
   $Res call({
-    Object? status = freezed,
-    Object? transactionId = freezed,
     Object? createdAt = freezed,
+    Object? status = freezed,
     Object? type = freezed,
+    Object? transactionId = freezed,
   }) {
     return _then(_value.copyWith(
-      status: status == freezed
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as String,
-      transactionId: transactionId == freezed
-          ? _value.transactionId
-          : transactionId // ignore: cast_nullable_to_non_nullable
-              as String,
       createdAt: createdAt == freezed
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as dynamic,
+      status: status == freezed
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as TransactionStatus,
       type: type == freezed
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as TransactionType,
+      transactionId: transactionId == freezed
+          ? _value.transactionId
+          : transactionId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -249,10 +280,11 @@ abstract class $Peer2PeerTransactionCopyWith<$Res>
   @override
   $Res call(
       {TransactionDetails transactionDetails,
-      String status,
-      String transactionId,
       dynamic createdAt,
-      TransactionType type});
+      TransactionStatus status,
+      TransactionType type,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          String transactionId});
 
   $TransactionDetailsCopyWith<$Res> get transactionDetails;
 }
@@ -271,32 +303,32 @@ class _$Peer2PeerTransactionCopyWithImpl<$Res>
   @override
   $Res call({
     Object? transactionDetails = freezed,
-    Object? status = freezed,
-    Object? transactionId = freezed,
     Object? createdAt = freezed,
+    Object? status = freezed,
     Object? type = freezed,
+    Object? transactionId = freezed,
   }) {
     return _then(Peer2PeerTransaction(
       transactionDetails: transactionDetails == freezed
           ? _value.transactionDetails
           : transactionDetails // ignore: cast_nullable_to_non_nullable
               as TransactionDetails,
-      status: status == freezed
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as String,
-      transactionId: transactionId == freezed
-          ? _value.transactionId
-          : transactionId // ignore: cast_nullable_to_non_nullable
-              as String,
       createdAt: createdAt == freezed
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as dynamic,
+      status: status == freezed
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as TransactionStatus,
       type: type == freezed
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as TransactionType,
+      transactionId: transactionId == freezed
+          ? _value.transactionId
+          : transactionId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 
@@ -315,10 +347,11 @@ class _$Peer2PeerTransactionCopyWithImpl<$Res>
 class _$Peer2PeerTransaction extends Peer2PeerTransaction {
   const _$Peer2PeerTransaction(
       {required this.transactionDetails,
-      required this.status,
-      required this.transactionId,
       required this.createdAt,
-      this.type = TransactionType.Peer2Peer})
+      this.status = TransactionStatus.Initialized,
+      this.type = TransactionType.Peer2Peer,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          this.transactionId = "placeholder"})
       : super._();
 
   factory _$Peer2PeerTransaction.fromJson(Map<String, dynamic> json) =>
@@ -327,18 +360,21 @@ class _$Peer2PeerTransaction extends Peer2PeerTransaction {
   @override
   final TransactionDetails transactionDetails;
   @override
-  final String status;
-  @override
-  final String transactionId;
-  @override
   final dynamic createdAt;
+  @JsonKey(defaultValue: TransactionStatus.Initialized)
+  @override
+  final TransactionStatus status;
   @JsonKey(defaultValue: TransactionType.Peer2Peer)
   @override
   final TransactionType type;
+  @override
+  @JsonKey(
+      name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+  final String transactionId;
 
   @override
   String toString() {
-    return 'Transaction.peer2peer(transactionDetails: $transactionDetails, status: $status, transactionId: $transactionId, createdAt: $createdAt, type: $type)';
+    return 'Transaction.peer2peer(transactionDetails: $transactionDetails, createdAt: $createdAt, status: $status, type: $type, transactionId: $transactionId)';
   }
 
   @override
@@ -348,26 +384,26 @@ class _$Peer2PeerTransaction extends Peer2PeerTransaction {
             (identical(other.transactionDetails, transactionDetails) ||
                 const DeepCollectionEquality()
                     .equals(other.transactionDetails, transactionDetails)) &&
-            (identical(other.status, status) ||
-                const DeepCollectionEquality().equals(other.status, status)) &&
-            (identical(other.transactionId, transactionId) ||
-                const DeepCollectionEquality()
-                    .equals(other.transactionId, transactionId)) &&
             (identical(other.createdAt, createdAt) ||
                 const DeepCollectionEquality()
                     .equals(other.createdAt, createdAt)) &&
+            (identical(other.status, status) ||
+                const DeepCollectionEquality().equals(other.status, status)) &&
             (identical(other.type, type) ||
-                const DeepCollectionEquality().equals(other.type, type)));
+                const DeepCollectionEquality().equals(other.type, type)) &&
+            (identical(other.transactionId, transactionId) ||
+                const DeepCollectionEquality()
+                    .equals(other.transactionId, transactionId)));
   }
 
   @override
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(transactionDetails) ^
-      const DeepCollectionEquality().hash(status) ^
-      const DeepCollectionEquality().hash(transactionId) ^
       const DeepCollectionEquality().hash(createdAt) ^
-      const DeepCollectionEquality().hash(type);
+      const DeepCollectionEquality().hash(status) ^
+      const DeepCollectionEquality().hash(type) ^
+      const DeepCollectionEquality().hash(transactionId);
 
   @JsonKey(ignore: true)
   @override
@@ -380,65 +416,87 @@ class _$Peer2PeerTransaction extends Peer2PeerTransaction {
   TResult when<TResult extends Object?>({
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         peer2peer,
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
+            ProjectPreviewDetails projectPreviewDetails,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         donation,
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         moneyPoolContribution,
     required TResult Function(
             List<TransactionDetails> transactionsDetails,
             List<String> paidOutUsersIds,
             MoneyPool moneyPool,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         moneyPoolPayout,
   }) {
     return peer2peer(
-        transactionDetails, status, transactionId, createdAt, type);
+        transactionDetails, createdAt, status, type, transactionId);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         peer2peer,
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            ProjectPreviewDetails projectPreviewDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         donation,
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         moneyPoolContribution,
     TResult Function(
             List<TransactionDetails> transactionsDetails,
             List<String> paidOutUsersIds,
             MoneyPool moneyPool,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)?
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         moneyPoolPayout,
     required TResult orElse(),
   }) {
     if (peer2peer != null) {
       return peer2peer(
-          transactionDetails, status, transactionId, createdAt, type);
+          transactionDetails, createdAt, status, type, transactionId);
     }
     return orElse();
   }
@@ -479,10 +537,11 @@ class _$Peer2PeerTransaction extends Peer2PeerTransaction {
 abstract class Peer2PeerTransaction extends Transaction {
   const factory Peer2PeerTransaction(
       {required TransactionDetails transactionDetails,
-      required String status,
-      required String transactionId,
       required dynamic createdAt,
-      TransactionType type}) = _$Peer2PeerTransaction;
+      TransactionStatus status,
+      TransactionType type,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          String transactionId}) = _$Peer2PeerTransaction;
   const Peer2PeerTransaction._() : super._();
 
   factory Peer2PeerTransaction.fromJson(Map<String, dynamic> json) =
@@ -491,13 +550,15 @@ abstract class Peer2PeerTransaction extends Transaction {
   TransactionDetails get transactionDetails =>
       throw _privateConstructorUsedError;
   @override
-  String get status => throw _privateConstructorUsedError;
-  @override
-  String get transactionId => throw _privateConstructorUsedError;
-  @override
   dynamic get createdAt => throw _privateConstructorUsedError;
   @override
+  TransactionStatus get status => throw _privateConstructorUsedError;
+  @override
   TransactionType get type => throw _privateConstructorUsedError;
+  @override
+  @JsonKey(
+      name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+  String get transactionId => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   $Peer2PeerTransactionCopyWith<Peer2PeerTransaction> get copyWith =>
@@ -511,12 +572,15 @@ abstract class $DonationCopyWith<$Res> implements $TransactionCopyWith<$Res> {
   @override
   $Res call(
       {TransactionDetails transactionDetails,
-      String status,
-      String transactionId,
+      ProjectPreviewDetails projectPreviewDetails,
       dynamic createdAt,
-      TransactionType type});
+      TransactionStatus status,
+      TransactionType type,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          String transactionId});
 
   $TransactionDetailsCopyWith<$Res> get transactionDetails;
+  $ProjectPreviewDetailsCopyWith<$Res> get projectPreviewDetails;
 }
 
 /// @nodoc
@@ -531,32 +595,37 @@ class _$DonationCopyWithImpl<$Res> extends _$TransactionCopyWithImpl<$Res>
   @override
   $Res call({
     Object? transactionDetails = freezed,
-    Object? status = freezed,
-    Object? transactionId = freezed,
+    Object? projectPreviewDetails = freezed,
     Object? createdAt = freezed,
+    Object? status = freezed,
     Object? type = freezed,
+    Object? transactionId = freezed,
   }) {
     return _then(Donation(
       transactionDetails: transactionDetails == freezed
           ? _value.transactionDetails
           : transactionDetails // ignore: cast_nullable_to_non_nullable
               as TransactionDetails,
-      status: status == freezed
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as String,
-      transactionId: transactionId == freezed
-          ? _value.transactionId
-          : transactionId // ignore: cast_nullable_to_non_nullable
-              as String,
+      projectPreviewDetails: projectPreviewDetails == freezed
+          ? _value.projectPreviewDetails
+          : projectPreviewDetails // ignore: cast_nullable_to_non_nullable
+              as ProjectPreviewDetails,
       createdAt: createdAt == freezed
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as dynamic,
+      status: status == freezed
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as TransactionStatus,
       type: type == freezed
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as TransactionType,
+      transactionId: transactionId == freezed
+          ? _value.transactionId
+          : transactionId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 
@@ -567,6 +636,14 @@ class _$DonationCopyWithImpl<$Res> extends _$TransactionCopyWithImpl<$Res>
       return _then(_value.copyWith(transactionDetails: value));
     });
   }
+
+  @override
+  $ProjectPreviewDetailsCopyWith<$Res> get projectPreviewDetails {
+    return $ProjectPreviewDetailsCopyWith<$Res>(_value.projectPreviewDetails,
+        (value) {
+      return _then(_value.copyWith(projectPreviewDetails: value));
+    });
+  }
 }
 
 /// @nodoc
@@ -575,10 +652,12 @@ class _$DonationCopyWithImpl<$Res> extends _$TransactionCopyWithImpl<$Res>
 class _$Donation extends Donation {
   const _$Donation(
       {required this.transactionDetails,
-      required this.status,
-      required this.transactionId,
+      required this.projectPreviewDetails,
       required this.createdAt,
-      this.type = TransactionType.Donation})
+      this.status = TransactionStatus.Initialized,
+      this.type = TransactionType.Donation,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          this.transactionId = "placeholder"})
       : super._();
 
   factory _$Donation.fromJson(Map<String, dynamic> json) =>
@@ -587,18 +666,23 @@ class _$Donation extends Donation {
   @override
   final TransactionDetails transactionDetails;
   @override
-  final String status;
-  @override
-  final String transactionId;
+  final ProjectPreviewDetails projectPreviewDetails;
   @override
   final dynamic createdAt;
+  @JsonKey(defaultValue: TransactionStatus.Initialized)
+  @override
+  final TransactionStatus status;
   @JsonKey(defaultValue: TransactionType.Donation)
   @override
   final TransactionType type;
+  @override
+  @JsonKey(
+      name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+  final String transactionId;
 
   @override
   String toString() {
-    return 'Transaction.donation(transactionDetails: $transactionDetails, status: $status, transactionId: $transactionId, createdAt: $createdAt, type: $type)';
+    return 'Transaction.donation(transactionDetails: $transactionDetails, projectPreviewDetails: $projectPreviewDetails, createdAt: $createdAt, status: $status, type: $type, transactionId: $transactionId)';
   }
 
   @override
@@ -608,26 +692,30 @@ class _$Donation extends Donation {
             (identical(other.transactionDetails, transactionDetails) ||
                 const DeepCollectionEquality()
                     .equals(other.transactionDetails, transactionDetails)) &&
-            (identical(other.status, status) ||
-                const DeepCollectionEquality().equals(other.status, status)) &&
-            (identical(other.transactionId, transactionId) ||
-                const DeepCollectionEquality()
-                    .equals(other.transactionId, transactionId)) &&
+            (identical(other.projectPreviewDetails, projectPreviewDetails) ||
+                const DeepCollectionEquality().equals(
+                    other.projectPreviewDetails, projectPreviewDetails)) &&
             (identical(other.createdAt, createdAt) ||
                 const DeepCollectionEquality()
                     .equals(other.createdAt, createdAt)) &&
+            (identical(other.status, status) ||
+                const DeepCollectionEquality().equals(other.status, status)) &&
             (identical(other.type, type) ||
-                const DeepCollectionEquality().equals(other.type, type)));
+                const DeepCollectionEquality().equals(other.type, type)) &&
+            (identical(other.transactionId, transactionId) ||
+                const DeepCollectionEquality()
+                    .equals(other.transactionId, transactionId)));
   }
 
   @override
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(transactionDetails) ^
-      const DeepCollectionEquality().hash(status) ^
-      const DeepCollectionEquality().hash(transactionId) ^
+      const DeepCollectionEquality().hash(projectPreviewDetails) ^
       const DeepCollectionEquality().hash(createdAt) ^
-      const DeepCollectionEquality().hash(type);
+      const DeepCollectionEquality().hash(status) ^
+      const DeepCollectionEquality().hash(type) ^
+      const DeepCollectionEquality().hash(transactionId);
 
   @JsonKey(ignore: true)
   @override
@@ -639,64 +727,87 @@ class _$Donation extends Donation {
   TResult when<TResult extends Object?>({
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         peer2peer,
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
+            ProjectPreviewDetails projectPreviewDetails,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         donation,
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         moneyPoolContribution,
     required TResult Function(
             List<TransactionDetails> transactionsDetails,
             List<String> paidOutUsersIds,
             MoneyPool moneyPool,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         moneyPoolPayout,
   }) {
-    return donation(transactionDetails, status, transactionId, createdAt, type);
+    return donation(transactionDetails, projectPreviewDetails, createdAt,
+        status, type, transactionId);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         peer2peer,
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            ProjectPreviewDetails projectPreviewDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         donation,
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         moneyPoolContribution,
     TResult Function(
             List<TransactionDetails> transactionsDetails,
             List<String> paidOutUsersIds,
             MoneyPool moneyPool,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)?
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         moneyPoolPayout,
     required TResult orElse(),
   }) {
     if (donation != null) {
-      return donation(
-          transactionDetails, status, transactionId, createdAt, type);
+      return donation(transactionDetails, projectPreviewDetails, createdAt,
+          status, type, transactionId);
     }
     return orElse();
   }
@@ -737,24 +848,30 @@ class _$Donation extends Donation {
 abstract class Donation extends Transaction {
   const factory Donation(
       {required TransactionDetails transactionDetails,
-      required String status,
-      required String transactionId,
+      required ProjectPreviewDetails projectPreviewDetails,
       required dynamic createdAt,
-      TransactionType type}) = _$Donation;
+      TransactionStatus status,
+      TransactionType type,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          String transactionId}) = _$Donation;
   const Donation._() : super._();
 
   factory Donation.fromJson(Map<String, dynamic> json) = _$Donation.fromJson;
 
   TransactionDetails get transactionDetails =>
       throw _privateConstructorUsedError;
-  @override
-  String get status => throw _privateConstructorUsedError;
-  @override
-  String get transactionId => throw _privateConstructorUsedError;
+  ProjectPreviewDetails get projectPreviewDetails =>
+      throw _privateConstructorUsedError;
   @override
   dynamic get createdAt => throw _privateConstructorUsedError;
   @override
+  TransactionStatus get status => throw _privateConstructorUsedError;
+  @override
   TransactionType get type => throw _privateConstructorUsedError;
+  @override
+  @JsonKey(
+      name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+  String get transactionId => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   $DonationCopyWith<Donation> get copyWith =>
@@ -770,10 +887,11 @@ abstract class $MoneyPoolContributionCopyWith<$Res>
   @override
   $Res call(
       {TransactionDetails transactionDetails,
-      String status,
-      String transactionId,
       dynamic createdAt,
-      TransactionType type});
+      TransactionStatus status,
+      TransactionType type,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          String transactionId});
 
   $TransactionDetailsCopyWith<$Res> get transactionDetails;
 }
@@ -792,32 +910,32 @@ class _$MoneyPoolContributionCopyWithImpl<$Res>
   @override
   $Res call({
     Object? transactionDetails = freezed,
-    Object? status = freezed,
-    Object? transactionId = freezed,
     Object? createdAt = freezed,
+    Object? status = freezed,
     Object? type = freezed,
+    Object? transactionId = freezed,
   }) {
     return _then(MoneyPoolContribution(
       transactionDetails: transactionDetails == freezed
           ? _value.transactionDetails
           : transactionDetails // ignore: cast_nullable_to_non_nullable
               as TransactionDetails,
-      status: status == freezed
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as String,
-      transactionId: transactionId == freezed
-          ? _value.transactionId
-          : transactionId // ignore: cast_nullable_to_non_nullable
-              as String,
       createdAt: createdAt == freezed
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as dynamic,
+      status: status == freezed
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as TransactionStatus,
       type: type == freezed
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as TransactionType,
+      transactionId: transactionId == freezed
+          ? _value.transactionId
+          : transactionId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 
@@ -836,10 +954,11 @@ class _$MoneyPoolContributionCopyWithImpl<$Res>
 class _$MoneyPoolContribution extends MoneyPoolContribution {
   const _$MoneyPoolContribution(
       {required this.transactionDetails,
-      required this.status,
-      required this.transactionId,
       required this.createdAt,
-      this.type = TransactionType.MoneyPoolContribution})
+      this.status = TransactionStatus.Initialized,
+      this.type = TransactionType.MoneyPoolContribution,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          this.transactionId = "placeholder"})
       : super._();
 
   factory _$MoneyPoolContribution.fromJson(Map<String, dynamic> json) =>
@@ -848,18 +967,21 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
   @override
   final TransactionDetails transactionDetails;
   @override
-  final String status;
-  @override
-  final String transactionId;
-  @override
   final dynamic createdAt;
+  @JsonKey(defaultValue: TransactionStatus.Initialized)
+  @override
+  final TransactionStatus status;
   @JsonKey(defaultValue: TransactionType.MoneyPoolContribution)
   @override
   final TransactionType type;
+  @override
+  @JsonKey(
+      name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+  final String transactionId;
 
   @override
   String toString() {
-    return 'Transaction.moneyPoolContribution(transactionDetails: $transactionDetails, status: $status, transactionId: $transactionId, createdAt: $createdAt, type: $type)';
+    return 'Transaction.moneyPoolContribution(transactionDetails: $transactionDetails, createdAt: $createdAt, status: $status, type: $type, transactionId: $transactionId)';
   }
 
   @override
@@ -869,26 +991,26 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
             (identical(other.transactionDetails, transactionDetails) ||
                 const DeepCollectionEquality()
                     .equals(other.transactionDetails, transactionDetails)) &&
-            (identical(other.status, status) ||
-                const DeepCollectionEquality().equals(other.status, status)) &&
-            (identical(other.transactionId, transactionId) ||
-                const DeepCollectionEquality()
-                    .equals(other.transactionId, transactionId)) &&
             (identical(other.createdAt, createdAt) ||
                 const DeepCollectionEquality()
                     .equals(other.createdAt, createdAt)) &&
+            (identical(other.status, status) ||
+                const DeepCollectionEquality().equals(other.status, status)) &&
             (identical(other.type, type) ||
-                const DeepCollectionEquality().equals(other.type, type)));
+                const DeepCollectionEquality().equals(other.type, type)) &&
+            (identical(other.transactionId, transactionId) ||
+                const DeepCollectionEquality()
+                    .equals(other.transactionId, transactionId)));
   }
 
   @override
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(transactionDetails) ^
-      const DeepCollectionEquality().hash(status) ^
-      const DeepCollectionEquality().hash(transactionId) ^
       const DeepCollectionEquality().hash(createdAt) ^
-      const DeepCollectionEquality().hash(type);
+      const DeepCollectionEquality().hash(status) ^
+      const DeepCollectionEquality().hash(type) ^
+      const DeepCollectionEquality().hash(transactionId);
 
   @JsonKey(ignore: true)
   @override
@@ -901,65 +1023,87 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
   TResult when<TResult extends Object?>({
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         peer2peer,
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
+            ProjectPreviewDetails projectPreviewDetails,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         donation,
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         moneyPoolContribution,
     required TResult Function(
             List<TransactionDetails> transactionsDetails,
             List<String> paidOutUsersIds,
             MoneyPool moneyPool,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         moneyPoolPayout,
   }) {
     return moneyPoolContribution(
-        transactionDetails, status, transactionId, createdAt, type);
+        transactionDetails, createdAt, status, type, transactionId);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         peer2peer,
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            ProjectPreviewDetails projectPreviewDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         donation,
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         moneyPoolContribution,
     TResult Function(
             List<TransactionDetails> transactionsDetails,
             List<String> paidOutUsersIds,
             MoneyPool moneyPool,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)?
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         moneyPoolPayout,
     required TResult orElse(),
   }) {
     if (moneyPoolContribution != null) {
       return moneyPoolContribution(
-          transactionDetails, status, transactionId, createdAt, type);
+          transactionDetails, createdAt, status, type, transactionId);
     }
     return orElse();
   }
@@ -1001,10 +1145,11 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
 abstract class MoneyPoolContribution extends Transaction {
   const factory MoneyPoolContribution(
       {required TransactionDetails transactionDetails,
-      required String status,
-      required String transactionId,
       required dynamic createdAt,
-      TransactionType type}) = _$MoneyPoolContribution;
+      TransactionStatus status,
+      TransactionType type,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          String transactionId}) = _$MoneyPoolContribution;
   const MoneyPoolContribution._() : super._();
 
   factory MoneyPoolContribution.fromJson(Map<String, dynamic> json) =
@@ -1013,13 +1158,15 @@ abstract class MoneyPoolContribution extends Transaction {
   TransactionDetails get transactionDetails =>
       throw _privateConstructorUsedError;
   @override
-  String get status => throw _privateConstructorUsedError;
-  @override
-  String get transactionId => throw _privateConstructorUsedError;
-  @override
   dynamic get createdAt => throw _privateConstructorUsedError;
   @override
+  TransactionStatus get status => throw _privateConstructorUsedError;
+  @override
   TransactionType get type => throw _privateConstructorUsedError;
+  @override
+  @JsonKey(
+      name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+  String get transactionId => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   $MoneyPoolContributionCopyWith<MoneyPoolContribution> get copyWith =>
@@ -1037,10 +1184,11 @@ abstract class $MoneyPoolPayoutCopyWith<$Res>
       {List<TransactionDetails> transactionsDetails,
       List<String> paidOutUsersIds,
       MoneyPool moneyPool,
-      String status,
-      String transactionId,
       dynamic createdAt,
-      TransactionType type});
+      TransactionStatus status,
+      TransactionType type,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          String transactionId});
 
   $MoneyPoolCopyWith<$Res> get moneyPool;
 }
@@ -1061,10 +1209,10 @@ class _$MoneyPoolPayoutCopyWithImpl<$Res>
     Object? transactionsDetails = freezed,
     Object? paidOutUsersIds = freezed,
     Object? moneyPool = freezed,
-    Object? status = freezed,
-    Object? transactionId = freezed,
     Object? createdAt = freezed,
+    Object? status = freezed,
     Object? type = freezed,
+    Object? transactionId = freezed,
   }) {
     return _then(MoneyPoolPayout(
       transactionsDetails: transactionsDetails == freezed
@@ -1079,22 +1227,22 @@ class _$MoneyPoolPayoutCopyWithImpl<$Res>
           ? _value.moneyPool
           : moneyPool // ignore: cast_nullable_to_non_nullable
               as MoneyPool,
-      status: status == freezed
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as String,
-      transactionId: transactionId == freezed
-          ? _value.transactionId
-          : transactionId // ignore: cast_nullable_to_non_nullable
-              as String,
       createdAt: createdAt == freezed
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as dynamic,
+      status: status == freezed
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as TransactionStatus,
       type: type == freezed
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as TransactionType,
+      transactionId: transactionId == freezed
+          ? _value.transactionId
+          : transactionId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 
@@ -1114,10 +1262,11 @@ class _$MoneyPoolPayout extends MoneyPoolPayout {
       {required this.transactionsDetails,
       required this.paidOutUsersIds,
       required this.moneyPool,
-      required this.status,
-      required this.transactionId,
       required this.createdAt,
-      this.type = TransactionType.MoneyPoolPayout})
+      this.status = TransactionStatus.Initialized,
+      this.type = TransactionType.MoneyPoolPayout,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          this.transactionId = "placeholder"})
       : super._();
 
   factory _$MoneyPoolPayout.fromJson(Map<String, dynamic> json) =>
@@ -1130,18 +1279,21 @@ class _$MoneyPoolPayout extends MoneyPoolPayout {
   @override
   final MoneyPool moneyPool;
   @override
-  final String status;
-  @override
-  final String transactionId;
-  @override
   final dynamic createdAt;
+  @JsonKey(defaultValue: TransactionStatus.Initialized)
+  @override
+  final TransactionStatus status;
   @JsonKey(defaultValue: TransactionType.MoneyPoolPayout)
   @override
   final TransactionType type;
+  @override
+  @JsonKey(
+      name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+  final String transactionId;
 
   @override
   String toString() {
-    return 'Transaction.moneyPoolPayout(transactionsDetails: $transactionsDetails, paidOutUsersIds: $paidOutUsersIds, moneyPool: $moneyPool, status: $status, transactionId: $transactionId, createdAt: $createdAt, type: $type)';
+    return 'Transaction.moneyPoolPayout(transactionsDetails: $transactionsDetails, paidOutUsersIds: $paidOutUsersIds, moneyPool: $moneyPool, createdAt: $createdAt, status: $status, type: $type, transactionId: $transactionId)';
   }
 
   @override
@@ -1157,16 +1309,16 @@ class _$MoneyPoolPayout extends MoneyPoolPayout {
             (identical(other.moneyPool, moneyPool) ||
                 const DeepCollectionEquality()
                     .equals(other.moneyPool, moneyPool)) &&
-            (identical(other.status, status) ||
-                const DeepCollectionEquality().equals(other.status, status)) &&
-            (identical(other.transactionId, transactionId) ||
-                const DeepCollectionEquality()
-                    .equals(other.transactionId, transactionId)) &&
             (identical(other.createdAt, createdAt) ||
                 const DeepCollectionEquality()
                     .equals(other.createdAt, createdAt)) &&
+            (identical(other.status, status) ||
+                const DeepCollectionEquality().equals(other.status, status)) &&
             (identical(other.type, type) ||
-                const DeepCollectionEquality().equals(other.type, type)));
+                const DeepCollectionEquality().equals(other.type, type)) &&
+            (identical(other.transactionId, transactionId) ||
+                const DeepCollectionEquality()
+                    .equals(other.transactionId, transactionId)));
   }
 
   @override
@@ -1175,10 +1327,10 @@ class _$MoneyPoolPayout extends MoneyPoolPayout {
       const DeepCollectionEquality().hash(transactionsDetails) ^
       const DeepCollectionEquality().hash(paidOutUsersIds) ^
       const DeepCollectionEquality().hash(moneyPool) ^
-      const DeepCollectionEquality().hash(status) ^
-      const DeepCollectionEquality().hash(transactionId) ^
       const DeepCollectionEquality().hash(createdAt) ^
-      const DeepCollectionEquality().hash(type);
+      const DeepCollectionEquality().hash(status) ^
+      const DeepCollectionEquality().hash(type) ^
+      const DeepCollectionEquality().hash(transactionId);
 
   @JsonKey(ignore: true)
   @override
@@ -1190,65 +1342,87 @@ class _$MoneyPoolPayout extends MoneyPoolPayout {
   TResult when<TResult extends Object?>({
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         peer2peer,
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
+            ProjectPreviewDetails projectPreviewDetails,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         donation,
     required TResult Function(
             TransactionDetails transactionDetails,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         moneyPoolContribution,
     required TResult Function(
             List<TransactionDetails> transactionsDetails,
             List<String> paidOutUsersIds,
             MoneyPool moneyPool,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)
         moneyPoolPayout,
   }) {
     return moneyPoolPayout(transactionsDetails, paidOutUsersIds, moneyPool,
-        status, transactionId, createdAt, type);
+        createdAt, status, type, transactionId);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         peer2peer,
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            ProjectPreviewDetails projectPreviewDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         donation,
-    TResult Function(TransactionDetails transactionDetails, String status,
-            String transactionId, dynamic createdAt, TransactionType type)?
+    TResult Function(
+            TransactionDetails transactionDetails,
+            dynamic createdAt,
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         moneyPoolContribution,
     TResult Function(
             List<TransactionDetails> transactionsDetails,
             List<String> paidOutUsersIds,
             MoneyPool moneyPool,
-            String status,
-            String transactionId,
             dynamic createdAt,
-            TransactionType type)?
+            TransactionStatus status,
+            TransactionType type,
+            @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+                String transactionId)?
         moneyPoolPayout,
     required TResult orElse(),
   }) {
     if (moneyPoolPayout != null) {
       return moneyPoolPayout(transactionsDetails, paidOutUsersIds, moneyPool,
-          status, transactionId, createdAt, type);
+          createdAt, status, type, transactionId);
     }
     return orElse();
   }
@@ -1291,10 +1465,11 @@ abstract class MoneyPoolPayout extends Transaction {
       {required List<TransactionDetails> transactionsDetails,
       required List<String> paidOutUsersIds,
       required MoneyPool moneyPool,
-      required String status,
-      required String transactionId,
       required dynamic createdAt,
-      TransactionType type}) = _$MoneyPoolPayout;
+      TransactionStatus status,
+      TransactionType type,
+      @JsonKey(name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+          String transactionId}) = _$MoneyPoolPayout;
   const MoneyPoolPayout._() : super._();
 
   factory MoneyPoolPayout.fromJson(Map<String, dynamic> json) =
@@ -1305,13 +1480,15 @@ abstract class MoneyPoolPayout extends Transaction {
   List<String> get paidOutUsersIds => throw _privateConstructorUsedError;
   MoneyPool get moneyPool => throw _privateConstructorUsedError;
   @override
-  String get status => throw _privateConstructorUsedError;
-  @override
-  String get transactionId => throw _privateConstructorUsedError;
-  @override
   dynamic get createdAt => throw _privateConstructorUsedError;
   @override
+  TransactionStatus get status => throw _privateConstructorUsedError;
+  @override
   TransactionType get type => throw _privateConstructorUsedError;
+  @override
+  @JsonKey(
+      name: "transactionId", toJson: Transaction._checkIfTransactionIdIsSet)
+  String get transactionId => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   $MoneyPoolPayoutCopyWith<MoneyPoolPayout> get copyWith =>

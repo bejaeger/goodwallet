@@ -11,11 +11,12 @@ _$Peer2PeerTransaction _$_$Peer2PeerTransactionFromJson(
   return _$Peer2PeerTransaction(
     transactionDetails: TransactionDetails.fromJson(
         json['transactionDetails'] as Map<String, dynamic>),
-    status: json['status'] as String,
-    transactionId: json['transactionId'] as String,
     createdAt: json['createdAt'],
+    status: _$enumDecodeNullable(_$TransactionStatusEnumMap, json['status']) ??
+        TransactionStatus.Initialized,
     type: _$enumDecodeNullable(_$TransactionTypeEnumMap, json['type']) ??
         TransactionType.Peer2Peer,
+    transactionId: json['transactionId'] as String,
   );
 }
 
@@ -23,10 +24,11 @@ Map<String, dynamic> _$_$Peer2PeerTransactionToJson(
         _$Peer2PeerTransaction instance) =>
     <String, dynamic>{
       'transactionDetails': instance.transactionDetails.toJson(),
-      'status': instance.status,
-      'transactionId': instance.transactionId,
       'createdAt': instance.createdAt,
+      'status': _$TransactionStatusEnumMap[instance.status],
       'type': _$TransactionTypeEnumMap[instance.type],
+      'transactionId':
+          Transaction._checkIfTransactionIdIsSet(instance.transactionId),
     };
 
 K _$enumDecode<K, V>(
@@ -66,6 +68,12 @@ K? _$enumDecodeNullable<K, V>(
   return _$enumDecode<K, V>(enumValues, source, unknownValue: unknownValue);
 }
 
+const _$TransactionStatusEnumMap = {
+  TransactionStatus.Initialized: 'Initialized',
+  TransactionStatus.Done: 'Done',
+  TransactionStatus.Pending: 'Pending',
+};
+
 const _$TransactionTypeEnumMap = {
   TransactionType.Peer2Peer: 'Peer2Peer',
   TransactionType.Donation: 'Donation',
@@ -78,21 +86,26 @@ _$Donation _$_$DonationFromJson(Map<String, dynamic> json) {
   return _$Donation(
     transactionDetails: TransactionDetails.fromJson(
         json['transactionDetails'] as Map<String, dynamic>),
-    status: json['status'] as String,
-    transactionId: json['transactionId'] as String,
+    projectPreviewDetails: ProjectPreviewDetails.fromJson(
+        json['projectPreviewDetails'] as Map<String, dynamic>),
     createdAt: json['createdAt'],
+    status: _$enumDecodeNullable(_$TransactionStatusEnumMap, json['status']) ??
+        TransactionStatus.Initialized,
     type: _$enumDecodeNullable(_$TransactionTypeEnumMap, json['type']) ??
         TransactionType.Donation,
+    transactionId: json['transactionId'] as String,
   );
 }
 
 Map<String, dynamic> _$_$DonationToJson(_$Donation instance) =>
     <String, dynamic>{
       'transactionDetails': instance.transactionDetails.toJson(),
-      'status': instance.status,
-      'transactionId': instance.transactionId,
+      'projectPreviewDetails': instance.projectPreviewDetails.toJson(),
       'createdAt': instance.createdAt,
+      'status': _$TransactionStatusEnumMap[instance.status],
       'type': _$TransactionTypeEnumMap[instance.type],
+      'transactionId':
+          Transaction._checkIfTransactionIdIsSet(instance.transactionId),
     };
 
 _$MoneyPoolContribution _$_$MoneyPoolContributionFromJson(
@@ -100,11 +113,12 @@ _$MoneyPoolContribution _$_$MoneyPoolContributionFromJson(
   return _$MoneyPoolContribution(
     transactionDetails: TransactionDetails.fromJson(
         json['transactionDetails'] as Map<String, dynamic>),
-    status: json['status'] as String,
-    transactionId: json['transactionId'] as String,
     createdAt: json['createdAt'],
+    status: _$enumDecodeNullable(_$TransactionStatusEnumMap, json['status']) ??
+        TransactionStatus.Initialized,
     type: _$enumDecodeNullable(_$TransactionTypeEnumMap, json['type']) ??
         TransactionType.MoneyPoolContribution,
+    transactionId: json['transactionId'] as String,
   );
 }
 
@@ -112,10 +126,11 @@ Map<String, dynamic> _$_$MoneyPoolContributionToJson(
         _$MoneyPoolContribution instance) =>
     <String, dynamic>{
       'transactionDetails': instance.transactionDetails.toJson(),
-      'status': instance.status,
-      'transactionId': instance.transactionId,
       'createdAt': instance.createdAt,
+      'status': _$TransactionStatusEnumMap[instance.status],
       'type': _$TransactionTypeEnumMap[instance.type],
+      'transactionId':
+          Transaction._checkIfTransactionIdIsSet(instance.transactionId),
     };
 
 _$MoneyPoolPayout _$_$MoneyPoolPayoutFromJson(Map<String, dynamic> json) {
@@ -127,11 +142,12 @@ _$MoneyPoolPayout _$_$MoneyPoolPayoutFromJson(Map<String, dynamic> json) {
         .map((e) => e as String)
         .toList(),
     moneyPool: MoneyPool.fromJson(json['moneyPool'] as Map<String, dynamic>),
-    status: json['status'] as String,
-    transactionId: json['transactionId'] as String,
     createdAt: json['createdAt'],
+    status: _$enumDecodeNullable(_$TransactionStatusEnumMap, json['status']) ??
+        TransactionStatus.Initialized,
     type: _$enumDecodeNullable(_$TransactionTypeEnumMap, json['type']) ??
         TransactionType.MoneyPoolPayout,
+    transactionId: json['transactionId'] as String,
   );
 }
 
@@ -141,8 +157,9 @@ Map<String, dynamic> _$_$MoneyPoolPayoutToJson(_$MoneyPoolPayout instance) =>
           instance.transactionsDetails.map((e) => e.toJson()).toList(),
       'paidOutUsersIds': instance.paidOutUsersIds,
       'moneyPool': instance.moneyPool.toJson(),
-      'status': instance.status,
-      'transactionId': instance.transactionId,
       'createdAt': instance.createdAt,
+      'status': _$TransactionStatusEnumMap[instance.status],
       'type': _$TransactionTypeEnumMap[instance.type],
+      'transactionId':
+          Transaction._checkIfTransactionIdIsSet(instance.transactionId),
     };

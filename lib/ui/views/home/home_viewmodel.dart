@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/datamodels/causes/preview_details/project_preview_details.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
@@ -17,6 +18,10 @@ class HomeViewModel extends BaseModel {
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
   final NavigationService? _navigationService = locator<NavigationService>();
   final QRCodeService? _qrCodeService = locator<QRCodeService>();
+  final UserDataService? _userDataService = locator<UserDataService>();
+
+  List<ProjectPreviewDetails> get latestSupportedProjects =>
+      _userDataService!.latestSupportedProjects;
 
   final log = getLogger("home_viewmodel.dart");
 
@@ -25,6 +30,11 @@ class HomeViewModel extends BaseModel {
     // so far we listen to the wallet with a stream
     Future.delayed(Duration(milliseconds: 500));
     notifyListeners();
+  }
+
+  // Listen to stream of latest donations and transactions
+  Future listenToData() async {
+    _userDataService!.listenToLatestDonations(callback: notifyListeners);
   }
 
   Future navigateToDonationView() async {
@@ -63,6 +73,7 @@ class HomeViewModel extends BaseModel {
     var sheetResponse = await _bottomSheetService!.showCustomSheet(
       variant: BottomSheetType.donate,
       barrierDismissible: true,
+      customData: latestSupportedProjects,
     );
     if (sheetResponse != null) {
       log.i("Response data: ${sheetResponse.responseData}");
@@ -122,5 +133,4 @@ class HomeViewModel extends BaseModel {
             initialBottomNavBarIndex: BottomNavigatorIndex.Give.index,
             initialTabBarIndex: 2));
   }
-
 }

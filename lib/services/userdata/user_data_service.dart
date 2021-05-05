@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/datamodels/causes/preview_details/project_preview_details.dart';
 import 'package:good_wallet/datamodels/money_pools/money_pool_payout_model.dart';
 import 'package:good_wallet/datamodels/payments/donation_model.dart';
 import 'package:good_wallet/datamodels/payments/transaction_model.dart';
@@ -55,6 +56,14 @@ class UserDataService {
   void setCurrentUser(MyUser user) {
     _currentUser = user;
   }
+
+  // list of latest transaction (limited to 10)
+  // TODO
+  List<Transaction> latestTransactions = [];
+
+  // list of latest donations (limited to 5)
+  List<ProjectPreviewDetails> latestSupportedProjects = [];
+  StreamSubscription? _latestProjectsStreamSubscription;
 
   // Listen to auth state changes.
   // This is useful in scenarios where we want to
@@ -458,6 +467,47 @@ class UserDataService {
         .toList();
 
     return newListOfTransactions;
+  }
+
+  // Get query for donations of user
+  // optionally set the maximum number of documents retrieved
+  Query getDonationCollectionQuery({int? maxNumber}) {
+    if (maxNumber != null) {
+      return _usersCollectionReference
+          .doc(_currentUser.id)
+          .collection("donations")
+          .orderBy("createdAt", descending: true)
+          .limit(maxNumber);
+    } else {
+      return _usersCollectionReference
+          .doc(_currentUser.id)
+          .collection("donations")
+          .orderBy("createdAt", descending: true);
+    }
+  }
+
+  // Listen to latest donations
+  // callback can be used to provide notifyListeners from the viewmodel
+  // to the service
+  void listenToLatestDonations({int maxNumber = 5, void Function()? callback}) {
+    if (_latestProjectsStreamSubscription == null) {
+      _latestProjectsStreamSubscription =
+          getDonationCollectionQuery(maxNumber: maxNumber)
+              .snapshots()
+              .listen((event) {
+        List<ProjectPreviewDetails> projects = [];
+        if (event.docs.isNotEmpty) {
+          projects.addAll(event.docs
+              .map(
+                  (snapshot) => ProjectPreviewDetails.fromJson(snapshot.data()))
+              .toList());
+        }
+        log.v(
+            "Listened to maximally $maxNumber latest donations and found ${projects.length}");
+        if (callback != null) callback();
+        latestSupportedProjects = projects;
+      });
+    }
   }
 
   Future handleLogoutEvent() async {

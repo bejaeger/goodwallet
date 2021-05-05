@@ -68,8 +68,7 @@ mixin _$MoneyPool {
   String get currency => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   String get moneyPoolId => throw _privateConstructorUsedError;
-  MoneyPoolSettings get moneyPoolSettings =>
-      throw _privateConstructorUsedError; // convert this to a MoneyPoolSettings class!
+  MoneyPoolSettings get moneyPoolSettings => throw _privateConstructorUsedError;
   dynamic get createdAt => throw _privateConstructorUsedError;
   List<ContributingUser> get contributingUsers =>
       throw _privateConstructorUsedError;
@@ -339,7 +338,7 @@ class _$_MoneyPool implements _MoneyPool {
   final String moneyPoolId;
   @override
   final MoneyPoolSettings moneyPoolSettings;
-  @override // convert this to a MoneyPoolSettings class!
+  @override
   final dynamic createdAt;
   @override
   final List<ContributingUser> contributingUsers;
@@ -461,7 +460,7 @@ abstract class _MoneyPool implements MoneyPool {
   String get moneyPoolId => throw _privateConstructorUsedError;
   @override
   MoneyPoolSettings get moneyPoolSettings => throw _privateConstructorUsedError;
-  @override // convert this to a MoneyPoolSettings class!
+  @override
   dynamic get createdAt => throw _privateConstructorUsedError;
   @override
   List<ContributingUser> get contributingUsers =>

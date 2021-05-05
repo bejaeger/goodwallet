@@ -18,6 +18,7 @@ class HomeViewMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
       viewModelBuilder: () => HomeViewModel(),
+      onModelReady: (model) => model.listenToData(),
       builder: (context, model, child) => !model.isUserInitialized
           ? Center(child: CircularProgressIndicator())
           : Scaffold(
