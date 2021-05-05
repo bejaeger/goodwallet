@@ -21,44 +21,50 @@ class GiveBottomSheetView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<GiveBottomSheetViewModel>.reactive(
-      viewModelBuilder: () => GiveBottomSheetViewModel(),
+      viewModelBuilder: () =>
+          GiveBottomSheetViewModel(latestDonations: request.customData),
       builder: (context, model, child) => model.isBusy
           ? Center(child: CircularProgressIndicator())
           : BottomSheetLayout(
               title: "Give",
               widgetBeforeButtons: Column(
                 children: [
-                  SectionHeader(
-                    title: "Recently supported",
-                    onTextButtonTap: model.navigateToAllPreviousDonations,
-                  ),
-                  Container(
-                    height: 120,
-                    width: screenWidthPercentage(context, percentage: 1),
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        itemCount: request.customData.length,
-                        itemBuilder: (context, index) => Row(
-                              children: [
-                                SizedBox(
-                                    width: LayoutSettings.horizontalPadding),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16.0),
-                                    color: MyColors.paletteTurquoise,
+                  if (model.latestDonations.length > 0)
+                    SectionHeader(
+                      title: "Recently supported",
+                      onTextButtonTap: model.navigateToAllPreviousDonations,
+                    ),
+                  if (model.latestDonations.length > 0)
+                    Container(
+                      height: 120,
+                      width: screenWidthPercentage(context, percentage: 1),
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          itemCount: model.latestDonations.length,
+                          itemBuilder: (context, index) => Row(
+                                children: [
+                                  SizedBox(
+                                      width: LayoutSettings.horizontalPadding),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                      color: MyColors.paletteTurquoise,
+                                    ),
+                                    width: screenWidthPercentage(context,
+                                        percentage: 0.8),
+                                    child: Center(
+                                      child: Text(
+                                          model
+                                              .latestDonations[index]
+                                              .projectPreviewDetails
+                                              .projectName,
+                                          style: textTheme(context).headline5),
+                                    ),
                                   ),
-                                  width: screenWidthPercentage(context,
-                                      percentage: 0.8),
-                                  child: Center(
-                                    child: Text(
-                                        request.customData[index].projectName,
-                                        style: textTheme(context).headline5),
-                                  ),
-                                ),
-                              ],
-                            )),
-                  ),
+                                ],
+                              )),
+                    ),
                 ],
               ),
               buttons: [

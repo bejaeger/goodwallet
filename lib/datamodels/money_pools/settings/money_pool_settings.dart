@@ -6,7 +6,7 @@ part 'money_pool_settings.g.dart';
 @freezed
 class MoneyPoolSettings with _$MoneyPoolSettings {
   factory MoneyPoolSettings({
-    required String showTotal,
+    required bool showTotal,
   }) = _MoneyPoolSettings;
 
   factory MoneyPoolSettings.fromJson(Map<String, dynamic> json) =>

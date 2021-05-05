@@ -4,8 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_payout_model.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/datamodels/money_pools/users/paid_out_user.dart';
 import 'package:good_wallet/datamodels/transactions/transaction_details.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
@@ -20,7 +19,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/datamodels/transactions/transaction.dart';
 
 class DisburseMoneyPoolViewModel extends BaseModel {
-  MoneyPoolModel moneyPool;
+  MoneyPool moneyPool;
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
   final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
   final NavigationService? _navigationService = locator<NavigationService>();
@@ -95,15 +94,14 @@ class DisburseMoneyPoolViewModel extends BaseModel {
   }
 
   //
-  MoneyPoolPayoutModel _getPayoutDataFromForms() {
-    List<PaidOutUser> paidOutUsers = [];
+  Transaction _getPayoutDataFromForms() {
     List<String> paidOutIds = [];
     List<TransactionDetails> allDetails = [];
     try {
       userPayoutForms.forEach((element) {
         TransactionDetails details = TransactionDetails(
           senderName: moneyPool.name,
-          senderId: moneyPool.moneyPoolId!,
+          senderId: moneyPool.moneyPoolId,
           sourceType: MoneySource.MoneyPool,
           amount: scaleAmountForStripe(element.userPayoutFormModel.getAmount()),
           currency: moneyPool.currency,
@@ -111,33 +109,13 @@ class DisburseMoneyPoolViewModel extends BaseModel {
           recipientName: element.userPayoutFormModel.selectedUser!.name,
         );
         allDetails.add(details);
-
-        PaidOutUser user = PaidOutUser(
-            uid: element.userPayoutFormModel.selectedUser!.uid,
-            name: element.userPayoutFormModel.selectedUser!.name,
-            amount:
-                scaleAmountForStripe(element.userPayoutFormModel.getAmount()));
-        paidOutUsers.add(user);
-
-        paidOutIds.add(user.uid);
+        paidOutIds.add(element.userPayoutFormModel.selectedUser!.uid);
       });
-      bool keepMoneyPoolAlive = false;
-      if (getSummedPayoutAmount() < moneyPool.total) keepMoneyPoolAlive = true;
-
-      MoneyPoolPayoutModel data = MoneyPoolPayoutModel(
+      Transaction data = Transaction.moneyPoolPayout(
+          transactionsDetails: allDetails,
           moneyPool: moneyPool,
-          paidOutUsers: paidOutUsers,
           paidOutUsersIds: paidOutIds,
-          keepMoneyPoolAlive: keepMoneyPoolAlive);
-
-      // Transaction data2 = Transaction.moneyPoolPayout(
-      //     transactionsInfo: allDetails,
-      //     moneyPool: moneyPool,
-      //     paidOutUsersIds: paidOutIds,
-      //     status: "initialized",
-      //     transactionId: "DUMMY",
-      //     createdAt: firestore.FieldValue.serverTimestamp());
-
+          createdAt: firestore.FieldValue.serverTimestamp());
       return data;
     } catch (e) {
       log.e(
@@ -170,7 +148,7 @@ class DisburseMoneyPoolViewModel extends BaseModel {
       // 3
       try {
         setBusy(true);
-        MoneyPoolPayoutModel data = _getPayoutDataFromForms();
+        Transaction data = _getPayoutDataFromForms();
         // 4 & 5
         // TODO: This could also provide a return value to be sure things have been dealt with
         await _moneyPoolService!.submitMoneyPoolPayout(data);
@@ -184,7 +162,7 @@ class DisburseMoneyPoolViewModel extends BaseModel {
         } else {
           // delete money pool and navigate back
           setBusy(true);
-          await _moneyPoolService!.deleteMoneyPool(moneyPool.moneyPoolId!);
+          await _moneyPoolService!.deleteMoneyPool(moneyPool.moneyPoolId);
           _navigationService!.clearTillFirstAndShow(
               Routes.layoutTemplateViewMobile,
               arguments: LayoutTemplateViewMobileArguments(

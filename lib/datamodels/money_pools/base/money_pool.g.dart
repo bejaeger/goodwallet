@@ -14,7 +14,6 @@ _$_MoneyPool _$_$_MoneyPoolFromJson(Map<String, dynamic> json) {
     total: json['total'] as num,
     currency: json['currency'] as String,
     description: json['description'] as String?,
-    moneyPoolId: json['moneyPoolId'] as String,
     moneyPoolSettings: MoneyPoolSettings.fromJson(
         json['moneyPoolSettings'] as Map<String, dynamic>),
     createdAt: json['createdAt'],
@@ -30,6 +29,7 @@ _$_MoneyPool _$_$_MoneyPoolFromJson(Map<String, dynamic> json) {
     invitedUserIds: (json['invitedUserIds'] as List<dynamic>)
         .map((e) => e as String)
         .toList(),
+    moneyPoolId: json['moneyPoolId'] as String,
   );
 }
 
@@ -41,7 +41,6 @@ Map<String, dynamic> _$_$_MoneyPoolToJson(_$_MoneyPool instance) =>
       'total': instance.total,
       'currency': instance.currency,
       'description': instance.description,
-      'moneyPoolId': instance.moneyPoolId,
       'moneyPoolSettings': instance.moneyPoolSettings.toJson(),
       'createdAt': instance.createdAt,
       'contributingUsers':
@@ -49,4 +48,5 @@ Map<String, dynamic> _$_$_MoneyPoolToJson(_$_MoneyPool instance) =>
       'invitedUsers': instance.invitedUsers.map((e) => e.toJson()).toList(),
       'contributingUserIds': instance.contributingUserIds,
       'invitedUserIds': instance.invitedUserIds,
+      'moneyPoolId': MoneyPool._checkIfMoneyPoolIdIsSet(instance.moneyPoolId),
     };

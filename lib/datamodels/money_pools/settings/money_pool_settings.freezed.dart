@@ -20,7 +20,7 @@ MoneyPoolSettings _$MoneyPoolSettingsFromJson(Map<String, dynamic> json) {
 class _$MoneyPoolSettingsTearOff {
   const _$MoneyPoolSettingsTearOff();
 
-  _MoneyPoolSettings call({required String showTotal}) {
+  _MoneyPoolSettings call({required bool showTotal}) {
     return _MoneyPoolSettings(
       showTotal: showTotal,
     );
@@ -36,7 +36,7 @@ const $MoneyPoolSettings = _$MoneyPoolSettingsTearOff();
 
 /// @nodoc
 mixin _$MoneyPoolSettings {
-  String get showTotal => throw _privateConstructorUsedError;
+  bool get showTotal => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -49,7 +49,7 @@ abstract class $MoneyPoolSettingsCopyWith<$Res> {
   factory $MoneyPoolSettingsCopyWith(
           MoneyPoolSettings value, $Res Function(MoneyPoolSettings) then) =
       _$MoneyPoolSettingsCopyWithImpl<$Res>;
-  $Res call({String showTotal});
+  $Res call({bool showTotal});
 }
 
 /// @nodoc
@@ -69,7 +69,7 @@ class _$MoneyPoolSettingsCopyWithImpl<$Res>
       showTotal: showTotal == freezed
           ? _value.showTotal
           : showTotal // ignore: cast_nullable_to_non_nullable
-              as String,
+              as bool,
     ));
   }
 }
@@ -81,7 +81,7 @@ abstract class _$MoneyPoolSettingsCopyWith<$Res>
           _MoneyPoolSettings value, $Res Function(_MoneyPoolSettings) then) =
       __$MoneyPoolSettingsCopyWithImpl<$Res>;
   @override
-  $Res call({String showTotal});
+  $Res call({bool showTotal});
 }
 
 /// @nodoc
@@ -103,7 +103,7 @@ class __$MoneyPoolSettingsCopyWithImpl<$Res>
       showTotal: showTotal == freezed
           ? _value.showTotal
           : showTotal // ignore: cast_nullable_to_non_nullable
-              as String,
+              as bool,
     ));
   }
 }
@@ -117,7 +117,7 @@ class _$_MoneyPoolSettings implements _MoneyPoolSettings {
       _$_$_MoneyPoolSettingsFromJson(json);
 
   @override
-  final String showTotal;
+  final bool showTotal;
 
   @override
   String toString() {
@@ -149,14 +149,13 @@ class _$_MoneyPoolSettings implements _MoneyPoolSettings {
 }
 
 abstract class _MoneyPoolSettings implements MoneyPoolSettings {
-  factory _MoneyPoolSettings({required String showTotal}) =
-      _$_MoneyPoolSettings;
+  factory _MoneyPoolSettings({required bool showTotal}) = _$_MoneyPoolSettings;
 
   factory _MoneyPoolSettings.fromJson(Map<String, dynamic> json) =
       _$_MoneyPoolSettings.fromJson;
 
   @override
-  String get showTotal => throw _privateConstructorUsedError;
+  bool get showTotal => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$MoneyPoolSettingsCopyWith<_MoneyPoolSettings> get copyWith =>

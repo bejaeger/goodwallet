@@ -27,13 +27,14 @@ class _$MoneyPoolTearOff {
       required num total,
       required String currency,
       String? description,
-      required String moneyPoolId,
       required MoneyPoolSettings moneyPoolSettings,
       required dynamic createdAt,
       required List<ContributingUser> contributingUsers,
       required List<PublicUserInfo> invitedUsers,
       required List<String> contributingUserIds,
-      required List<String> invitedUserIds}) {
+      required List<String> invitedUserIds,
+      @JsonKey(name: "moneyPoolId", toJson: MoneyPool._checkIfMoneyPoolIdIsSet)
+          String moneyPoolId = "placeholder"}) {
     return _MoneyPool(
       name: name,
       adminUID: adminUID,
@@ -41,13 +42,13 @@ class _$MoneyPoolTearOff {
       total: total,
       currency: currency,
       description: description,
-      moneyPoolId: moneyPoolId,
       moneyPoolSettings: moneyPoolSettings,
       createdAt: createdAt,
       contributingUsers: contributingUsers,
       invitedUsers: invitedUsers,
       contributingUserIds: contributingUserIds,
       invitedUserIds: invitedUserIds,
+      moneyPoolId: moneyPoolId,
     );
   }
 
@@ -67,7 +68,6 @@ mixin _$MoneyPool {
   num get total => throw _privateConstructorUsedError;
   String get currency => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
-  String get moneyPoolId => throw _privateConstructorUsedError;
   MoneyPoolSettings get moneyPoolSettings => throw _privateConstructorUsedError;
   dynamic get createdAt => throw _privateConstructorUsedError;
   List<ContributingUser> get contributingUsers =>
@@ -76,6 +76,8 @@ mixin _$MoneyPool {
       throw _privateConstructorUsedError; // for querying purposes
   List<String> get contributingUserIds => throw _privateConstructorUsedError;
   List<String> get invitedUserIds => throw _privateConstructorUsedError;
+  @JsonKey(name: "moneyPoolId", toJson: MoneyPool._checkIfMoneyPoolIdIsSet)
+  String get moneyPoolId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -94,13 +96,14 @@ abstract class $MoneyPoolCopyWith<$Res> {
       num total,
       String currency,
       String? description,
-      String moneyPoolId,
       MoneyPoolSettings moneyPoolSettings,
       dynamic createdAt,
       List<ContributingUser> contributingUsers,
       List<PublicUserInfo> invitedUsers,
       List<String> contributingUserIds,
-      List<String> invitedUserIds});
+      List<String> invitedUserIds,
+      @JsonKey(name: "moneyPoolId", toJson: MoneyPool._checkIfMoneyPoolIdIsSet)
+          String moneyPoolId});
 
   $MoneyPoolSettingsCopyWith<$Res> get moneyPoolSettings;
 }
@@ -121,13 +124,13 @@ class _$MoneyPoolCopyWithImpl<$Res> implements $MoneyPoolCopyWith<$Res> {
     Object? total = freezed,
     Object? currency = freezed,
     Object? description = freezed,
-    Object? moneyPoolId = freezed,
     Object? moneyPoolSettings = freezed,
     Object? createdAt = freezed,
     Object? contributingUsers = freezed,
     Object? invitedUsers = freezed,
     Object? contributingUserIds = freezed,
     Object? invitedUserIds = freezed,
+    Object? moneyPoolId = freezed,
   }) {
     return _then(_value.copyWith(
       name: name == freezed
@@ -154,10 +157,6 @@ class _$MoneyPoolCopyWithImpl<$Res> implements $MoneyPoolCopyWith<$Res> {
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
-      moneyPoolId: moneyPoolId == freezed
-          ? _value.moneyPoolId
-          : moneyPoolId // ignore: cast_nullable_to_non_nullable
-              as String,
       moneyPoolSettings: moneyPoolSettings == freezed
           ? _value.moneyPoolSettings
           : moneyPoolSettings // ignore: cast_nullable_to_non_nullable
@@ -182,6 +181,10 @@ class _$MoneyPoolCopyWithImpl<$Res> implements $MoneyPoolCopyWith<$Res> {
           ? _value.invitedUserIds
           : invitedUserIds // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      moneyPoolId: moneyPoolId == freezed
+          ? _value.moneyPoolId
+          : moneyPoolId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 
@@ -206,13 +209,14 @@ abstract class _$MoneyPoolCopyWith<$Res> implements $MoneyPoolCopyWith<$Res> {
       num total,
       String currency,
       String? description,
-      String moneyPoolId,
       MoneyPoolSettings moneyPoolSettings,
       dynamic createdAt,
       List<ContributingUser> contributingUsers,
       List<PublicUserInfo> invitedUsers,
       List<String> contributingUserIds,
-      List<String> invitedUserIds});
+      List<String> invitedUserIds,
+      @JsonKey(name: "moneyPoolId", toJson: MoneyPool._checkIfMoneyPoolIdIsSet)
+          String moneyPoolId});
 
   @override
   $MoneyPoolSettingsCopyWith<$Res> get moneyPoolSettings;
@@ -235,13 +239,13 @@ class __$MoneyPoolCopyWithImpl<$Res> extends _$MoneyPoolCopyWithImpl<$Res>
     Object? total = freezed,
     Object? currency = freezed,
     Object? description = freezed,
-    Object? moneyPoolId = freezed,
     Object? moneyPoolSettings = freezed,
     Object? createdAt = freezed,
     Object? contributingUsers = freezed,
     Object? invitedUsers = freezed,
     Object? contributingUserIds = freezed,
     Object? invitedUserIds = freezed,
+    Object? moneyPoolId = freezed,
   }) {
     return _then(_MoneyPool(
       name: name == freezed
@@ -268,10 +272,6 @@ class __$MoneyPoolCopyWithImpl<$Res> extends _$MoneyPoolCopyWithImpl<$Res>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
-      moneyPoolId: moneyPoolId == freezed
-          ? _value.moneyPoolId
-          : moneyPoolId // ignore: cast_nullable_to_non_nullable
-              as String,
       moneyPoolSettings: moneyPoolSettings == freezed
           ? _value.moneyPoolSettings
           : moneyPoolSettings // ignore: cast_nullable_to_non_nullable
@@ -296,6 +296,10 @@ class __$MoneyPoolCopyWithImpl<$Res> extends _$MoneyPoolCopyWithImpl<$Res>
           ? _value.invitedUserIds
           : invitedUserIds // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      moneyPoolId: moneyPoolId == freezed
+          ? _value.moneyPoolId
+          : moneyPoolId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -311,13 +315,14 @@ class _$_MoneyPool implements _MoneyPool {
       required this.total,
       required this.currency,
       this.description,
-      required this.moneyPoolId,
       required this.moneyPoolSettings,
       required this.createdAt,
       required this.contributingUsers,
       required this.invitedUsers,
       required this.contributingUserIds,
-      required this.invitedUserIds});
+      required this.invitedUserIds,
+      @JsonKey(name: "moneyPoolId", toJson: MoneyPool._checkIfMoneyPoolIdIsSet)
+          this.moneyPoolId = "placeholder"});
 
   factory _$_MoneyPool.fromJson(Map<String, dynamic> json) =>
       _$_$_MoneyPoolFromJson(json);
@@ -335,8 +340,6 @@ class _$_MoneyPool implements _MoneyPool {
   @override
   final String? description;
   @override
-  final String moneyPoolId;
-  @override
   final MoneyPoolSettings moneyPoolSettings;
   @override
   final dynamic createdAt;
@@ -348,10 +351,13 @@ class _$_MoneyPool implements _MoneyPool {
   final List<String> contributingUserIds;
   @override
   final List<String> invitedUserIds;
+  @override
+  @JsonKey(name: "moneyPoolId", toJson: MoneyPool._checkIfMoneyPoolIdIsSet)
+  final String moneyPoolId;
 
   @override
   String toString() {
-    return 'MoneyPool(name: $name, adminUID: $adminUID, adminName: $adminName, total: $total, currency: $currency, description: $description, moneyPoolId: $moneyPoolId, moneyPoolSettings: $moneyPoolSettings, createdAt: $createdAt, contributingUsers: $contributingUsers, invitedUsers: $invitedUsers, contributingUserIds: $contributingUserIds, invitedUserIds: $invitedUserIds)';
+    return 'MoneyPool(name: $name, adminUID: $adminUID, adminName: $adminName, total: $total, currency: $currency, description: $description, moneyPoolSettings: $moneyPoolSettings, createdAt: $createdAt, contributingUsers: $contributingUsers, invitedUsers: $invitedUsers, contributingUserIds: $contributingUserIds, invitedUserIds: $invitedUserIds, moneyPoolId: $moneyPoolId)';
   }
 
   @override
@@ -374,9 +380,6 @@ class _$_MoneyPool implements _MoneyPool {
             (identical(other.description, description) ||
                 const DeepCollectionEquality()
                     .equals(other.description, description)) &&
-            (identical(other.moneyPoolId, moneyPoolId) ||
-                const DeepCollectionEquality()
-                    .equals(other.moneyPoolId, moneyPoolId)) &&
             (identical(other.moneyPoolSettings, moneyPoolSettings) ||
                 const DeepCollectionEquality()
                     .equals(other.moneyPoolSettings, moneyPoolSettings)) &&
@@ -394,7 +397,10 @@ class _$_MoneyPool implements _MoneyPool {
                     .equals(other.contributingUserIds, contributingUserIds)) &&
             (identical(other.invitedUserIds, invitedUserIds) ||
                 const DeepCollectionEquality()
-                    .equals(other.invitedUserIds, invitedUserIds)));
+                    .equals(other.invitedUserIds, invitedUserIds)) &&
+            (identical(other.moneyPoolId, moneyPoolId) ||
+                const DeepCollectionEquality()
+                    .equals(other.moneyPoolId, moneyPoolId)));
   }
 
   @override
@@ -406,13 +412,13 @@ class _$_MoneyPool implements _MoneyPool {
       const DeepCollectionEquality().hash(total) ^
       const DeepCollectionEquality().hash(currency) ^
       const DeepCollectionEquality().hash(description) ^
-      const DeepCollectionEquality().hash(moneyPoolId) ^
       const DeepCollectionEquality().hash(moneyPoolSettings) ^
       const DeepCollectionEquality().hash(createdAt) ^
       const DeepCollectionEquality().hash(contributingUsers) ^
       const DeepCollectionEquality().hash(invitedUsers) ^
       const DeepCollectionEquality().hash(contributingUserIds) ^
-      const DeepCollectionEquality().hash(invitedUserIds);
+      const DeepCollectionEquality().hash(invitedUserIds) ^
+      const DeepCollectionEquality().hash(moneyPoolId);
 
   @JsonKey(ignore: true)
   @override
@@ -433,13 +439,14 @@ abstract class _MoneyPool implements MoneyPool {
       required num total,
       required String currency,
       String? description,
-      required String moneyPoolId,
       required MoneyPoolSettings moneyPoolSettings,
       required dynamic createdAt,
       required List<ContributingUser> contributingUsers,
       required List<PublicUserInfo> invitedUsers,
       required List<String> contributingUserIds,
-      required List<String> invitedUserIds}) = _$_MoneyPool;
+      required List<String> invitedUserIds,
+      @JsonKey(name: "moneyPoolId", toJson: MoneyPool._checkIfMoneyPoolIdIsSet)
+          String moneyPoolId}) = _$_MoneyPool;
 
   factory _MoneyPool.fromJson(Map<String, dynamic> json) =
       _$_MoneyPool.fromJson;
@@ -457,8 +464,6 @@ abstract class _MoneyPool implements MoneyPool {
   @override
   String? get description => throw _privateConstructorUsedError;
   @override
-  String get moneyPoolId => throw _privateConstructorUsedError;
-  @override
   MoneyPoolSettings get moneyPoolSettings => throw _privateConstructorUsedError;
   @override
   dynamic get createdAt => throw _privateConstructorUsedError;
@@ -471,6 +476,9 @@ abstract class _MoneyPool implements MoneyPool {
   List<String> get contributingUserIds => throw _privateConstructorUsedError;
   @override
   List<String> get invitedUserIds => throw _privateConstructorUsedError;
+  @override
+  @JsonKey(name: "moneyPoolId", toJson: MoneyPool._checkIfMoneyPoolIdIsSet)
+  String get moneyPoolId => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$MoneyPoolCopyWith<_MoneyPool> get copyWith =>

@@ -1,7 +1,7 @@
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/data/description_texts.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
@@ -16,8 +16,8 @@ class MoneyPoolsViewModel extends BaseModel {
   final DialogService? _dialogService = locator<DialogService>();
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
 
-  List<MoneyPoolModel> get moneyPools => _moneyPoolService!.moneyPools;
-  List<MoneyPoolModel> get moneyPoolsInvitedTo =>
+  List<MoneyPool> get moneyPools => _moneyPoolService!.moneyPools;
+  List<MoneyPool> get moneyPoolsInvitedTo =>
       _moneyPoolService!.moneyPoolsInvitedTo;
 
   final log = getLogger("money_pools_viewmodel.dart");
@@ -73,7 +73,7 @@ class MoneyPoolsViewModel extends BaseModel {
     }
   }
 
-  Future navigateToSingleMoneyPoolView(MoneyPoolModel moneyPool) async {
+  Future navigateToSingleMoneyPoolView(MoneyPool moneyPool) async {
     await _navigationService!.navigateTo(Routes.singleMoneyPoolView,
         arguments: SingleMoneyPoolViewArguments(moneyPool: moneyPool));
   }

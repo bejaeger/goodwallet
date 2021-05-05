@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/datamodels/transactions/transaction.dart';
 import 'package:good_wallet/enums/transaction_direction.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
@@ -35,6 +36,17 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
     _transactionSubscription?.cancel();
     _walletTransactionSubscription?.cancel();
     super.dispose();
+  }
+
+  num getAmount(Transaction data) {
+    return data.map(
+        peer2peer: (value) => value.transactionDetails.amount,
+        donation: (value) => value.transactionDetails.amount,
+        moneyPoolContribution: (value) => value.transactionDetails.amount,
+        moneyPoolPayout: (value) => value.transactionsDetails
+            .where((e) => e.recipientId == currentUser.id)
+            .first
+            .amount);
   }
 
   Future<void> initialize([TransactionDirection? type]) async {
@@ -104,34 +116,30 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
         "Fetched list of transfers to peers with length = ${listOfTransactionsToPeers.length}");
   }
 
-  TransactionDirection inferTransactionType(dynamic transactionData) {
-    // helper function that figures out transaction
-    // type based on transaction data
-
-    // TODO: Add logic for top-up
-
-    TransactionDirection type;
-    var tmpVar;
-    try {
-      tmpVar = transactionData.recipientUid;
-      var incoming = (transactionData.recipientUid == currentUser.id);
-      type = incoming
-          ? TransactionDirection.Incoming
-          : TransactionDirection.TransferredToPeers;
-      if (transactionData.message == "From Money Pool")
-        type = TransactionDirection.MoneyPoolPayout;
-    } catch (e) {
-      tmpVar = transactionData
-          .projectName; // only applicable if the transaction is a donation, i.e. outgoing
-      type = TransactionDirection.Donation;
-    }
-    if (type == null) {
-      log.e(
-          "Could not find type of transaction data, returning TransactionType.Invalid");
-      return TransactionDirection.Invalid;
-    }
-    log.v("Inferred type $type for transaction data");
-    return type;
+  // helper function that figures out transaction
+  // type based on transaction data
+  TransactionDirection inferTransactionType(Transaction transactionData) {
+    TransactionDirection direction = transactionData.maybeMap(
+        peer2peer: (value) {
+          if (value.transactionDetails.senderId == currentUser.id &&
+              value.transactionDetails.senderId == currentUser.id) {
+            return TransactionDirection.Committed;
+          }
+          if (value.transactionDetails.senderId == currentUser.id) {
+            return TransactionDirection.TransferredToPeers;
+          }
+          if (value.transactionDetails.recipientId == currentUser.id) {
+            return TransactionDirection.ReceivedFromPeers;
+          }
+          return TransactionDirection.Invalid;
+        },
+        donation: (value) => TransactionDirection.Donation,
+        moneyPoolContribution: (value) =>
+            TransactionDirection.MoneyPoolContribution,
+        moneyPoolPayout: (value) => TransactionDirection.MoneyPoolPayout,
+        orElse: () => TransactionDirection.Invalid);
+    log.v("Inferred transaction direction: $direction");
+    return direction;
   }
 
   void navigateBack() => _navigationService!.back();

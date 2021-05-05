@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_contribution.dart';
-import 'package:good_wallet/datamodels/payments/transaction_model.dart';
+import 'package:good_wallet/datamodels/causes/preview_details/project_preview_details.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
+import 'package:good_wallet/datamodels/transactions/transaction.dart'
+    as gwmodel;
+import 'package:good_wallet/datamodels/transactions/transaction_details.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
+import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
@@ -40,8 +43,18 @@ class TransferFundsAmountViewModel extends FormViewModel {
 
   FundTransferType type;
   dynamic receiverInfo;
+  late MoneySource moneySource;
+  num? amount;
   TransferFundsAmountViewModel(
       {required this.type, required this.receiverInfo}) {
+    if (type == FundTransferType.donationFromBank ||
+        type == FundTransferType.moneyPoolContributionFromBank ||
+        type == FundTransferType.transferToPeer) {
+      moneySource = MoneySource.Bank;
+    } else {
+      moneySource = MoneySource.GoodWallet;
+    }
+
     // Listen to wallet similar to what is done in base viemodel
     _walletSubscription = _userDataService!.userWalletSubject.listen(
       (wallet) {
@@ -67,6 +80,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       log.e("Entered amount not valid");
       notifyListeners();
     } else {
+      amount = num.parse(amountValue!);
       if (type == FundTransferType.prepaidFundTopUp)
         await handleTopUpPayment();
       else if (type == FundTransferType.transferToPeer) {
@@ -120,6 +134,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
           cancelButtonTitle: "Prepaid Fund");
       if (sheetResponse?.confirmed == true &&
           type != FundTransferType.moneyPoolContributionFromBank) {
+        moneySource = MoneySource.Bank;
         await _navigationService!.replaceWith(Routes.transferFundsAmountView,
             arguments: TransferFundsAmountViewArguments(
                 type: FundTransferType.moneyPoolContributionFromBank,
@@ -162,7 +177,6 @@ class TransferFundsAmountViewModel extends FormViewModel {
     log.i("Response data from bottom sheet: ${sheetResponse?.confirmed}");
     if (sheetResponse?.confirmed == false) {
       // FOR now, implemented dummy payment processing here
-      var amount = double.parse(amountValue!);
       showNotYetImplementedSnackbar();
     } else {
       // Properly add Gpay / Credit card pay / ...
@@ -175,11 +189,10 @@ class TransferFundsAmountViewModel extends FormViewModel {
     log.i("Response data from bottom sheet: ${sheetResponse?.confirmed}");
     if (sheetResponse?.confirmed == false) {
       // FOR now, implemented dummy payment processing here
-      var amount = double.parse(amountValue!);
       try {
-        var data = await prepareTransactionModel();
+        var data = prepareTransactionData();
         SheetResponse? sheetResponse =
-            await _showConfirmationBottomSheet(amount, receiverInfo.name);
+            await _showConfirmationBottomSheet(amount!, receiverInfo.name);
         if (sheetResponse?.confirmed == true) {
           setBusy(true);
           await _dummyPaymentService.processTransaction(data);
@@ -203,15 +216,12 @@ class TransferFundsAmountViewModel extends FormViewModel {
   }
 
   Future handleDonationPayment() async {
-    var amount = double.parse(amountValue!);
     SheetResponse? sheetResponse =
-        await _showConfirmationBottomSheet(amount, receiverInfo.title);
+        await _showConfirmationBottomSheet(amount!, receiverInfo.title);
     setBusy(true);
     if (sheetResponse?.confirmed == true) {
-      // FOR now, implemented dummy payment processing here
-      _dummyPaymentService.processDonation(currentUser.id, receiverInfo.title,
-          scaleAmountForStripe(amount) as int);
-      log.i("Processed donation");
+      var data = prepareDonationData();
+      _dummyPaymentService.processDonation(data, currentUser.id);
       await _showAndAwaitSnackbar("You just made an impact!");
       clearTillFirstAndShowHomeScreen();
     } else if (sheetResponse?.confirmed == false) {
@@ -221,20 +231,22 @@ class TransferFundsAmountViewModel extends FormViewModel {
   }
 
   Future handleMoneyPoolPayment() async {
-    var amount = double.parse(amountValue!);
     SheetResponse? sheetResponse = await _showPaymentMethodBottomSheet();
     setBusy(true);
     if (sheetResponse?.confirmed == false) {
       // FOR now, implemented dummy payment processing here
-      MoneyPoolContributionModel contribution = MoneyPoolContributionModel(
-          moneyPoolId: receiverInfo.moneyPoolId,
-          moneyPoolName: receiverInfo.name,
-          uid: currentUser.id,
-          userName: currentUser.fullName,
-          amount: scaleAmountForStripe(amount),
-          currency: 'cad',
-          createdAt: FieldValue.serverTimestamp(),
-          status: "initialized");
+      gwmodel.MoneyPoolContribution contribution =
+          gwmodel.MoneyPoolContribution(
+              transactionDetails: TransactionDetails(
+                recipientId: receiverInfo.moneyPoolId,
+                recipientName: receiverInfo.name,
+                senderId: currentUser.id,
+                senderName: currentUser.fullName,
+                currency: 'cad',
+                amount: scaleAmountForStripe(amount!),
+                sourceType: moneySource,
+              ),
+              createdAt: FieldValue.serverTimestamp());
       _dummyPaymentService.processMoneyPoolContribution(contribution);
       log.i("Processed donation");
       await _showAndAwaitSnackbar("Succesfully contributed to money pool!");
@@ -245,31 +257,49 @@ class TransferFundsAmountViewModel extends FormViewModel {
     setBusy(false);
   }
 
-  Future prepareTransactionModel() async {
-    var recipientUid, recipientName, amount;
-    TransactionModel data;
+  gwmodel.Transaction prepareTransactionData() {
     try {
-      recipientUid = receiverInfo!.uid;
-      recipientName = receiverInfo!.name;
-      amount = double.parse(amountValue!);
-      //msg = optionalMessageController.text;
-      data = TransactionModel(
-        recipientUid: recipientUid,
-        recipientName: recipientName,
-        senderUid: currentUser.id,
-        senderName: currentUser.fullName,
+      gwmodel.Transaction data = gwmodel.Transaction.peer2peer(
+        transactionDetails: TransactionDetails(
+          recipientId: receiverInfo.uid,
+          recipientName: receiverInfo.name,
+          senderId: currentUser.id,
+          senderName: currentUser.fullName,
+          amount: scaleAmountForStripe(amount!),
+          currency: 'cad',
+          sourceType: moneySource,
+        ),
         createdAt: FieldValue.serverTimestamp(),
-        amount: scaleAmountForStripe(amount),
-        currency: "cad",
-        message: "Test payment",
-        status: 'initialized',
       );
+      return data;
     } catch (e) {
       log.e(
           "Could not fill transaction model, Failed with error ${e.toString()}");
       rethrow;
     }
-    return data;
+  }
+
+  gwmodel.Transaction prepareDonationData() {
+    try {
+      gwmodel.Transaction data = gwmodel.Transaction.donation(
+        projectPreviewDetails:
+            ProjectPreviewDetails(projectName: receiverInfo.title),
+        transactionDetails: TransactionDetails(
+          recipientId: "DummyId",
+          recipientName: receiverInfo.title,
+          senderId: currentUser.id,
+          senderName: currentUser.fullName,
+          amount: scaleAmountForStripe(amount!),
+          currency: 'cad',
+          sourceType: moneySource,
+        ),
+        createdAt: FieldValue.serverTimestamp(),
+      );
+      return data;
+    } catch (e) {
+      log.e("Could not fill donation model, Failed with error ${e.toString()}");
+      rethrow;
+    }
   }
 
   void navigateBack() {

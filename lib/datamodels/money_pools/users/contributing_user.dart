@@ -8,7 +8,7 @@ class ContributingUser with _$ContributingUser {
   factory ContributingUser({
     required String name,
     required String uid,
-    required num contribution,
+    @Default(0) num contribution,
   }) = _ContributingUser;
 
   factory ContributingUser.fromJson(Map<String, dynamic> json) =>

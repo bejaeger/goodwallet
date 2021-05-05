@@ -21,7 +21,7 @@ class _$ContributingUserTearOff {
   const _$ContributingUserTearOff();
 
   _ContributingUser call(
-      {required String name, required String uid, required num contribution}) {
+      {required String name, required String uid, num contribution = 0}) {
     return _ContributingUser(
       name: name,
       uid: uid,
@@ -137,7 +137,7 @@ class __$ContributingUserCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ContributingUser implements _ContributingUser {
   _$_ContributingUser(
-      {required this.name, required this.uid, required this.contribution});
+      {required this.name, required this.uid, this.contribution = 0});
 
   factory _$_ContributingUser.fromJson(Map<String, dynamic> json) =>
       _$_$_ContributingUserFromJson(json);
@@ -146,6 +146,7 @@ class _$_ContributingUser implements _ContributingUser {
   final String name;
   @override
   final String uid;
+  @JsonKey(defaultValue: 0)
   @override
   final num contribution;
 
@@ -189,7 +190,7 @@ abstract class _ContributingUser implements ContributingUser {
   factory _ContributingUser(
       {required String name,
       required String uid,
-      required num contribution}) = _$_ContributingUser;
+      num contribution}) = _$_ContributingUser;
 
   factory _ContributingUser.fromJson(Map<String, dynamic> json) =
       _$_ContributingUser.fromJson;

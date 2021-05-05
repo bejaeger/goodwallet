@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
+import 'package:good_wallet/utils/datamodel_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
 class CallToActionButtonRectangular extends StatelessWidget {
@@ -153,6 +154,51 @@ class CallToActionButtonRound extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// Round call to action button with text below round button
+class CallToActionButtonRoundInitials extends StatelessWidget {
+  final void Function() onPressed;
+  final String name;
+  final Color? color;
+
+  const CallToActionButtonRoundInitials(
+      {Key? key, required this.onPressed, required this.name, this.color})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 80,
+      child: GestureDetector(
+        onTap: onPressed,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              radius: 32,
+              backgroundColor: color,
+              child: Text(getInitialsFromName(name),
+                  style: textTheme(context).headline5!.copyWith(fontSize: 18)),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Text(
+                name,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme(context).bodyText2!.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: ColorSettings.blackHeadlineColor),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

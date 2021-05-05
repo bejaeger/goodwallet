@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 import '../datamodels/causes/good_wallet_project_model.dart';
-import '../datamodels/money_pools/money_pool_model.dart';
+import '../datamodels/money_pools/base/money_pool.dart';
 import '../datamodels/user/public_user_info.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/fund_transfer_type.dart';
@@ -36,7 +36,6 @@ import '../ui/views/money_pools/single_money_pool_view.dart';
 import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
 import '../ui/views/payments/send_money_view.dart';
-import '../ui/views/payments/send_money_view_mobile.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
 import '../ui/views/qrcode/qrcode_view_mobile.dart';
 import '../ui/views/raise_money/raise_money_view.dart';
@@ -66,7 +65,6 @@ class Routes {
   static const String createAccountView = '/create-account-view';
   static const String singleFeaturedAppView = '/single-featured-app-view';
   static const String moneyPoolsView = '/money-pools-view';
-  static const String sendMoneyViewMobile = '/send-money-view-mobile';
   static const String transactionsView = '/transactions-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String raiseMoneyView = '/raise-money-view';
@@ -95,7 +93,6 @@ class Routes {
     createAccountView,
     singleFeaturedAppView,
     moneyPoolsView,
-    sendMoneyViewMobile,
     transactionsView,
     qRCodeViewMobile,
     raiseMoneyView,
@@ -130,7 +127,6 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.createAccountView, page: CreateAccountView),
     RouteDef(Routes.singleFeaturedAppView, page: SingleFeaturedAppView),
     RouteDef(Routes.moneyPoolsView, page: MoneyPoolsView),
-    RouteDef(Routes.sendMoneyViewMobile, page: SendMoneyViewMobile),
     RouteDef(Routes.transactionsView, page: TransactionsView),
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
     RouteDef(Routes.raiseMoneyView, page: RaiseMoneyView),
@@ -297,19 +293,6 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
-    SendMoneyViewMobile: (data) {
-      var args = data.getArgs<SendMoneyViewMobileArguments>(
-        orElse: () => SendMoneyViewMobileArguments(),
-      );
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => SendMoneyViewMobile(
-          key: args.key,
-          userInfo: args.userInfo,
-          openSearchBarOnBuild: args.openSearchBarOnBuild,
-        ),
-        settings: data,
-      );
-    },
     TransactionsView: (data) {
       var args = data.getArgs<TransactionsViewArguments>(
         orElse: () => TransactionsViewArguments(),
@@ -434,7 +417,7 @@ class LoginViewArguments {
 /// SingleMoneyPoolView arguments holder class
 class SingleMoneyPoolViewArguments {
   final Key? key;
-  final MoneyPoolModel moneyPool;
+  final MoneyPool moneyPool;
   SingleMoneyPoolViewArguments({this.key, required this.moneyPool});
 }
 
@@ -478,15 +461,6 @@ class MoneyPoolsViewArguments {
   final Key? key;
   final bool forceReload;
   MoneyPoolsViewArguments({this.key, this.forceReload = false});
-}
-
-/// SendMoneyViewMobile arguments holder class
-class SendMoneyViewMobileArguments {
-  final Key? key;
-  final PublicUserInfo? userInfo;
-  final dynamic openSearchBarOnBuild;
-  SendMoneyViewMobileArguments(
-      {this.key, this.userInfo, this.openSearchBarOnBuild = false});
 }
 
 /// TransactionsView arguments holder class
@@ -542,6 +516,6 @@ class TransferFundsAmountViewArguments {
 /// DisburseMoneyPoolView arguments holder class
 class DisburseMoneyPoolViewArguments {
   final Key? key;
-  final MoneyPoolModel moneyPool;
+  final MoneyPool moneyPool;
   DisburseMoneyPoolViewArguments({this.key, required this.moneyPool});
 }

@@ -10,11 +10,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/causes/preview_details/project_preview_details.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_payout_model.dart';
-import 'package:good_wallet/datamodels/payments/donation_model.dart';
-import 'package:good_wallet/datamodels/payments/transaction_model.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
+import 'package:good_wallet/datamodels/transactions/transaction.dart'
+    as gwmodel;
 import 'package:good_wallet/datamodels/user/user_model.dart';
+import 'package:good_wallet/enums/transaction_direction.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -31,6 +31,8 @@ class UserDataService {
       FirebaseFirestore.instance.collection("users");
   final CollectionReference _moneyPoolPayoutsCollectionReference =
       FirebaseFirestore.instance.collection("moneyPoolPayouts");
+  final CollectionReference _moneyPoolsCollectionReference =
+      FirebaseFirestore.instance.collection("moneypools");
 
   final FirebaseAuthenticationService? _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
@@ -57,13 +59,9 @@ class UserDataService {
     _currentUser = user;
   }
 
-  // list of latest transaction (limited to 10)
-  // TODO
-  List<Transaction> latestTransactions = [];
-
-  // list of latest donations (limited to 5)
-  List<ProjectPreviewDetails> latestSupportedProjects = [];
-  StreamSubscription? _latestProjectsStreamSubscription;
+  // list of latest transactions
+  Map<String, List<gwmodel.Transaction>> latestTransactions = {};
+  Map<String, StreamSubscription?> _streamSubscriptions = {};
 
   // Listen to auth state changes.
   // This is useful in scenarios where we want to
@@ -220,12 +218,12 @@ class UserDataService {
     // Get single streams and combine later with rxDart
 
     Stream<QuerySnapshot> outgoing = _paymentsCollectionReference
-        .where("senderUid", isEqualTo: currentUser.id)
+        .where("transactionDetails.senderId", isEqualTo: currentUser.id)
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .snapshots();
     Stream<QuerySnapshot> incoming = _paymentsCollectionReference
-        .where("recipientUid", isEqualTo: currentUser.id)
+        .where("transactionDetails.recipientId", isEqualTo: currentUser.id)
         .orderBy("createdAt", descending: true)
         .snapshots();
 
@@ -237,12 +235,12 @@ class UserDataService {
 
       if (outSnapshot.docs.isNotEmpty) {
         transactions.addAll(outSnapshot.docs
-            .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
+            .map((snapshot) => gwmodel.Transaction.fromJson(snapshot.data()))
             .toList());
       }
       if (inSnapshot.docs.isNotEmpty) {
         List<dynamic> inTransactions = inSnapshot.docs
-            .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
+            .map((snapshot) => gwmodel.Transaction.fromJson(snapshot.data()))
             .toList();
         List<dynamic> transactionIds =
             transactions.map((element) => element.transactionId).toList();
@@ -293,7 +291,7 @@ class UserDataService {
             descending: true) // already added because needed with limit!
         .snapshots();
     Stream<QuerySnapshot> incoming = _paymentsCollectionReference
-        .where("recipientUid", isEqualTo: currentUser.id)
+        .where("transactionDetails.recipientId", isEqualTo: currentUser.id)
         .orderBy("createdAt", descending: true)
         .snapshots();
 
@@ -305,12 +303,12 @@ class UserDataService {
 
       if (outSnapshot.docs.isNotEmpty) {
         transactions.addAll(outSnapshot.docs
-            .map((snapshot) => DonationModel.fromMap(snapshot.data()))
+            .map((snapshot) => gwmodel.Transaction.fromJson(snapshot.data()))
             .toList());
       }
       if (inSnapshot.docs.isNotEmpty) {
         List<dynamic> inTransactions = inSnapshot.docs
-            .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
+            .map((snapshot) => gwmodel.Transaction.fromJson(snapshot.data()))
             .toList();
         List<dynamic> transactionIds =
             transactions.map((element) => element.transactionId).toList();
@@ -356,7 +354,7 @@ class UserDataService {
         .get();
     if (donationsSnapshot.docs.isNotEmpty) {
       listOfDonations.addAll(donationsSnapshot.docs
-          .map((snapshot) => DonationModel.fromMap(snapshot.data()))
+          .map((snapshot) => gwmodel.Transaction.fromJson(snapshot.data()))
           .toList());
     } else {
       log.e("Snapshot of donations collectoin is empty");
@@ -376,14 +374,14 @@ class UserDataService {
 
     List<dynamic> listOfTransactionsToPeers = <dynamic>[];
     QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
-        .where("senderUid", isEqualTo: currentUser.id)
+        .where("transactionDetails.senderId", isEqualTo: currentUser.id)
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .get();
     if (transactionsSnapshot.docs.isNotEmpty) {
       try {
         listOfTransactionsToPeers.addAll(transactionsSnapshot.docs
-            .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
+            .map((snapshot) => gwmodel.Transaction.fromJson(snapshot.data()))
             .toList());
       } catch (e) {
         log.e("Could not map firestore data into TransactionModel");
@@ -406,14 +404,14 @@ class UserDataService {
 
     List<dynamic> listOfTransactions = <dynamic>[];
     QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
-        .where("recipientUid", isEqualTo: currentUser.id)
+        .where("transactionDetails.recipientId", isEqualTo: currentUser.id)
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .get();
     if (transactionsSnapshot.docs.isNotEmpty) {
       try {
         listOfTransactions.addAll(transactionsSnapshot.docs
-            .map((snapshot) => TransactionModel.fromMap(snapshot.data()))
+            .map((snapshot) => gwmodel.Transaction.fromJson(snapshot.data()))
             .toList());
       } catch (e) {
         log.e("Could not map firestore data into TransactionModel");
@@ -442,7 +440,7 @@ class UserDataService {
     if (transactionsSnapshot.docs.isNotEmpty) {
       try {
         listOfTransactions.addAll(transactionsSnapshot.docs
-            .map((snapshot) => MoneyPoolPayoutModel.fromJson(snapshot.data()))
+            .map((snapshot) => gwmodel.Transaction.fromJson(snapshot.data()))
             .toList());
       } catch (e) {
         log.e("Could not map firestore data into TransactionModel");
@@ -450,66 +448,111 @@ class UserDataService {
     } else {
       log.e("Snapshot of donations collection is empty");
     }
-    // TODO: Improve this and the display of transactions!
-    var newListOfTransactions = listOfTransactions
-        .map((element) => TransactionModel(
-            message: "From Money Pool",
-            recipientUid: currentUser.id,
-            recipientName: currentUser.fullName,
-            senderUid: element.moneyPool.moneyPoolId,
-            senderName: element.moneyPool.name,
-            amount: element.paidOutUsers
-                .where((e) => e.uid == currentUser.id)
-                .first
-                .amount,
-            currency: element.moneyPool.currency,
-            createdAt: Timestamp.now()))
-        .toList();
-
-    return newListOfTransactions;
+    return listOfTransactions;
   }
 
-  // Get query for donations of user
+  // Get query for transaction with given direction.
   // optionally set the maximum number of documents retrieved
-  Query getDonationCollectionQuery({int? maxNumber}) {
-    if (maxNumber != null) {
-      return _usersCollectionReference
-          .doc(_currentUser.id)
-          .collection("donations")
-          .orderBy("createdAt", descending: true)
-          .limit(maxNumber);
-    } else {
-      return _usersCollectionReference
+  Stream<QuerySnapshot>? getTransactionsStream(
+      {required TransactionDirection direction, int? maxNumber}) {
+    Query query;
+    if (direction == TransactionDirection.TransferredToPeers) {
+      query = _paymentsCollectionReference
+          .where("transactionDetails.senderId", isEqualTo: currentUser.id)
+          .orderBy("createdAt", descending: true);
+    } else if (direction == TransactionDirection.ReceivedFromPeers) {
+      query = _paymentsCollectionReference
+          .where("transactionDetails.recipientId", isEqualTo: currentUser.id)
+          .orderBy("createdAt", descending: true);
+    } else if (direction == TransactionDirection.Donation) {
+      query = _usersCollectionReference
           .doc(_currentUser.id)
           .collection("donations")
           .orderBy("createdAt", descending: true);
+    } else if (direction == TransactionDirection.MoneyPoolPayout) {
+      query = _moneyPoolPayoutsCollectionReference.where("paidOutUsersIds",
+          arrayContains: currentUser.id);
+    } else {
+      log.e(
+          "Could not find stream corresponding to provided transaction direction '$direction'");
+      return null;
     }
+    // Still todo: money pool contributions!
+    // Either with collection group query or by restructuring the money pool collections
+    // possibly the former
+    // } else if (direction == TransactionDirection.MoneyPoolContribution) {
+    //   query = _moneyPoolsCollectionReference.where("contributingUserIds", arrayContains: currentUser.id).where("field")
+    //       .collection("donations")
+    //       .orderBy("createdAt", descending: true);
+    if (maxNumber != null) query = query.limit(maxNumber);
+    return query.snapshots();
   }
 
-  // Listen to latest donations
+  // More generic class to listen to firestore collections for updates.
   // callback can be used to provide notifyListeners from the viewmodel
   // to the service
-  void listenToLatestDonations({int maxNumber = 5, void Function()? callback}) {
-    if (_latestProjectsStreamSubscription == null) {
-      _latestProjectsStreamSubscription =
-          getDonationCollectionQuery(maxNumber: maxNumber)
-              .snapshots()
-              .listen((event) {
-        List<ProjectPreviewDetails> projects = [];
-        if (event.docs.isNotEmpty) {
-          projects.addAll(event.docs
-              .map(
-                  (snapshot) => ProjectPreviewDetails.fromJson(snapshot.data()))
-              .toList());
+  void addTransactionListener(
+      {required TransactionDirection direction,
+      int maxNumber = 5,
+      void Function()? callback}) {
+    // adds stream subscription to map
+    _streamSubscriptions.putIfAbsent(
+      direction.toString(),
+      () {
+        log.i(
+            "Setting up listener for transactions with direction $direction.");
+        Stream<QuerySnapshot>? snapshot =
+            getTransactionsStream(direction: direction, maxNumber: maxNumber);
+        if (snapshot != null) {
+          return snapshot.listen(
+            (event) {
+              List<gwmodel.Transaction> transactions = [];
+              if (event.docs.isNotEmpty) {
+                transactions.addAll(event.docs
+                    .map((snapshot) =>
+                        gwmodel.Transaction.fromJson(snapshot.data()))
+                    .toList());
+              }
+              log.v(
+                  "Listened to ${transactions.length} transactions for direction $direction. Limit was set to $maxNumber");
+              if (callback != null) callback();
+              latestTransactions[direction.toString()] = transactions;
+            },
+          );
+        } else {
+          return null;
         }
-        log.v(
-            "Listened to maximally $maxNumber latest donations and found ${projects.length}");
-        if (callback != null) callback();
-        latestSupportedProjects = projects;
-      });
-    }
+      },
+    );
   }
 
+  // Get transactions for type and direction
+  // Could be done better! User has to parse redundant information
+  List<T> getTransactionsForDirection<T>(
+      {required TransactionDirection direction}) {
+    if (latestTransactions[direction.toString()] == null) {
+      log.w(
+          "Did not find any transactions for direction $direction. Returning empty list");
+      return [] as List<T>;
+    }
+    List<T?> returnList = latestTransactions[direction.toString()]!.map((e) {
+      T? result = e.map(
+        peer2peer: (value) => value is T? ? value as T : null,
+        donation: (value) => value is T? ? value as T : null,
+        moneyPoolContribution: (value) => value is T? ? value as T : null,
+        moneyPoolPayout: (value) => value is T? ? value as T : null,
+      );
+      return result;
+    }).toList();
+    if (returnList.any((element) => element == null)) {
+      log.wtf(
+          "Returning empty list of transactions, this should not happen at this point");
+      return [] as List<T>;
+    }
+    return returnList.map((e) => e!).toList();
+  }
+
+  // clear all data when user logs out!
   Future handleLogoutEvent() async {
     // clear wallet
     userWalletSubject.add(WalletBalancesModel.empty());

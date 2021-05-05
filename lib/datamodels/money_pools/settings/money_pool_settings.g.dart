@@ -8,7 +8,7 @@ part of 'money_pool_settings.dart';
 
 _$_MoneyPoolSettings _$_$_MoneyPoolSettingsFromJson(Map<String, dynamic> json) {
   return _$_MoneyPoolSettings(
-    showTotal: json['showTotal'] as String,
+    showTotal: json['showTotal'] as bool,
   );
 }
 

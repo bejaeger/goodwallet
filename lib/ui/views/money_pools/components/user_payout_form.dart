@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
-import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/views/money_pools/components/user_payout_form.form.dart';
 import 'package:good_wallet/ui/views/money_pools/components/user_payout_form_model.dart';

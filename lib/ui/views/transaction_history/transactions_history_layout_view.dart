@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/datamodels/transactions/transaction.dart';
 import 'package:good_wallet/enums/transaction_direction.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
@@ -69,11 +70,14 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
                         shrinkWrap: true,
                         physics: ScrollPhysics(),
                         itemBuilder: (context, index) {
+                          var data = model
+                              .getTransactionsCorrespondingToType(type)![index];
                           return TransactionListTile(
-                            transactionData:
-                                model.getTransactionsCorrespondingToType(
-                                    type)![index],
-                            inferEntryTypeFunction: model.inferTransactionType,
+                            transaction: data,
+                            style:
+                                _getTransactionsCorrespondingToTypeHistoryEntryStyle(
+                                    data, model.inferTransactionType(data)),
+                            amount: model.getAmount(data),
                           );
                         },
                       ),
@@ -84,24 +88,59 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
       ),
     );
   }
+
+  _getTransactionsCorrespondingToTypeHistoryEntryStyle(
+      Transaction data, TransactionDirection direction) {
+    return data.maybeMap(
+        donation: (value) => TransactionHistoryEntryStyle(
+              color: ColorSettings.primaryColor,
+              descriptor: "Donated to",
+              nameToDisplay: value.transactionDetails.recipientName,
+              icon:
+                  Icon(Icons.favorite, color: ColorSettings.primaryColorLight),
+            ),
+        peer2peer: (value) => TransactionHistoryEntryStyle(
+              color: direction == TransactionDirection.TransferredToPeers
+                  ? ColorSettings.primaryColorLight
+                  : MyColors.paletteTurquoise,
+              descriptor: direction == TransactionDirection.TransferredToPeers
+                  ? "Gifted to"
+                  : "Received from",
+              nameToDisplay:
+                  direction == TransactionDirection.TransferredToPeers
+                      ? value.transactionDetails.recipientName
+                      : value.transactionDetails.senderName,
+              icon: direction == TransactionDirection.TransferredToPeers
+                  ? Icon(Icons.person, color: ColorSettings.whiteTextColor)
+                  : Icon(Icons.people_rounded,
+                      color: ColorSettings.whiteTextColor),
+            ),
+        moneyPoolPayout: (value) => TransactionHistoryEntryStyle(
+              color: MyColors.paletteGreen,
+              descriptor: "From money pool",
+              nameToDisplay: value.moneyPool.name,
+              icon: Icon(Icons.people_rounded,
+                  color: ColorSettings.whiteTextColor),
+            ),
+        moneyPoolContribution: (value) => null,
+        orElse: () => null);
+  }
 }
 
 class TransactionListTile extends StatelessWidget {
-  final dynamic transactionData;
-  final Function inferEntryTypeFunction;
+  final num amount;
+  final TransactionHistoryEntryStyle style;
+  final Transaction transaction;
 
   const TransactionListTile(
       {Key? key,
-      required this.transactionData,
-      required this.inferEntryTypeFunction})
+      required this.amount,
+      required this.style,
+      required this.transaction})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var amountFormatted = "\$ ${transactionData.amount * 0.01}";
-    TransactionHistoryEntryStyle style =
-        _getTransactionsCorrespondingToTypeHistoryEntryStyle(
-            inferEntryTypeFunction(transactionData));
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -128,12 +167,13 @@ class TransactionListTile extends StatelessWidget {
           // @see https://api.flutter.dev/flutter/intl/DateFormat-class.html
           //.add_jm()
           subtitle: Text(
-            DateFormat.MMMEd().format(transactionData.createdAt.toDate()),
+            DateFormat.MMMEd().format(transaction.createdAt.toDate()),
             style: textTheme(context).bodyText2!.copyWith(
                   fontSize: 15,
                 ),
           ),
-          trailing: Text(amountFormatted, style: TextStyle(color: style.color)),
+          trailing:
+              Text(formatAmount(amount), style: TextStyle(color: style.color)),
         ),
         Divider(
           color: Colors.grey[500],
@@ -141,37 +181,5 @@ class TransactionListTile extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  _getTransactionsCorrespondingToTypeHistoryEntryStyle(
-      TransactionDirection? type) {
-    if (type == TransactionDirection.Donation) {
-      return TransactionHistoryEntryStyle(
-          color: ColorSettings.primaryColor,
-          descriptor: "Donated to",
-          nameToDisplay: transactionData.projectName,
-          icon: Icon(Icons.favorite, color: ColorSettings.primaryColorLight));
-    } else if (type == TransactionDirection.Incoming) {
-      return TransactionHistoryEntryStyle(
-          color: MyColors.paletteTurquoise,
-          descriptor: "Reveiced from",
-          nameToDisplay: transactionData.senderName,
-          icon:
-              Icon(Icons.people_rounded, color: ColorSettings.whiteTextColor));
-    } else if (type == TransactionDirection.TransferredToPeers) {
-      return TransactionHistoryEntryStyle(
-          color: ColorSettings.primaryColorLight,
-          descriptor: "Gifted to",
-          nameToDisplay: transactionData.recipientName,
-          icon: Icon(Icons.person, color: ColorSettings.whiteTextColor));
-    } else if (type == TransactionDirection.MoneyPoolPayout) {
-      return TransactionHistoryEntryStyle(
-          color: MyColors.paletteGreen,
-          descriptor: "From money pool",
-          nameToDisplay: transactionData.senderName,
-          icon:
-              Icon(Icons.people_rounded, color: ColorSettings.whiteTextColor));
-    }
-    return null;
   }
 }

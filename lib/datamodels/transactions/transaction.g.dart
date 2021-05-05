@@ -70,7 +70,7 @@ K? _$enumDecodeNullable<K, V>(
 
 const _$TransactionStatusEnumMap = {
   TransactionStatus.Initialized: 'Initialized',
-  TransactionStatus.Done: 'Done',
+  TransactionStatus.Success: 'Success',
   TransactionStatus.Pending: 'Pending',
 };
 

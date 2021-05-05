@@ -19,11 +19,10 @@ import '../services/payments/stripe_payment_service.dart';
 import '../services/qrcode/qrcode_service.dart';
 import '../services/userdata/user_data_service.dart';
 import '../ui/views/layout/navigation_bar_viewmodel.dart';
-import '../ui/views/payments/send_money_viewmodel.dart';
 import '../ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
 import '../ui/views/wallet/wallet_viewmodel.dart';
 
-final locator = StackedLocator.instance;
+final locator = StackedLocator.instance.locator;
 
 void setupLocator() {
   locator.registerLazySingleton(() => NavigationService());
@@ -34,7 +33,6 @@ void setupLocator() {
   locator.registerLazySingleton(() => StripePaymentService());
   locator.registerLazySingleton(() => GlobalGivingAPIService());
   locator.registerLazySingleton(() => WalletViewModel());
-  locator.registerLazySingleton(() => SendMoneyViewModel());
   locator.registerLazySingleton(() => TransactionHistoryLayoutViewModel());
   locator.registerLazySingleton(() => NavigationBarViewModel());
   locator.registerLazySingleton(() => MoneyPoolService());

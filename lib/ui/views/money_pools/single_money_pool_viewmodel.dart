@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_contribution.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_payout_model.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
+import 'package:good_wallet/datamodels/transactions/transaction.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
@@ -20,17 +19,17 @@ class SingleMoneyPoolViewModel extends BaseModel {
 
   final log = getLogger("single_money_pool_viewmodel.dart");
 
-  List<MoneyPoolContributionModel> contributions = [];
-  List<MoneyPoolPayoutModel> payouts = [];
+  List<MoneyPoolContribution> contributions = [];
+  List<MoneyPoolPayout> payouts = [];
 
-  MoneyPoolModel moneyPool;
+  MoneyPool moneyPool;
   SingleMoneyPoolViewModel({required this.moneyPool});
 
   Future fetchUserContributions([bool force = false]) async {
     setBusy(true);
     if (contributions.isEmpty || force) {
       contributions = await _moneyPoolService!
-          .getMoneyPoolContributions(moneyPool.moneyPoolId!);
+          .getMoneyPoolContributions(moneyPool.moneyPoolId);
     }
     setBusy(false);
   }
@@ -39,7 +38,7 @@ class SingleMoneyPoolViewModel extends BaseModel {
     setBusy(true);
     if (payouts.isEmpty || force) {
       payouts =
-          await _moneyPoolService!.getMoneyPoolPayouts(moneyPool.moneyPoolId!);
+          await _moneyPoolService!.getMoneyPoolPayouts(moneyPool.moneyPoolId);
     }
     setBusy(false);
   }
@@ -53,7 +52,7 @@ class SingleMoneyPoolViewModel extends BaseModel {
     setBusy(false);
   }
 
-  void showSearchViewAndInviteUser(MoneyPoolModel currentMoneyPool) async {
+  void showSearchViewAndInviteUser() async {
     setBusy(true);
     String? messageToShow;
     dynamic userInfo = await _navigationService!.navigateTo(Routes.searchView,
@@ -63,16 +62,15 @@ class SingleMoneyPoolViewModel extends BaseModel {
       log.i(
           "Selected user to invite to money pool with name ${userInfo.name}!");
       try {
-        if (currentMoneyPool.invitedUserIds
+        if (moneyPool.invitedUserIds
             .any((element) => element == userInfo.uid)) {
           messageToShow = "User has already been invited.";
-        } else if (currentMoneyPool.contributingUserIds
-            .contains(userInfo.uid)) {
+        } else if (moneyPool.contributingUserIds.contains(userInfo.uid)) {
           messageToShow = "User participates already in money pool.";
         } else {
           // push to firestore
           await _moneyPoolService!.addInvitedUserToMoneyPool(
-              userInfo: userInfo, moneyPool: currentMoneyPool);
+              userInfo: userInfo, moneyPool: moneyPool);
 
           // Delay makes it look more user friendly
           await Future.delayed(Duration(milliseconds: 1000));
@@ -106,7 +104,7 @@ class SingleMoneyPoolViewModel extends BaseModel {
   // Fetch and thus update money pool e.g. after contribution has been made
   Future updateMoneyPool() async {
     this.moneyPool =
-        await _moneyPoolService!.getMoneyPool(moneyPool.moneyPoolId!);
+        await _moneyPoolService!.getMoneyPool(moneyPool.moneyPoolId);
 
     // can already be done for transfer_view
     fetchUserContributions(true);

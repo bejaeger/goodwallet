@@ -1,5 +1,5 @@
 enum TransactionStatus {
   Initialized,
-  Done,
+  Success,
   Pending,
 }

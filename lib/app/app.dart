@@ -7,10 +7,8 @@ import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/causes/causes_filter_view_mobile.dart';
-import 'package:good_wallet/ui/views/causes/causes_filter_viewmodel.dart';
 import 'package:good_wallet/ui/views/causes/causes_view.dart';
 import 'package:good_wallet/ui/views/causes/causes_view_mobile.dart';
-import 'package:good_wallet/ui/views/causes/causes_viewmodel.dart';
 import 'package:good_wallet/ui/views/causes/single_project_view_mobile.dart';
 import 'package:good_wallet/ui/views/featured_applications/single_featured_app_view.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
@@ -28,8 +26,6 @@ import 'package:good_wallet/ui/views/money_pools/single_money_pool_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_cancel_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_success_view.dart';
 import 'package:good_wallet/ui/views/payments/send_money_view.dart';
-import 'package:good_wallet/ui/views/payments/send_money_view_mobile.dart';
-import 'package:good_wallet/ui/views/payments/send_money_viewmodel.dart';
 import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
 import 'package:good_wallet/ui/views/qrcode/qrcode_view_mobile.dart';
 import 'package:good_wallet/ui/views/raise_money/raise_money_view.dart';
@@ -67,7 +63,6 @@ import 'package:stacked_services/stacked_services.dart';
 
     MaterialRoute(page: SingleFeaturedAppView),
     MaterialRoute(page: MoneyPoolsView),
-    MaterialRoute(page: SendMoneyViewMobile),
     MaterialRoute(page: TransactionsView),
     MaterialRoute(page: QRCodeViewMobile),
     MaterialRoute(page: RaiseMoneyView),
@@ -90,7 +85,6 @@ import 'package:stacked_services/stacked_services.dart';
 
     // viewmodels
     LazySingleton(classType: WalletViewModel),
-    LazySingleton(classType: SendMoneyViewModel),
     LazySingleton(classType: TransactionHistoryLayoutViewModel),
     // TODO: Check whether this is deprecated
     LazySingleton(classType: NavigationBarViewModel),

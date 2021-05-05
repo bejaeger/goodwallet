@@ -1,10 +1,11 @@
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:good_wallet/datamodels/payments/transaction_model.dart';
+import 'package:good_wallet/datamodels/transactions/transaction.dart'
+    as gwmodel;
 //import 'dart:html';
 import 'package:universal_html/html.dart';
 
 class StripePaymentService {
-  Future createStripeSessionId(TransactionModel data) async {
+  Future createStripeSessionId(gwmodel.Transaction data) async {
     // calls cloud function to retrieve sessionId for
     // stripe checkout
     try {

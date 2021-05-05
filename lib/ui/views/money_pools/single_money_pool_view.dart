@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
@@ -14,7 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 
 class SingleMoneyPoolView extends StatelessWidget {
-  final MoneyPoolModel moneyPool;
+  final MoneyPool moneyPool;
   const SingleMoneyPoolView({Key? key, required this.moneyPool})
       : super(key: key);
 
@@ -60,7 +60,7 @@ class SingleMoneyPoolView extends StatelessWidget {
                       value: 2,
                       child: TextButton(
                         onPressed: () async => await model
-                            .deleteMoneyPool(model.moneyPool.moneyPoolId!),
+                            .deleteMoneyPool(model.moneyPool.moneyPoolId),
                         child: Text("Delete"),
                       ),
                     ),
@@ -113,8 +113,7 @@ class SingleMoneyPoolView extends StatelessWidget {
               SectionHeader(
                 title: "Members",
                 trailingIcon: IconButton(
-                  onPressed: () =>
-                      model.showSearchViewAndInviteUser(model.moneyPool),
+                  onPressed: () => model.showSearchViewAndInviteUser(),
                   icon: Icon(
                     Icons.add_circle_outline_rounded,
                   ),
@@ -221,12 +220,13 @@ class SingleMoneyPoolView extends StatelessWidget {
                           radius: 20,
                           backgroundColor: MyColors.paletteBlue,
                           child: Text(
-                              getInitialsFromName(contribution.userName),
+                              getInitialsFromName(
+                                  contribution.transactionDetails.senderName),
                               style:
                                   TextStyle(color: Colors.white, fontSize: 14)),
                         ),
                         title: Text(
-                          contribution.userName,
+                          contribution.transactionDetails.senderName,
                           style: TextStyle(
                             fontSize: 16.0,
                             color: Colors.black,
@@ -239,7 +239,8 @@ class SingleMoneyPoolView extends StatelessWidget {
                                 fontSize: 15,
                               ),
                         ),
-                        trailing: Text(formatAmount(contribution.amount)));
+                        trailing: Text(formatAmount(
+                            contribution.transactionDetails.amount)));
                   },
                 ),
               verticalSpaceLarge,

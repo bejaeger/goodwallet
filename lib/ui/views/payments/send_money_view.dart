@@ -19,7 +19,6 @@ class SendMoneyView extends StatelessWidget {
       viewModelBuilder: () => SendMoneyViewModel(),
       onModelReady: (model) {
         model.setPaymentReady(false);
-        model.addListenersToControllers();
         if (userInfoMap != null) {
           model.selectUser(userInfoMap!);
         }

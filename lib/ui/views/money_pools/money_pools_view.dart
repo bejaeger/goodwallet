@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
@@ -84,7 +84,7 @@ class MoneyPoolsView extends StatelessWidget {
                                       moneyPool: showCreateNew
                                           ? null
                                           : model.moneyPools[index],
-                                      onTap: (MoneyPoolModel pool) => model
+                                      onTap: (MoneyPool pool) => model
                                           .navigateToSingleMoneyPoolView(pool),
                                       onCreateMoneyPoolTapped:
                                           model.navigateToCreateMoneyPoolView,

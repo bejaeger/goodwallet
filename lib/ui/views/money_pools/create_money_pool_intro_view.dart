@@ -19,7 +19,7 @@ class CreateMoneyPoolIntroView extends StatelessWidget {
         title: "Together we can make an impact",
         description:
             "Raise funds together as a group and freely choose how to distribute the money between users eventually.",
-        backgroundColor: MyColors.lightRed.withOpacity(0.9),
+        backgroundColor: ColorSettings.primaryColor.withOpacity(0.9),
       ),
       CreateMoneyPoolInfoPage(
         title: "Raise the stakes for your games!",
@@ -107,8 +107,7 @@ class CreateMoneyPoolIntroView extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(0.0),
                         elevation: 0.0,
-                        primary:
-                            ColorSettings.primaryColorLight.withOpacity(0.8)),
+                        primary: MyColors.paletteGreen.withOpacity(0.9)),
                     child: Padding(
                       padding: const EdgeInsets.only(
                           top: 12.0, bottom: 12.0, left: 20.0, right: 20.0),
@@ -229,78 +228,3 @@ class DotsIndicator extends AnimatedWidget {
     );
   }
 }
-
-/*
-
-class MyHomePage extends StatefulWidget {
-  @override
-  State createState() => new MyHomePageState();
-}
-
-class MyHomePageState extends State<MyHomePage> {
-
-  final _controller = new PageController();
-
-  static const _kDuration = const Duration(milliseconds: 300);
-
-  static const _kCurve = Curves.ease;
-
-  final _kArrowColor = Colors.black.withOpacity(0.8);
-
-  final List<Widget> _pages = <Widget>[
-    new ConstrainedBox(
-      constraints: const BoxConstraints.expand(),
-      child: new FlutterLogo(colors: Colors.blue),
-    ),
-    new ConstrainedBox(
-      constraints: const BoxConstraints.expand(),
-      child: new FlutterLogo(style: FlutterLogoStyle.stacked, colors: Colors.red),
-    ),
-    new ConstrainedBox(
-      constraints: const BoxConstraints.expand(),
-      child: new FlutterLogo(style: FlutterLogoStyle.horizontal, colors: Colors.green),
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new IconTheme(
-        data: new IconThemeData(color: _kArrowColor),
-        child: new Stack(
-          children: <Widget>[
-            new PageView.builder(
-              physics: new AlwaysScrollableScrollPhysics(),
-              controller: _controller,
-              itemBuilder: (BuildContext context, int index) {
-                return _pages[index % _pages.length];
-              },
-            ),
-            new Positioned(
-              bottom: 0.0,
-              left: 0.0,
-              right: 0.0,
-              child: new Container(
-                color: Colors.grey[800].withOpacity(0.5),
-                padding: const EdgeInsets.all(20.0),
-                child: new Center(
-                  child: new DotsIndicator(
-                    controller: _controller,
-                    itemCount: _pages.length,
-                    onPageSelected: (int page) {
-                      _controller.animateToPage(
-                        page,
-                        duration: _kDuration,
-                        curve: _kCurve,
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-*/

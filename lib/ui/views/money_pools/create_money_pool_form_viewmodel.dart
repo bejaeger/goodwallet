@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/money_pools/money_pool_model.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
+import 'package:good_wallet/datamodels/money_pools/settings/money_pool_settings.dart';
+import 'package:good_wallet/datamodels/money_pools/users/contributing_user.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
@@ -38,10 +40,13 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
     // formValidation!
     if (isValidData()) {
       setBusy(true);
-      MoneyPoolModel moneyPool = MoneyPoolModel(
+      MoneyPool moneyPool = MoneyPool(
         adminName: currentUser.fullName,
         adminUID: currentUser.id,
         name: nameValue!,
+        total: 0,
+        moneyPoolSettings: MoneyPoolSettings(showTotal: true),
+        currency: 'cad',
         description: descriptionValue,
         contributingUserIds: [currentUser.id],
         contributingUsers: [
@@ -53,8 +58,8 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
       );
 
       try {
-        await _moneyPoolService!
-            .createMoneyPool(moneyPool, currentUser.id, currentUser.fullName);
+        moneyPool = await _moneyPoolService!.createAndReturnMoneyPool(
+            moneyPool, currentUser.id, currentUser.fullName);
       } catch (e) {
         log.e("Could not create money pool, error: ${e.toString()}");
         setValidationMessage(
@@ -76,7 +81,7 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
     }
   }
 
-  Future navigateToSingleMoneyPool(MoneyPoolModel moneyPool) async {
+  Future navigateToSingleMoneyPool(MoneyPool moneyPool) async {
     await _navigationService!.navigateTo(Routes.singleMoneyPoolView,
         arguments: SingleMoneyPoolViewArguments(moneyPool: moneyPool));
   }
