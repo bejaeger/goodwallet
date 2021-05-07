@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_wallet/datamodels/causes/preview_details/project_preview_details.dart';
+import 'package:good_wallet/datamodels/causes/preview_details/project_preview_info.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool_preview_info.dart';
 import 'package:good_wallet/datamodels/transfers/transfer_details.dart';
 import 'package:good_wallet/enums/transfer_status.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
@@ -24,14 +25,16 @@ class MoneyTransfer with _$MoneyTransfer {
   }
 
   // Transaction between peers
-  //
-  //
+  // From the user perspective this can still be
+  // an outgoing or incoming transaction
   @JsonSerializable(explicitToJson: true)
   const factory MoneyTransfer.peer2peer({
     required TransferDetails transferDetails,
     required dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
+    // Important: The json key name will be used in the cloud functions.
+    @JsonKey(name: "Peer2Peer")
     @Default(TransferType.Peer2Peer)
         TransferType type,
     @JsonKey(
@@ -48,10 +51,11 @@ class MoneyTransfer with _$MoneyTransfer {
   @JsonSerializable(explicitToJson: true)
   const factory MoneyTransfer.donation({
     required TransferDetails transferDetails,
-    required ProjectPreviewDetails projectPreviewDetails,
+    required ProjectPreviewInfo projectInfo,
     required dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
+    @JsonKey(name: "Donation")
     @Default(TransferType.Donation)
         TransferType type,
     @JsonKey(
@@ -68,9 +72,11 @@ class MoneyTransfer with _$MoneyTransfer {
   @JsonSerializable(explicitToJson: true)
   const factory MoneyTransfer.moneyPoolContribution({
     required TransferDetails transferDetails,
+    required MoneyPoolPreviewInfo moneyPoolInfo,
     required dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
+    @JsonKey(name: "MoneyPoolContribution")
     @Default(TransferType.MoneyPoolContribution)
         TransferType type,
     @JsonKey(
@@ -80,6 +86,30 @@ class MoneyTransfer with _$MoneyTransfer {
     @Default("placeholder")
         String transferId,
   }) = MoneyPoolContribution;
+
+  // Transaction from money pool to user
+  //
+  //
+  @JsonSerializable(explicitToJson: true)
+  const factory MoneyTransfer.moneyPoolPayout({
+    required TransferDetails transferDetails,
+    required MoneyPoolPreviewInfo moneyPoolInfo,
+    // id of money pool payout that stores
+    // entire info of money pool payout
+    required String payoutId,
+    required dynamic createdAt,
+    @Default(TransferStatus.Initialized)
+        TransferStatus status,
+    @JsonKey(name: "MoneyPoolPayout")
+    @Default(TransferType.MoneyPoolPayout)
+        TransferType type,
+    @JsonKey(
+      name: "transferId",
+      toJson: MoneyTransfer._checkIftransferIdIsSet,
+    )
+    @Default("placeholder")
+        String transferId,
+  }) = MoneyPoolPayoutTransfer;
 
   factory MoneyTransfer.fromJson(Map<String, dynamic> json) =>
       _$MoneyTransferFromJson(json);

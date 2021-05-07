@@ -74,28 +74,31 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
 
 /* This needs to be changed to onUpdate after the entire stripe transaction has been dealt with! */
 exports.updateGoodWallet = functions.firestore
-  .document('payments/{payId}')
+  .document('payments/{transferId}')
   .onCreate(async (snap, context) => {
     try {
       // Add payment_method here and so to transaction model!
-      const { transferDetails } = snap.data();
-      const recipientId = transferDetails["recipientId"];
-      const senderId = transferDetails["recipientId"];
-      const amount = transferDetails["amount"];
+      const { transferDetails, type } = snap.data();
 
-      const increment = admin.firestore.FieldValue.increment(amount);
-      await db.collection("users").doc(recipientId).update({
-        currentBalance: increment,
-        raised: increment
-      });
-      await db.collection("users").doc(senderId).update({
-        transferredToPeers: increment
-      });
+      if (type == "Peer2Peer") { // peer 2 peer transfer
+        const recipientId = transferDetails["recipientId"];
+        const senderId = transferDetails["recipientId"];
+        const amount = transferDetails["amount"];
+
+        const increment = admin.firestore.FieldValue.increment(amount);
+        await db.collection("users").doc(recipientId).update({
+          currentBalance: increment,
+          raised: increment
+        });
+        await db.collection("users").doc(senderId).update({
+          transferredToPeers: increment
+        });
+      }
 
       return;
     } catch (error) {
       await snap.ref.set({ error: userFacingMessage(error) }, { merge: true });
-      reportError(error.message, { transferId: context.params.payId });
+      reportError(error.message, { transferId: context.params.transferId });
     }
 
   }
@@ -194,6 +197,9 @@ exports.processMoneyPoolPayout = functions.firestore
       });
 
       await batch.commit();
+
+      // Save money pool payout document in firestore payments collection?
+      //db.collection("payments").add();
 
       return;
     } catch (error) {
