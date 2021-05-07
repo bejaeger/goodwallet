@@ -5,9 +5,8 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/causes/preview_details/project_preview_details.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
-import 'package:good_wallet/datamodels/transactions/transaction.dart'
-    as gwmodel;
-import 'package:good_wallet/datamodels/transactions/transaction_details.dart';
+import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
+import 'package:good_wallet/datamodels/transfers/transfer_details.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
@@ -195,7 +194,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
             await _showConfirmationBottomSheet(amount!, receiverInfo.name);
         if (sheetResponse?.confirmed == true) {
           setBusy(true);
-          await _dummyPaymentService.processTransaction(data);
+          await _dummyPaymentService.processTransfer(data);
           setBusy(false);
           _snackbarService!.showSnackbar(
               duration: Duration(seconds: 2),
@@ -235,18 +234,17 @@ class TransferFundsAmountViewModel extends FormViewModel {
     setBusy(true);
     if (sheetResponse?.confirmed == false) {
       // FOR now, implemented dummy payment processing here
-      gwmodel.MoneyPoolContribution contribution =
-          gwmodel.MoneyPoolContribution(
-              transactionDetails: TransactionDetails(
-                recipientId: receiverInfo.moneyPoolId,
-                recipientName: receiverInfo.name,
-                senderId: currentUser.id,
-                senderName: currentUser.fullName,
-                currency: 'cad',
-                amount: scaleAmountForStripe(amount!),
-                sourceType: moneySource,
-              ),
-              createdAt: FieldValue.serverTimestamp());
+      MoneyPoolContribution contribution = MoneyPoolContribution(
+          transferDetails: TransferDetails(
+            recipientId: receiverInfo.moneyPoolId,
+            recipientName: receiverInfo.name,
+            senderId: currentUser.id,
+            senderName: currentUser.fullName,
+            currency: 'cad',
+            amount: scaleAmountForStripe(amount!),
+            sourceType: moneySource,
+          ),
+          createdAt: FieldValue.serverTimestamp());
       _dummyPaymentService.processMoneyPoolContribution(contribution);
       log.i("Processed donation");
       await _showAndAwaitSnackbar("Succesfully contributed to money pool!");
@@ -257,10 +255,10 @@ class TransferFundsAmountViewModel extends FormViewModel {
     setBusy(false);
   }
 
-  gwmodel.Transaction prepareTransactionData() {
+  MoneyTransfer prepareTransactionData() {
     try {
-      gwmodel.Transaction data = gwmodel.Transaction.peer2peer(
-        transactionDetails: TransactionDetails(
+      MoneyTransfer data = MoneyTransfer.peer2peer(
+        transferDetails: TransferDetails(
           recipientId: receiverInfo.uid,
           recipientName: receiverInfo.name,
           senderId: currentUser.id,
@@ -279,12 +277,12 @@ class TransferFundsAmountViewModel extends FormViewModel {
     }
   }
 
-  gwmodel.Transaction prepareDonationData() {
+  MoneyTransfer prepareDonationData() {
     try {
-      gwmodel.Transaction data = gwmodel.Transaction.donation(
+      MoneyTransfer data = MoneyTransfer.donation(
         projectPreviewDetails:
             ProjectPreviewDetails(projectName: receiverInfo.title),
-        transactionDetails: TransactionDetails(
+        transferDetails: TransferDetails(
           recipientId: "DummyId",
           recipientName: receiverInfo.title,
           senderId: currentUser.id,

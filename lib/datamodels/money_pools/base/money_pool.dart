@@ -2,8 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:good_wallet/datamodels/money_pools/settings/money_pool_settings.dart';
 import 'package:good_wallet/datamodels/money_pools/users/contributing_user.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
-import 'package:good_wallet/exceptions/money_pool_datamodel_exception.dart';
-import 'package:good_wallet/exceptions/transaction_datamodel_exception.dart';
+import 'package:good_wallet/exceptions/datamodel_exception.dart';
 
 part 'money_pool.freezed.dart';
 part 'money_pool.g.dart';
@@ -12,9 +11,9 @@ part 'money_pool.g.dart';
 class MoneyPool with _$MoneyPool {
   static String _checkIfMoneyPoolIdIsSet(String id) {
     if (id == "placeholder") {
-      throw MoneyPoolDataModelException(
+      throw DataModelException(
           message:
-              "You can't serialize a money pool that still has a placeholder for the 'moneyPoolId'!",
+              "MoneyPool: You can't serialize a money pool that still has a placeholder for the 'moneyPoolId'!",
           devDetails:
               "Please provide a valid 'moneyPoolId' by creating a new 'MoneyPool' with the copyWith constructor and adding the firestore DocumentReference id as 'moneyPoolId'");
     } else

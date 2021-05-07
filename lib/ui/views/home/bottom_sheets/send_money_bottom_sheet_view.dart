@@ -4,7 +4,6 @@ import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/views/home/bottom_sheets/send_money_bottom_sheet_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
-import 'package:good_wallet/utils/datamodel_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -44,7 +43,7 @@ class SendMoneyBottomSheetView extends StatelessWidget {
                                   model.navigateToTransferFundsAmountView(
                                       model.latestTransactions[index]),
                               name: model.latestTransactions[index]
-                                  .transactionDetails.recipientName),
+                                  .transferDetails.recipientName),
                         ],
                       ),
                     ),

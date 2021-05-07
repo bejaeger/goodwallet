@@ -36,8 +36,9 @@ class SingleMoneyPoolView extends StatelessWidget {
               AlternativeScreenHeaderImage(
                 // TODO: Add picture if it's added by the user!
                 backgroundWidget: Container(
-                  color: MyColors.paletteTurquoise.withOpacity(0.9),
+                  color: MyColors.paletteGreen2.withOpacity(0.7),
                 ),
+                opacityOfBlackGradient: 0.4,
                 imageHeight: 200,
                 title: model.moneyPool.name,
                 onTopLeftButtonPressed: model.navigateBack,
@@ -194,12 +195,16 @@ class SingleMoneyPoolView extends StatelessWidget {
                             ),
                           ),
                           subtitle: Text(
-                            "DATE",
+                            formatDate(payout.createdAt.toDate()),
                             style: textTheme(context).bodyText2!.copyWith(
                                   fontSize: 15,
                                 ),
                           ),
-                          trailing: Text("Details")),
+                          trailing: TextButton(
+                            onPressed: () =>
+                                model.showMoneyPoolPayoutDetailsDialog(payout),
+                            child: Text("Details"),
+                          )),
                     );
                   },
                 ),
@@ -221,12 +226,12 @@ class SingleMoneyPoolView extends StatelessWidget {
                           backgroundColor: MyColors.paletteBlue,
                           child: Text(
                               getInitialsFromName(
-                                  contribution.transactionDetails.senderName),
+                                  contribution.transferDetails.senderName),
                               style:
                                   TextStyle(color: Colors.white, fontSize: 14)),
                         ),
                         title: Text(
-                          contribution.transactionDetails.senderName,
+                          contribution.transferDetails.senderName,
                           style: TextStyle(
                             fontSize: 16.0,
                             color: Colors.black,
@@ -239,8 +244,8 @@ class SingleMoneyPoolView extends StatelessWidget {
                                 fontSize: 15,
                               ),
                         ),
-                        trailing: Text(formatAmount(
-                            contribution.transactionDetails.amount)));
+                        trailing: Text(
+                            formatAmount(contribution.transferDetails.amount)));
                   },
                 ),
               verticalSpaceLarge,

@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
-import 'package:good_wallet/datamodels/money_pools/users/paid_out_user.dart';
-import 'package:good_wallet/datamodels/transactions/transaction_details.dart';
+import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
+import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
+import 'package:good_wallet/datamodels/transfers/transfer_details.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
@@ -16,7 +18,6 @@ import 'package:good_wallet/ui/views/money_pools/components/user_payout_form_mod
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'package:good_wallet/datamodels/transactions/transaction.dart';
 
 class DisburseMoneyPoolViewModel extends BaseModel {
   MoneyPool moneyPool;
@@ -94,12 +95,12 @@ class DisburseMoneyPoolViewModel extends BaseModel {
   }
 
   //
-  Transaction _getPayoutDataFromForms() {
+  MoneyPoolPayout _getPayoutDataFromForms() {
     List<String> paidOutIds = [];
-    List<TransactionDetails> allDetails = [];
+    List<TransferDetails> allDetails = [];
     try {
       userPayoutForms.forEach((element) {
-        TransactionDetails details = TransactionDetails(
+        TransferDetails details = TransferDetails(
           senderName: moneyPool.name,
           senderId: moneyPool.moneyPoolId,
           sourceType: MoneySource.MoneyPool,
@@ -111,8 +112,8 @@ class DisburseMoneyPoolViewModel extends BaseModel {
         allDetails.add(details);
         paidOutIds.add(element.userPayoutFormModel.selectedUser!.uid);
       });
-      Transaction data = Transaction.moneyPoolPayout(
-          transactionsDetails: allDetails,
+      MoneyPoolPayout data = MoneyPoolPayout(
+          transfersDetails: allDetails,
           moneyPool: moneyPool,
           paidOutUsersIds: paidOutIds,
           createdAt: firestore.FieldValue.serverTimestamp());
@@ -148,7 +149,7 @@ class DisburseMoneyPoolViewModel extends BaseModel {
       // 3
       try {
         setBusy(true);
-        Transaction data = _getPayoutDataFromForms();
+        MoneyPoolPayout data = _getPayoutDataFromForms();
         // 4 & 5
         // TODO: This could also provide a return value to be sure things have been dealt with
         await _moneyPoolService!.submitMoneyPoolPayout(data);

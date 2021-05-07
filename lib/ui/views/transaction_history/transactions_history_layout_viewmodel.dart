@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:good_wallet/app/app.locator.dart';
-import 'package:good_wallet/datamodels/transactions/transaction.dart';
-import 'package:good_wallet/enums/transaction_direction.dart';
+import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
+import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
+import 'package:good_wallet/enums/transfer_direction.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -38,18 +39,21 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
     super.dispose();
   }
 
-  num getAmount(Transaction data) {
-    return data.map(
-        peer2peer: (value) => value.transactionDetails.amount,
-        donation: (value) => value.transactionDetails.amount,
-        moneyPoolContribution: (value) => value.transactionDetails.amount,
-        moneyPoolPayout: (value) => value.transactionsDetails
-            .where((e) => e.recipientId == currentUser.id)
-            .first
-            .amount);
+  num getAmount(dynamic data) {
+    if (data is MoneyPoolPayout) {
+      return data.transfersDetails
+          .where((details) => details.recipientId == currentUser.id)
+          .first
+          .amount;
+    } else {
+      return data.map(
+          peer2peer: (value) => value.transferDetails.amount,
+          donation: (value) => value.transferDetails.amount,
+          moneyPoolContribution: (value) => value.transferDetails.amount);
+    }
   }
 
-  Future<void> initialize([TransactionDirection? type]) async {
+  Future<void> initialize([TransferDirection? type]) async {
     setBusy(true);
     if (type == null) {
       //await listenToWalletTransactions();
@@ -57,13 +61,13 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
       await fetchListOfTransactionsToPeers();
       await fetchListOfIncomingTransactions();
       await buildListOfWalletTransactions();
-    } else if (type == TransactionDirection.Donation) {
+    } else if (type == TransferDirection.Donation) {
       await fetchListOfDonations();
-    } else if (type == TransactionDirection.TransferredToPeers) {
+    } else if (type == TransferDirection.TransferredToPeers) {
       await fetchListOfTransactionsToPeers();
-    } else if (type == TransactionDirection.Incoming) {
+    } else if (type == TransferDirection.Incoming) {
       await fetchListOfIncomingTransactions();
-    } else if (type == TransactionDirection.InOrOut) {
+    } else if (type == TransferDirection.InOrOut) {
       await buildListOfWalletTransactions();
     }
     setBusy(false);
@@ -118,67 +122,78 @@ class TransactionHistoryLayoutViewModel extends BaseModel {
 
   // helper function that figures out transaction
   // type based on transaction data
-  TransactionDirection inferTransactionType(Transaction transactionData) {
-    TransactionDirection direction = transactionData.maybeMap(
-        peer2peer: (value) {
-          if (value.transactionDetails.senderId == currentUser.id &&
-              value.transactionDetails.senderId == currentUser.id) {
-            return TransactionDirection.Committed;
-          }
-          if (value.transactionDetails.senderId == currentUser.id) {
-            return TransactionDirection.TransferredToPeers;
-          }
-          if (value.transactionDetails.recipientId == currentUser.id) {
-            return TransactionDirection.ReceivedFromPeers;
-          }
-          return TransactionDirection.Invalid;
-        },
-        donation: (value) => TransactionDirection.Donation,
-        moneyPoolContribution: (value) =>
-            TransactionDirection.MoneyPoolContribution,
-        moneyPoolPayout: (value) => TransactionDirection.MoneyPoolPayout,
-        orElse: () => TransactionDirection.Invalid);
-    log.v("Inferred transaction direction: $direction");
-    return direction;
+  TransferDirection inferTransactionType(dynamic transactionData) {
+    if (transactionData is MoneyPoolPayout) {
+      return TransferDirection.MoneyPoolPayout;
+    } else if (transactionData is MoneyTransfer) {
+      TransferDirection direction = transactionData.maybeMap(
+          // peer 2 peer transaction could go in 3 directions
+          peer2peer: (value) {
+            if (value.transferDetails.senderId == currentUser.id &&
+                value.transferDetails.senderId == currentUser.id) {
+              return TransferDirection.Committed;
+            }
+            if (value.transferDetails.senderId == currentUser.id) {
+              return TransferDirection.TransferredToPeers;
+            }
+            if (value.transferDetails.recipientId == currentUser.id) {
+              return TransferDirection.ReceivedFromPeers;
+            }
+            log.wtf(
+                "Found unknown type of transaction data. This should never happen, please check your code!");
+
+            return TransferDirection.Invalid;
+          },
+          donation: (value) => TransferDirection.Donation,
+          moneyPoolContribution: (value) =>
+              TransferDirection.MoneyPoolContribution,
+          orElse: () => TransferDirection.Invalid);
+      log.v("Inferred transaction direction: $direction");
+      return direction;
+    } else {
+      log.wtf(
+          "Found unknown type of transaction data. This should never happen, please check your code!");
+      return TransferDirection.Invalid;
+    }
   }
 
   void navigateBack() => _navigationService!.back();
 
-  List<dynamic>? getTransactionsCorrespondingToType(TransactionDirection type) {
-    if (type == TransactionDirection.Donation) {
+  List<dynamic>? getTransactionsCorrespondingToType(TransferDirection type) {
+    if (type == TransferDirection.Donation) {
       return listOfDonations;
-    } else if (type == TransactionDirection.Incoming) {
+    } else if (type == TransferDirection.Incoming) {
       return listOfIncomingTransactions;
-    } else if (type == TransactionDirection.TransferredToPeers) {
+    } else if (type == TransferDirection.TransferredToPeers) {
       return listOfTransactionsToPeers;
-    } else if (type == TransactionDirection.InOrOut) {
+    } else if (type == TransferDirection.InOrOut) {
       return listOfWalletTransactions;
     }
     return null;
   }
 
-  num getBalanceCorrespondingToType(TransactionDirection type) {
-    if (type == TransactionDirection.Donation) {
+  num getBalanceCorrespondingToType(TransferDirection type) {
+    if (type == TransferDirection.Donation) {
       return userWallet.donations;
-    } else if (type == TransactionDirection.Incoming) {
+    } else if (type == TransferDirection.Incoming) {
       return userWallet.raised;
-    } else if (type == TransactionDirection.TransferredToPeers) {
+    } else if (type == TransferDirection.TransferredToPeers) {
       return userWallet.transferredToPeers;
-    } else if (type == TransactionDirection.InOrOut) {
+    } else if (type == TransferDirection.InOrOut) {
       return userWallet.currentBalance;
     } else {
       return -1;
     }
   }
 
-  String getTitleCorrespondingToType(TransactionDirection type) {
-    if (type == TransactionDirection.Donation) {
+  String getTitleCorrespondingToType(TransferDirection type) {
+    if (type == TransferDirection.Donation) {
       return "Total Donations";
-    } else if (type == TransactionDirection.Incoming) {
+    } else if (type == TransferDirection.Incoming) {
       return "Total Raised";
-    } else if (type == TransactionDirection.TransferredToPeers) {
+    } else if (type == TransferDirection.TransferredToPeers) {
       return "Total Gifted";
-    } else if (type == TransactionDirection.InOrOut) {
+    } else if (type == TransferDirection.InOrOut) {
       return "Good Wallet Balance";
     } else
       return "";

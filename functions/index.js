@@ -78,10 +78,10 @@ exports.updateGoodWallet = functions.firestore
   .onCreate(async (snap, context) => {
     try {
       // Add payment_method here and so to transaction model!
-      const { transactionDetails } = snap.data();
-      const recipientId = transactionDetails["recipientId"];
-      const senderId = transactionDetails["recipientId"];
-      const amount = transactionDetails["amount"];
+      const { transferDetails } = snap.data();
+      const recipientId = transferDetails["recipientId"];
+      const senderId = transferDetails["recipientId"];
+      const amount = transferDetails["amount"];
 
       const increment = admin.firestore.FieldValue.increment(amount);
       await db.collection("users").doc(recipientId).update({
@@ -95,9 +95,7 @@ exports.updateGoodWallet = functions.firestore
       return;
     } catch (error) {
       await snap.ref.set({ error: userFacingMessage(error) }, { merge: true });
-      reportError(error, { transactionID: context.params.payId });
-      reportError(error.message, { transactionID: context.params.payId });
-      reportError(error.data, { transactionID: context.params.payId });
+      reportError(error.message, { transferId: context.params.payId });
     }
 
   }
@@ -108,8 +106,8 @@ exports.updateGoodWalletAfterDonation = functions.firestore
   .document('users/{userId}/donations/{donationId}')
   .onCreate(async (snap, context) => {
     try {
-      const { transactionDetails } = snap.data();
-      const amount = transactionDetails["amount"];
+      const { transferDetails } = snap.data();
+      const amount = transferDetails["amount"];
 
       const deduct = admin.firestore.FieldValue.increment(-amount);
       const add = admin.firestore.FieldValue.increment(amount);
@@ -121,9 +119,7 @@ exports.updateGoodWalletAfterDonation = functions.firestore
       return;
     } catch (error) {
       await snap.ref.set({ error: userFacingMessage(error) }, { merge: true });
-      reportError(error, { userId: context.params.donationId });
       reportError(error.message, { userId: context.params.donationId });
-      reportError(error.data, { userId: context.params.donationId });
     }
   }
   );
@@ -135,10 +131,10 @@ exports.processMoneyPoolContribution = functions.firestore
   .document('moneypools/{poolId}/moneyPoolContributions/{contributionId}')
   .onCreate(async (snap, context) => {
     try {
-      // Add payment_method here and so to transaction model!
-      const { transactionDetails } = snap.data();
-      const amount = transactionDetails["amount"];
-      const uid = transactionDetails["senderId"];
+      // Add payment_method here and so to transfer model!
+      const { transferDetails } = snap.data();
+      const amount = transferDetails["amount"];
+      const uid = transferDetails["senderId"];
 
       // update contributingUsers array
       let snapshot = await db.collection("moneypools").doc(context.params.poolId).get();
@@ -160,9 +156,7 @@ exports.processMoneyPoolContribution = functions.firestore
       return;
     } catch (error) {
       await snap.ref.set({ error: userFacingMessage(error) }, { merge: true });
-      reportError(error, { poolId: context.params.poolId });
       reportError(error.message, { poolId: context.params.poolId });
-      reportError(error.data, { poolId: context.params.poolId });
     }
 
   }
@@ -176,13 +170,13 @@ exports.processMoneyPoolPayout = functions.firestore
     try {
 
       // update balances for each user
-      const { transactionsDetails, moneyPool } = snap.data();
+      const { transfersDetails, moneyPool } = snap.data();
 
       // Get a new write batch
       const batch = db.batch();
 
       let totalAmount = 0;
-      transactionsDetails.forEach(async details => {
+      transfersDetails.forEach(details => {
         totalAmount = totalAmount + details.amount;
         const increment = admin.firestore.FieldValue.increment(details.amount);
         const docRef = db.collection("users").doc(details.recipientId);
@@ -204,9 +198,7 @@ exports.processMoneyPoolPayout = functions.firestore
       return;
     } catch (error) {
       await snap.ref.set({ error: userFacingMessage(error) }, { merge: true });
-      reportError(error, { payoutId: context.params.payoutId });
       reportError(error.message, { payoutId: context.params.payoutId });
-      reportError(error.data, { payoutId: context.params.payoutId });
     }
 
   }

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/enums/transaction_direction.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
-import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
-import 'package:good_wallet/ui/views/transaction_history/transactions_history_layout_view.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
-import 'package:good_wallet/ui/widgets/small_wallet_card.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
 // Layout for view using a tab bar

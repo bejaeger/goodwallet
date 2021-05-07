@@ -10,6 +10,7 @@ class AlternativeScreenHeaderImage extends StatelessWidget {
   final Widget? topLeftWidget;
   final Widget? topRightWidget;
   final Widget? bottomRightWidget;
+  final double opacityOfBlackGradient;
   final double imageHeight;
 
   const AlternativeScreenHeaderImage(
@@ -20,7 +21,8 @@ class AlternativeScreenHeaderImage extends StatelessWidget {
       this.topRightWidget,
       this.imageHeight = 250,
       this.bottomRightWidget,
-      this.topLeftWidget})
+      this.topLeftWidget,
+      this.opacityOfBlackGradient = 0.6})
       : super(key: key);
 
   @override
@@ -43,7 +45,7 @@ class AlternativeScreenHeaderImage extends StatelessWidget {
                 //stops: [0.0, 1.0],
                 colors: [
                   Colors.transparent,
-                  MyColors.black87.withOpacity(0.6),
+                  MyColors.black87.withOpacity(opacityOfBlackGradient),
                 ],
               ),
             ),

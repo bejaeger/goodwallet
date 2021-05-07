@@ -1,4 +1,4 @@
-enum TransactionType {
+enum TransferType {
   Peer2Peer,
   Donation,
   MoneyPoolContribution,

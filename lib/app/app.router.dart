@@ -16,7 +16,7 @@ import '../datamodels/user/public_user_info.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/fund_transfer_type.dart';
 import '../enums/search_type.dart';
-import '../enums/transaction_direction.dart';
+import '../enums/transfer_direction.dart';
 import '../ui/views/causes/causes_filter_view_mobile.dart';
 import '../ui/views/causes/causes_view.dart';
 import '../ui/views/causes/causes_view_mobile.dart';
@@ -466,9 +466,9 @@ class MoneyPoolsViewArguments {
 /// TransactionsView arguments holder class
 class TransactionsViewArguments {
   final Key? key;
-  final TransactionDirection historyType;
+  final TransferDirection historyType;
   TransactionsViewArguments(
-      {this.key, this.historyType = TransactionDirection.InOrOut});
+      {this.key, this.historyType = TransferDirection.InOrOut});
 }
 
 /// QRCodeViewMobile arguments holder class

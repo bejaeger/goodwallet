@@ -1,14 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
-import 'package:good_wallet/datamodels/transactions/transaction.dart';
+import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
+import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
 import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
+import 'package:good_wallet/utils/currency_formatting_helpers.dart';
+import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 
@@ -16,6 +18,7 @@ class SingleMoneyPoolViewModel extends BaseModel {
   final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
   final NavigationService? _navigationService = locator<NavigationService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
+  final DialogService? _dialogService = locator<DialogService>();
 
   final log = getLogger("single_money_pool_viewmodel.dart");
 
@@ -73,7 +76,7 @@ class SingleMoneyPoolViewModel extends BaseModel {
               userInfo: userInfo, moneyPool: moneyPool);
 
           // Delay makes it look more user friendly
-          await Future.delayed(Duration(milliseconds: 1000));
+          await Future.delayed(Duration(milliseconds: 500));
           // add to invitedUsers
           messageToShow = "Invited ${userInfo.name}";
         }
@@ -110,6 +113,23 @@ class SingleMoneyPoolViewModel extends BaseModel {
     fetchUserContributions(true);
     fetchPayouts(true);
     notifyListeners();
+  }
+
+  Future showMoneyPoolPayoutDetailsDialog(MoneyPoolPayout data) async {
+    List<String> paidOutUserNames = [];
+    List<num> paidOutAmounts = [];
+    data.transfersDetails.forEach((element) {
+      paidOutUserNames.add(element.recipientName);
+      paidOutAmounts.add(element.amount);
+    });
+    List<String> newList = [
+      for (int i = 0; i < paidOutUserNames.length; i += 1)
+        paidOutUserNames[i] + " -> " + formatAmount(paidOutAmounts[i])
+    ];
+    await _dialogService!.showDialog(
+        title: "Money pool payout",
+        description:
+            "Date: ${formatDate(data.createdAt.toDate())}, paid out users: ${newList.join(", ")}");
   }
 
   ////////////////////////////////////////////////////

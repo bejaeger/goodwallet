@@ -1,4 +1,4 @@
-enum TransactionStatus {
+enum TransferStatus {
   Initialized,
   Success,
   Pending,

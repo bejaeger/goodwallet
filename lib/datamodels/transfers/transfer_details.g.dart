@@ -1,14 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'transaction_details.dart';
+part of 'transfer_details.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_TransactionDetails _$_$_TransactionDetailsFromJson(
-    Map<String, dynamic> json) {
-  return _$_TransactionDetails(
+_$_TransferDetails _$_$_TransferDetailsFromJson(Map<String, dynamic> json) {
+  return _$_TransferDetails(
     recipientId: json['recipientId'] as String,
     recipientName: json['recipientName'] as String,
     senderId: json['senderId'] as String,
@@ -19,8 +18,7 @@ _$_TransactionDetails _$_$_TransactionDetailsFromJson(
   );
 }
 
-Map<String, dynamic> _$_$_TransactionDetailsToJson(
-        _$_TransactionDetails instance) =>
+Map<String, dynamic> _$_$_TransferDetailsToJson(_$_TransferDetails instance) =>
     <String, dynamic>{
       'recipientId': instance.recipientId,
       'recipientName': instance.recipientName,

@@ -55,10 +55,8 @@ class GiveBottomSheetView extends StatelessWidget {
                                         percentage: 0.8),
                                     child: Center(
                                       child: Text(
-                                          model
-                                              .latestDonations[index]
-                                              .projectPreviewDetails
-                                              .projectName,
+                                          model.latestDonations[index]
+                                              .transferDetails.recipientName,
                                           style: textTheme(context).headline5),
                                     ),
                                   ),

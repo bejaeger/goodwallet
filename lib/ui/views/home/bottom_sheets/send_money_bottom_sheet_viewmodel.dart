@@ -1,8 +1,7 @@
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/transactions/transaction.dart';
+import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
-import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -11,7 +10,7 @@ import 'package:good_wallet/utils/logger.dart';
 class SendMoneyBottomSheetViewModel extends BaseModel {
   final NavigationService? _navigationService = locator<NavigationService>();
 
-  final List<Peer2PeerTransaction> latestTransactions;
+  final List<MoneyTransfer> latestTransactions;
   SendMoneyBottomSheetViewModel({required this.latestTransactions});
   final log = getLogger("send_money_bottom_sheet_viewmodel.dart");
 
@@ -24,11 +23,10 @@ class SendMoneyBottomSheetViewModel extends BaseModel {
         arguments: QRCodeViewMobileArguments(initialIndex: 0));
   }
 
-  void navigateToTransferFundsAmountView(
-      Peer2PeerTransaction previousTransaction) {
+  void navigateToTransferFundsAmountView(MoneyTransfer previousTransaction) {
     var userInfo = PublicUserInfo(
-        name: previousTransaction.transactionDetails.recipientName,
-        uid: previousTransaction.transactionDetails.recipientId);
+        name: previousTransaction.transferDetails.recipientName,
+        uid: previousTransaction.transferDetails.recipientId);
     _navigationService!.navigateTo(
       Routes.transferFundsAmountView,
       arguments: TransferFundsAmountViewArguments(

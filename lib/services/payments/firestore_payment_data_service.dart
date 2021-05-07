@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:good_wallet/datamodels/transactions/transaction.dart'
-    as gwmodel;
-import 'package:good_wallet/enums/transaction_status.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
+import 'package:good_wallet/enums/transfer_status.dart';
 
 class FirestorePaymentDataService {
   final CollectionReference _paymentsCollectionReference =
@@ -30,7 +28,7 @@ class FirestorePaymentDataService {
     return documentSnapshot;
   }
 
-  Future createPaymentIntent(gwmodel.Transaction data, var uid) async {
+  Future createPaymentIntent(MoneyTransfer data, var uid) async {
     // Create document in firestore that stands for a transaction.
     // If a document exist in the paymentIntent collection, it is
     // first double-checked whether it's processed already by the good wallet
@@ -84,9 +82,9 @@ class FirestorePaymentDataService {
         await getLatestPaymentIntentDocSnapshot(uid);
     if (documentsSnapshot.size == 1) {
       // transfer good dollars
-      var data = gwmodel.Transaction.fromJson(documentsSnapshot.docs[0].data());
-      var newData = data.copyWith(status: TransactionStatus.Success);
-      var docRef = _paymentsCollectionReference.doc(newData.transactionId);
+      var data = MoneyTransfer.fromJson(documentsSnapshot.docs[0].data());
+      var newData = data.copyWith(status: TransferStatus.Success);
+      var docRef = _paymentsCollectionReference.doc(newData.transferId);
       await docRef.set(newData.toJson());
       print("INFO: Deleting payment intent document.");
       await documentsSnapshot.docs[0].reference.delete();

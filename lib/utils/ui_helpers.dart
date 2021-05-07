@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
+import 'package:intl/intl.dart';
 
 const Widget horizontalSpaceTiny = SizedBox(width: 5.0);
 const Widget horizontalSpaceSmall = SizedBox(width: 10.0);
@@ -63,6 +64,10 @@ double screenWidthWithoutPadding(BuildContext context, {double? percentage}) =>
 
 isDesktop(BuildContext context) => MediaQuery.of(context).size.width > 600;
 TextTheme textTheme(BuildContext context) => Theme.of(context).textTheme;
+
+String formatDate(DateTime timestamp) {
+  return DateFormat.MMMEd().format(timestamp);
+}
 
 class CenteredView extends StatelessWidget {
   final maxWidth;

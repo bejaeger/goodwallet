@@ -1,8 +1,7 @@
 // PMs job
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:good_wallet/datamodels/transactions/transaction.dart'
-    as gwmodel;
-import 'package:good_wallet/datamodels/transactions/transaction_details.dart';
+import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
+import 'package:good_wallet/datamodels/transfers/transfer_details.dart';
 import 'package:good_wallet/utils/logger.dart';
 
 class DummyPaymentService {
@@ -16,11 +15,11 @@ class DummyPaymentService {
 
   // get reference to collection we want to add a document to
   // that holds the relevant information for the donation.
-  Future processDonation(gwmodel.Transaction transaction, String uid) async {
+  Future processDonation(MoneyTransfer transfer, String uid) async {
     try {
       var docRef = _usersCollectionReference.doc(uid).collection("donations");
-      var newTransaction = transaction.copyWith(transactionId: docRef.id);
-      docRef.add(newTransaction.toJson());
+      var newtransfer = transfer.copyWith(transferId: docRef.id);
+      docRef.add(newtransfer.toJson());
       log.i("Added donation document to ${docRef.path}");
     } catch (e) {
       log.e("Couldn't process donation: ${e.toString()}");
@@ -30,14 +29,14 @@ class DummyPaymentService {
 
   // Pushed the data to firestore which will trigger a firebase cloud function
   // that updates the good wallets!
-  Future processTransaction(gwmodel.Transaction transaction) async {
+  Future processTransfer(MoneyTransfer transfer) async {
     try {
       var docRef = _paymentsCollectionReference.doc();
-      var newTransaction = transaction.copyWith(transactionId: docRef.id);
-      docRef.set(newTransaction.toJson());
-      log.i("Added transaction document to ${docRef.path}");
+      var newtransfer = transfer.copyWith(transferId: docRef.id);
+      docRef.set(newtransfer.toJson());
+      log.i("Added transfer document to ${docRef.path}");
     } catch (e) {
-      log.e("Couldn't process dummy transaction: ${e.toString()}");
+      log.e("Couldn't process dummy transfer: ${e.toString()}");
       rethrow;
     }
   }
@@ -45,18 +44,18 @@ class DummyPaymentService {
   // Pushes the data to firestore which will trigger a firebase cloud function
   // that updates the good wallets!
   Future processMoneyPoolContribution(
-      gwmodel.MoneyPoolContribution contribution) async {
+      MoneyPoolContribution contribution) async {
     try {
       // TODO: Put this in a firebase API
       var docRef = _moneyPoolsCollectionReference
-          .doc(contribution.moneyPool.recipientId)
+          .doc(contribution.transferDetails.recipientId)
           .collection("moneyPoolContributions")
           .doc();
-      var newContribution = contribution.copyWith(transactionId: docRef.id);
+      var newContribution = contribution.copyWith(transferId: docRef.id);
       docRef.set(newContribution.toJson());
       log.i("Added money pool contribution document to ${docRef.path}");
     } catch (e) {
-      log.e("Couldn't process dummy transaction: ${e.toString()}");
+      log.e("Couldn't process dummy transfer: ${e.toString()}");
       rethrow;
     }
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/app/app.locator.dart';
-import 'package:good_wallet/datamodels/transactions/transaction.dart';
-import 'package:good_wallet/enums/transaction_direction.dart';
+import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
+import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
+import 'package:good_wallet/enums/transfer_direction.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/transactions_history_entry_style.dart';
@@ -16,7 +16,7 @@ import 'package:stacked/stacked.dart';
 // This is the body of transactions view with the history entries
 
 class TransactionsHistoryLayoutView extends StatelessWidget {
-  final TransactionDirection type;
+  final TransferDirection type;
   final int maximumLength;
   final String? userName;
   final String? description;
@@ -59,6 +59,8 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
                       ),
                       verticalSpaceMedium,
                       ListView.builder(
+                        shrinkWrap: true,
+                        physics: ScrollPhysics(),
                         itemCount: model
                                     .getTransactionsCorrespondingToType(type)!
                                     .length >
@@ -67,8 +69,6 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
                             : model
                                 .getTransactionsCorrespondingToType(type)!
                                 .length,
-                        shrinkWrap: true,
-                        physics: ScrollPhysics(),
                         itemBuilder: (context, index) {
                           var data = model
                               .getTransactionsCorrespondingToType(type)![index];
@@ -90,47 +90,52 @@ class TransactionsHistoryLayoutView extends StatelessWidget {
   }
 
   _getTransactionsCorrespondingToTypeHistoryEntryStyle(
-      Transaction data, TransactionDirection direction) {
-    return data.maybeMap(
-        donation: (value) => TransactionHistoryEntryStyle(
-              color: ColorSettings.primaryColor,
-              descriptor: "Donated to",
-              nameToDisplay: value.transactionDetails.recipientName,
-              icon:
-                  Icon(Icons.favorite, color: ColorSettings.primaryColorLight),
-            ),
-        peer2peer: (value) => TransactionHistoryEntryStyle(
-              color: direction == TransactionDirection.TransferredToPeers
-                  ? ColorSettings.primaryColorLight
-                  : MyColors.paletteTurquoise,
-              descriptor: direction == TransactionDirection.TransferredToPeers
-                  ? "Gifted to"
-                  : "Received from",
-              nameToDisplay:
-                  direction == TransactionDirection.TransferredToPeers
-                      ? value.transactionDetails.recipientName
-                      : value.transactionDetails.senderName,
-              icon: direction == TransactionDirection.TransferredToPeers
-                  ? Icon(Icons.person, color: ColorSettings.whiteTextColor)
-                  : Icon(Icons.people_rounded,
-                      color: ColorSettings.whiteTextColor),
-            ),
-        moneyPoolPayout: (value) => TransactionHistoryEntryStyle(
-              color: MyColors.paletteGreen,
-              descriptor: "From money pool",
-              nameToDisplay: value.moneyPool.name,
-              icon: Icon(Icons.people_rounded,
-                  color: ColorSettings.whiteTextColor),
-            ),
-        moneyPoolContribution: (value) => null,
-        orElse: () => null);
+      dynamic data, TransferDirection direction) {
+    TransactionHistoryEntryStyle style;
+
+    if (data is MoneyPoolPayout) {
+      style = TransactionHistoryEntryStyle(
+        color: MyColors.paletteGreen,
+        descriptor: "From money pool",
+        // get the correct transaction here
+        nameToDisplay: data.moneyPool.name,
+        icon: Icon(Icons.people_rounded, color: ColorSettings.whiteTextColor),
+      );
+    } else {
+      style = data.maybeMap(
+          donation: (value) => TransactionHistoryEntryStyle(
+                color: ColorSettings.primaryColor,
+                descriptor: "Donated to",
+                nameToDisplay: value.transferDetails.recipientName,
+                icon: Icon(Icons.favorite,
+                    color: ColorSettings.primaryColorLight),
+              ),
+          peer2peer: (value) => TransactionHistoryEntryStyle(
+                color: direction == TransferDirection.TransferredToPeers
+                    ? ColorSettings.primaryColorLight
+                    : MyColors.paletteTurquoise,
+                descriptor: direction == TransferDirection.TransferredToPeers
+                    ? "Gifted to"
+                    : "Received from",
+                nameToDisplay: direction == TransferDirection.TransferredToPeers
+                    ? value.transferDetails.recipientName
+                    : value.transferDetails.senderName,
+                icon: direction == TransferDirection.TransferredToPeers
+                    ? Icon(Icons.person, color: ColorSettings.whiteTextColor)
+                    : Icon(Icons.people_rounded,
+                        color: ColorSettings.whiteTextColor),
+              ),
+          moneyPoolContribution: (value) => null,
+          orElse: () => null);
+    }
+    return style;
   }
 }
 
 class TransactionListTile extends StatelessWidget {
   final num amount;
   final TransactionHistoryEntryStyle style;
-  final Transaction transaction;
+  final dynamic transaction;
 
   const TransactionListTile(
       {Key? key,
@@ -167,7 +172,7 @@ class TransactionListTile extends StatelessWidget {
           // @see https://api.flutter.dev/flutter/intl/DateFormat-class.html
           //.add_jm()
           subtitle: Text(
-            DateFormat.MMMEd().format(transaction.createdAt.toDate()),
+            formatDate(transaction.createdAt.toDate()),
             style: textTheme(context).bodyText2!.copyWith(
                   fontSize: 15,
                 ),

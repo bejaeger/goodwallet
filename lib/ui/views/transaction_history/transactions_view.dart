@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/enums/transaction_direction.dart';
+import 'package:good_wallet/enums/transfer_direction.dart';
 import 'package:good_wallet/ui/layout_widgets/tabbar_layout.dart';
-import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_history_layout_view.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
 class TransactionsView extends StatelessWidget {
-  final TransactionDirection historyType;
+  final TransferDirection historyType;
 
   const TransactionsView(
-      {Key? key, this.historyType = TransactionDirection.InOrOut})
+      {Key? key, this.historyType = TransferDirection.InOrOut})
       : super(key: key); // used for initial value of tab controller
 
   @override
@@ -50,19 +49,19 @@ class TransactionsView extends StatelessWidget {
       ],
       views: [
         TransactionsHistoryLayoutView(
-          type: TransactionDirection.InOrOut,
+          type: TransferDirection.InOrOut,
           description: "Your Good Wallet's incoming and outgoing transactions",
         ),
         TransactionsHistoryLayoutView(
-          type: TransactionDirection.TransferredToPeers,
+          type: TransferDirection.TransferredToPeers,
           description: "Money you gifted to friends",
         ),
         TransactionsHistoryLayoutView(
-          type: TransactionDirection.Donation,
+          type: TransferDirection.Donation,
           description: "The total of your charitable givings",
         ),
         TransactionsHistoryLayoutView(
-          type: TransactionDirection.Incoming,
+          type: TransferDirection.Incoming,
           description: "Money you raised into your Good Wallet",
         ),
       ],

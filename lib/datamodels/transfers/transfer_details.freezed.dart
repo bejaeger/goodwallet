@@ -1,7 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides
 
-part of 'transaction_details.dart';
+part of 'transfer_details.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,15 +12,15 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-TransactionDetails _$TransactionDetailsFromJson(Map<String, dynamic> json) {
-  return _TransactionDetails.fromJson(json);
+TransferDetails _$TransferDetailsFromJson(Map<String, dynamic> json) {
+  return _TransferDetails.fromJson(json);
 }
 
 /// @nodoc
-class _$TransactionDetailsTearOff {
-  const _$TransactionDetailsTearOff();
+class _$TransferDetailsTearOff {
+  const _$TransferDetailsTearOff();
 
-  _TransactionDetails call(
+  _TransferDetails call(
       {required String recipientId,
       required String recipientName,
       required String senderId,
@@ -28,7 +28,7 @@ class _$TransactionDetailsTearOff {
       required num amount,
       required String currency,
       required MoneySource sourceType}) {
-    return _TransactionDetails(
+    return _TransferDetails(
       recipientId: recipientId,
       recipientName: recipientName,
       senderId: senderId,
@@ -39,16 +39,16 @@ class _$TransactionDetailsTearOff {
     );
   }
 
-  TransactionDetails fromJson(Map<String, Object> json) {
-    return TransactionDetails.fromJson(json);
+  TransferDetails fromJson(Map<String, Object> json) {
+    return TransferDetails.fromJson(json);
   }
 }
 
 /// @nodoc
-const $TransactionDetails = _$TransactionDetailsTearOff();
+const $TransferDetails = _$TransferDetailsTearOff();
 
 /// @nodoc
-mixin _$TransactionDetails {
+mixin _$TransferDetails {
   String get recipientId => throw _privateConstructorUsedError;
   String get recipientName => throw _privateConstructorUsedError;
   String get senderId => throw _privateConstructorUsedError;
@@ -59,15 +59,15 @@ mixin _$TransactionDetails {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $TransactionDetailsCopyWith<TransactionDetails> get copyWith =>
+  $TransferDetailsCopyWith<TransferDetails> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $TransactionDetailsCopyWith<$Res> {
-  factory $TransactionDetailsCopyWith(
-          TransactionDetails value, $Res Function(TransactionDetails) then) =
-      _$TransactionDetailsCopyWithImpl<$Res>;
+abstract class $TransferDetailsCopyWith<$Res> {
+  factory $TransferDetailsCopyWith(
+          TransferDetails value, $Res Function(TransferDetails) then) =
+      _$TransferDetailsCopyWithImpl<$Res>;
   $Res call(
       {String recipientId,
       String recipientName,
@@ -79,13 +79,13 @@ abstract class $TransactionDetailsCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$TransactionDetailsCopyWithImpl<$Res>
-    implements $TransactionDetailsCopyWith<$Res> {
-  _$TransactionDetailsCopyWithImpl(this._value, this._then);
+class _$TransferDetailsCopyWithImpl<$Res>
+    implements $TransferDetailsCopyWith<$Res> {
+  _$TransferDetailsCopyWithImpl(this._value, this._then);
 
-  final TransactionDetails _value;
+  final TransferDetails _value;
   // ignore: unused_field
-  final $Res Function(TransactionDetails) _then;
+  final $Res Function(TransferDetails) _then;
 
   @override
   $Res call({
@@ -131,11 +131,11 @@ class _$TransactionDetailsCopyWithImpl<$Res>
 }
 
 /// @nodoc
-abstract class _$TransactionDetailsCopyWith<$Res>
-    implements $TransactionDetailsCopyWith<$Res> {
-  factory _$TransactionDetailsCopyWith(
-          _TransactionDetails value, $Res Function(_TransactionDetails) then) =
-      __$TransactionDetailsCopyWithImpl<$Res>;
+abstract class _$TransferDetailsCopyWith<$Res>
+    implements $TransferDetailsCopyWith<$Res> {
+  factory _$TransferDetailsCopyWith(
+          _TransferDetails value, $Res Function(_TransferDetails) then) =
+      __$TransferDetailsCopyWithImpl<$Res>;
   @override
   $Res call(
       {String recipientId,
@@ -148,15 +148,15 @@ abstract class _$TransactionDetailsCopyWith<$Res>
 }
 
 /// @nodoc
-class __$TransactionDetailsCopyWithImpl<$Res>
-    extends _$TransactionDetailsCopyWithImpl<$Res>
-    implements _$TransactionDetailsCopyWith<$Res> {
-  __$TransactionDetailsCopyWithImpl(
-      _TransactionDetails _value, $Res Function(_TransactionDetails) _then)
-      : super(_value, (v) => _then(v as _TransactionDetails));
+class __$TransferDetailsCopyWithImpl<$Res>
+    extends _$TransferDetailsCopyWithImpl<$Res>
+    implements _$TransferDetailsCopyWith<$Res> {
+  __$TransferDetailsCopyWithImpl(
+      _TransferDetails _value, $Res Function(_TransferDetails) _then)
+      : super(_value, (v) => _then(v as _TransferDetails));
 
   @override
-  _TransactionDetails get _value => super._value as _TransactionDetails;
+  _TransferDetails get _value => super._value as _TransferDetails;
 
   @override
   $Res call({
@@ -168,7 +168,7 @@ class __$TransactionDetailsCopyWithImpl<$Res>
     Object? currency = freezed,
     Object? sourceType = freezed,
   }) {
-    return _then(_TransactionDetails(
+    return _then(_TransferDetails(
       recipientId: recipientId == freezed
           ? _value.recipientId
           : recipientId // ignore: cast_nullable_to_non_nullable
@@ -203,8 +203,8 @@ class __$TransactionDetailsCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_TransactionDetails implements _TransactionDetails {
-  const _$_TransactionDetails(
+class _$_TransferDetails implements _TransferDetails {
+  const _$_TransferDetails(
       {required this.recipientId,
       required this.recipientName,
       required this.senderId,
@@ -213,8 +213,8 @@ class _$_TransactionDetails implements _TransactionDetails {
       required this.currency,
       required this.sourceType});
 
-  factory _$_TransactionDetails.fromJson(Map<String, dynamic> json) =>
-      _$_$_TransactionDetailsFromJson(json);
+  factory _$_TransferDetails.fromJson(Map<String, dynamic> json) =>
+      _$_$_TransferDetailsFromJson(json);
 
   @override
   final String recipientId;
@@ -233,13 +233,13 @@ class _$_TransactionDetails implements _TransactionDetails {
 
   @override
   String toString() {
-    return 'TransactionDetails(recipientId: $recipientId, recipientName: $recipientName, senderId: $senderId, senderName: $senderName, amount: $amount, currency: $currency, sourceType: $sourceType)';
+    return 'TransferDetails(recipientId: $recipientId, recipientName: $recipientName, senderId: $senderId, senderName: $senderName, amount: $amount, currency: $currency, sourceType: $sourceType)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _TransactionDetails &&
+        (other is _TransferDetails &&
             (identical(other.recipientId, recipientId) ||
                 const DeepCollectionEquality()
                     .equals(other.recipientId, recipientId)) &&
@@ -275,27 +275,27 @@ class _$_TransactionDetails implements _TransactionDetails {
 
   @JsonKey(ignore: true)
   @override
-  _$TransactionDetailsCopyWith<_TransactionDetails> get copyWith =>
-      __$TransactionDetailsCopyWithImpl<_TransactionDetails>(this, _$identity);
+  _$TransferDetailsCopyWith<_TransferDetails> get copyWith =>
+      __$TransferDetailsCopyWithImpl<_TransferDetails>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$_$_TransactionDetailsToJson(this);
+    return _$_$_TransferDetailsToJson(this);
   }
 }
 
-abstract class _TransactionDetails implements TransactionDetails {
-  const factory _TransactionDetails(
+abstract class _TransferDetails implements TransferDetails {
+  const factory _TransferDetails(
       {required String recipientId,
       required String recipientName,
       required String senderId,
       required String senderName,
       required num amount,
       required String currency,
-      required MoneySource sourceType}) = _$_TransactionDetails;
+      required MoneySource sourceType}) = _$_TransferDetails;
 
-  factory _TransactionDetails.fromJson(Map<String, dynamic> json) =
-      _$_TransactionDetails.fromJson;
+  factory _TransferDetails.fromJson(Map<String, dynamic> json) =
+      _$_TransferDetails.fromJson;
 
   @override
   String get recipientId => throw _privateConstructorUsedError;
@@ -313,6 +313,6 @@ abstract class _TransactionDetails implements TransactionDetails {
   MoneySource get sourceType => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
-  _$TransactionDetailsCopyWith<_TransactionDetails> get copyWith =>
+  _$TransferDetailsCopyWith<_TransferDetails> get copyWith =>
       throw _privateConstructorUsedError;
 }

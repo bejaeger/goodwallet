@@ -46,8 +46,7 @@ class SmallWalletCard extends StatelessWidget {
                     Text(
                       "\$" + (balance / 100).toString(),
                       style: textTheme(context).bodyText2!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: fontSize as double?),
+                          fontWeight: FontWeight.bold, fontSize: fontSize),
                     ),
                   ],
                 ),

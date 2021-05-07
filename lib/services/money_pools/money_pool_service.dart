@@ -4,9 +4,9 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
+import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
 import 'package:good_wallet/datamodels/money_pools/users/contributing_user.dart';
-import 'package:good_wallet/datamodels/transactions/transaction.dart'
-    as gwmodel;
+import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:rxdart/subjects.dart';
@@ -255,17 +255,17 @@ class MoneyPoolService {
   }
 
   // returns list of user money pool contributions
-  Future<List<gwmodel.MoneyPoolContribution>> getMoneyPoolContributions(
+  Future<List<MoneyPoolContribution>> getMoneyPoolContributions(
       String mpid) async {
-    List<gwmodel.MoneyPoolContribution> returnList = [];
+    List<MoneyPoolContribution> returnList = [];
     QuerySnapshot snapshot = await _moneyPoolsCollectionReference
         .doc(mpid)
         .collection(contributionsKey)
         .get();
     if (snapshot.docs.isNotEmpty) {
       returnList = snapshot.docs
-          .map((element) => gwmodel.Transaction.fromJson(element.data())
-              as gwmodel.MoneyPoolContribution)
+          .map((element) =>
+              MoneyTransfer.fromJson(element.data()) as MoneyPoolContribution)
           .toList();
     }
     log.i("Fetched ${returnList.length} money pool contributions");
@@ -275,15 +275,14 @@ class MoneyPoolService {
   // returns list of money pool payouts
   // likely there will be none or little because
   // probably usually the money pool is deleted after disbursement
-  Future<List<gwmodel.MoneyPoolPayout>> getMoneyPoolPayouts(String mpid) async {
-    List<gwmodel.MoneyPoolPayout> returnList = [];
+  Future<List<MoneyPoolPayout>> getMoneyPoolPayouts(String mpid) async {
+    List<MoneyPoolPayout> returnList = [];
     QuerySnapshot snapshot = await _moneyPoolPayoutsCollectionReference
         .where("moneyPool.moneyPoolId", isEqualTo: mpid)
         .get();
     if (snapshot.docs.isNotEmpty) {
       returnList = snapshot.docs
-          .map((element) => gwmodel.Transaction.fromJson(element.data())
-              as gwmodel.MoneyPoolPayout)
+          .map((element) => MoneyPoolPayout.fromJson(element.data()))
           .toList();
     }
     log.i("Fetched ${returnList.length} money pool payout documents");
@@ -292,10 +291,10 @@ class MoneyPoolService {
 
   // adds payout data to firestore which will trigger a cloud function
   // to update all the good wallets
-  Future submitMoneyPoolPayout(gwmodel.Transaction data) async {
+  Future submitMoneyPoolPayout(MoneyPoolPayout data) async {
     try {
       DocumentReference docRef = _moneyPoolPayoutsCollectionReference.doc();
-      final newData = data.copyWith(transactionId: docRef.id);
+      var newData = data.copyWith(transferId: docRef.id);
       await docRef.set(newData.toJson());
     } catch (e) {
       log.e("Error when pushing data to firestore: ${e.toString()}");
