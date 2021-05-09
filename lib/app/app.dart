@@ -31,8 +31,6 @@ import 'package:good_wallet/ui/views/qrcode/qrcode_view_mobile.dart';
 import 'package:good_wallet/ui/views/raise_money/raise_money_view.dart';
 import 'package:good_wallet/ui/views/search_view/search_view.dart';
 import 'package:good_wallet/ui/views/startup_logic/startup_logic_view.dart';
-import 'package:good_wallet/ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
-import 'package:good_wallet/ui/views/transaction_history/transactions_view.dart';
 import 'package:good_wallet/ui/views/transaction_history/transfers_history_view.dart';
 import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_view.dart';
@@ -64,7 +62,6 @@ import 'package:stacked_services/stacked_services.dart';
 
     MaterialRoute(page: SingleFeaturedAppView),
     MaterialRoute(page: MoneyPoolsView),
-    MaterialRoute(page: TransactionsView),
     MaterialRoute(page: QRCodeViewMobile),
     MaterialRoute(page: RaiseMoneyView),
     MaterialRoute(page: CausesFilterViewMobile),
@@ -87,7 +84,6 @@ import 'package:stacked_services/stacked_services.dart';
 
     // viewmodels
     LazySingleton(classType: WalletViewModel),
-    LazySingleton(classType: TransactionHistoryLayoutViewModel),
     // TODO: Check whether this is deprecated
     LazySingleton(classType: NavigationBarViewModel),
     LazySingleton(classType: MoneyPoolService),

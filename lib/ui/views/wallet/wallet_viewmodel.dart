@@ -31,39 +31,6 @@ class WalletViewModel extends BaseModel {
   List<GoodWalletProjectModel>? _projects;
   List<GoodWalletProjectModel>? get projects => _projects;
 
-  void listenToTransactions() {
-    // Listen to transaction collection if user is logged in otherwise cancel
-    // subscription
-    // Function to be called in initialization of viewmodel or on onModelReady
-    _userDataService!.userStateSubject.listen(
-      (state) {
-        if (isUserSignedIn) {
-          _transactionSubscription =
-              _userDataService!.listenToTransactionsRealTime().listen(
-            (transactionsData) {
-              List<dynamic> updatedTransactions = transactionsData;
-              if (updatedTransactions != null &&
-                  updatedTransactions.length > 0) {
-                log.i("Start listening to user wallet data");
-                // sort with date
-                updatedTransactions
-                    .sort((a, b) => b.createdAt.compareTo(a.createdAt));
-                _transactions = updatedTransactions;
-                notifyListeners();
-              } else {
-                log.w(
-                    "Not able to listen to transaction data. Maybe there are no transactions for that user recorded yet?");
-              }
-            },
-          );
-        } else {
-          log.i("Cancelling subsciption to listen to user transactions");
-          _transactionSubscription?.cancel();
-        }
-      },
-    );
-  }
-
   // Make a stream listening to projects!
   Future getProjects() async {
     List<GoodWalletProjectModel> newProjects = [];

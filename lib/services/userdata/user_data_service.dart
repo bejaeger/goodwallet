@@ -13,7 +13,6 @@ import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dar
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
-import 'package:good_wallet/enums/transfer_direction.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';

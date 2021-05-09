@@ -34,7 +34,7 @@ class CausesFilterViewModel extends BaseModel {
   }
 
   Future navigateToTransactionsHistoryView() async {
-    _navigationService!.navigateTo(Routes.transactionsView);
+    _navigationService!.navigateTo(Routes.transfersHistoryView);
   }
 
   Future navigateToCausesViewMobile(index) async {

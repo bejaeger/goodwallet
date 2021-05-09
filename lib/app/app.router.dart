@@ -16,7 +16,6 @@ import '../datamodels/user/public_user_info.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/fund_transfer_type.dart';
 import '../enums/search_type.dart';
-import '../enums/transfer_direction.dart';
 import '../ui/views/causes/causes_filter_view_mobile.dart';
 import '../ui/views/causes/causes_view.dart';
 import '../ui/views/causes/causes_view_mobile.dart';
@@ -41,7 +40,6 @@ import '../ui/views/qrcode/qrcode_view_mobile.dart';
 import '../ui/views/raise_money/raise_money_view.dart';
 import '../ui/views/search_view/search_view.dart';
 import '../ui/views/startup_logic/startup_logic_view.dart';
-import '../ui/views/transaction_history/transactions_view.dart';
 import '../ui/views/transaction_history/transfers_history_view.dart';
 import '../ui/views/transfer_funds/transfer_funds_amount_view.dart';
 import '../ui/views/wallet/wallet_view.dart';
@@ -66,7 +64,6 @@ class Routes {
   static const String createAccountView = '/create-account-view';
   static const String singleFeaturedAppView = '/single-featured-app-view';
   static const String moneyPoolsView = '/money-pools-view';
-  static const String transactionsView = '/transactions-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String raiseMoneyView = '/raise-money-view';
   static const String causesFilterViewMobile = '/causes-filter-view-mobile';
@@ -95,7 +92,6 @@ class Routes {
     createAccountView,
     singleFeaturedAppView,
     moneyPoolsView,
-    transactionsView,
     qRCodeViewMobile,
     raiseMoneyView,
     causesFilterViewMobile,
@@ -130,7 +126,6 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.createAccountView, page: CreateAccountView),
     RouteDef(Routes.singleFeaturedAppView, page: SingleFeaturedAppView),
     RouteDef(Routes.moneyPoolsView, page: MoneyPoolsView),
-    RouteDef(Routes.transactionsView, page: TransactionsView),
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
     RouteDef(Routes.raiseMoneyView, page: RaiseMoneyView),
     RouteDef(Routes.causesFilterViewMobile, page: CausesFilterViewMobile),
@@ -297,18 +292,6 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
-    TransactionsView: (data) {
-      var args = data.getArgs<TransactionsViewArguments>(
-        orElse: () => TransactionsViewArguments(),
-      );
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => TransactionsView(
-          key: args.key,
-          historyType: args.historyType,
-        ),
-        settings: data,
-      );
-    },
     QRCodeViewMobile: (data) {
       var args = data.getArgs<QRCodeViewMobileArguments>(
         orElse: () => QRCodeViewMobileArguments(),
@@ -471,14 +454,6 @@ class MoneyPoolsViewArguments {
   final Key? key;
   final bool forceReload;
   MoneyPoolsViewArguments({this.key, this.forceReload = false});
-}
-
-/// TransactionsView arguments holder class
-class TransactionsViewArguments {
-  final Key? key;
-  final TransferDirection historyType;
-  TransactionsViewArguments(
-      {this.key, this.historyType = TransferDirection.InOrOut});
 }
 
 /// QRCodeViewMobile arguments holder class

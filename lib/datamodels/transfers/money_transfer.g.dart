@@ -83,6 +83,7 @@ const _$TransferTypeEnumMap = {
   TransferType.PrepaidFund: 'PrepaidFund',
   TransferType.Commitment: 'Commitment',
   TransferType.All: 'All',
+  TransferType.Invalid: 'Invalid',
 };
 
 _$Donation _$_$DonationFromJson(Map<String, dynamic> json) {

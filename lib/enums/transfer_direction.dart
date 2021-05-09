@@ -1,3 +1,4 @@
+// TO BE DEPRECATED!
 enum TransferDirection {
   TransferredToPeers, // send money to friends wallets
   ReceivedFromPeers, // received money from friend

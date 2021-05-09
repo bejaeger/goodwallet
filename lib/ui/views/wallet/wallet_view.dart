@@ -18,7 +18,6 @@ class WalletView extends StatelessWidget {
       viewModelBuilder: () => locator<WalletViewModel>(),
       onModelReady: (model) async {
         model.getProjects();
-        model.listenToTransactions();
       },
       fireOnModelReadyOnce: true,
       disposeViewModel: false,

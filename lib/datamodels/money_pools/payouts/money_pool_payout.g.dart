@@ -84,6 +84,7 @@ const _$TransferTypeEnumMap = {
   TransferType.PrepaidFund: 'PrepaidFund',
   TransferType.Commitment: 'Commitment',
   TransferType.All: 'All',
+  TransferType.Invalid: 'Invalid',
 };
 
 const _$TransferStatusEnumMap = {
