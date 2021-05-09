@@ -21,9 +21,7 @@ class _$MoneyPoolPreviewInfoTearOff {
   const _$MoneyPoolPreviewInfoTearOff();
 
   _MoneyPoolPreviewInfo call(
-      {required String total,
-      required String name,
-      required String moneyPoolId}) {
+      {required num total, required String name, required String moneyPoolId}) {
     return _MoneyPoolPreviewInfo(
       total: total,
       name: name,
@@ -41,7 +39,7 @@ const $MoneyPoolPreviewInfo = _$MoneyPoolPreviewInfoTearOff();
 
 /// @nodoc
 mixin _$MoneyPoolPreviewInfo {
-  String get total => throw _privateConstructorUsedError;
+  num get total => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get moneyPoolId => throw _privateConstructorUsedError;
 
@@ -56,7 +54,7 @@ abstract class $MoneyPoolPreviewInfoCopyWith<$Res> {
   factory $MoneyPoolPreviewInfoCopyWith(MoneyPoolPreviewInfo value,
           $Res Function(MoneyPoolPreviewInfo) then) =
       _$MoneyPoolPreviewInfoCopyWithImpl<$Res>;
-  $Res call({String total, String name, String moneyPoolId});
+  $Res call({num total, String name, String moneyPoolId});
 }
 
 /// @nodoc
@@ -78,7 +76,7 @@ class _$MoneyPoolPreviewInfoCopyWithImpl<$Res>
       total: total == freezed
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
-              as String,
+              as num,
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -98,7 +96,7 @@ abstract class _$MoneyPoolPreviewInfoCopyWith<$Res>
           $Res Function(_MoneyPoolPreviewInfo) then) =
       __$MoneyPoolPreviewInfoCopyWithImpl<$Res>;
   @override
-  $Res call({String total, String name, String moneyPoolId});
+  $Res call({num total, String name, String moneyPoolId});
 }
 
 /// @nodoc
@@ -122,7 +120,7 @@ class __$MoneyPoolPreviewInfoCopyWithImpl<$Res>
       total: total == freezed
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
-              as String,
+              as num,
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -145,7 +143,7 @@ class _$_MoneyPoolPreviewInfo implements _MoneyPoolPreviewInfo {
       _$_$_MoneyPoolPreviewInfoFromJson(json);
 
   @override
-  final String total;
+  final num total;
   @override
   final String name;
   @override
@@ -190,7 +188,7 @@ class _$_MoneyPoolPreviewInfo implements _MoneyPoolPreviewInfo {
 
 abstract class _MoneyPoolPreviewInfo implements MoneyPoolPreviewInfo {
   factory _MoneyPoolPreviewInfo(
-      {required String total,
+      {required num total,
       required String name,
       required String moneyPoolId}) = _$_MoneyPoolPreviewInfo;
 
@@ -198,7 +196,7 @@ abstract class _MoneyPoolPreviewInfo implements MoneyPoolPreviewInfo {
       _$_MoneyPoolPreviewInfo.fromJson;
 
   @override
-  String get total => throw _privateConstructorUsedError;
+  num get total => throw _privateConstructorUsedError;
   @override
   String get name => throw _privateConstructorUsedError;
   @override

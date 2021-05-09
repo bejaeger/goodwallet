@@ -23,7 +23,6 @@ class SingleMoneyPoolView extends StatelessWidget {
     return ViewModelBuilder<SingleMoneyPoolViewModel>.reactive(
       viewModelBuilder: () => SingleMoneyPoolViewModel(moneyPool: moneyPool),
       onModelReady: (model) async {
-        await model.fetchUserContributions();
         await model.fetchPayouts();
       },
       builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
@@ -110,145 +109,148 @@ class SingleMoneyPoolView extends StatelessWidget {
                   ],
                 ),
               ),
-              verticalSpaceMedium,
-              SectionHeader(
-                title: "Members",
-                trailingIcon: IconButton(
-                  onPressed: () => model.showSearchViewAndInviteUser(),
-                  icon: Icon(
-                    Icons.add_circle_outline_rounded,
-                  ),
-                ),
-              ),
+              // verticalSpaceMedium,
               model.isBusy
-                  ? Center(child: CircularProgressIndicator())
-                  : ListView.builder(
-                      physics: ScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: model.moneyPool.invitedUsers.length +
-                          model.moneyPool.contributingUsers.length,
-                      itemBuilder: (context, index) {
-                        bool isInvitedUser =
-                            index >= model.moneyPool.invitedUsers.length
-                                ? false
-                                : true;
-                        dynamic user = isInvitedUser
-                            ? model.moneyPool.invitedUsers[index]
-                            : model.moneyPool.contributingUsers[
-                                index - model.moneyPool.invitedUsers.length];
-                        var displayName = user.uid == model.currentUser.id
-                            ? "You"
-                            : user.name;
-                        return ListTile(
-                          leading: CircleAvatar(
-                            radius: 20,
-                            backgroundColor: MyColors.paletteBlue,
-                            child: Text(getInitialsFromName(user.name),
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 14)),
-                          ),
-                          title: Text(
-                            displayName,
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                          subtitle:
-                              model.moneyPool.adminUID == model.currentUser.id
-                                  ? Text("Admin")
-                                  : null,
-                          trailing: isInvitedUser
-                              ? Text("Pending invitation")
-                              : Text(formatAmount(user.contribution)),
-                        );
-                      },
-                    ),
-              verticalSpaceRegular,
-              if (model.payouts.length > 0)
-                SectionHeader(
-                  title: "Payouts",
-                ),
-              if (model.payouts.length > 0) verticalSpaceSmall,
-              if (model.payouts.length > 0)
-                ListView.builder(
-                  physics: ScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: model.payouts.length,
-                  itemBuilder: (context, index) {
-                    var payout = model.payouts[index];
-                    return Container(
-                      color: MyColors.paletteGreen.withOpacity(0.3),
-                      child: ListTile(
-                          leading: CircleAvatar(
-                            radius: 20,
-                            backgroundColor: MyColors.paletteGreen,
-                            child: Text("P",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 14)),
-                          ),
-                          title: Text(
-                            "Paid out money pool",
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                          subtitle: Text(
-                            formatDate(payout.createdAt.toDate()),
-                            style: textTheme(context).bodyText2!.copyWith(
-                                  fontSize: 15,
-                                ),
-                          ),
-                          trailing: TextButton(
-                            onPressed: () =>
-                                model.showMoneyPoolPayoutDetailsDialog(payout),
-                            child: Text("Details"),
-                          )),
-                    );
-                  },
-                ),
-              if (model.payouts.length > 0) verticalSpaceRegular,
-              if (model.contributions.length > 0)
-                SectionHeader(
-                  title: "Contributions",
-                ),
-              if (model.contributions.length > 0)
-                ListView.builder(
-                  physics: ScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: model.contributions.length,
-                  itemBuilder: (context, index) {
-                    var contribution = model.contributions[index];
-                    return ListTile(
-                        leading: CircleAvatar(
-                          radius: 20,
-                          backgroundColor: MyColors.paletteBlue,
-                          child: Text(
-                              getInitialsFromName(
-                                  contribution.transferDetails.senderName),
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 14)),
+                  ? Center(child: LinearProgressIndicator())
+                  : Column(children: [
+                      SectionHeader(
+                        title: "Members",
+                        trailingIcon: IconButton(
+                          onPressed: () => model.showSearchViewAndInviteUser(),
+                          icon:
+                              Icon(Icons.add_circle_outline_rounded, size: 28),
                         ),
-                        title: Text(
-                          contribution.transferDetails.senderName,
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.black,
-                          ),
-                        ),
-                        subtitle: Text(
-                          DateFormat.MMMEd()
-                              .format(contribution.createdAt.toDate()),
-                          style: textTheme(context).bodyText2!.copyWith(
-                                fontSize: 15,
+                      ),
+                      ListView.builder(
+                        physics: ScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: model.moneyPool.invitedUsers.length +
+                            model.moneyPool.contributingUsers.length,
+                        itemBuilder: (context, index) {
+                          bool isInvitedUser =
+                              index >= model.moneyPool.invitedUsers.length
+                                  ? false
+                                  : true;
+                          dynamic user = isInvitedUser
+                              ? model.moneyPool.invitedUsers[index]
+                              : model.moneyPool.contributingUsers[
+                                  index - model.moneyPool.invitedUsers.length];
+                          var displayName = user.uid == model.currentUser.id
+                              ? "You"
+                              : user.name;
+                          return ListTile(
+                            leading: CircleAvatar(
+                              radius: 20,
+                              backgroundColor: MyColors.paletteBlue,
+                              child: Text(getInitialsFromName(user.name),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 14)),
+                            ),
+                            title: Text(
+                              displayName,
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.black,
                               ),
+                            ),
+                            subtitle:
+                                model.moneyPool.adminUID == model.currentUser.id
+                                    ? Text("Admin")
+                                    : null,
+                            trailing: isInvitedUser
+                                ? Text("Pending invitation")
+                                : Text(formatAmount(user.contribution)),
+                          );
+                        },
+                      ),
+                      verticalSpaceRegular,
+                      if (model.payouts.length > 0)
+                        SectionHeader(
+                          title: "Payouts",
                         ),
-                        trailing: Text(
-                            formatAmount(contribution.transferDetails.amount)));
-                  },
-                ),
-              verticalSpaceLarge,
+                      if (model.payouts.length > 0) verticalSpaceSmall,
+                      if (model.payouts.length > 0)
+                        ListView.builder(
+                          physics: ScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: model.payouts.length,
+                          itemBuilder: (context, index) {
+                            var payout = model.payouts[index];
+                            return Container(
+                              color: MyColors.paletteGreen.withOpacity(0.3),
+                              child: ListTile(
+                                  leading: CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: MyColors.paletteGreen,
+                                    child: Text("P",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 14)),
+                                  ),
+                                  title: Text(
+                                    "Paid out money pool",
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    formatDate(payout.createdAt.toDate()),
+                                    style:
+                                        textTheme(context).bodyText2!.copyWith(
+                                              fontSize: 15,
+                                            ),
+                                  ),
+                                  trailing: TextButton(
+                                    onPressed: () =>
+                                        model.showMoneyPoolPayoutDetailsDialog(
+                                            payout),
+                                    child: Text("Details"),
+                                  )),
+                            );
+                          },
+                        ),
+                      if (model.payouts.length > 0) verticalSpaceRegular,
+                      if (model.latestContributions.length > 0)
+                        SectionHeader(
+                          title: "Contributions",
+                        ),
+                      if (model.latestContributions.length > 0)
+                        ListView.builder(
+                          physics: ScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: model.latestContributions.length,
+                          itemBuilder: (context, index) {
+                            var contribution = model.latestContributions[index];
+                            return ListTile(
+                                leading: CircleAvatar(
+                                  radius: 20,
+                                  backgroundColor: MyColors.paletteBlue,
+                                  child: Text(
+                                      getInitialsFromName(contribution
+                                          .transferDetails.senderName),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 14)),
+                                ),
+                                title: Text(
+                                  contribution.transferDetails.senderName,
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  DateFormat.MMMEd()
+                                      .format(contribution.createdAt.toDate()),
+                                  style: textTheme(context).bodyText2!.copyWith(
+                                        fontSize: 15,
+                                      ),
+                                ),
+                                trailing: Text(formatAmount(
+                                    contribution.transferDetails.amount)));
+                          },
+                        ),
+                      verticalSpaceLarge,
+                    ]),
             ],
           ),
         ),

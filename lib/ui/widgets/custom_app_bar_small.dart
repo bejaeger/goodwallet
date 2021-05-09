@@ -94,7 +94,7 @@ class CustomSliverAppBarSmall extends StatelessWidget {
                             size: 25,
                           ),
                     ),
-                  if (onSecondRightIconPressed != null) horizontalSpaceRegular,
+                  if (onSecondRightIconPressed != null) SizedBox(width: 20.0),
                   if (onSecondRightIconPressed != null)
                     GestureDetector(
                       onTap: onSecondRightIconPressed,

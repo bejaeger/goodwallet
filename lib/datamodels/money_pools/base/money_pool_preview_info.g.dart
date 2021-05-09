@@ -9,7 +9,7 @@ part of 'money_pool_preview_info.dart';
 _$_MoneyPoolPreviewInfo _$_$_MoneyPoolPreviewInfoFromJson(
     Map<String, dynamic> json) {
   return _$_MoneyPoolPreviewInfo(
-    total: json['total'] as String,
+    total: json['total'] as num,
     name: json['name'] as String,
     moneyPoolId: json['moneyPoolId'] as String,
   );

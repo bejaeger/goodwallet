@@ -14,6 +14,7 @@ import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/transfer_direction.dart';
+import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -30,8 +31,6 @@ class UserDataService {
       FirebaseFirestore.instance.collection("users");
   final CollectionReference _moneyPoolPayoutsCollectionReference =
       FirebaseFirestore.instance.collection("moneyPoolPayouts");
-  final Query _moneyPoolContributionsCollectionGroup =
-      FirebaseFirestore.instance.collectionGroup("moneyPoolContributions");
 
   final FirebaseAuthenticationService? _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
@@ -58,9 +57,9 @@ class UserDataService {
     _currentUser = user;
   }
 
-  // list of latest transactions
-  Map<String, List<dynamic>> latestTransactions = {};
-  Map<String, StreamSubscription?> _streamSubscriptions = {};
+  // list of latest transactions and their subscriptions
+  Map<String, List<MoneyTransfer>> latestTransfers = {};
+  Map<String, StreamSubscription?> _transfersSubscriptions = {};
 
   // Listen to auth state changes.
   // This is useful in scenarios where we want to
@@ -450,129 +449,198 @@ class UserDataService {
     return listOfTransactions;
   }
 
+  Stream<List<MoneyTransfer>> getCombinedMoneyTransfersStream(
+      {required Query outgoing, required Query incoming, int? maxNumber}) {
+    // combine streams with rxdart
+    Stream<QuerySnapshot> outSnapshot = maxNumber == null
+        ? outgoing.snapshots()
+        : outgoing.limit(maxNumber).snapshots();
+    Stream<QuerySnapshot> inSnapshot = maxNumber == null
+        ? incoming.snapshots()
+        : incoming.limit(maxNumber).snapshots();
+
+    return Rx.combineLatest2<QuerySnapshot, QuerySnapshot, List<MoneyTransfer>>(
+        outSnapshot, inSnapshot,
+        (QuerySnapshot outSnapshot, QuerySnapshot inSnapshot) {
+      // list of transactions to be returned
+      List<MoneyTransfer> transactions = [];
+      if (outSnapshot.docs.isNotEmpty) {
+        transactions.addAll(outSnapshot.docs
+            .map((snapshot) => MoneyTransfer.fromJson(snapshot.data()))
+            .toList());
+      }
+      if (inSnapshot.docs.isNotEmpty) {
+        List<MoneyTransfer> inTransactions = inSnapshot.docs
+            .map((snapshot) => MoneyTransfer.fromJson(snapshot.data()))
+            .toList();
+        List<String> transactionIds =
+            transactions.map((element) => element.transferId).toList();
+        inTransactions.forEach((element) {
+          // TODO: Resolve conflicts properly
+          // Add logic to find top ups (transactions to own account!)
+          // Can be deprecated once data is already stored accordingly with topUp = true!
+          if (!transactionIds.contains(element.transferId)) {
+            transactions.add(element);
+          } else {
+            transactions
+                .removeWhere((el2) => el2.transferId == element.transferId);
+            transactions.add(element);
+          }
+        });
+      }
+      transactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return transactions;
+    });
+  }
+
   // Get query for transaction with given direction.
   // optionally set the maximum number of documents retrieved
-  Stream<QuerySnapshot>? getTransactionsStream(
-      {required TransferDirection direction, int? maxNumber}) {
+  Stream<List<MoneyTransfer>> getTransferDataStream(
+      {required TransferType type, int? maxNumber}) {
     Query query;
-    if (direction == TransferDirection.TransferredToPeers) {
-      query = _paymentsCollectionReference
+    if (type == TransferType.All) {
+      Query outgoing = _paymentsCollectionReference
           .where("transferDetails.senderId", isEqualTo: currentUser.id)
           .orderBy("createdAt", descending: true);
-      // .where("createdAt",
-      //     isGreaterThan: Timestamp.fromDate(DateTime(2021, 5, 8)));
-    } else if (direction == TransferDirection.ReceivedFromPeers) {
-      query = _paymentsCollectionReference
+      Query incoming = _paymentsCollectionReference
           .where("transferDetails.recipientId", isEqualTo: currentUser.id)
           .orderBy("createdAt", descending: true);
-    } else if (direction == TransferDirection.Donation) {
-      query = _usersCollectionReference
-          .doc(_currentUser.id)
-          .collection("donations")
-          .orderBy("createdAt", descending: true);
-    } else if (direction == TransferDirection.MoneyPoolPayout) {
-      query = _moneyPoolPayoutsCollectionReference
-          .where("paidOutUsersIds", arrayContains: currentUser.id)
-          .orderBy("createdAt", descending: true);
-    } else if (direction == TransferDirection.MoneyPoolContribution) {
-      query = _moneyPoolContributionsCollectionGroup
+      Stream<List<MoneyTransfer>> transfersStream =
+          getCombinedMoneyTransfersStream(
+              outgoing: outgoing, incoming: incoming);
+      return transfersStream;
+    } else if (type == TransferType.Peer2PeerSent) {
+      query = _paymentsCollectionReference
           .where("transferDetails.senderId", isEqualTo: currentUser.id)
+          // document fields are the same so the type is Peer2Peer here
+          .where("type", isEqualTo: "Peer2Peer")
           .orderBy("createdAt", descending: true);
-    }
-    //query = getCombinedStream();
-    // query = _moneyPoolContributionsCollectionGroup
-    //     .where("transferDetails.senderId", isEqualTo: currentUser.id)
-    //     .orderBy("createdAt", descending: true);
-    else {
+      // .where("createdAt",
+      // isGreaterThan: Timestamp.fromDate(DateTime(2021, 5, 8)));
+    } else if (type == TransferType.Peer2PeerReceived) {
+      query = _paymentsCollectionReference
+          .where("transferDetails.recipientId", isEqualTo: currentUser.id)
+          // document fields are the same so the type is Peer2Peer here
+          .where("type", isEqualTo: "Peer2Peer")
+          .orderBy("createdAt", descending: true);
+    } else if (type == TransferType.Peer2Peer) {
+      Query querySent = _paymentsCollectionReference
+          .where("transferDetails.senderId", isEqualTo: currentUser.id)
+          // document fields are the same so the type is Peer2Peer here
+          .where("type", isEqualTo: "Peer2Peer")
+          .orderBy("createdAt", descending: true);
+      Query queryReceived = _paymentsCollectionReference
+          .where("transferDetails.recipientId", isEqualTo: currentUser.id)
+          // document fields are the same so the type is Peer2Peer here
+          .where("type", isEqualTo: "Peer2Peer")
+          .orderBy("createdAt", descending: true);
+      Stream<List<MoneyTransfer>>? stream = getCombinedMoneyTransfersStream(
+          outgoing: querySent, incoming: queryReceived, maxNumber: maxNumber);
+      return stream;
+    } else if (type == TransferType.Donation) {
+      query = _paymentsCollectionReference
+          .where("transferDetails.senderId", isEqualTo: currentUser.id)
+          .where("type", isEqualTo: "Donation")
+          .orderBy("createdAt", descending: true);
+    } else if (type == TransferType.MoneyPoolPayout) {
+      // This is querying for the full payout documents holding
+      // all MoneyPoolPayoutTransfers. Look in moneyPoolPayouts collection
+      query = _moneyPoolPayoutsCollectionReference
+          .where("paidOutUserIds", arrayContains: currentUser.id)
+          .orderBy("createdAt", descending: true);
+    } else if (type == TransferType.MoneyPoolPayoutTransfer) {
+      query = _paymentsCollectionReference
+          .where("transferDetails.recipientId", isEqualTo: currentUser.id)
+          .where("type", isEqualTo: "MoneyPoolPayoutTransfer")
+          .orderBy("createdAt", descending: true);
+    } else if (type == TransferType.MoneyPoolContribution) {
+      query = _paymentsCollectionReference
+          .where("transferDetails.senderId", isEqualTo: currentUser.id)
+          .where("type", isEqualTo: "MoneyPoolContribution")
+          .orderBy("createdAt", descending: true);
+    } else {
       // TODO: Throw exception and make return value non-nullable
       log.e(
-          "Could not find stream corresponding to provided transaction direction '$direction'");
-      return null;
+          "Could not find stream corresponding to provided transfer type '$type'");
+      throw Exception("Exception occured. TODO: Add proper Exception here!");
     }
+
     if (maxNumber != null) query = query.limit(maxNumber);
-    return query.snapshots();
+
+    // convert Stream<QuerySnapshot> to Stream<List<MoneyTransfer>>
+    Stream<List<MoneyTransfer>> returnStream = query.snapshots().map(
+          (event) => event.docs
+              .map(
+                (doc) => MoneyTransfer.fromJson(doc.data()),
+              )
+              .toList(),
+        );
+    return returnStream;
+  }
+
+  String getStreamConfigString({required TransferType type, int? maxNumber}) {
+    // TODO: Make maxNumber treatment smarter!
+    Map<String, String> config = {
+      "type": type.toString(),
+      "maxNumber": maxNumber.toString()
+    };
+    return config.toString();
   }
 
   // More generic class to listen to firestore collections for updates.
   // callback can be used to provide notifyListeners from the viewmodel
   // to the service
-  void addTransactionListener(
-      {required TransferDirection direction,
-      int maxNumber = 5,
-      void Function()? callback}) {
-    // adds stream subscription to map if not already present
-    if (_streamSubscriptions.containsKey(direction.toString())) {
-      log.v("Stream already listened to, don't add second listener!");
+  void addTransferDataListener(
+      {required TransferType type, int? maxNumber, void Function()? callback}) {
+    // TODO: We need to make sure that the callback is called!
+
+    String configString =
+        getStreamConfigString(type: type, maxNumber: maxNumber);
+
+    // TODO: Treat type MoneyPoolPayout
+    if (type == TransferType.MoneyPoolPayout) {
+      log.e(
+          "Can't listen to money pool payouts at the moment. NOT YET IMPLEMENTED");
+      return;
+    }
+
+    if (_transfersSubscriptions.containsKey(configString)) {
+      log.v(
+          "Stream with config '$configString' already listened to, not adding a second listener!");
       return;
     } else {
-      log.i("Setting up listener for transactions with direction $direction.");
-      Stream<QuerySnapshot>? snapshot =
-          getTransactionsStream(direction: direction, maxNumber: maxNumber);
-      if (snapshot != null) {
-        _streamSubscriptions[direction.toString()] = snapshot.listen(
-          (event) {
-            List<dynamic> transactions = [];
-            if (event.docs.isNotEmpty) {
-              transactions.addAll(event.docs.map((snapshot) {
-                if (direction == TransferDirection.MoneyPoolPayout) {
-                  return MoneyPoolPayout.fromJson(snapshot.data());
-                } else {
-                  return MoneyTransfer.fromJson(snapshot.data());
-                }
-              }).toList());
-            }
-            log.v(
-                "Listened to ${transactions.length} transactions for direction $direction. Limit was set to $maxNumber");
-            if (callback != null) callback();
-            latestTransactions[direction.toString()] = transactions;
-          },
-        );
-      } else {
-        log.v(
-            "Did not find any documents, adding empty list to latest Transactions");
-      }
+      log.i("Setting up listener for transfers with config $configString.");
+      Stream<List<MoneyTransfer>> snapshot =
+          getTransferDataStream(type: type, maxNumber: maxNumber);
+      // listen to combined stream and add transactions to controller
+      _transfersSubscriptions[configString] = snapshot.listen(
+        (transactions) {
+          latestTransfers[configString] = transactions;
+          log.v(
+              "Listened to ${transactions.length} transfers with config $configString. Limit was set to $maxNumber");
+          if (callback != null) callback();
+        },
+      );
     }
   }
 
   // Get transactions for type and direction
   // Could be done better! User has to parse redundant information
-  List<T> getTransactionsForDirection<T extends Object?>(
-      {required TransferDirection direction}) {
-    if (!latestTransactions.containsKey(direction.toString())) {
+  List<MoneyTransfer> getTransfers(
+      {required TransferType type, int? maxNumber}) {
+    String configString =
+        getStreamConfigString(type: type, maxNumber: maxNumber);
+    if (!latestTransfers.containsKey(configString)) {
       log.w(
-          "Did not find any transactions for direction $direction. Please add a listener with 'addTransactionListener()'. Returning empty list");
+          "Did not find any transfers for config $configString. Please add a listener with 'addTransferDataListener()'. Returning empty list");
       return [];
     } else {
-      List<T> returnList =
-          latestTransactions[direction.toString()]!.map((e) => e as T).toList();
-      return returnList;
+      return latestTransfers[configString]!;
     }
   }
 
-  // Get transactions for type and direction
-  // Could be done better! User has to parse redundant information
-  List<T> getTransactionsWithCastForDirection<T>(
-      {required TransferDirection direction}) {
-    if (latestTransactions[direction.toString()] == null) {
-      log.w(
-          "Did not find any transactions for direction $direction. Please add a listener with 'addTransactionListener()'. Returning empty list");
-      return [] as List<T>;
-    }
-    List<T?> returnList = latestTransactions[direction.toString()]!.map((e) {
-      T? result = e.map(
-        peer2peer: (value) => value is T? ? value as T : null,
-        donation: (value) => value is T? ? value as T : null,
-        moneyPoolContribution: (value) => value is T? ? value as T : null,
-      );
-      return result;
-    }).toList();
-    if (returnList.any((element) => element == null)) {
-      log.wtf(
-          "Returning empty list of transactions, this should not happen at this point");
-      return [] as List<T>;
-    }
-    return returnList.map((e) => e!).toList();
-  }
+  ///////////////////////////////////////////////////
+  // Clean up
 
   // clear all data when user logs out!
   Future handleLogoutEvent() async {

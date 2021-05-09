@@ -6,7 +6,7 @@ part 'money_pool_preview_info.g.dart';
 @freezed
 class MoneyPoolPreviewInfo with _$MoneyPoolPreviewInfo {
   factory MoneyPoolPreviewInfo({
-    required String total,
+    required num total,
     required String name,
     required String moneyPoolId,
   }) = _MoneyPoolPreviewInfo;

@@ -33,6 +33,7 @@ import 'package:good_wallet/ui/views/search_view/search_view.dart';
 import 'package:good_wallet/ui/views/startup_logic/startup_logic_view.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_history_layout_viewmodel.dart';
 import 'package:good_wallet/ui/views/transaction_history/transactions_view.dart';
+import 'package:good_wallet/ui/views/transaction_history/transfers_history_view.dart';
 import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_view.dart';
 import 'package:good_wallet/ui/views/wallet/wallet_viewmodel.dart';
@@ -72,6 +73,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: SearchView),
     MaterialRoute(page: TransferFundsAmountView),
     MaterialRoute(page: DisburseMoneyPoolView),
+    MaterialRoute(page: TransfersHistoryView),
   ],
   dependencies: [
     // Registers all singletons

@@ -6,6 +6,7 @@ import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
 import 'package:good_wallet/enums/transfer_direction.dart';
+import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
@@ -19,26 +20,22 @@ class HomeViewModel extends BaseModel {
   final UserDataService? _userDataService = locator<UserDataService>();
   final log = getLogger("home_viewmodel.dart");
 
-  // get latest money pool contributions for send money bottom sheet view
+  // get latest outgoing peer 2 peer transfers used in send money bottom sheet view
   // Need to add listeners otherwise this will be empty
   List<MoneyTransfer> get latestTransactionToPeers =>
-      _userDataService!.getTransactionsForDirection<MoneyTransfer>(
-          direction: TransferDirection.TransferredToPeers);
+      _userDataService!.getTransfers(type: TransferType.Peer2PeerSent);
 
   // get latest donations for give bottom sheet view
   // Need to add listeners otherwise this will be empty
   List<MoneyTransfer> get latestDonations =>
-      _userDataService!.getTransactionsForDirection<MoneyTransfer>(
-          direction: TransferDirection.Donation);
+      _userDataService!.getTransfers(type: TransferType.Donation);
 
   // Listen to stream of latest donations and transactions
   Future listenToData() async {
     // _userDataService!.addTransactionListener(
     //     direction: TransactionDirection.TransferredToPeers, maxNumber: 10);
-    _userDataService!.addTransactionListener(
-        direction: TransferDirection.TransferredToPeers, maxNumber: 10);
-    _userDataService!.addTransactionListener(
-        direction: TransferDirection.Donation, maxNumber: 5);
+    _userDataService!.addTransferDataListener(type: TransferType.Peer2PeerSent);
+    _userDataService!.addTransferDataListener(type: TransferType.Donation);
   }
 
   Future fetchData() async {
@@ -104,7 +101,9 @@ class HomeViewModel extends BaseModel {
   }
 
   Future navigateToTransactionsHistoryView() async {
-    _navigationService!.navigateTo(Routes.transactionsView);
+    _navigationService!.navigateTo(
+      Routes.transfersHistoryView,
+    );
   }
 
   void navigateToQRCodeView() {
@@ -140,5 +139,12 @@ class HomeViewModel extends BaseModel {
         arguments: LayoutTemplateViewMobileArguments(
             initialBottomNavBarIndex: BottomNavigatorIndex.Give.index,
             initialTabBarIndex: 2));
+  }
+
+  @override
+  void dispose() {
+    // TODO: cancel listeners in userDataService
+    //_userDataService!.remove
+    super.dispose();
   }
 }

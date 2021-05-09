@@ -33,8 +33,6 @@ class MoneyTransfer with _$MoneyTransfer {
     required dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
-    // Important: The json key name will be used in the cloud functions.
-    @JsonKey(name: "Peer2Peer")
     @Default(TransferType.Peer2Peer)
         TransferType type,
     @JsonKey(
@@ -55,7 +53,6 @@ class MoneyTransfer with _$MoneyTransfer {
     required dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
-    @JsonKey(name: "Donation")
     @Default(TransferType.Donation)
         TransferType type,
     @JsonKey(
@@ -76,7 +73,6 @@ class MoneyTransfer with _$MoneyTransfer {
     required dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
-    @JsonKey(name: "MoneyPoolContribution")
     @Default(TransferType.MoneyPoolContribution)
         TransferType type,
     @JsonKey(
@@ -91,7 +87,7 @@ class MoneyTransfer with _$MoneyTransfer {
   //
   //
   @JsonSerializable(explicitToJson: true)
-  const factory MoneyTransfer.moneyPoolPayout({
+  const factory MoneyTransfer.moneyPoolPayoutTransfer({
     required TransferDetails transferDetails,
     required MoneyPoolPreviewInfo moneyPoolInfo,
     // id of money pool payout that stores
@@ -100,8 +96,7 @@ class MoneyTransfer with _$MoneyTransfer {
     required dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
-    @JsonKey(name: "MoneyPoolPayout")
-    @Default(TransferType.MoneyPoolPayout)
+    @Default(TransferType.MoneyPoolPayoutTransfer)
         TransferType type,
     @JsonKey(
       name: "transferId",

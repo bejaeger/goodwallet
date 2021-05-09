@@ -80,7 +80,7 @@ exports.updateGoodWallet = functions.firestore
       // Add payment_method here and so to transaction model!
       const { transferDetails, type } = snap.data();
 
-      if (type == "Peer2Peer") { // peer 2 peer transfer
+      if (type === "Peer2Peer") { // peer 2 peer transfer
         const recipientId = transferDetails["recipientId"];
         const senderId = transferDetails["recipientId"];
         const amount = transferDetails["amount"];
@@ -95,6 +95,48 @@ exports.updateGoodWallet = functions.firestore
         });
       }
 
+      if (type === "Donation") { // Donation
+
+        // TODO: Update causes balance
+        const senderId = transferDetails["senderId"];
+        const amount = transferDetails["amount"];
+
+        const deduct = admin.firestore.FieldValue.increment(-amount);
+        const add = admin.firestore.FieldValue.increment(amount);
+
+        await db.collection("users").doc(senderId).update({
+          currentBalance: deduct,
+          donations: add
+        });
+      }
+
+      if (type === "MoneyPoolContribution") { // Donation
+
+        // TODO: Update causes balance
+        const senderId = transferDetails["senderId"];
+        const amount = transferDetails["amount"];
+        const { moneyPoolInfo } = snap.data();
+        const moneyPoolId = moneyPoolInfo["moneyPoolId"];
+
+        // update contributingUsers array
+        let snapshot = await db.collection("moneypools").doc(moneyPoolId).get();
+        if (snapshot.exists) {
+          let userList = snapshot.data()['contributingUsers'];
+          let newContributingUsers = userList.map(element => {
+            if (element["uid"] === senderId) element["contribution"] = element["contribution"] + amount;
+            return element;
+          });
+          const increment = admin.firestore.FieldValue.increment(amount);
+          await db.collection("moneypools").doc(moneyPoolId).update(
+            {
+              total: increment,
+              contributingUsers: newContributingUsers,
+            }
+          );
+        }
+
+      }
+
       return;
     } catch (error) {
       await snap.ref.set({ error: userFacingMessage(error) }, { merge: true });
@@ -104,6 +146,7 @@ exports.updateGoodWallet = functions.firestore
   }
   );
 
+// DEPRECATE THIS FUNCTION  
 /* Update user's Good Wallet if a donation has been made */
 exports.updateGoodWalletAfterDonation = functions.firestore
   .document('users/{userId}/donations/{donationId}')

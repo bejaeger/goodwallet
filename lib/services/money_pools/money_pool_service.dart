@@ -258,17 +258,15 @@ class MoneyPoolService {
   }
 
   // returns list of user money pool contributions
-  Future<List<MoneyPoolContribution>> getMoneyPoolContributions(
-      String mpid) async {
-    List<MoneyPoolContribution> returnList = [];
-    QuerySnapshot snapshot = await _moneyPoolsCollectionReference
-        .doc(mpid)
-        .collection(contributionsKey)
+  Future<List<MoneyTransfer>> getMoneyPoolContributions(String mpid) async {
+    List<MoneyTransfer> returnList = [];
+    QuerySnapshot snapshot = await _paymentsCollectionReference
+        .where("moneyPoolInfo.moneyPoolId", isEqualTo: mpid)
+        .where("type", isEqualTo: "MoneyPoolContribution")
         .get();
     if (snapshot.docs.isNotEmpty) {
       returnList = snapshot.docs
-          .map((element) =>
-              MoneyTransfer.fromJson(element.data()) as MoneyPoolContribution)
+          .map((element) => MoneyTransfer.fromJson(element.data()))
           .toList();
     }
     log.i("Fetched ${returnList.length} money pool contributions");
@@ -306,7 +304,7 @@ class MoneyPoolService {
       List<MoneyTransfer> moneyTransfers = [];
       data.transfersDetails.forEach((element) {
         moneyTransfers.add(
-          MoneyTransfer.moneyPoolPayout(
+          MoneyTransfer.moneyPoolPayoutTransfer(
               transferDetails: element,
               moneyPoolInfo:
                   MoneyPoolPreviewInfo.fromJson(data.moneyPool.toJson()),

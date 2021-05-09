@@ -7,7 +7,9 @@ import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
 import 'package:good_wallet/enums/search_type.dart';
+import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
+import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
@@ -19,22 +21,25 @@ class SingleMoneyPoolViewModel extends BaseModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
   final DialogService? _dialogService = locator<DialogService>();
+  final UserDataService? _userDataService = locator<UserDataService>();
 
   final log = getLogger("single_money_pool_viewmodel.dart");
 
-  List<MoneyPoolContribution> contributions = [];
+  List<MoneyTransfer> contributions = [];
   List<MoneyPoolPayout> payouts = [];
+  List<MoneyTransfer> latestTransfers = [];
+
+  // get latest money pool contributions for send money bottom sheet view
+  // Need to add listeners otherwise this will be empty
+  List<MoneyTransfer> get latestContributions =>
+      _userDataService!.getTransfers(type: TransferType.MoneyPoolContribution);
 
   MoneyPool moneyPool;
-  SingleMoneyPoolViewModel({required this.moneyPool});
-
-  Future fetchUserContributions([bool force = false]) async {
+  SingleMoneyPoolViewModel({required this.moneyPool}) {
     setBusy(true);
-    if (contributions.isEmpty || force) {
-      contributions = await _moneyPoolService!
-          .getMoneyPoolContributions(moneyPool.moneyPoolId);
-    }
-    setBusy(false);
+    _userDataService!.addTransferDataListener(
+        type: TransferType.MoneyPoolContribution,
+        callback: () => setBusy(false));
   }
 
   Future fetchPayouts([bool force = false]) async {
@@ -110,7 +115,6 @@ class SingleMoneyPoolViewModel extends BaseModel {
         await _moneyPoolService!.getMoneyPool(moneyPool.moneyPoolId);
 
     // can already be done for transfer_view
-    fetchUserContributions(true);
     fetchPayouts(true);
     notifyListeners();
   }

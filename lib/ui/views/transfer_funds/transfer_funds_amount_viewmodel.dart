@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/causes/preview_details/project_preview_details.dart';
+import 'package:good_wallet/datamodels/causes/preview_details/project_preview_info.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool_preview_info.dart';
 import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/transfers/transfer_details.dart';
@@ -220,7 +221,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
     setBusy(true);
     if (sheetResponse?.confirmed == true) {
       var data = prepareDonationData();
-      _dummyPaymentService.processDonation(data, currentUser.id);
+      _dummyPaymentService.processTransfer(data);
       await _showAndAwaitSnackbar("You just made an impact!");
       clearTillFirstAndShowHomeScreen();
     } else if (sheetResponse?.confirmed == false) {
@@ -234,7 +235,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
     setBusy(true);
     if (sheetResponse?.confirmed == false) {
       // FOR now, implemented dummy payment processing here
-      MoneyPoolContribution contribution = MoneyPoolContribution(
+      MoneyTransfer contribution = MoneyTransfer.moneyPoolContribution(
           transferDetails: TransferDetails(
             recipientId: receiverInfo.moneyPoolId,
             recipientName: receiverInfo.name,
@@ -244,8 +245,9 @@ class TransferFundsAmountViewModel extends FormViewModel {
             amount: scaleAmountForStripe(amount!),
             sourceType: moneySource,
           ),
+          moneyPoolInfo: MoneyPoolPreviewInfo.fromJson(receiverInfo.toJson()),
           createdAt: FieldValue.serverTimestamp());
-      _dummyPaymentService.processMoneyPoolContribution(contribution);
+      _dummyPaymentService.processTransfer(contribution);
       log.i("Processed donation");
       await _showAndAwaitSnackbar("Succesfully contributed to money pool!");
       navigateBack();
@@ -280,8 +282,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
   MoneyTransfer prepareDonationData() {
     try {
       MoneyTransfer data = MoneyTransfer.donation(
-        projectPreviewDetails:
-            ProjectPreviewDetails(projectName: receiverInfo.title),
+        projectInfo: ProjectPreviewInfo(projectName: receiverInfo.title),
         transferDetails: TransferDetails(
           recipientId: "DummyId",
           recipientName: receiverInfo.title,

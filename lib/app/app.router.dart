@@ -42,6 +42,7 @@ import '../ui/views/raise_money/raise_money_view.dart';
 import '../ui/views/search_view/search_view.dart';
 import '../ui/views/startup_logic/startup_logic_view.dart';
 import '../ui/views/transaction_history/transactions_view.dart';
+import '../ui/views/transaction_history/transfers_history_view.dart';
 import '../ui/views/transfer_funds/transfer_funds_amount_view.dart';
 import '../ui/views/wallet/wallet_view.dart';
 
@@ -74,6 +75,7 @@ class Routes {
   static const String searchView = '/search-view';
   static const String transferFundsAmountView = '/transfer-funds-amount-view';
   static const String disburseMoneyPoolView = '/disburse-money-pool-view';
+  static const String transfersHistoryView = '/transfers-history-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -102,6 +104,7 @@ class Routes {
     searchView,
     transferFundsAmountView,
     disburseMoneyPoolView,
+    transfersHistoryView,
   };
 }
 
@@ -136,6 +139,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.searchView, page: SearchView),
     RouteDef(Routes.transferFundsAmountView, page: TransferFundsAmountView),
     RouteDef(Routes.disburseMoneyPoolView, page: DisburseMoneyPoolView),
+    RouteDef(Routes.transfersHistoryView, page: TransfersHistoryView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -382,6 +386,12 @@ class StackedRouter extends RouterBase {
           key: args.key,
           moneyPool: args.moneyPool,
         ),
+        settings: data,
+      );
+    },
+    TransfersHistoryView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const TransfersHistoryView(),
         settings: data,
       );
     },

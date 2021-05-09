@@ -20,7 +20,7 @@ MoneyTransfer _$MoneyTransferFromJson(Map<String, dynamic> json) {
       return Donation.fromJson(json);
     case 'moneyPoolContribution':
       return MoneyPoolContribution.fromJson(json);
-    case 'moneyPoolPayout':
+    case 'moneyPoolPayoutTransfer':
       return MoneyPoolPayoutTransfer.fromJson(json);
 
     default:
@@ -36,8 +36,7 @@ class _$MoneyTransferTearOff {
       {required TransferDetails transferDetails,
       required dynamic createdAt,
       TransferStatus status = TransferStatus.Initialized,
-      @JsonKey(name: "Peer2Peer")
-          TransferType type = TransferType.Peer2Peer,
+      TransferType type = TransferType.Peer2Peer,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId = "placeholder"}) {
     return Peer2PeerTransfer(
@@ -54,8 +53,7 @@ class _$MoneyTransferTearOff {
       required ProjectPreviewInfo projectInfo,
       required dynamic createdAt,
       TransferStatus status = TransferStatus.Initialized,
-      @JsonKey(name: "Donation")
-          TransferType type = TransferType.Donation,
+      TransferType type = TransferType.Donation,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId = "placeholder"}) {
     return Donation(
@@ -73,8 +71,7 @@ class _$MoneyTransferTearOff {
       required MoneyPoolPreviewInfo moneyPoolInfo,
       required dynamic createdAt,
       TransferStatus status = TransferStatus.Initialized,
-      @JsonKey(name: "MoneyPoolContribution")
-          TransferType type = TransferType.MoneyPoolContribution,
+      TransferType type = TransferType.MoneyPoolContribution,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId = "placeholder"}) {
     return MoneyPoolContribution(
@@ -87,14 +84,13 @@ class _$MoneyTransferTearOff {
     );
   }
 
-  MoneyPoolPayoutTransfer moneyPoolPayout(
+  MoneyPoolPayoutTransfer moneyPoolPayoutTransfer(
       {required TransferDetails transferDetails,
       required MoneyPoolPreviewInfo moneyPoolInfo,
       required String payoutId,
       required dynamic createdAt,
       TransferStatus status = TransferStatus.Initialized,
-      @JsonKey(name: "MoneyPoolPayout")
-          TransferType type = TransferType.MoneyPoolPayout,
+      TransferType type = TransferType.MoneyPoolPayoutTransfer,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId = "placeholder"}) {
     return MoneyPoolPayoutTransfer(
@@ -120,9 +116,7 @@ const $MoneyTransfer = _$MoneyTransferTearOff();
 mixin _$MoneyTransfer {
   TransferDetails get transferDetails => throw _privateConstructorUsedError;
   dynamic get createdAt => throw _privateConstructorUsedError;
-  TransferStatus get status =>
-      throw _privateConstructorUsedError; // Important: The json key name will be used in the cloud functions.
-  @JsonKey(name: "Peer2Peer")
+  TransferStatus get status => throw _privateConstructorUsedError;
   TransferType get type => throw _privateConstructorUsedError;
   @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
   String get transferId => throw _privateConstructorUsedError;
@@ -133,8 +127,7 @@ mixin _$MoneyTransfer {
             TransferDetails transferDetails,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Peer2Peer")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         peer2peer,
@@ -143,8 +136,7 @@ mixin _$MoneyTransfer {
             ProjectPreviewInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Donation")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         donation,
@@ -153,8 +145,7 @@ mixin _$MoneyTransfer {
             MoneyPoolPreviewInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolContribution")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         moneyPoolContribution,
@@ -164,11 +155,10 @@ mixin _$MoneyTransfer {
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolPayout")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
-        moneyPoolPayout,
+        moneyPoolPayoutTransfer,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -177,8 +167,7 @@ mixin _$MoneyTransfer {
             TransferDetails transferDetails,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Peer2Peer")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         peer2peer,
@@ -187,8 +176,7 @@ mixin _$MoneyTransfer {
             ProjectPreviewInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Donation")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         donation,
@@ -197,8 +185,7 @@ mixin _$MoneyTransfer {
             MoneyPoolPreviewInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolContribution")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         moneyPoolContribution,
@@ -208,11 +195,10 @@ mixin _$MoneyTransfer {
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolPayout")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
-        moneyPoolPayout,
+        moneyPoolPayoutTransfer,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -222,7 +208,8 @@ mixin _$MoneyTransfer {
     required TResult Function(Donation value) donation,
     required TResult Function(MoneyPoolContribution value)
         moneyPoolContribution,
-    required TResult Function(MoneyPoolPayoutTransfer value) moneyPoolPayout,
+    required TResult Function(MoneyPoolPayoutTransfer value)
+        moneyPoolPayoutTransfer,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -230,7 +217,7 @@ mixin _$MoneyTransfer {
     TResult Function(Peer2PeerTransfer value)? peer2peer,
     TResult Function(Donation value)? donation,
     TResult Function(MoneyPoolContribution value)? moneyPoolContribution,
-    TResult Function(MoneyPoolPayoutTransfer value)? moneyPoolPayout,
+    TResult Function(MoneyPoolPayoutTransfer value)? moneyPoolPayoutTransfer,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -249,8 +236,7 @@ abstract class $MoneyTransferCopyWith<$Res> {
       {TransferDetails transferDetails,
       dynamic createdAt,
       TransferStatus status,
-      @JsonKey(name: "Peer2Peer")
-          TransferType type,
+      TransferType type,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId});
 
@@ -317,8 +303,7 @@ abstract class $Peer2PeerTransferCopyWith<$Res>
       {TransferDetails transferDetails,
       dynamic createdAt,
       TransferStatus status,
-      @JsonKey(name: "Peer2Peer")
-          TransferType type,
+      TransferType type,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId});
 
@@ -378,8 +363,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
       {required this.transferDetails,
       required this.createdAt,
       this.status = TransferStatus.Initialized,
-      @JsonKey(name: "Peer2Peer")
-          this.type = TransferType.Peer2Peer,
+      this.type = TransferType.Peer2Peer,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           this.transferId = "placeholder"})
       : super._();
@@ -394,8 +378,8 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
   @JsonKey(defaultValue: TransferStatus.Initialized)
   @override
   final TransferStatus status;
-  @override // Important: The json key name will be used in the cloud functions.
-  @JsonKey(name: "Peer2Peer")
+  @JsonKey(defaultValue: TransferType.Peer2Peer)
+  @override
   final TransferType type;
   @override
   @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
@@ -446,8 +430,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
             TransferDetails transferDetails,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Peer2Peer")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         peer2peer,
@@ -456,8 +439,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
             ProjectPreviewInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Donation")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         donation,
@@ -466,8 +448,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
             MoneyPoolPreviewInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolContribution")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         moneyPoolContribution,
@@ -477,11 +458,10 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolPayout")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
-        moneyPoolPayout,
+        moneyPoolPayoutTransfer,
   }) {
     return peer2peer(transferDetails, createdAt, status, type, transferId);
   }
@@ -493,8 +473,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
             TransferDetails transferDetails,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Peer2Peer")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         peer2peer,
@@ -503,8 +482,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
             ProjectPreviewInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Donation")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         donation,
@@ -513,8 +491,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
             MoneyPoolPreviewInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolContribution")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         moneyPoolContribution,
@@ -524,11 +501,10 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolPayout")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
-        moneyPoolPayout,
+        moneyPoolPayoutTransfer,
     required TResult orElse(),
   }) {
     if (peer2peer != null) {
@@ -544,7 +520,8 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
     required TResult Function(Donation value) donation,
     required TResult Function(MoneyPoolContribution value)
         moneyPoolContribution,
-    required TResult Function(MoneyPoolPayoutTransfer value) moneyPoolPayout,
+    required TResult Function(MoneyPoolPayoutTransfer value)
+        moneyPoolPayoutTransfer,
   }) {
     return peer2peer(this);
   }
@@ -555,7 +532,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
     TResult Function(Peer2PeerTransfer value)? peer2peer,
     TResult Function(Donation value)? donation,
     TResult Function(MoneyPoolContribution value)? moneyPoolContribution,
-    TResult Function(MoneyPoolPayoutTransfer value)? moneyPoolPayout,
+    TResult Function(MoneyPoolPayoutTransfer value)? moneyPoolPayoutTransfer,
     required TResult orElse(),
   }) {
     if (peer2peer != null) {
@@ -575,8 +552,7 @@ abstract class Peer2PeerTransfer extends MoneyTransfer {
       {required TransferDetails transferDetails,
       required dynamic createdAt,
       TransferStatus status,
-      @JsonKey(name: "Peer2Peer")
-          TransferType type,
+      TransferType type,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId}) = _$Peer2PeerTransfer;
   const Peer2PeerTransfer._() : super._();
@@ -590,8 +566,7 @@ abstract class Peer2PeerTransfer extends MoneyTransfer {
   dynamic get createdAt => throw _privateConstructorUsedError;
   @override
   TransferStatus get status => throw _privateConstructorUsedError;
-  @override // Important: The json key name will be used in the cloud functions.
-  @JsonKey(name: "Peer2Peer")
+  @override
   TransferType get type => throw _privateConstructorUsedError;
   @override
   @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
@@ -612,8 +587,7 @@ abstract class $DonationCopyWith<$Res> implements $MoneyTransferCopyWith<$Res> {
       ProjectPreviewInfo projectInfo,
       dynamic createdAt,
       TransferStatus status,
-      @JsonKey(name: "Donation")
-          TransferType type,
+      TransferType type,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId});
 
@@ -685,8 +659,7 @@ class _$Donation extends Donation {
       required this.projectInfo,
       required this.createdAt,
       this.status = TransferStatus.Initialized,
-      @JsonKey(name: "Donation")
-          this.type = TransferType.Donation,
+      this.type = TransferType.Donation,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           this.transferId = "placeholder"})
       : super._();
@@ -703,8 +676,8 @@ class _$Donation extends Donation {
   @JsonKey(defaultValue: TransferStatus.Initialized)
   @override
   final TransferStatus status;
+  @JsonKey(defaultValue: TransferType.Donation)
   @override
-  @JsonKey(name: "Donation")
   final TransferType type;
   @override
   @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
@@ -759,8 +732,7 @@ class _$Donation extends Donation {
             TransferDetails transferDetails,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Peer2Peer")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         peer2peer,
@@ -769,8 +741,7 @@ class _$Donation extends Donation {
             ProjectPreviewInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Donation")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         donation,
@@ -779,8 +750,7 @@ class _$Donation extends Donation {
             MoneyPoolPreviewInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolContribution")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         moneyPoolContribution,
@@ -790,11 +760,10 @@ class _$Donation extends Donation {
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolPayout")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
-        moneyPoolPayout,
+        moneyPoolPayoutTransfer,
   }) {
     return donation(
         transferDetails, projectInfo, createdAt, status, type, transferId);
@@ -807,8 +776,7 @@ class _$Donation extends Donation {
             TransferDetails transferDetails,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Peer2Peer")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         peer2peer,
@@ -817,8 +785,7 @@ class _$Donation extends Donation {
             ProjectPreviewInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Donation")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         donation,
@@ -827,8 +794,7 @@ class _$Donation extends Donation {
             MoneyPoolPreviewInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolContribution")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         moneyPoolContribution,
@@ -838,11 +804,10 @@ class _$Donation extends Donation {
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolPayout")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
-        moneyPoolPayout,
+        moneyPoolPayoutTransfer,
     required TResult orElse(),
   }) {
     if (donation != null) {
@@ -859,7 +824,8 @@ class _$Donation extends Donation {
     required TResult Function(Donation value) donation,
     required TResult Function(MoneyPoolContribution value)
         moneyPoolContribution,
-    required TResult Function(MoneyPoolPayoutTransfer value) moneyPoolPayout,
+    required TResult Function(MoneyPoolPayoutTransfer value)
+        moneyPoolPayoutTransfer,
   }) {
     return donation(this);
   }
@@ -870,7 +836,7 @@ class _$Donation extends Donation {
     TResult Function(Peer2PeerTransfer value)? peer2peer,
     TResult Function(Donation value)? donation,
     TResult Function(MoneyPoolContribution value)? moneyPoolContribution,
-    TResult Function(MoneyPoolPayoutTransfer value)? moneyPoolPayout,
+    TResult Function(MoneyPoolPayoutTransfer value)? moneyPoolPayoutTransfer,
     required TResult orElse(),
   }) {
     if (donation != null) {
@@ -891,8 +857,7 @@ abstract class Donation extends MoneyTransfer {
       required ProjectPreviewInfo projectInfo,
       required dynamic createdAt,
       TransferStatus status,
-      @JsonKey(name: "Donation")
-          TransferType type,
+      TransferType type,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId}) = _$Donation;
   const Donation._() : super._();
@@ -907,7 +872,6 @@ abstract class Donation extends MoneyTransfer {
   @override
   TransferStatus get status => throw _privateConstructorUsedError;
   @override
-  @JsonKey(name: "Donation")
   TransferType get type => throw _privateConstructorUsedError;
   @override
   @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
@@ -930,8 +894,7 @@ abstract class $MoneyPoolContributionCopyWith<$Res>
       MoneyPoolPreviewInfo moneyPoolInfo,
       dynamic createdAt,
       TransferStatus status,
-      @JsonKey(name: "MoneyPoolContribution")
-          TransferType type,
+      TransferType type,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId});
 
@@ -1005,8 +968,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
       required this.moneyPoolInfo,
       required this.createdAt,
       this.status = TransferStatus.Initialized,
-      @JsonKey(name: "MoneyPoolContribution")
-          this.type = TransferType.MoneyPoolContribution,
+      this.type = TransferType.MoneyPoolContribution,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           this.transferId = "placeholder"})
       : super._();
@@ -1023,8 +985,8 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
   @JsonKey(defaultValue: TransferStatus.Initialized)
   @override
   final TransferStatus status;
+  @JsonKey(defaultValue: TransferType.MoneyPoolContribution)
   @override
-  @JsonKey(name: "MoneyPoolContribution")
   final TransferType type;
   @override
   @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
@@ -1080,8 +1042,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
             TransferDetails transferDetails,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Peer2Peer")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         peer2peer,
@@ -1090,8 +1051,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
             ProjectPreviewInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Donation")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         donation,
@@ -1100,8 +1060,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
             MoneyPoolPreviewInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolContribution")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         moneyPoolContribution,
@@ -1111,11 +1070,10 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolPayout")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
-        moneyPoolPayout,
+        moneyPoolPayoutTransfer,
   }) {
     return moneyPoolContribution(
         transferDetails, moneyPoolInfo, createdAt, status, type, transferId);
@@ -1128,8 +1086,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
             TransferDetails transferDetails,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Peer2Peer")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         peer2peer,
@@ -1138,8 +1095,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
             ProjectPreviewInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Donation")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         donation,
@@ -1148,8 +1104,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
             MoneyPoolPreviewInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolContribution")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         moneyPoolContribution,
@@ -1159,11 +1114,10 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolPayout")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
-        moneyPoolPayout,
+        moneyPoolPayoutTransfer,
     required TResult orElse(),
   }) {
     if (moneyPoolContribution != null) {
@@ -1180,7 +1134,8 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
     required TResult Function(Donation value) donation,
     required TResult Function(MoneyPoolContribution value)
         moneyPoolContribution,
-    required TResult Function(MoneyPoolPayoutTransfer value) moneyPoolPayout,
+    required TResult Function(MoneyPoolPayoutTransfer value)
+        moneyPoolPayoutTransfer,
   }) {
     return moneyPoolContribution(this);
   }
@@ -1191,7 +1146,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
     TResult Function(Peer2PeerTransfer value)? peer2peer,
     TResult Function(Donation value)? donation,
     TResult Function(MoneyPoolContribution value)? moneyPoolContribution,
-    TResult Function(MoneyPoolPayoutTransfer value)? moneyPoolPayout,
+    TResult Function(MoneyPoolPayoutTransfer value)? moneyPoolPayoutTransfer,
     required TResult orElse(),
   }) {
     if (moneyPoolContribution != null) {
@@ -1213,8 +1168,7 @@ abstract class MoneyPoolContribution extends MoneyTransfer {
       required MoneyPoolPreviewInfo moneyPoolInfo,
       required dynamic createdAt,
       TransferStatus status,
-      @JsonKey(name: "MoneyPoolContribution")
-          TransferType type,
+      TransferType type,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId}) = _$MoneyPoolContribution;
   const MoneyPoolContribution._() : super._();
@@ -1230,7 +1184,6 @@ abstract class MoneyPoolContribution extends MoneyTransfer {
   @override
   TransferStatus get status => throw _privateConstructorUsedError;
   @override
-  @JsonKey(name: "MoneyPoolContribution")
   TransferType get type => throw _privateConstructorUsedError;
   @override
   @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
@@ -1254,8 +1207,7 @@ abstract class $MoneyPoolPayoutTransferCopyWith<$Res>
       String payoutId,
       dynamic createdAt,
       TransferStatus status,
-      @JsonKey(name: "MoneyPoolPayout")
-          TransferType type,
+      TransferType type,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId});
 
@@ -1335,8 +1287,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
       required this.payoutId,
       required this.createdAt,
       this.status = TransferStatus.Initialized,
-      @JsonKey(name: "MoneyPoolPayout")
-          this.type = TransferType.MoneyPoolPayout,
+      this.type = TransferType.MoneyPoolPayoutTransfer,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           this.transferId = "placeholder"})
       : super._();
@@ -1356,8 +1307,8 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
   @JsonKey(defaultValue: TransferStatus.Initialized)
   @override
   final TransferStatus status;
+  @JsonKey(defaultValue: TransferType.MoneyPoolPayoutTransfer)
   @override
-  @JsonKey(name: "MoneyPoolPayout")
   final TransferType type;
   @override
   @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
@@ -1365,7 +1316,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
 
   @override
   String toString() {
-    return 'MoneyTransfer.moneyPoolPayout(transferDetails: $transferDetails, moneyPoolInfo: $moneyPoolInfo, payoutId: $payoutId, createdAt: $createdAt, status: $status, type: $type, transferId: $transferId)';
+    return 'MoneyTransfer.moneyPoolPayoutTransfer(transferDetails: $transferDetails, moneyPoolInfo: $moneyPoolInfo, payoutId: $payoutId, createdAt: $createdAt, status: $status, type: $type, transferId: $transferId)';
   }
 
   @override
@@ -1417,8 +1368,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
             TransferDetails transferDetails,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Peer2Peer")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         peer2peer,
@@ -1427,8 +1377,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
             ProjectPreviewInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Donation")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         donation,
@@ -1437,8 +1386,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
             MoneyPoolPreviewInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolContribution")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
         moneyPoolContribution,
@@ -1448,14 +1396,13 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolPayout")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)
-        moneyPoolPayout,
+        moneyPoolPayoutTransfer,
   }) {
-    return moneyPoolPayout(transferDetails, moneyPoolInfo, payoutId, createdAt,
-        status, type, transferId);
+    return moneyPoolPayoutTransfer(transferDetails, moneyPoolInfo, payoutId,
+        createdAt, status, type, transferId);
   }
 
   @override
@@ -1465,8 +1412,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
             TransferDetails transferDetails,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Peer2Peer")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         peer2peer,
@@ -1475,8 +1421,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
             ProjectPreviewInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "Donation")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         donation,
@@ -1485,8 +1430,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
             MoneyPoolPreviewInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolContribution")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
         moneyPoolContribution,
@@ -1496,15 +1440,14 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
-            @JsonKey(name: "MoneyPoolPayout")
-                TransferType type,
+            TransferType type,
             @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
                 String transferId)?
-        moneyPoolPayout,
+        moneyPoolPayoutTransfer,
     required TResult orElse(),
   }) {
-    if (moneyPoolPayout != null) {
-      return moneyPoolPayout(transferDetails, moneyPoolInfo, payoutId,
+    if (moneyPoolPayoutTransfer != null) {
+      return moneyPoolPayoutTransfer(transferDetails, moneyPoolInfo, payoutId,
           createdAt, status, type, transferId);
     }
     return orElse();
@@ -1517,9 +1460,10 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
     required TResult Function(Donation value) donation,
     required TResult Function(MoneyPoolContribution value)
         moneyPoolContribution,
-    required TResult Function(MoneyPoolPayoutTransfer value) moneyPoolPayout,
+    required TResult Function(MoneyPoolPayoutTransfer value)
+        moneyPoolPayoutTransfer,
   }) {
-    return moneyPoolPayout(this);
+    return moneyPoolPayoutTransfer(this);
   }
 
   @override
@@ -1528,11 +1472,11 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
     TResult Function(Peer2PeerTransfer value)? peer2peer,
     TResult Function(Donation value)? donation,
     TResult Function(MoneyPoolContribution value)? moneyPoolContribution,
-    TResult Function(MoneyPoolPayoutTransfer value)? moneyPoolPayout,
+    TResult Function(MoneyPoolPayoutTransfer value)? moneyPoolPayoutTransfer,
     required TResult orElse(),
   }) {
-    if (moneyPoolPayout != null) {
-      return moneyPoolPayout(this);
+    if (moneyPoolPayoutTransfer != null) {
+      return moneyPoolPayoutTransfer(this);
     }
     return orElse();
   }
@@ -1540,7 +1484,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
   @override
   Map<String, dynamic> toJson() {
     return _$_$MoneyPoolPayoutTransferToJson(this)
-      ..['runtimeType'] = 'moneyPoolPayout';
+      ..['runtimeType'] = 'moneyPoolPayoutTransfer';
   }
 }
 
@@ -1551,8 +1495,7 @@ abstract class MoneyPoolPayoutTransfer extends MoneyTransfer {
       required String payoutId,
       required dynamic createdAt,
       TransferStatus status,
-      @JsonKey(name: "MoneyPoolPayout")
-          TransferType type,
+      TransferType type,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId}) = _$MoneyPoolPayoutTransfer;
   const MoneyPoolPayoutTransfer._() : super._();
@@ -1571,7 +1514,6 @@ abstract class MoneyPoolPayoutTransfer extends MoneyTransfer {
   @override
   TransferStatus get status => throw _privateConstructorUsedError;
   @override
-  @JsonKey(name: "MoneyPoolPayout")
   TransferType get type => throw _privateConstructorUsedError;
   @override
   @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)

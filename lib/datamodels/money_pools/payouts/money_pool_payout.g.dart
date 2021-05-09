@@ -75,10 +75,15 @@ K? _$enumDecodeNullable<K, V>(
 
 const _$TransferTypeEnumMap = {
   TransferType.Peer2Peer: 'Peer2Peer',
+  TransferType.Peer2PeerSent: 'Peer2PeerSent',
+  TransferType.Peer2PeerReceived: 'Peer2PeerReceived',
   TransferType.Donation: 'Donation',
+  TransferType.MoneyPoolPayoutTransfer: 'MoneyPoolPayoutTransfer',
   TransferType.MoneyPoolPayout: 'MoneyPoolPayout',
   TransferType.MoneyPoolContribution: 'MoneyPoolContribution',
   TransferType.PrepaidFund: 'PrepaidFund',
+  TransferType.Commitment: 'Commitment',
+  TransferType.All: 'All',
 };
 
 const _$TransferStatusEnumMap = {
