@@ -23,36 +23,41 @@ class TransfersHistoryView extends StatelessWidget {
       builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
         child: Shimmer(
           interval: Duration(hours: 1),
-          child: ListView(
-            children: [
-              CustomAppBarSmall(
+          child: CustomScrollView(
+            key: PageStorageKey('storage-key'),
+            slivers: [
+              CustomSliverAppBarSmall(
                 title: "Your Recent Activities",
-                rightWidget: IconButton(
-                  onPressed: model.showNotImplementedSnackbar,
-                  icon: Icon(Icons.search_rounded, size: 28),
-                ),
+                onRightIconPressed: model.showNotImplementedSnackbar,
+                rightIcon: Icon(Icons.search_rounded, size: 28),
               ),
-              verticalSpaceRegular,
+              SliverToBoxAdapter(child: SizedBox(height: 18)),
               model.transfers == null || model.transfers!.isEmpty
                   ? model.isBusy
-                      ? Center(
-                          child: CircularProgressIndicator(),
+                      ? SliverToBoxAdapter(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
                         )
-                      : Center(child: Text("No transfers on record!"))
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      physics: ScrollPhysics(),
-                      itemCount: model.transfers!.length,
-                      itemBuilder: (context, index) {
-                        var data = model.transfers![index];
-                        return TransferListTile(
-                          transaction: data,
-                          style:
-                              _getTransactionsCorrespondingToTypeHistoryEntryStyle(
-                                  data, model.inferTransactionType(data)),
-                          amount: data.transferDetails.amount,
-                        );
-                      },
+                      : SliverToBoxAdapter(
+                          child: Center(
+                            child: Text("No transfers on record!"),
+                          ),
+                        )
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          var data = model.transfers![index];
+                          return TransferListTile(
+                            transaction: data,
+                            style:
+                                _getTransactionsCorrespondingToTypeHistoryEntryStyle(
+                                    data, model.inferTransactionType(data)),
+                            amount: data.transferDetails.amount,
+                          );
+                        },
+                        childCount: model.transfers!.length,
+                      ),
                     ),
             ],
           ),
