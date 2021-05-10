@@ -16,7 +16,7 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
   final UserDataService? _userDataService = locator<UserDataService>();
-  MyUser get currentUser => _userDataService!.currentUser;
+  GWUser get currentUser => _userDataService!.currentUser;
 
   final log = getLogger("create_money_pool_form_viewmodel.dart");
 

@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
-import '../datamodels/causes/good_wallet_project_model.dart';
+import '../datamodels/causes/project.dart';
 import '../datamodels/money_pools/base/money_pool.dart';
 import '../datamodels/user/public_user_info.dart';
 import '../enums/featured_app_type.dart';
@@ -432,7 +432,7 @@ class LayoutTemplateViewMobileArguments {
 /// SingleProjectViewMobile arguments holder class
 class SingleProjectViewMobileArguments {
   final Key? key;
-  final GoodWalletProjectModel? project;
+  final Project? project;
   SingleProjectViewMobileArguments({this.key, required this.project});
 }
 

@@ -2,7 +2,7 @@
 
 import 'package:good_wallet/utils/datamodel_helpers.dart';
 
-class MyUser {
+class GWUser {
   final String id;
   final String fullName;
   final String email;
@@ -11,7 +11,7 @@ class MyUser {
   final num donations;
   final num raised;
 
-  MyUser(
+  GWUser(
       {required this.transferredToPeers,
       required this.donations,
       required this.id,
@@ -20,7 +20,7 @@ class MyUser {
       required this.currentBalance,
       required this.raised});
 
-  MyUser.empty()
+  GWUser.empty()
       : id = "",
         fullName = "",
         email = "",
@@ -29,7 +29,7 @@ class MyUser {
         donations = 0,
         raised = 0;
 
-  MyUser.dummy()
+  GWUser.dummy()
       : id = "USERID",
         fullName = "USERNAME",
         email = "dummy@gmail.com",
@@ -38,7 +38,7 @@ class MyUser {
         donations = 0,
         raised = 0;
 
-  MyUser.fromData(Map<String, dynamic> data)
+  GWUser.fromData(Map<String, dynamic> data)
       : id = data['id'],
         fullName = data['fullName'],
         email = data['email'],
@@ -71,12 +71,8 @@ class MyUser {
     return returnJson;
   }
 
-  String getInitials() {
-    return getInitialsFromName(this.fullName);
-  }
-
-  static MyUser fromMap(Map<String, dynamic> map) {
-    var data = MyUser(
+  static GWUser fromMap(Map<String, dynamic> map) {
+    var data = GWUser(
         id: map['id'],
         fullName: map['fullName'],
         email: map['email'],

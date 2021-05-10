@@ -1,7 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides
 
-part of 'money_pool_preview_info.dart';
+part of 'concise_money_pool_info.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,13 +12,13 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-MoneyPoolPreviewInfo _$MoneyPoolPreviewInfoFromJson(Map<String, dynamic> json) {
+ConciseMoneyPoolInfo _$ConciseMoneyPoolInfoFromJson(Map<String, dynamic> json) {
   return _MoneyPoolPreviewInfo.fromJson(json);
 }
 
 /// @nodoc
-class _$MoneyPoolPreviewInfoTearOff {
-  const _$MoneyPoolPreviewInfoTearOff();
+class _$ConciseMoneyPoolInfoTearOff {
+  const _$ConciseMoneyPoolInfoTearOff();
 
   _MoneyPoolPreviewInfo call(
       {required num total, required String name, required String moneyPoolId}) {
@@ -29,42 +29,42 @@ class _$MoneyPoolPreviewInfoTearOff {
     );
   }
 
-  MoneyPoolPreviewInfo fromJson(Map<String, Object> json) {
-    return MoneyPoolPreviewInfo.fromJson(json);
+  ConciseMoneyPoolInfo fromJson(Map<String, Object> json) {
+    return ConciseMoneyPoolInfo.fromJson(json);
   }
 }
 
 /// @nodoc
-const $MoneyPoolPreviewInfo = _$MoneyPoolPreviewInfoTearOff();
+const $ConciseMoneyPoolInfo = _$ConciseMoneyPoolInfoTearOff();
 
 /// @nodoc
-mixin _$MoneyPoolPreviewInfo {
+mixin _$ConciseMoneyPoolInfo {
   num get total => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get moneyPoolId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $MoneyPoolPreviewInfoCopyWith<MoneyPoolPreviewInfo> get copyWith =>
+  $ConciseMoneyPoolInfoCopyWith<ConciseMoneyPoolInfo> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $MoneyPoolPreviewInfoCopyWith<$Res> {
-  factory $MoneyPoolPreviewInfoCopyWith(MoneyPoolPreviewInfo value,
-          $Res Function(MoneyPoolPreviewInfo) then) =
-      _$MoneyPoolPreviewInfoCopyWithImpl<$Res>;
+abstract class $ConciseMoneyPoolInfoCopyWith<$Res> {
+  factory $ConciseMoneyPoolInfoCopyWith(ConciseMoneyPoolInfo value,
+          $Res Function(ConciseMoneyPoolInfo) then) =
+      _$ConciseMoneyPoolInfoCopyWithImpl<$Res>;
   $Res call({num total, String name, String moneyPoolId});
 }
 
 /// @nodoc
-class _$MoneyPoolPreviewInfoCopyWithImpl<$Res>
-    implements $MoneyPoolPreviewInfoCopyWith<$Res> {
-  _$MoneyPoolPreviewInfoCopyWithImpl(this._value, this._then);
+class _$ConciseMoneyPoolInfoCopyWithImpl<$Res>
+    implements $ConciseMoneyPoolInfoCopyWith<$Res> {
+  _$ConciseMoneyPoolInfoCopyWithImpl(this._value, this._then);
 
-  final MoneyPoolPreviewInfo _value;
+  final ConciseMoneyPoolInfo _value;
   // ignore: unused_field
-  final $Res Function(MoneyPoolPreviewInfo) _then;
+  final $Res Function(ConciseMoneyPoolInfo) _then;
 
   @override
   $Res call({
@@ -91,7 +91,7 @@ class _$MoneyPoolPreviewInfoCopyWithImpl<$Res>
 
 /// @nodoc
 abstract class _$MoneyPoolPreviewInfoCopyWith<$Res>
-    implements $MoneyPoolPreviewInfoCopyWith<$Res> {
+    implements $ConciseMoneyPoolInfoCopyWith<$Res> {
   factory _$MoneyPoolPreviewInfoCopyWith(_MoneyPoolPreviewInfo value,
           $Res Function(_MoneyPoolPreviewInfo) then) =
       __$MoneyPoolPreviewInfoCopyWithImpl<$Res>;
@@ -101,7 +101,7 @@ abstract class _$MoneyPoolPreviewInfoCopyWith<$Res>
 
 /// @nodoc
 class __$MoneyPoolPreviewInfoCopyWithImpl<$Res>
-    extends _$MoneyPoolPreviewInfoCopyWithImpl<$Res>
+    extends _$ConciseMoneyPoolInfoCopyWithImpl<$Res>
     implements _$MoneyPoolPreviewInfoCopyWith<$Res> {
   __$MoneyPoolPreviewInfoCopyWithImpl(
       _MoneyPoolPreviewInfo _value, $Res Function(_MoneyPoolPreviewInfo) _then)
@@ -151,7 +151,7 @@ class _$_MoneyPoolPreviewInfo implements _MoneyPoolPreviewInfo {
 
   @override
   String toString() {
-    return 'MoneyPoolPreviewInfo(total: $total, name: $name, moneyPoolId: $moneyPoolId)';
+    return 'ConciseMoneyPoolInfo(total: $total, name: $name, moneyPoolId: $moneyPoolId)';
   }
 
   @override
@@ -186,7 +186,7 @@ class _$_MoneyPoolPreviewInfo implements _MoneyPoolPreviewInfo {
   }
 }
 
-abstract class _MoneyPoolPreviewInfo implements MoneyPoolPreviewInfo {
+abstract class _MoneyPoolPreviewInfo implements ConciseMoneyPoolInfo {
   factory _MoneyPoolPreviewInfo(
       {required num total,
       required String name,

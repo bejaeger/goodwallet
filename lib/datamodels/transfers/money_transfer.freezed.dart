@@ -50,7 +50,7 @@ class _$MoneyTransferTearOff {
 
   Donation donation(
       {required TransferDetails transferDetails,
-      required ProjectPreviewInfo projectInfo,
+      required ConciseProjectInfo projectInfo,
       required dynamic createdAt,
       TransferStatus status = TransferStatus.Initialized,
       TransferType type = TransferType.Donation,
@@ -68,7 +68,7 @@ class _$MoneyTransferTearOff {
 
   MoneyPoolContribution moneyPoolContribution(
       {required TransferDetails transferDetails,
-      required MoneyPoolPreviewInfo moneyPoolInfo,
+      required ConciseMoneyPoolInfo moneyPoolInfo,
       required dynamic createdAt,
       TransferStatus status = TransferStatus.Initialized,
       TransferType type = TransferType.MoneyPoolContribution,
@@ -86,7 +86,7 @@ class _$MoneyTransferTearOff {
 
   MoneyPoolPayoutTransfer moneyPoolPayoutTransfer(
       {required TransferDetails transferDetails,
-      required MoneyPoolPreviewInfo moneyPoolInfo,
+      required ConciseMoneyPoolInfo moneyPoolInfo,
       required String payoutId,
       required dynamic createdAt,
       TransferStatus status = TransferStatus.Initialized,
@@ -133,7 +133,7 @@ mixin _$MoneyTransfer {
         peer2peer,
     required TResult Function(
             TransferDetails transferDetails,
-            ProjectPreviewInfo projectInfo,
+            ConciseProjectInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -142,7 +142,7 @@ mixin _$MoneyTransfer {
         donation,
     required TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -151,7 +151,7 @@ mixin _$MoneyTransfer {
         moneyPoolContribution,
     required TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
@@ -173,7 +173,7 @@ mixin _$MoneyTransfer {
         peer2peer,
     TResult Function(
             TransferDetails transferDetails,
-            ProjectPreviewInfo projectInfo,
+            ConciseProjectInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -182,7 +182,7 @@ mixin _$MoneyTransfer {
         donation,
     TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -191,7 +191,7 @@ mixin _$MoneyTransfer {
         moneyPoolContribution,
     TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
@@ -436,7 +436,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
         peer2peer,
     required TResult Function(
             TransferDetails transferDetails,
-            ProjectPreviewInfo projectInfo,
+            ConciseProjectInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -445,7 +445,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
         donation,
     required TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -454,7 +454,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
         moneyPoolContribution,
     required TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
@@ -479,7 +479,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
         peer2peer,
     TResult Function(
             TransferDetails transferDetails,
-            ProjectPreviewInfo projectInfo,
+            ConciseProjectInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -488,7 +488,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
         donation,
     TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -497,7 +497,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
         moneyPoolContribution,
     TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
@@ -584,7 +584,7 @@ abstract class $DonationCopyWith<$Res> implements $MoneyTransferCopyWith<$Res> {
   @override
   $Res call(
       {TransferDetails transferDetails,
-      ProjectPreviewInfo projectInfo,
+      ConciseProjectInfo projectInfo,
       dynamic createdAt,
       TransferStatus status,
       TransferType type,
@@ -593,7 +593,7 @@ abstract class $DonationCopyWith<$Res> implements $MoneyTransferCopyWith<$Res> {
 
   @override
   $TransferDetailsCopyWith<$Res> get transferDetails;
-  $ProjectPreviewInfoCopyWith<$Res> get projectInfo;
+  $ConciseProjectInfoCopyWith<$Res> get projectInfo;
 }
 
 /// @nodoc
@@ -622,7 +622,7 @@ class _$DonationCopyWithImpl<$Res> extends _$MoneyTransferCopyWithImpl<$Res>
       projectInfo: projectInfo == freezed
           ? _value.projectInfo
           : projectInfo // ignore: cast_nullable_to_non_nullable
-              as ProjectPreviewInfo,
+              as ConciseProjectInfo,
       createdAt: createdAt == freezed
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -643,8 +643,8 @@ class _$DonationCopyWithImpl<$Res> extends _$MoneyTransferCopyWithImpl<$Res>
   }
 
   @override
-  $ProjectPreviewInfoCopyWith<$Res> get projectInfo {
-    return $ProjectPreviewInfoCopyWith<$Res>(_value.projectInfo, (value) {
+  $ConciseProjectInfoCopyWith<$Res> get projectInfo {
+    return $ConciseProjectInfoCopyWith<$Res>(_value.projectInfo, (value) {
       return _then(_value.copyWith(projectInfo: value));
     });
   }
@@ -670,7 +670,7 @@ class _$Donation extends Donation {
   @override
   final TransferDetails transferDetails;
   @override
-  final ProjectPreviewInfo projectInfo;
+  final ConciseProjectInfo projectInfo;
   @override
   final dynamic createdAt;
   @JsonKey(defaultValue: TransferStatus.Initialized)
@@ -738,7 +738,7 @@ class _$Donation extends Donation {
         peer2peer,
     required TResult Function(
             TransferDetails transferDetails,
-            ProjectPreviewInfo projectInfo,
+            ConciseProjectInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -747,7 +747,7 @@ class _$Donation extends Donation {
         donation,
     required TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -756,7 +756,7 @@ class _$Donation extends Donation {
         moneyPoolContribution,
     required TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
@@ -782,7 +782,7 @@ class _$Donation extends Donation {
         peer2peer,
     TResult Function(
             TransferDetails transferDetails,
-            ProjectPreviewInfo projectInfo,
+            ConciseProjectInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -791,7 +791,7 @@ class _$Donation extends Donation {
         donation,
     TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -800,7 +800,7 @@ class _$Donation extends Donation {
         moneyPoolContribution,
     TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
@@ -854,7 +854,7 @@ class _$Donation extends Donation {
 abstract class Donation extends MoneyTransfer {
   const factory Donation(
       {required TransferDetails transferDetails,
-      required ProjectPreviewInfo projectInfo,
+      required ConciseProjectInfo projectInfo,
       required dynamic createdAt,
       TransferStatus status,
       TransferType type,
@@ -866,7 +866,7 @@ abstract class Donation extends MoneyTransfer {
 
   @override
   TransferDetails get transferDetails => throw _privateConstructorUsedError;
-  ProjectPreviewInfo get projectInfo => throw _privateConstructorUsedError;
+  ConciseProjectInfo get projectInfo => throw _privateConstructorUsedError;
   @override
   dynamic get createdAt => throw _privateConstructorUsedError;
   @override
@@ -891,7 +891,7 @@ abstract class $MoneyPoolContributionCopyWith<$Res>
   @override
   $Res call(
       {TransferDetails transferDetails,
-      MoneyPoolPreviewInfo moneyPoolInfo,
+      ConciseMoneyPoolInfo moneyPoolInfo,
       dynamic createdAt,
       TransferStatus status,
       TransferType type,
@@ -900,7 +900,7 @@ abstract class $MoneyPoolContributionCopyWith<$Res>
 
   @override
   $TransferDetailsCopyWith<$Res> get transferDetails;
-  $MoneyPoolPreviewInfoCopyWith<$Res> get moneyPoolInfo;
+  $ConciseMoneyPoolInfoCopyWith<$Res> get moneyPoolInfo;
 }
 
 /// @nodoc
@@ -931,7 +931,7 @@ class _$MoneyPoolContributionCopyWithImpl<$Res>
       moneyPoolInfo: moneyPoolInfo == freezed
           ? _value.moneyPoolInfo
           : moneyPoolInfo // ignore: cast_nullable_to_non_nullable
-              as MoneyPoolPreviewInfo,
+              as ConciseMoneyPoolInfo,
       createdAt: createdAt == freezed
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -952,8 +952,8 @@ class _$MoneyPoolContributionCopyWithImpl<$Res>
   }
 
   @override
-  $MoneyPoolPreviewInfoCopyWith<$Res> get moneyPoolInfo {
-    return $MoneyPoolPreviewInfoCopyWith<$Res>(_value.moneyPoolInfo, (value) {
+  $ConciseMoneyPoolInfoCopyWith<$Res> get moneyPoolInfo {
+    return $ConciseMoneyPoolInfoCopyWith<$Res>(_value.moneyPoolInfo, (value) {
       return _then(_value.copyWith(moneyPoolInfo: value));
     });
   }
@@ -979,7 +979,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
   @override
   final TransferDetails transferDetails;
   @override
-  final MoneyPoolPreviewInfo moneyPoolInfo;
+  final ConciseMoneyPoolInfo moneyPoolInfo;
   @override
   final dynamic createdAt;
   @JsonKey(defaultValue: TransferStatus.Initialized)
@@ -1048,7 +1048,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
         peer2peer,
     required TResult Function(
             TransferDetails transferDetails,
-            ProjectPreviewInfo projectInfo,
+            ConciseProjectInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -1057,7 +1057,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
         donation,
     required TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -1066,7 +1066,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
         moneyPoolContribution,
     required TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
@@ -1092,7 +1092,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
         peer2peer,
     TResult Function(
             TransferDetails transferDetails,
-            ProjectPreviewInfo projectInfo,
+            ConciseProjectInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -1101,7 +1101,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
         donation,
     TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -1110,7 +1110,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
         moneyPoolContribution,
     TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
@@ -1165,7 +1165,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
 abstract class MoneyPoolContribution extends MoneyTransfer {
   const factory MoneyPoolContribution(
       {required TransferDetails transferDetails,
-      required MoneyPoolPreviewInfo moneyPoolInfo,
+      required ConciseMoneyPoolInfo moneyPoolInfo,
       required dynamic createdAt,
       TransferStatus status,
       TransferType type,
@@ -1178,7 +1178,7 @@ abstract class MoneyPoolContribution extends MoneyTransfer {
 
   @override
   TransferDetails get transferDetails => throw _privateConstructorUsedError;
-  MoneyPoolPreviewInfo get moneyPoolInfo => throw _privateConstructorUsedError;
+  ConciseMoneyPoolInfo get moneyPoolInfo => throw _privateConstructorUsedError;
   @override
   dynamic get createdAt => throw _privateConstructorUsedError;
   @override
@@ -1203,7 +1203,7 @@ abstract class $MoneyPoolPayoutTransferCopyWith<$Res>
   @override
   $Res call(
       {TransferDetails transferDetails,
-      MoneyPoolPreviewInfo moneyPoolInfo,
+      ConciseMoneyPoolInfo moneyPoolInfo,
       String payoutId,
       dynamic createdAt,
       TransferStatus status,
@@ -1213,7 +1213,7 @@ abstract class $MoneyPoolPayoutTransferCopyWith<$Res>
 
   @override
   $TransferDetailsCopyWith<$Res> get transferDetails;
-  $MoneyPoolPreviewInfoCopyWith<$Res> get moneyPoolInfo;
+  $ConciseMoneyPoolInfoCopyWith<$Res> get moneyPoolInfo;
 }
 
 /// @nodoc
@@ -1245,7 +1245,7 @@ class _$MoneyPoolPayoutTransferCopyWithImpl<$Res>
       moneyPoolInfo: moneyPoolInfo == freezed
           ? _value.moneyPoolInfo
           : moneyPoolInfo // ignore: cast_nullable_to_non_nullable
-              as MoneyPoolPreviewInfo,
+              as ConciseMoneyPoolInfo,
       payoutId: payoutId == freezed
           ? _value.payoutId
           : payoutId // ignore: cast_nullable_to_non_nullable
@@ -1270,8 +1270,8 @@ class _$MoneyPoolPayoutTransferCopyWithImpl<$Res>
   }
 
   @override
-  $MoneyPoolPreviewInfoCopyWith<$Res> get moneyPoolInfo {
-    return $MoneyPoolPreviewInfoCopyWith<$Res>(_value.moneyPoolInfo, (value) {
+  $ConciseMoneyPoolInfoCopyWith<$Res> get moneyPoolInfo {
+    return $ConciseMoneyPoolInfoCopyWith<$Res>(_value.moneyPoolInfo, (value) {
       return _then(_value.copyWith(moneyPoolInfo: value));
     });
   }
@@ -1298,7 +1298,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
   @override
   final TransferDetails transferDetails;
   @override
-  final MoneyPoolPreviewInfo moneyPoolInfo;
+  final ConciseMoneyPoolInfo moneyPoolInfo;
   @override // id of money pool payout that stores
 // entire info of money pool payout
   final String payoutId;
@@ -1374,7 +1374,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
         peer2peer,
     required TResult Function(
             TransferDetails transferDetails,
-            ProjectPreviewInfo projectInfo,
+            ConciseProjectInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -1383,7 +1383,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
         donation,
     required TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -1392,7 +1392,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
         moneyPoolContribution,
     required TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
@@ -1418,7 +1418,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
         peer2peer,
     TResult Function(
             TransferDetails transferDetails,
-            ProjectPreviewInfo projectInfo,
+            ConciseProjectInfo projectInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -1427,7 +1427,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
         donation,
     TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
@@ -1436,7 +1436,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
         moneyPoolContribution,
     TResult Function(
             TransferDetails transferDetails,
-            MoneyPoolPreviewInfo moneyPoolInfo,
+            ConciseMoneyPoolInfo moneyPoolInfo,
             String payoutId,
             dynamic createdAt,
             TransferStatus status,
@@ -1491,7 +1491,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
 abstract class MoneyPoolPayoutTransfer extends MoneyTransfer {
   const factory MoneyPoolPayoutTransfer(
       {required TransferDetails transferDetails,
-      required MoneyPoolPreviewInfo moneyPoolInfo,
+      required ConciseMoneyPoolInfo moneyPoolInfo,
       required String payoutId,
       required dynamic createdAt,
       TransferStatus status,
@@ -1505,7 +1505,7 @@ abstract class MoneyPoolPayoutTransfer extends MoneyTransfer {
 
   @override
   TransferDetails get transferDetails => throw _privateConstructorUsedError;
-  MoneyPoolPreviewInfo get moneyPoolInfo =>
+  ConciseMoneyPoolInfo get moneyPoolInfo =>
       throw _privateConstructorUsedError; // id of money pool payout that stores
 // entire info of money pool payout
   String get payoutId => throw _privateConstructorUsedError;

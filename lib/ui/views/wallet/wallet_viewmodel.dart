@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
-import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
+import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
@@ -24,16 +23,14 @@ class WalletViewModel extends BaseModel {
   // objects to be exposed
   List<dynamic>? _transactions;
   List<dynamic>? get transactions => _transactions;
-  WalletBalancesModel _wallet = WalletBalancesModel.empty();
-  WalletBalancesModel get wallet => _wallet;
 
   // projects to be exposed
-  List<GoodWalletProjectModel>? _projects;
-  List<GoodWalletProjectModel>? get projects => _projects;
+  List<Project>? _projects;
+  List<Project>? get projects => _projects;
 
   // Make a stream listening to projects!
   Future getProjects() async {
-    List<GoodWalletProjectModel> newProjects = [];
+    List<Project> newProjects = [];
     var newProject = await _ggApiService!.getRandomProject();
     if (newProject != null) {
       newProjects.add(newProject);

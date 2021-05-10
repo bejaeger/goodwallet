@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'money_pool_preview_info.dart';
+part of 'concise_money_pool_info.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

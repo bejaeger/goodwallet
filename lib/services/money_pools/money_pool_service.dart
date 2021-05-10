@@ -4,7 +4,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
-import 'package:good_wallet/datamodels/money_pools/base/money_pool_preview_info.dart';
+import 'package:good_wallet/datamodels/money_pools/base/concise_money_pool_info.dart';
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
 import 'package:good_wallet/datamodels/money_pools/users/contributing_user.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
@@ -307,7 +307,7 @@ class MoneyPoolService {
           MoneyTransfer.moneyPoolPayoutTransfer(
               transferDetails: element,
               moneyPoolInfo:
-                  MoneyPoolPreviewInfo.fromJson(data.moneyPool.toJson()),
+                  ConciseMoneyPoolInfo.fromJson(data.moneyPool.toJson()),
               payoutId: docRef.id,
               createdAt: FieldValue.serverTimestamp()),
         );

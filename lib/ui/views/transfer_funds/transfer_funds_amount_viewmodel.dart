@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/causes/preview_details/project_preview_info.dart';
-import 'package:good_wallet/datamodels/money_pools/base/money_pool_preview_info.dart';
-import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
+import 'package:good_wallet/datamodels/causes/concise_info/concise_project_info.dart';
+import 'package:good_wallet/datamodels/money_pools/base/concise_money_pool_info.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/transfers/transfer_details.dart';
+import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
@@ -34,12 +34,12 @@ class TransferFundsAmountViewModel extends FormViewModel {
   final SnackbarService? _snackbarService = locator<SnackbarService>();
   final UserDataService? _userDataService = locator<UserDataService>();
   final DialogService? _dialogService = locator<DialogService>();
-  MyUser get currentUser => _userDataService!.currentUser;
+  GWUser get currentUser => _userDataService!.currentUser;
   final DummyPaymentService _dummyPaymentService =
       locator<DummyPaymentService>();
   final log = getLogger("transfer_funds_amount_viewmodel.dart");
-  WalletBalancesModel userWallet = WalletBalancesModel.empty();
-  StreamSubscription<WalletBalancesModel>? _walletSubscription;
+  late UserStatistics userWallet;
+  StreamSubscription<UserStatistics>? _walletSubscription;
 
   FundTransferType type;
   dynamic receiverInfo;
@@ -56,7 +56,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
     }
 
     // Listen to wallet similar to what is done in base viemodel
-    _walletSubscription = _userDataService!.userWalletSubject.listen(
+    _walletSubscription = _userDataService!.userStatsSubject.listen(
       (wallet) {
         userWallet = wallet;
         notifyListeners();
@@ -245,7 +245,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
             amount: scaleAmountForStripe(amount!),
             sourceType: moneySource,
           ),
-          moneyPoolInfo: MoneyPoolPreviewInfo.fromJson(receiverInfo.toJson()),
+          moneyPoolInfo: ConciseMoneyPoolInfo.fromJson(receiverInfo.toJson()),
           createdAt: FieldValue.serverTimestamp());
       _dummyPaymentService.processTransfer(contribution);
       log.i("Processed donation");
@@ -282,7 +282,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
   MoneyTransfer prepareDonationData() {
     try {
       MoneyTransfer data = MoneyTransfer.donation(
-        projectInfo: ProjectPreviewInfo(projectName: receiverInfo.title),
+        projectInfo: ConciseProjectInfo.fromJson(receiverInfo.toJson()),
         transferDetails: TransferDetails(
           recipientId: "DummyId",
           recipientName: receiverInfo.title,

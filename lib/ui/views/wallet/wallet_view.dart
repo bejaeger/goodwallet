@@ -132,7 +132,7 @@ class WalletView extends StatelessWidget {
                   ),
                   verticalSpace(10),
                   Text(
-                    "${model.userWallet.currentBalance * 0.01}.00 \$",
+                    "${model.userStats.currentBalance * 0.01}.00 \$",
                     style: TextStyle(
                       fontSize: 35,
                       color: Colors.grey[800],
@@ -249,7 +249,7 @@ class WalletView extends StatelessWidget {
                         ),
                         verticalSpace(10),
                         Text(
-                          "${model.userWallet.donations * 0.01}.00 \$",
+                          "${model.userStats.donations * 0.01}.00 \$",
                           style: TextStyle(
                             fontSize: 35,
                             color: Colors.grey[800],
@@ -278,7 +278,7 @@ class WalletView extends StatelessWidget {
                         ),
                         verticalSpace(10),
                         Text(
-                          "${model.userWallet.transferredToPeers * 0.01}.00 \$",
+                          "${model.userStats.transferredToPeers * 0.01}.00 \$",
                           style: TextStyle(
                             fontSize: 35,
                             color: Colors.grey[800],

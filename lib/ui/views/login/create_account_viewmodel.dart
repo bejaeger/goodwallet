@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/enums/authentication_method.dart';
+import 'package:good_wallet/exceptions/firestore_api_exception.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/authentication_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -36,16 +37,20 @@ class CreateAccountViewModel extends AuthenticationViewModel {
         return result;
       } else {
         // create user in data bank
-        UserDataServiceResult result2 =
-            await (_userDataService!.createUser(result.user!, fullNameValue));
-
-        if (result2.hasError) {
-          return FirebaseAuthenticationResult.error(
-              errorMessage:
-                  "Something went wrong when creating a new user in our databank. Please try again later or contact support!");
-        } else {
-          return FirebaseAuthenticationResult(user: result.user);
+        try {
+          await (_userDataService!.createUser(result.user!, fullNameValue));
+        } catch (e) {
+          if (e is FirestoreApiException) {
+            return FirebaseAuthenticationResult.error(
+                errorMessage: e.prettyDetails ??
+                    "Something went wrong when creating a new user in our databank. Please try again later or contact support!");
+          } else {
+            return FirebaseAuthenticationResult.error(
+                errorMessage:
+                    "Something went wrong when creating a new user in our databank. Please try again later or contact support!");
+          }
         }
+        return FirebaseAuthenticationResult(user: result.user);
       }
     } else {
       log.e(

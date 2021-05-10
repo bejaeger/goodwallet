@@ -90,7 +90,7 @@ _$Donation _$_$DonationFromJson(Map<String, dynamic> json) {
   return _$Donation(
     transferDetails: TransferDetails.fromJson(
         json['transferDetails'] as Map<String, dynamic>),
-    projectInfo: ProjectPreviewInfo.fromJson(
+    projectInfo: ConciseProjectInfo.fromJson(
         json['projectInfo'] as Map<String, dynamic>),
     createdAt: json['createdAt'],
     status: _$enumDecodeNullable(_$TransferStatusEnumMap, json['status']) ??
@@ -116,7 +116,7 @@ _$MoneyPoolContribution _$_$MoneyPoolContributionFromJson(
   return _$MoneyPoolContribution(
     transferDetails: TransferDetails.fromJson(
         json['transferDetails'] as Map<String, dynamic>),
-    moneyPoolInfo: MoneyPoolPreviewInfo.fromJson(
+    moneyPoolInfo: ConciseMoneyPoolInfo.fromJson(
         json['moneyPoolInfo'] as Map<String, dynamic>),
     createdAt: json['createdAt'],
     status: _$enumDecodeNullable(_$TransferStatusEnumMap, json['status']) ??
@@ -143,7 +143,7 @@ _$MoneyPoolPayoutTransfer _$_$MoneyPoolPayoutTransferFromJson(
   return _$MoneyPoolPayoutTransfer(
     transferDetails: TransferDetails.fromJson(
         json['transferDetails'] as Map<String, dynamic>),
-    moneyPoolInfo: MoneyPoolPreviewInfo.fromJson(
+    moneyPoolInfo: ConciseMoneyPoolInfo.fromJson(
         json['moneyPoolInfo'] as Map<String, dynamic>),
     payoutId: json['payoutId'] as String,
     createdAt: json['createdAt'],

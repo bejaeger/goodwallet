@@ -79,7 +79,7 @@ class ProfileViewMobile extends StatelessWidget {
                   //         .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
                   horizontalSpaceSmall,
                   Text(
-                    "\$ " + (_model.userWallet.currentBalance / 100).toString(),
+                    "\$ " + (_model.userStats.currentBalance / 100).toString(),
                     style: textTheme(context)
                         .bodyText2!
                         .copyWith(fontWeight: FontWeight.bold, fontSize: 18),
@@ -135,17 +135,17 @@ class ProfileViewMobile extends StatelessWidget {
           _buildStatItem(
               context,
               "Total donations",
-              formatAmount(_model.userWallet.donations),
+              formatAmount(_model.userStats.donations),
               ColorSettings.primaryColor),
           _buildStatItem(
               context,
               "Total raised",
-              formatAmount(_model.userWallet.raised),
+              formatAmount(_model.userStats.raised),
               ColorSettings.primaryColor),
           _buildStatItem(
               context,
               "Total gifted",
-              formatAmount(_model.userWallet.transferredToPeers),
+              formatAmount(_model.userStats.transferredToPeers),
               ColorSettings.primaryColor),
 
           // Row(

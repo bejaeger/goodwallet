@@ -8,10 +8,11 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
-import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
+import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/enums/user_status.dart';
@@ -24,6 +25,8 @@ class UserDataService {
   final log = getLogger("user_data_service.dart");
 
   // firestore collections
+  // TODO: Replace with FirestoreApi
+  final _firestoreApi = locator<FirestoreApi>();
   final CollectionReference _paymentsCollectionReference =
       FirebaseFirestore.instance.collection("payments");
   final CollectionReference _usersCollectionReference =
@@ -46,13 +49,13 @@ class UserDataService {
       BehaviorSubject<UserStatus>.seeded(UserStatus.Unknown);
 
   // subject to keep track and expose wallet
-  BehaviorSubject<WalletBalancesModel> userWalletSubject =
-      BehaviorSubject<WalletBalancesModel>.seeded(WalletBalancesModel.empty());
+  BehaviorSubject<UserStatistics> userStatsSubject =
+      BehaviorSubject<UserStatistics>();
 
   // current user with all our custom data attached to it
-  late MyUser _currentUser;
-  MyUser get currentUser => _currentUser;
-  void setCurrentUser(MyUser user) {
+  late GWUser _currentUser;
+  GWUser get currentUser => _currentUser;
+  void setCurrentUser(GWUser user) {
     _currentUser = user;
   }
 
@@ -134,7 +137,7 @@ class UserDataService {
         return UserDataServiceResult.error(
             errorMessage: "Something is seriously wrong! Please check logs");
       } else {
-        MyUser myUser = MyUser.fromData(userData.data()!);
+        GWUser myUser = GWUser.fromData(userData.data()!);
         _currentUser = myUser;
         return UserDataServiceResult();
       }
@@ -154,7 +157,7 @@ class UserDataService {
     try {
       String name = fullName ?? (user.displayName ?? "");
       String email = user.email ?? "";
-      MyUser myuser = MyUser(
+      GWUser myuser = GWUser(
         id: user.uid,
         email: email,
         fullName: name,
@@ -163,8 +166,7 @@ class UserDataService {
         donations: donations,
         raised: raised,
       );
-      await _usersCollectionReference.doc(user.uid).set(myuser.toJson(true));
-      return UserDataServiceResult();
+      await _firestoreApi.createUser(user: myuser);
     } catch (e) {
       log.e("Error in createUser(): ${e.toString()}");
       return UserDataServiceResult.error(
@@ -182,8 +184,8 @@ class UserDataService {
               log.wtf(
                   "User data document found but data is null. Something is seriously messed up! Adding empty wallet");
             } else {
-              userWalletSubject.add(
-                WalletBalancesModel.fromData(userData.data()!),
+              userStatsSubject.add(
+                UserStatistics.fromJson(userData.data()!),
               );
             }
           } catch (e) {
@@ -644,9 +646,10 @@ class UserDataService {
   // clear all data when user logs out!
   Future handleLogoutEvent() async {
     // clear wallet
-    userWalletSubject.add(WalletBalancesModel.empty());
+    userStatsSubject.add(UserStatistics.fromJson({"currentBalance": 0}));
+
     // set current user to null
-    _currentUser = MyUser.empty();
+    _currentUser = GWUser.empty();
     // remove money Pools
     _moneyPoolService!.clearData();
     // actually log out from firebase

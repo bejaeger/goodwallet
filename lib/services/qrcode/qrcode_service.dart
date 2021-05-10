@@ -11,7 +11,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 class QRCodeService {
   final log = getLogger("qr_code_service.dart");
 
-  String getEncodedUserInfo(MyUser currentUser) {
+  String getEncodedUserInfo(GWUser currentUser) {
     // Format for data stored in QR image
     // the format: key1: name, key2: name
     // easily converted later on

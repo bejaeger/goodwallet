@@ -1,3 +1,4 @@
+import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/services/causes/causes_data_service.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
@@ -87,11 +88,9 @@ import 'package:stacked_services/stacked_services.dart';
     // TODO: Check whether this is deprecated
     LazySingleton(classType: NavigationBarViewModel),
     LazySingleton(classType: MoneyPoolService),
-
     LazySingleton(
       classType: FirebaseAuthenticationService,
     ),
-    Singleton(classType: DummyPaymentService),
     LazySingleton(classType: QRCodeService),
     LazySingleton(classType: CausesDataService),
 
@@ -101,7 +100,9 @@ import 'package:stacked_services/stacked_services.dart';
     //   presolveUsing: LocalStorageService.getInstance,
     // ),
 
-    LazySingleton(classType: UserDataService),
+    Singleton(classType: DummyPaymentService),
+    Singleton(classType: FirestoreApi),
+    Singleton(classType: UserDataService),
 
     // don't register the auth service lazily because we want it
     // to be initialized at the start of the app. This needs

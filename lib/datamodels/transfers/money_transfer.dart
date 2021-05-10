@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_wallet/datamodels/causes/preview_details/project_preview_info.dart';
-import 'package:good_wallet/datamodels/money_pools/base/money_pool_preview_info.dart';
+import 'package:good_wallet/datamodels/causes/concise_info/concise_project_info.dart';
+import 'package:good_wallet/datamodels/money_pools/base/concise_money_pool_info.dart';
 import 'package:good_wallet/datamodels/transfers/transfer_details.dart';
 import 'package:good_wallet/enums/transfer_status.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
@@ -49,7 +49,7 @@ class MoneyTransfer with _$MoneyTransfer {
   @JsonSerializable(explicitToJson: true)
   const factory MoneyTransfer.donation({
     required TransferDetails transferDetails,
-    required ProjectPreviewInfo projectInfo,
+    required ConciseProjectInfo projectInfo,
     required dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
@@ -69,7 +69,7 @@ class MoneyTransfer with _$MoneyTransfer {
   @JsonSerializable(explicitToJson: true)
   const factory MoneyTransfer.moneyPoolContribution({
     required TransferDetails transferDetails,
-    required MoneyPoolPreviewInfo moneyPoolInfo,
+    required ConciseMoneyPoolInfo moneyPoolInfo,
     required dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
@@ -89,7 +89,7 @@ class MoneyTransfer with _$MoneyTransfer {
   @JsonSerializable(explicitToJson: true)
   const factory MoneyTransfer.moneyPoolPayoutTransfer({
     required TransferDetails transferDetails,
-    required MoneyPoolPreviewInfo moneyPoolInfo,
+    required ConciseMoneyPoolInfo moneyPoolInfo,
     // id of money pool payout that stores
     // entire info of money pool payout
     required String payoutId,

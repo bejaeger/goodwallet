@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:good_wallet/app/app.locator.dart';
-import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
+import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
@@ -21,17 +21,17 @@ class BaseModel extends BaseViewModel {
 
   final baseModelLog = getLogger("BaseModel");
 
-  MyUser get currentUser => _userDataService!.currentUser;
+  GWUser get currentUser => _userDataService!.currentUser;
 
   UserStatus? userStatus;
   bool get isUserSignedIn =>
       userStatus == UserStatus.SignedIn || userStatus == UserStatus.Initialized;
   bool get isUserInitialized => userStatus == UserStatus.Initialized;
 
-  WalletBalancesModel userWallet = WalletBalancesModel.empty();
+  late UserStatistics userStats;
 
   StreamSubscription? _userState;
-  StreamSubscription? _userWallet;
+  StreamSubscription? _userStats;
 
   BaseModel() {
     baseModelLog.i("Initialized!");
@@ -49,10 +49,10 @@ class BaseModel extends BaseViewModel {
     );
 
     // listen to changes in wallet
-    _userWallet = _userDataService!.userWalletSubject.listen(
+    _userStats = _userDataService!.userStatsSubject.listen(
       (wallet) {
         baseModelLog.v("Listened to wallet update");
-        userWallet = wallet;
+        userStats = wallet;
         notifyListeners();
       },
     );
@@ -72,7 +72,7 @@ class BaseModel extends BaseViewModel {
   @override
   dispose() {
     _userState?.cancel();
-    _userWallet?.cancel();
+    _userStats?.cancel();
     super.dispose();
   }
 }
