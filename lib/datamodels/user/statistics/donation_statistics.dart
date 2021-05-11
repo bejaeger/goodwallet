@@ -12,6 +12,12 @@ class DonationStatistics with _$DonationStatistics {
     required List<ConciseProjectInfo> supportedProjects,
   }) = _DonationStatistics;
 
+  @JsonSerializable(explicitToJson: true)
+  const factory DonationStatistics.empty({
+    @Default(0) num totalDonations,
+    List<ConciseProjectInfo>? supportedProjects,
+  }) = _EmptyDonationStatistics;
+
   factory DonationStatistics.fromJson(Map<String, dynamic> json) =>
       _$DonationStatisticsFromJson(json);
 }

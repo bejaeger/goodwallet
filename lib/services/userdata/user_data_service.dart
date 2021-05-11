@@ -7,17 +7,19 @@
 
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
-import 'package:good_wallet/datamodels/user/user_model.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/enums/user_status.dart';
+import 'package:good_wallet/exceptions/user_data_service_exception.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/utils/logger.dart';
+import 'package:good_wallet/utils/string_utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 
@@ -47,15 +49,16 @@ class UserDataService {
   // subject to keep track of initialization of user
   BehaviorSubject<UserStatus> userStateSubject =
       BehaviorSubject<UserStatus>.seeded(UserStatus.Unknown);
+  UserStatus? get userStatus => userStateSubject.value;
 
   // subject to keep track and expose wallet
   BehaviorSubject<UserStatistics> userStatsSubject =
       BehaviorSubject<UserStatistics>();
 
   // current user with all our custom data attached to it
-  late GWUser _currentUser;
-  GWUser get currentUser => _currentUser;
-  void setCurrentUser(GWUser user) {
+  late User _currentUser;
+  User get currentUser => _currentUser;
+  void setCurrentUser(User user) {
     _currentUser = user;
   }
 
@@ -69,77 +72,76 @@ class UserDataService {
   // This might not be of need for mobile but
   // will become more useful thinking about PWAs especially
   // on desktop.
-  late Stream<User?> userStream;
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  late Stream<firebase.User?> userStream;
+  final firebase.FirebaseAuth _firebaseAuth = firebase.FirebaseAuth.instance;
 
   UserDataService() {
     userStream = _firebaseAuth.authStateChanges();
     userStream.listen(
       (user) async {
         if (user != null) {
-          userStateSubject.add(UserStatus.SignedIn);
+          _changeUserStatus(UserStatus.SignedIn);
           initializeCurrentUser(user);
         } else {
-          userStateSubject.add(UserStatus.SignedOut);
+          _changeUserStatus(UserStatus.SignedOut);
         }
         log.i("User status changed to ${userStateSubject.value}");
       },
     );
   }
 
-  Future<UserDataServiceResult> initializeCurrentUser(User user) async {
+  void _changeUserStatus(UserStatus status) {
+    userStateSubject.add(status);
+  }
+
+  //////////////////////////////////////////////////////////////////
+  //
+  // Function related to User setup
+
+  // syncing data from firestore to client
+  Future initializeCurrentUser(firebase.User user) async {
     log.i("Initializing user data");
 
     if (userStateSubject.value != UserStatus.Initialized) {
       log.i("Populating current user");
       try {
-        UserDataServiceResult result = await _populateCurrentUser(user);
-        if (result.hasError) return result;
-        await listenToWalletUpdates(user.uid);
-        userStateSubject.add(UserStatus.Initialized);
+        await _populateCurrentUser(user);
+        await listenToUserSummaryStats(user.uid);
+        _changeUserStatus(UserStatus.Initialized);
       } catch (e) {
         // this should produce an error. listened to in start up logic
-        userStateSubject.add(UserStatus.SignedInNotInitialized);
-        return UserDataServiceResult.error(
-            errorMessage:
-                "Initializing current user failed with message: ${e.toString()}");
+        log.wtf(
+            "This should never happen and is likely due to an inconsistency in the backend: ${e.toString()}");
+        _changeUserStatus(UserStatus.SignedInNotInitialized);
+        throw UserDataServiceException(
+            message: "Initializing current user failed",
+            devDetails: e.toString());
       }
     } else {
       log.w("User already initialized. ");
     }
-    return UserDataServiceResult();
   }
 
-  Future _populateCurrentUser(User user) async {
+  // populating current user
+  Future _populateCurrentUser(firebase.User user) async {
     try {
-      var userData = await _usersCollectionReference.doc(user.uid).get();
-      if (!userData.exists) {
-        // This means no user has been created yet in cloud firestore
-        // This happens for example when loggin in with google, facebook, ...
-        // We first have to create a user and then
+      final populatedUser = await _firestoreApi.getUser(uid: user.uid);
 
-        log.w(
-            "Create user because this seems to be the first time a user is logging in with third-party authentification");
-        var result = await createUser(user);
-        if (result.hasError) {
-          return UserDataServiceResult.error(
-              errorMessage:
-                  "User data could not be created in our databank. Please try again later or contact support with error messaage: ${result.errorMessage}");
-        } else {
-          // retrieve data again because now it exists
-          userData = await _usersCollectionReference.doc(user.uid).get();
-        }
-      }
-      // populate current User
-      if (userData.data() == null) {
-        log.wtf(
-            "user data document could be found but it does not have any data! Something is seriously wrong");
-        return UserDataServiceResult.error(
-            errorMessage: "Something is seriously wrong! Please check logs");
+      if (populatedUser != null) {
+        _currentUser = populatedUser;
       } else {
-        GWUser myUser = GWUser.fromData(userData.data()!);
-        _currentUser = myUser;
-        return UserDataServiceResult();
+        // This means no user has been created yet in cloud firestore
+        // This happens for example when loggin in with third-party providers like
+        // google, facebook, ...
+        // We first have to create a user and then
+        log.i(
+            "Create user because this seems to be the first time a user is logging in with third-party authentification");
+        try {
+          final nowPopulatedUser = await createUser(user);
+          _currentUser = nowPopulatedUser;
+        } catch (e) {
+          rethrow;
+        }
       }
     } catch (e) {
       log.e("Error in _populateCurrentUser(): ${e.toString()}");
@@ -147,60 +149,48 @@ class UserDataService {
     }
   }
 
-  // User ------------------------------------------------->>
-  Future createUser(User user, [String? fullName]) async {
-    // create a new user profile on firestore`
-    num currentBalance = 0;
-    num transferredToPeers = 0;
-    num donations = 0;
-    num raised = 0;
+  // create user documents (user info, statistics) in firestore
+  Future<User> createUser(firebase.User user, [String? fullName]) async {
+    // create a new user profile on firestore
     try {
       String name = fullName ?? (user.displayName ?? "");
       String email = user.email ?? "";
-      GWUser myuser = GWUser(
-        id: user.uid,
+      List<String> keywords = getListOfKeywordsFromString(name);
+      User myuser = User(
+        uid: user.uid,
         email: email,
         fullName: name,
-        currentBalance: currentBalance,
-        transferredToPeers: transferredToPeers,
-        donations: donations,
-        raised: raised,
+        keywordList: keywords,
       );
-      await _firestoreApi.createUser(user: myuser);
+      UserStatistics stats = getEmptyUserStatistics();
+      await _firestoreApi.createUser(user: myuser, stats: stats);
+      return myuser;
     } catch (e) {
       log.e("Error in createUser(): ${e.toString()}");
-      return UserDataServiceResult.error(
-          errorMessage:
-              "Creating user data failed with message: ${e.toString()}");
+      throw UserDataServiceException(
+        message: "Creating user data failed with message",
+        devDetails: e.toString(),
+        prettyDetails:
+            "User data could not be created in our databank. Please try again later or contact support with error messaage: ${e.toString()}",
+      );
     }
   }
 
-  Future listenToWalletUpdates(var uid) async {
+  ////////////////////////////////////////////////////////////
+  /// Setting up listeners
+  ///
+  Future listenToUserSummaryStats(String uid) async {
     try {
-      _usersCollectionReference.doc(uid).snapshots().listen((userData) {
-        if (userData.exists) {
-          try {
-            if (userData.data() == null) {
-              log.wtf(
-                  "User data document found but data is null. Something is seriously messed up! Adding empty wallet");
-            } else {
-              userStatsSubject.add(
-                UserStatistics.fromJson(userData.data()!),
-              );
-            }
-          } catch (e) {
-            log.e("Could not fetch wallet data due to error ${e.toString()}");
-          }
-        } else {
-          log.e("Wallet data could not be retrieved from firebase");
-        }
-      });
+      _firestoreApi
+          .getUserSummaryStatisticsStream(uid: uid)
+          .listen((stats) => userStatsSubject.add(stats));
     } catch (e) {
-      log.e("Error updating user wallet: ${e.toString()}");
       rethrow;
     }
   }
 
+  /////////////////////////////////////////////////////
+  /// Functions related to money transfers
   Stream listenToTransactionsRealTime() {
     // Function listening to payments collections
     // where user is found in senderUid or recipientUid
@@ -217,12 +207,12 @@ class UserDataService {
     // Get single streams and combine later with rxDart
 
     Stream<QuerySnapshot> outgoing = _paymentsCollectionReference
-        .where("transferDetails.senderId", isEqualTo: currentUser.id)
+        .where("transferDetails.senderId", isEqualTo: currentUser.uid)
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .snapshots();
     Stream<QuerySnapshot> incoming = _paymentsCollectionReference
-        .where("transferDetails.recipientId", isEqualTo: currentUser.id)
+        .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
         .orderBy("createdAt", descending: true)
         .snapshots();
 
@@ -284,13 +274,13 @@ class UserDataService {
 
     // outgoing = donations
     Stream<QuerySnapshot> outgoing = _usersCollectionReference
-        .doc(_currentUser.id)
+        .doc(_currentUser.uid)
         .collection("donations")
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .snapshots();
     Stream<QuerySnapshot> incoming = _paymentsCollectionReference
-        .where("transferDetails.recipientId", isEqualTo: currentUser.id)
+        .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
         .orderBy("createdAt", descending: true)
         .snapshots();
 
@@ -347,7 +337,7 @@ class UserDataService {
     List<dynamic> listOfDonations = <dynamic>[];
 
     QuerySnapshot donationsSnapshot = await _usersCollectionReference
-        .doc(_currentUser.id)
+        .doc(_currentUser.uid)
         .collection("donations")
         .orderBy("createdAt", descending: true)
         .get();
@@ -373,7 +363,7 @@ class UserDataService {
 
     List<dynamic> listOfTransactionsToPeers = <dynamic>[];
     QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
-        .where("transferDetails.senderId", isEqualTo: currentUser.id)
+        .where("transferDetails.senderId", isEqualTo: currentUser.uid)
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .get();
@@ -403,7 +393,7 @@ class UserDataService {
 
     List<dynamic> listOfTransactions = <dynamic>[];
     QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
-        .where("transferDetails.recipientId", isEqualTo: currentUser.id)
+        .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
         .orderBy("createdAt",
             descending: true) // already added because needed with limit!
         .get();
@@ -434,7 +424,7 @@ class UserDataService {
     List<dynamic> listOfTransactions = <dynamic>[];
     QuerySnapshot transactionsSnapshot =
         await _moneyPoolPayoutsCollectionReference
-            .where("paidOutUsersIds", arrayContains: currentUser.id)
+            .where("paidOutUsersIds", arrayContains: currentUser.uid)
             .get();
     if (transactionsSnapshot.docs.isNotEmpty) {
       try {
@@ -501,10 +491,10 @@ class UserDataService {
     Query query;
     if (type == TransferType.All) {
       Query outgoing = _paymentsCollectionReference
-          .where("transferDetails.senderId", isEqualTo: currentUser.id)
+          .where("transferDetails.senderId", isEqualTo: currentUser.uid)
           .orderBy("createdAt", descending: true);
       Query incoming = _paymentsCollectionReference
-          .where("transferDetails.recipientId", isEqualTo: currentUser.id)
+          .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
           .orderBy("createdAt", descending: true);
       Stream<List<MoneyTransfer>> transfersStream =
           getCombinedMoneyTransfersStream(
@@ -512,7 +502,7 @@ class UserDataService {
       return transfersStream;
     } else if (type == TransferType.Peer2PeerSent) {
       query = _paymentsCollectionReference
-          .where("transferDetails.senderId", isEqualTo: currentUser.id)
+          .where("transferDetails.senderId", isEqualTo: currentUser.uid)
           // document fields are the same so the type is Peer2Peer here
           .where("type", isEqualTo: "Peer2Peer")
           .orderBy("createdAt", descending: true);
@@ -520,18 +510,18 @@ class UserDataService {
       // isGreaterThan: Timestamp.fromDate(DateTime(2021, 5, 8)));
     } else if (type == TransferType.Peer2PeerReceived) {
       query = _paymentsCollectionReference
-          .where("transferDetails.recipientId", isEqualTo: currentUser.id)
+          .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
           // document fields are the same so the type is Peer2Peer here
           .where("type", isEqualTo: "Peer2Peer")
           .orderBy("createdAt", descending: true);
     } else if (type == TransferType.Peer2Peer) {
       Query querySent = _paymentsCollectionReference
-          .where("transferDetails.senderId", isEqualTo: currentUser.id)
+          .where("transferDetails.senderId", isEqualTo: currentUser.uid)
           // document fields are the same so the type is Peer2Peer here
           .where("type", isEqualTo: "Peer2Peer")
           .orderBy("createdAt", descending: true);
       Query queryReceived = _paymentsCollectionReference
-          .where("transferDetails.recipientId", isEqualTo: currentUser.id)
+          .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
           // document fields are the same so the type is Peer2Peer here
           .where("type", isEqualTo: "Peer2Peer")
           .orderBy("createdAt", descending: true);
@@ -540,23 +530,23 @@ class UserDataService {
       return stream;
     } else if (type == TransferType.Donation) {
       query = _paymentsCollectionReference
-          .where("transferDetails.senderId", isEqualTo: currentUser.id)
+          .where("transferDetails.senderId", isEqualTo: currentUser.uid)
           .where("type", isEqualTo: "Donation")
           .orderBy("createdAt", descending: true);
     } else if (type == TransferType.MoneyPoolPayout) {
       // This is querying for the full payout documents holding
       // all MoneyPoolPayoutTransfers. Look in moneyPoolPayouts collection
       query = _moneyPoolPayoutsCollectionReference
-          .where("paidOutUserIds", arrayContains: currentUser.id)
+          .where("paidOutUserIds", arrayContains: currentUser.uid)
           .orderBy("createdAt", descending: true);
     } else if (type == TransferType.MoneyPoolPayoutTransfer) {
       query = _paymentsCollectionReference
-          .where("transferDetails.recipientId", isEqualTo: currentUser.id)
+          .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
           .where("type", isEqualTo: "MoneyPoolPayoutTransfer")
           .orderBy("createdAt", descending: true);
     } else if (type == TransferType.MoneyPoolContribution) {
       query = _paymentsCollectionReference
-          .where("transferDetails.senderId", isEqualTo: currentUser.id)
+          .where("transferDetails.senderId", isEqualTo: currentUser.uid)
           .where("type", isEqualTo: "MoneyPoolContribution")
           .orderBy("createdAt", descending: true);
     } else {
@@ -646,10 +636,9 @@ class UserDataService {
   // clear all data when user logs out!
   Future handleLogoutEvent() async {
     // clear wallet
-    userStatsSubject.add(UserStatistics.fromJson({"currentBalance": 0}));
-
+    userStatsSubject.add(getEmptyUserStatistics());
     // set current user to null
-    _currentUser = GWUser.empty();
+    _currentUser = User.empty();
     // remove money Pools
     _moneyPoolService!.clearData();
     // actually log out from firebase
@@ -657,20 +646,4 @@ class UserDataService {
     // set auth state to signed out
     userStateSubject.add(UserStatus.SignedOut);
   }
-}
-
-// Helper class returned from public function of UserDataService
-class UserDataServiceResult {
-  /// Helper message which type of data was tried to be acceessed
-  final String? typeOfData;
-
-  /// Contains the error message for the request
-  final String? errorMessage;
-
-  UserDataServiceResult({this.typeOfData}) : errorMessage = null;
-
-  UserDataServiceResult.error({this.errorMessage}) : typeOfData = null;
-
-  /// Returns true if the response has an error associated with it
-  bool get hasError => errorMessage != null && errorMessage!.isNotEmpty;
 }

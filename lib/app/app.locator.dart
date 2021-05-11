@@ -22,7 +22,7 @@ import '../services/userdata/user_data_service.dart';
 import '../ui/views/layout/navigation_bar_viewmodel.dart';
 import '../ui/views/wallet/wallet_viewmodel.dart';
 
-final locator = StackedLocator.instance;
+final locator = StackedLocator.instance.locator;
 
 void setupLocator() {
   locator.registerLazySingleton(() => NavigationService());

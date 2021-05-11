@@ -1,10 +1,5 @@
 // Some small helper functions
 
-//////////////////////////
-/// TODO: DEPRECATE THIS FILE
-/// And create String utils class!
-/// /////////////////////////////
-
 String getInitialsFromName(String name) {
   List<String> splitName = name.split(" ");
   List<String> initials = [];
@@ -18,10 +13,13 @@ String getInitialsFromName(String name) {
   return initials.join("");
 }
 
-dynamic returnIfAvailable(dynamic map, String key) {
-  if (map.containsKey(key)) {
-    return map[key];
-  } else {
-    return null;
+List<String> getListOfKeywordsFromString(String str) {
+  List<String> splitList = str.split(' ');
+  List<String> searchKeywords = [];
+  for (int i = 0; i < splitList.length; i++) {
+    for (int j = 1; j <= splitList[i].length; j++) {
+      searchKeywords.add(splitList[i].substring(0, j).toLowerCase());
+    }
   }
+  return searchKeywords;
 }

@@ -23,3 +23,21 @@ Map<String, dynamic> _$_$_DonationStatisticsToJson(
       'supportedProjects':
           instance.supportedProjects.map((e) => e.toJson()).toList(),
     };
+
+_$_EmptyDonationStatistics _$_$_EmptyDonationStatisticsFromJson(
+    Map<String, dynamic> json) {
+  return _$_EmptyDonationStatistics(
+    totalDonations: json['totalDonations'] as num? ?? 0,
+    supportedProjects: (json['supportedProjects'] as List<dynamic>?)
+        ?.map((e) => ConciseProjectInfo.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$_$_EmptyDonationStatisticsToJson(
+        _$_EmptyDonationStatistics instance) =>
+    <String, dynamic>{
+      'totalDonations': instance.totalDonations,
+      'supportedProjects':
+          instance.supportedProjects?.map((e) => e.toJson()).toList(),
+    };

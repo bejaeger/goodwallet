@@ -25,8 +25,8 @@ class MoneyPoolsViewModel extends BaseModel {
   Future fetchMoneyPools({bool force = false}) async {
     setBusy(true);
     try {
-      await _moneyPoolService!.loadMoneyPools(currentUser.id, force);
-      await _moneyPoolService!.loadMoneyPoolsInvitedTo(currentUser.id);
+      await _moneyPoolService!.loadMoneyPools(currentUser.uid, force);
+      await _moneyPoolService!.loadMoneyPoolsInvitedTo(currentUser.uid);
     } catch (e) {
       // Need to set some validation
       log.e("Could not fetch money pools, error: ${e.toString()}");
@@ -56,7 +56,7 @@ class MoneyPoolsViewModel extends BaseModel {
         setBusy(true);
         // accepted invitation
         bool success = await _moneyPoolService!.acceptInvitation(
-            currentUser.id, currentUser.fullName, moneyPoolsInvitedTo[index]);
+            currentUser.uid, currentUser.fullName, moneyPoolsInvitedTo[index]);
         if (success is String)
           _snackbarService!.showSnackbar(
               title: "Invitation could not be accepted",
@@ -67,7 +67,7 @@ class MoneyPoolsViewModel extends BaseModel {
       } else {
         // devlined invitation
         await _moneyPoolService!
-            .declineInvitation(currentUser.id, moneyPoolsInvitedTo[index]);
+            .declineInvitation(currentUser.uid, moneyPoolsInvitedTo[index]);
         _snackbarService!.showSnackbar(message: "Declined invitation");
       }
     }

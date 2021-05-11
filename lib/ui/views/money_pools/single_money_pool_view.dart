@@ -8,7 +8,7 @@ import 'package:good_wallet/ui/widgets/alternative_screen_header_image.dart';
 import 'package:good_wallet/ui/widgets/horizontal_central_button.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
-import 'package:good_wallet/utils/datamodel_helpers.dart';
+import 'package:good_wallet/utils/string_utils.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
@@ -92,7 +92,7 @@ class SingleMoneyPoolView extends StatelessWidget {
                       minWidth: screenWidthPercentage(context, percentage: 0.6),
                     ),
                     verticalSpaceSmall,
-                    if (model.moneyPool.adminUID == model.currentUser.id)
+                    if (model.moneyPool.adminUID == model.currentUser.uid)
                       HorizontalCentralButton(
                         color: MyColors.paletteBlue.withOpacity(0.9),
                         onPressed: () =>
@@ -101,7 +101,7 @@ class SingleMoneyPoolView extends StatelessWidget {
                         minWidth:
                             screenWidthPercentage(context, percentage: 0.6),
                       ),
-                    if (model.moneyPool.adminUID == model.currentUser.id)
+                    if (model.moneyPool.adminUID == model.currentUser.uid)
                       verticalSpaceRegular,
                     Text(formatAmount(model.moneyPool.total),
                         style: textTheme(context).headline2),
@@ -135,7 +135,7 @@ class SingleMoneyPoolView extends StatelessWidget {
                               ? model.moneyPool.invitedUsers[index]
                               : model.moneyPool.contributingUsers[
                                   index - model.moneyPool.invitedUsers.length];
-                          var displayName = user.uid == model.currentUser.id
+                          var displayName = user.uid == model.currentUser.uid
                               ? "You"
                               : user.name;
                           return ListTile(
@@ -153,10 +153,10 @@ class SingleMoneyPoolView extends StatelessWidget {
                                 color: Colors.black,
                               ),
                             ),
-                            subtitle:
-                                model.moneyPool.adminUID == model.currentUser.id
-                                    ? Text("Admin")
-                                    : null,
+                            subtitle: model.moneyPool.adminUID ==
+                                    model.currentUser.uid
+                                ? Text("Admin")
+                                : null,
                             trailing: isInvitedUser
                                 ? Text("Pending invitation")
                                 : Text(formatAmount(user.contribution)),

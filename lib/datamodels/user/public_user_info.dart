@@ -1,36 +1,18 @@
-import 'package:good_wallet/utils/datamodel_helpers.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'public_user_info.freezed.dart';
+part 'public_user_info.g.dart';
 
 // class holding public info of user
+@freezed
+class PublicUserInfo with _$PublicUserInfo {
+  factory PublicUserInfo({
+    required String uid,
+    required String name,
+    String? email,
+    String? errorMessage,
+  }) = _PublicUserInfo;
 
-class PublicUserInfo {
-  final String name;
-  final String uid;
-  final String? email;
-  final String? errorMessage;
-
-  PublicUserInfo(
-      {this.uid = "", this.name = "", this.email = "", this.errorMessage});
-  PublicUserInfo.error(
-      {this.name = "",
-      this.email = "",
-      this.uid = "",
-      required this.errorMessage});
-
-  PublicUserInfo.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
-        email = returnIfAvailable(json, "email"),
-        uid = returnIfAvailable(json, "uid"),
-        errorMessage = null;
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['uid'] = this.uid;
-    data['email'] = this.email;
-    return data;
-  }
-
-  bool hasError() {
-    return errorMessage != null;
-  }
+  factory PublicUserInfo.fromJson(Map<String, dynamic> json) =>
+      _$PublicUserInfoFromJson(json);
 }

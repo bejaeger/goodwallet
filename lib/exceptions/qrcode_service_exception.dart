@@ -1,9 +1,9 @@
-class FirestoreApiException implements Exception {
+class QRCodeServiceException implements Exception {
   final String message;
   final String? devDetails;
   final String? prettyDetails;
 
-  FirestoreApiException({
+  QRCodeServiceException({
     required this.message,
     this.devDetails,
     this.prettyDetails,
@@ -11,6 +11,6 @@ class FirestoreApiException implements Exception {
 
   @override
   String toString() {
-    return 'FirestoreApiException (in-house exception): $message ${devDetails != null ? '- $devDetails' : ''}';
+    return 'QRCodeService (in-house exception): $message ${devDetails != null ? '- $devDetails' : ''}';
   }
 }

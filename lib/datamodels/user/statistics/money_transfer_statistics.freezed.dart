@@ -14,7 +14,15 @@ final _privateConstructorUsedError = UnsupportedError(
 
 MoneyTransferStatistics _$MoneyTransferStatisticsFromJson(
     Map<String, dynamic> json) {
-  return _MoneyTransferStatistics.fromJson(json);
+  switch (json['runtimeType'] as String) {
+    case 'default':
+      return _MoneyTransferStatistics.fromJson(json);
+    case 'empty':
+      return _EmptyMoneyTransferStatistics.fromJson(json);
+
+    default:
+      throw FallThroughError();
+  }
 }
 
 /// @nodoc
@@ -22,9 +30,17 @@ class _$MoneyTransferStatisticsTearOff {
   const _$MoneyTransferStatisticsTearOff();
 
   _MoneyTransferStatistics call(
-      {required num totalTransferredToPeers, required num totalRaised}) {
+      {required num totalSentToPeers, required num totalRaised}) {
     return _MoneyTransferStatistics(
-      totalTransferredToPeers: totalTransferredToPeers,
+      totalSentToPeers: totalSentToPeers,
+      totalRaised: totalRaised,
+    );
+  }
+
+  _EmptyMoneyTransferStatistics empty(
+      {num totalSentToPeers = 0, num totalRaised = 0}) {
+    return _EmptyMoneyTransferStatistics(
+      totalSentToPeers: totalSentToPeers,
       totalRaised: totalRaised,
     );
   }
@@ -39,9 +55,35 @@ const $MoneyTransferStatistics = _$MoneyTransferStatisticsTearOff();
 
 /// @nodoc
 mixin _$MoneyTransferStatistics {
-  num get totalTransferredToPeers => throw _privateConstructorUsedError;
+  num get totalSentToPeers => throw _privateConstructorUsedError;
   num get totalRaised => throw _privateConstructorUsedError;
 
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(num totalSentToPeers, num totalRaised) $default, {
+    required TResult Function(num totalSentToPeers, num totalRaised) empty,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(num totalSentToPeers, num totalRaised)? $default, {
+    TResult Function(num totalSentToPeers, num totalRaised)? empty,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_MoneyTransferStatistics value) $default, {
+    required TResult Function(_EmptyMoneyTransferStatistics value) empty,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_MoneyTransferStatistics value)? $default, {
+    TResult Function(_EmptyMoneyTransferStatistics value)? empty,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $MoneyTransferStatisticsCopyWith<MoneyTransferStatistics> get copyWith =>
@@ -53,7 +95,7 @@ abstract class $MoneyTransferStatisticsCopyWith<$Res> {
   factory $MoneyTransferStatisticsCopyWith(MoneyTransferStatistics value,
           $Res Function(MoneyTransferStatistics) then) =
       _$MoneyTransferStatisticsCopyWithImpl<$Res>;
-  $Res call({num totalTransferredToPeers, num totalRaised});
+  $Res call({num totalSentToPeers, num totalRaised});
 }
 
 /// @nodoc
@@ -67,13 +109,13 @@ class _$MoneyTransferStatisticsCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object? totalTransferredToPeers = freezed,
+    Object? totalSentToPeers = freezed,
     Object? totalRaised = freezed,
   }) {
     return _then(_value.copyWith(
-      totalTransferredToPeers: totalTransferredToPeers == freezed
-          ? _value.totalTransferredToPeers
-          : totalTransferredToPeers // ignore: cast_nullable_to_non_nullable
+      totalSentToPeers: totalSentToPeers == freezed
+          ? _value.totalSentToPeers
+          : totalSentToPeers // ignore: cast_nullable_to_non_nullable
               as num,
       totalRaised: totalRaised == freezed
           ? _value.totalRaised
@@ -90,7 +132,7 @@ abstract class _$MoneyTransferStatisticsCopyWith<$Res>
           $Res Function(_MoneyTransferStatistics) then) =
       __$MoneyTransferStatisticsCopyWithImpl<$Res>;
   @override
-  $Res call({num totalTransferredToPeers, num totalRaised});
+  $Res call({num totalSentToPeers, num totalRaised});
 }
 
 /// @nodoc
@@ -107,13 +149,13 @@ class __$MoneyTransferStatisticsCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object? totalTransferredToPeers = freezed,
+    Object? totalSentToPeers = freezed,
     Object? totalRaised = freezed,
   }) {
     return _then(_MoneyTransferStatistics(
-      totalTransferredToPeers: totalTransferredToPeers == freezed
-          ? _value.totalTransferredToPeers
-          : totalTransferredToPeers // ignore: cast_nullable_to_non_nullable
+      totalSentToPeers: totalSentToPeers == freezed
+          ? _value.totalSentToPeers
+          : totalSentToPeers // ignore: cast_nullable_to_non_nullable
               as num,
       totalRaised: totalRaised == freezed
           ? _value.totalRaised
@@ -127,29 +169,28 @@ class __$MoneyTransferStatisticsCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
   _$_MoneyTransferStatistics(
-      {required this.totalTransferredToPeers, required this.totalRaised});
+      {required this.totalSentToPeers, required this.totalRaised});
 
   factory _$_MoneyTransferStatistics.fromJson(Map<String, dynamic> json) =>
       _$_$_MoneyTransferStatisticsFromJson(json);
 
   @override
-  final num totalTransferredToPeers;
+  final num totalSentToPeers;
   @override
   final num totalRaised;
 
   @override
   String toString() {
-    return 'MoneyTransferStatistics(totalTransferredToPeers: $totalTransferredToPeers, totalRaised: $totalRaised)';
+    return 'MoneyTransferStatistics(totalSentToPeers: $totalSentToPeers, totalRaised: $totalRaised)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _MoneyTransferStatistics &&
-            (identical(
-                    other.totalTransferredToPeers, totalTransferredToPeers) ||
-                const DeepCollectionEquality().equals(
-                    other.totalTransferredToPeers, totalTransferredToPeers)) &&
+            (identical(other.totalSentToPeers, totalSentToPeers) ||
+                const DeepCollectionEquality()
+                    .equals(other.totalSentToPeers, totalSentToPeers)) &&
             (identical(other.totalRaised, totalRaised) ||
                 const DeepCollectionEquality()
                     .equals(other.totalRaised, totalRaised)));
@@ -158,7 +199,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(totalTransferredToPeers) ^
+      const DeepCollectionEquality().hash(totalSentToPeers) ^
       const DeepCollectionEquality().hash(totalRaised);
 
   @JsonKey(ignore: true)
@@ -168,25 +209,227 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
           this, _$identity);
 
   @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(num totalSentToPeers, num totalRaised) $default, {
+    required TResult Function(num totalSentToPeers, num totalRaised) empty,
+  }) {
+    return $default(totalSentToPeers, totalRaised);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(num totalSentToPeers, num totalRaised)? $default, {
+    TResult Function(num totalSentToPeers, num totalRaised)? empty,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default(totalSentToPeers, totalRaised);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_MoneyTransferStatistics value) $default, {
+    required TResult Function(_EmptyMoneyTransferStatistics value) empty,
+  }) {
+    return $default(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_MoneyTransferStatistics value)? $default, {
+    TResult Function(_EmptyMoneyTransferStatistics value)? empty,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default(this);
+    }
+    return orElse();
+  }
+
+  @override
   Map<String, dynamic> toJson() {
-    return _$_$_MoneyTransferStatisticsToJson(this);
+    return _$_$_MoneyTransferStatisticsToJson(this)
+      ..['runtimeType'] = 'default';
   }
 }
 
 abstract class _MoneyTransferStatistics implements MoneyTransferStatistics {
   factory _MoneyTransferStatistics(
-      {required num totalTransferredToPeers,
+      {required num totalSentToPeers,
       required num totalRaised}) = _$_MoneyTransferStatistics;
 
   factory _MoneyTransferStatistics.fromJson(Map<String, dynamic> json) =
       _$_MoneyTransferStatistics.fromJson;
 
   @override
-  num get totalTransferredToPeers => throw _privateConstructorUsedError;
+  num get totalSentToPeers => throw _privateConstructorUsedError;
   @override
   num get totalRaised => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$MoneyTransferStatisticsCopyWith<_MoneyTransferStatistics> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$EmptyMoneyTransferStatisticsCopyWith<$Res>
+    implements $MoneyTransferStatisticsCopyWith<$Res> {
+  factory _$EmptyMoneyTransferStatisticsCopyWith(
+          _EmptyMoneyTransferStatistics value,
+          $Res Function(_EmptyMoneyTransferStatistics) then) =
+      __$EmptyMoneyTransferStatisticsCopyWithImpl<$Res>;
+  @override
+  $Res call({num totalSentToPeers, num totalRaised});
+}
+
+/// @nodoc
+class __$EmptyMoneyTransferStatisticsCopyWithImpl<$Res>
+    extends _$MoneyTransferStatisticsCopyWithImpl<$Res>
+    implements _$EmptyMoneyTransferStatisticsCopyWith<$Res> {
+  __$EmptyMoneyTransferStatisticsCopyWithImpl(
+      _EmptyMoneyTransferStatistics _value,
+      $Res Function(_EmptyMoneyTransferStatistics) _then)
+      : super(_value, (v) => _then(v as _EmptyMoneyTransferStatistics));
+
+  @override
+  _EmptyMoneyTransferStatistics get _value =>
+      super._value as _EmptyMoneyTransferStatistics;
+
+  @override
+  $Res call({
+    Object? totalSentToPeers = freezed,
+    Object? totalRaised = freezed,
+  }) {
+    return _then(_EmptyMoneyTransferStatistics(
+      totalSentToPeers: totalSentToPeers == freezed
+          ? _value.totalSentToPeers
+          : totalSentToPeers // ignore: cast_nullable_to_non_nullable
+              as num,
+      totalRaised: totalRaised == freezed
+          ? _value.totalRaised
+          : totalRaised // ignore: cast_nullable_to_non_nullable
+              as num,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
+  const _$_EmptyMoneyTransferStatistics(
+      {this.totalSentToPeers = 0, this.totalRaised = 0});
+
+  factory _$_EmptyMoneyTransferStatistics.fromJson(Map<String, dynamic> json) =>
+      _$_$_EmptyMoneyTransferStatisticsFromJson(json);
+
+  @JsonKey(defaultValue: 0)
+  @override
+  final num totalSentToPeers;
+  @JsonKey(defaultValue: 0)
+  @override
+  final num totalRaised;
+
+  @override
+  String toString() {
+    return 'MoneyTransferStatistics.empty(totalSentToPeers: $totalSentToPeers, totalRaised: $totalRaised)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is _EmptyMoneyTransferStatistics &&
+            (identical(other.totalSentToPeers, totalSentToPeers) ||
+                const DeepCollectionEquality()
+                    .equals(other.totalSentToPeers, totalSentToPeers)) &&
+            (identical(other.totalRaised, totalRaised) ||
+                const DeepCollectionEquality()
+                    .equals(other.totalRaised, totalRaised)));
+  }
+
+  @override
+  int get hashCode =>
+      runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(totalSentToPeers) ^
+      const DeepCollectionEquality().hash(totalRaised);
+
+  @JsonKey(ignore: true)
+  @override
+  _$EmptyMoneyTransferStatisticsCopyWith<_EmptyMoneyTransferStatistics>
+      get copyWith => __$EmptyMoneyTransferStatisticsCopyWithImpl<
+          _EmptyMoneyTransferStatistics>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(num totalSentToPeers, num totalRaised) $default, {
+    required TResult Function(num totalSentToPeers, num totalRaised) empty,
+  }) {
+    return empty(totalSentToPeers, totalRaised);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(num totalSentToPeers, num totalRaised)? $default, {
+    TResult Function(num totalSentToPeers, num totalRaised)? empty,
+    required TResult orElse(),
+  }) {
+    if (empty != null) {
+      return empty(totalSentToPeers, totalRaised);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_MoneyTransferStatistics value) $default, {
+    required TResult Function(_EmptyMoneyTransferStatistics value) empty,
+  }) {
+    return empty(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_MoneyTransferStatistics value)? $default, {
+    TResult Function(_EmptyMoneyTransferStatistics value)? empty,
+    required TResult orElse(),
+  }) {
+    if (empty != null) {
+      return empty(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$_$_EmptyMoneyTransferStatisticsToJson(this)
+      ..['runtimeType'] = 'empty';
+  }
+}
+
+abstract class _EmptyMoneyTransferStatistics
+    implements MoneyTransferStatistics {
+  const factory _EmptyMoneyTransferStatistics(
+      {num totalSentToPeers,
+      num totalRaised}) = _$_EmptyMoneyTransferStatistics;
+
+  factory _EmptyMoneyTransferStatistics.fromJson(Map<String, dynamic> json) =
+      _$_EmptyMoneyTransferStatistics.fromJson;
+
+  @override
+  num get totalSentToPeers => throw _privateConstructorUsedError;
+  @override
+  num get totalRaised => throw _privateConstructorUsedError;
+  @override
+  @JsonKey(ignore: true)
+  _$EmptyMoneyTransferStatisticsCopyWith<_EmptyMoneyTransferStatistics>
+      get copyWith => throw _privateConstructorUsedError;
 }

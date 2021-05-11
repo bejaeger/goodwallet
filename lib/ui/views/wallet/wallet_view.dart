@@ -5,7 +5,7 @@ import 'package:good_wallet/ui/views/wallet/wallet_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/ui/widgets/causes/global_giving_project_card.dart';
 import 'package:good_wallet/ui/widgets/wallet/news_feed_card.dart';
-import 'package:good_wallet/utils/datamodel_helpers.dart';
+import 'package:good_wallet/utils/string_utils.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';

@@ -13,7 +13,15 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 User _$UserFromJson(Map<String, dynamic> json) {
-  return _User.fromJson(json);
+  switch (json['runtimeType'] as String) {
+    case 'default':
+      return _User.fromJson(json);
+    case 'empty':
+      return _EmptyUser.fromJson(json);
+
+    default:
+      throw FallThroughError();
+  }
 }
 
 /// @nodoc
@@ -24,8 +32,22 @@ class _$UserTearOff {
       {required String uid,
       required String fullName,
       required String email,
-      required List<String> keywordList}) {
+      @JsonKey(toJson: User._checkIfKeywordsAreSet)
+          List<String>? keywordList}) {
     return _User(
+      uid: uid,
+      fullName: fullName,
+      email: email,
+      keywordList: keywordList,
+    );
+  }
+
+  _EmptyUser empty(
+      {String uid = "",
+      String fullName = "",
+      String email = "",
+      List<String>? keywordList}) {
+    return _EmptyUser(
       uid: uid,
       fullName: fullName,
       email: email,
@@ -46,8 +68,51 @@ mixin _$User {
   String get uid => throw _privateConstructorUsedError;
   String get fullName => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
-  List<String> get keywordList => throw _privateConstructorUsedError;
+  @JsonKey(toJson: User._checkIfKeywordsAreSet)
+  List<String>? get keywordList => throw _privateConstructorUsedError;
 
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            String uid,
+            String fullName,
+            String email,
+            @JsonKey(toJson: User._checkIfKeywordsAreSet)
+                List<String>? keywordList)
+        $default, {
+    required TResult Function(String uid, String fullName, String email,
+            List<String>? keywordList)
+        empty,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            String uid,
+            String fullName,
+            String email,
+            @JsonKey(toJson: User._checkIfKeywordsAreSet)
+                List<String>? keywordList)?
+        $default, {
+    TResult Function(String uid, String fullName, String email,
+            List<String>? keywordList)?
+        empty,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_User value) $default, {
+    required TResult Function(_EmptyUser value) empty,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_User value)? $default, {
+    TResult Function(_EmptyUser value)? empty,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $UserCopyWith<User> get copyWith => throw _privateConstructorUsedError;
@@ -58,7 +123,10 @@ abstract class $UserCopyWith<$Res> {
   factory $UserCopyWith(User value, $Res Function(User) then) =
       _$UserCopyWithImpl<$Res>;
   $Res call(
-      {String uid, String fullName, String email, List<String> keywordList});
+      {String uid,
+      String fullName,
+      String email,
+      @JsonKey(toJson: User._checkIfKeywordsAreSet) List<String>? keywordList});
 }
 
 /// @nodoc
@@ -92,7 +160,7 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
       keywordList: keywordList == freezed
           ? _value.keywordList
           : keywordList // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
     ));
   }
 }
@@ -103,7 +171,10 @@ abstract class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
       __$UserCopyWithImpl<$Res>;
   @override
   $Res call(
-      {String uid, String fullName, String email, List<String> keywordList});
+      {String uid,
+      String fullName,
+      String email,
+      @JsonKey(toJson: User._checkIfKeywordsAreSet) List<String>? keywordList});
 }
 
 /// @nodoc
@@ -138,7 +209,7 @@ class __$UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
       keywordList: keywordList == freezed
           ? _value.keywordList
           : keywordList // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
     ));
   }
 }
@@ -151,7 +222,7 @@ class _$_User implements _User {
       {required this.uid,
       required this.fullName,
       required this.email,
-      required this.keywordList});
+      @JsonKey(toJson: User._checkIfKeywordsAreSet) this.keywordList});
 
   factory _$_User.fromJson(Map<String, dynamic> json) =>
       _$_$_UserFromJson(json);
@@ -163,7 +234,8 @@ class _$_User implements _User {
   @override
   final String email;
   @override
-  final List<String> keywordList;
+  @JsonKey(toJson: User._checkIfKeywordsAreSet)
+  final List<String>? keywordList;
 
   @override
   String toString() {
@@ -200,8 +272,68 @@ class _$_User implements _User {
       __$UserCopyWithImpl<_User>(this, _$identity);
 
   @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            String uid,
+            String fullName,
+            String email,
+            @JsonKey(toJson: User._checkIfKeywordsAreSet)
+                List<String>? keywordList)
+        $default, {
+    required TResult Function(String uid, String fullName, String email,
+            List<String>? keywordList)
+        empty,
+  }) {
+    return $default(uid, fullName, email, keywordList);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            String uid,
+            String fullName,
+            String email,
+            @JsonKey(toJson: User._checkIfKeywordsAreSet)
+                List<String>? keywordList)?
+        $default, {
+    TResult Function(String uid, String fullName, String email,
+            List<String>? keywordList)?
+        empty,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default(uid, fullName, email, keywordList);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_User value) $default, {
+    required TResult Function(_EmptyUser value) empty,
+  }) {
+    return $default(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_User value)? $default, {
+    TResult Function(_EmptyUser value)? empty,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default(this);
+    }
+    return orElse();
+  }
+
+  @override
   Map<String, dynamic> toJson() {
-    return _$_$_UserToJson(this);
+    return _$_$_UserToJson(this)..['runtimeType'] = 'default';
   }
 }
 
@@ -210,7 +342,8 @@ abstract class _User implements User {
       {required String uid,
       required String fullName,
       required String email,
-      required List<String> keywordList}) = _$_User;
+      @JsonKey(toJson: User._checkIfKeywordsAreSet)
+          List<String>? keywordList}) = _$_User;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$_User.fromJson;
 
@@ -221,8 +354,201 @@ abstract class _User implements User {
   @override
   String get email => throw _privateConstructorUsedError;
   @override
-  List<String> get keywordList => throw _privateConstructorUsedError;
+  @JsonKey(toJson: User._checkIfKeywordsAreSet)
+  List<String>? get keywordList => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$UserCopyWith<_User> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$EmptyUserCopyWith<$Res> implements $UserCopyWith<$Res> {
+  factory _$EmptyUserCopyWith(
+          _EmptyUser value, $Res Function(_EmptyUser) then) =
+      __$EmptyUserCopyWithImpl<$Res>;
+  @override
+  $Res call(
+      {String uid, String fullName, String email, List<String>? keywordList});
+}
+
+/// @nodoc
+class __$EmptyUserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
+    implements _$EmptyUserCopyWith<$Res> {
+  __$EmptyUserCopyWithImpl(_EmptyUser _value, $Res Function(_EmptyUser) _then)
+      : super(_value, (v) => _then(v as _EmptyUser));
+
+  @override
+  _EmptyUser get _value => super._value as _EmptyUser;
+
+  @override
+  $Res call({
+    Object? uid = freezed,
+    Object? fullName = freezed,
+    Object? email = freezed,
+    Object? keywordList = freezed,
+  }) {
+    return _then(_EmptyUser(
+      uid: uid == freezed
+          ? _value.uid
+          : uid // ignore: cast_nullable_to_non_nullable
+              as String,
+      fullName: fullName == freezed
+          ? _value.fullName
+          : fullName // ignore: cast_nullable_to_non_nullable
+              as String,
+      email: email == freezed
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      keywordList: keywordList == freezed
+          ? _value.keywordList
+          : keywordList // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$_EmptyUser implements _EmptyUser {
+  _$_EmptyUser(
+      {this.uid = "", this.fullName = "", this.email = "", this.keywordList});
+
+  factory _$_EmptyUser.fromJson(Map<String, dynamic> json) =>
+      _$_$_EmptyUserFromJson(json);
+
+  @JsonKey(defaultValue: "")
+  @override
+  final String uid;
+  @JsonKey(defaultValue: "")
+  @override
+  final String fullName;
+  @JsonKey(defaultValue: "")
+  @override
+  final String email;
+  @override
+  final List<String>? keywordList;
+
+  @override
+  String toString() {
+    return 'User.empty(uid: $uid, fullName: $fullName, email: $email, keywordList: $keywordList)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is _EmptyUser &&
+            (identical(other.uid, uid) ||
+                const DeepCollectionEquality().equals(other.uid, uid)) &&
+            (identical(other.fullName, fullName) ||
+                const DeepCollectionEquality()
+                    .equals(other.fullName, fullName)) &&
+            (identical(other.email, email) ||
+                const DeepCollectionEquality().equals(other.email, email)) &&
+            (identical(other.keywordList, keywordList) ||
+                const DeepCollectionEquality()
+                    .equals(other.keywordList, keywordList)));
+  }
+
+  @override
+  int get hashCode =>
+      runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(uid) ^
+      const DeepCollectionEquality().hash(fullName) ^
+      const DeepCollectionEquality().hash(email) ^
+      const DeepCollectionEquality().hash(keywordList);
+
+  @JsonKey(ignore: true)
+  @override
+  _$EmptyUserCopyWith<_EmptyUser> get copyWith =>
+      __$EmptyUserCopyWithImpl<_EmptyUser>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            String uid,
+            String fullName,
+            String email,
+            @JsonKey(toJson: User._checkIfKeywordsAreSet)
+                List<String>? keywordList)
+        $default, {
+    required TResult Function(String uid, String fullName, String email,
+            List<String>? keywordList)
+        empty,
+  }) {
+    return empty(uid, fullName, email, keywordList);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            String uid,
+            String fullName,
+            String email,
+            @JsonKey(toJson: User._checkIfKeywordsAreSet)
+                List<String>? keywordList)?
+        $default, {
+    TResult Function(String uid, String fullName, String email,
+            List<String>? keywordList)?
+        empty,
+    required TResult orElse(),
+  }) {
+    if (empty != null) {
+      return empty(uid, fullName, email, keywordList);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_User value) $default, {
+    required TResult Function(_EmptyUser value) empty,
+  }) {
+    return empty(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_User value)? $default, {
+    TResult Function(_EmptyUser value)? empty,
+    required TResult orElse(),
+  }) {
+    if (empty != null) {
+      return empty(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$_$_EmptyUserToJson(this)..['runtimeType'] = 'empty';
+  }
+}
+
+abstract class _EmptyUser implements User {
+  factory _EmptyUser(
+      {String uid,
+      String fullName,
+      String email,
+      List<String>? keywordList}) = _$_EmptyUser;
+
+  factory _EmptyUser.fromJson(Map<String, dynamic> json) =
+      _$_EmptyUser.fromJson;
+
+  @override
+  String get uid => throw _privateConstructorUsedError;
+  @override
+  String get fullName => throw _privateConstructorUsedError;
+  @override
+  String get email => throw _privateConstructorUsedError;
+  @override
+  List<String>? get keywordList => throw _privateConstructorUsedError;
+  @override
+  @JsonKey(ignore: true)
+  _$EmptyUserCopyWith<_EmptyUser> get copyWith =>
+      throw _privateConstructorUsedError;
 }

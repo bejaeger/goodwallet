@@ -13,6 +13,19 @@ class UserStatistics with _$UserStatistics {
     required MoneyTransferStatistics moneyTransferStatistics,
     required DonationStatistics donationStatistics,
   }) = _UserStatistics;
+
   factory UserStatistics.fromJson(Map<String, dynamic> json) =>
       _$UserStatisticsFromJson(json);
+}
+
+// Unfortunately json serializable only supports literals as default
+// We simply create a top-level function to get an empty a user statistics
+// model that is empty. This is used for creating the initial documents in firestore
+UserStatistics getEmptyUserStatistics() {
+  return UserStatistics(
+      currentBalance: 0,
+      moneyTransferStatistics:
+          MoneyTransferStatistics(totalRaised: 0, totalSentToPeers: 0),
+      donationStatistics:
+          DonationStatistics(supportedProjects: [], totalDonations: 0));
 }

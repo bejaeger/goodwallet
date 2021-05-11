@@ -5,7 +5,6 @@ import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
-import 'package:good_wallet/enums/transfer_direction.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';

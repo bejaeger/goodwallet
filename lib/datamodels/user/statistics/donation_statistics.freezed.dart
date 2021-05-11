@@ -13,7 +13,15 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 DonationStatistics _$DonationStatisticsFromJson(Map<String, dynamic> json) {
-  return _DonationStatistics.fromJson(json);
+  switch (json['runtimeType'] as String) {
+    case 'default':
+      return _DonationStatistics.fromJson(json);
+    case 'empty':
+      return _EmptyDonationStatistics.fromJson(json);
+
+    default:
+      throw FallThroughError();
+  }
 }
 
 /// @nodoc
@@ -24,6 +32,14 @@ class _$DonationStatisticsTearOff {
       {required num totalDonations,
       required List<ConciseProjectInfo> supportedProjects}) {
     return _DonationStatistics(
+      totalDonations: totalDonations,
+      supportedProjects: supportedProjects,
+    );
+  }
+
+  _EmptyDonationStatistics empty(
+      {num totalDonations = 0, List<ConciseProjectInfo>? supportedProjects}) {
+    return _EmptyDonationStatistics(
       totalDonations: totalDonations,
       supportedProjects: supportedProjects,
     );
@@ -40,9 +56,41 @@ const $DonationStatistics = _$DonationStatisticsTearOff();
 /// @nodoc
 mixin _$DonationStatistics {
   num get totalDonations => throw _privateConstructorUsedError;
-  List<ConciseProjectInfo> get supportedProjects =>
-      throw _privateConstructorUsedError;
 
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            num totalDonations, List<ConciseProjectInfo> supportedProjects)
+        $default, {
+    required TResult Function(
+            num totalDonations, List<ConciseProjectInfo>? supportedProjects)
+        empty,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            num totalDonations, List<ConciseProjectInfo> supportedProjects)?
+        $default, {
+    TResult Function(
+            num totalDonations, List<ConciseProjectInfo>? supportedProjects)?
+        empty,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_DonationStatistics value) $default, {
+    required TResult Function(_EmptyDonationStatistics value) empty,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_DonationStatistics value)? $default, {
+    TResult Function(_EmptyDonationStatistics value)? empty,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $DonationStatisticsCopyWith<DonationStatistics> get copyWith =>
@@ -54,7 +102,7 @@ abstract class $DonationStatisticsCopyWith<$Res> {
   factory $DonationStatisticsCopyWith(
           DonationStatistics value, $Res Function(DonationStatistics) then) =
       _$DonationStatisticsCopyWithImpl<$Res>;
-  $Res call({num totalDonations, List<ConciseProjectInfo> supportedProjects});
+  $Res call({num totalDonations});
 }
 
 /// @nodoc
@@ -69,17 +117,12 @@ class _$DonationStatisticsCopyWithImpl<$Res>
   @override
   $Res call({
     Object? totalDonations = freezed,
-    Object? supportedProjects = freezed,
   }) {
     return _then(_value.copyWith(
       totalDonations: totalDonations == freezed
           ? _value.totalDonations
           : totalDonations // ignore: cast_nullable_to_non_nullable
               as num,
-      supportedProjects: supportedProjects == freezed
-          ? _value.supportedProjects
-          : supportedProjects // ignore: cast_nullable_to_non_nullable
-              as List<ConciseProjectInfo>,
     ));
   }
 }
@@ -167,8 +210,60 @@ class _$_DonationStatistics implements _DonationStatistics {
       __$DonationStatisticsCopyWithImpl<_DonationStatistics>(this, _$identity);
 
   @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            num totalDonations, List<ConciseProjectInfo> supportedProjects)
+        $default, {
+    required TResult Function(
+            num totalDonations, List<ConciseProjectInfo>? supportedProjects)
+        empty,
+  }) {
+    return $default(totalDonations, supportedProjects);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            num totalDonations, List<ConciseProjectInfo> supportedProjects)?
+        $default, {
+    TResult Function(
+            num totalDonations, List<ConciseProjectInfo>? supportedProjects)?
+        empty,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default(totalDonations, supportedProjects);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_DonationStatistics value) $default, {
+    required TResult Function(_EmptyDonationStatistics value) empty,
+  }) {
+    return $default(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_DonationStatistics value)? $default, {
+    TResult Function(_EmptyDonationStatistics value)? empty,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default(this);
+    }
+    return orElse();
+  }
+
+  @override
   Map<String, dynamic> toJson() {
-    return _$_$_DonationStatisticsToJson(this);
+    return _$_$_DonationStatisticsToJson(this)..['runtimeType'] = 'default';
   }
 }
 
@@ -183,11 +278,171 @@ abstract class _DonationStatistics implements DonationStatistics {
 
   @override
   num get totalDonations => throw _privateConstructorUsedError;
-  @override
   List<ConciseProjectInfo> get supportedProjects =>
       throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$DonationStatisticsCopyWith<_DonationStatistics> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$EmptyDonationStatisticsCopyWith<$Res>
+    implements $DonationStatisticsCopyWith<$Res> {
+  factory _$EmptyDonationStatisticsCopyWith(_EmptyDonationStatistics value,
+          $Res Function(_EmptyDonationStatistics) then) =
+      __$EmptyDonationStatisticsCopyWithImpl<$Res>;
+  @override
+  $Res call({num totalDonations, List<ConciseProjectInfo>? supportedProjects});
+}
+
+/// @nodoc
+class __$EmptyDonationStatisticsCopyWithImpl<$Res>
+    extends _$DonationStatisticsCopyWithImpl<$Res>
+    implements _$EmptyDonationStatisticsCopyWith<$Res> {
+  __$EmptyDonationStatisticsCopyWithImpl(_EmptyDonationStatistics _value,
+      $Res Function(_EmptyDonationStatistics) _then)
+      : super(_value, (v) => _then(v as _EmptyDonationStatistics));
+
+  @override
+  _EmptyDonationStatistics get _value =>
+      super._value as _EmptyDonationStatistics;
+
+  @override
+  $Res call({
+    Object? totalDonations = freezed,
+    Object? supportedProjects = freezed,
+  }) {
+    return _then(_EmptyDonationStatistics(
+      totalDonations: totalDonations == freezed
+          ? _value.totalDonations
+          : totalDonations // ignore: cast_nullable_to_non_nullable
+              as num,
+      supportedProjects: supportedProjects == freezed
+          ? _value.supportedProjects
+          : supportedProjects // ignore: cast_nullable_to_non_nullable
+              as List<ConciseProjectInfo>?,
+    ));
+  }
+}
+
+/// @nodoc
+
+@JsonSerializable(explicitToJson: true)
+class _$_EmptyDonationStatistics implements _EmptyDonationStatistics {
+  const _$_EmptyDonationStatistics(
+      {this.totalDonations = 0, this.supportedProjects});
+
+  factory _$_EmptyDonationStatistics.fromJson(Map<String, dynamic> json) =>
+      _$_$_EmptyDonationStatisticsFromJson(json);
+
+  @JsonKey(defaultValue: 0)
+  @override
+  final num totalDonations;
+  @override
+  final List<ConciseProjectInfo>? supportedProjects;
+
+  @override
+  String toString() {
+    return 'DonationStatistics.empty(totalDonations: $totalDonations, supportedProjects: $supportedProjects)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is _EmptyDonationStatistics &&
+            (identical(other.totalDonations, totalDonations) ||
+                const DeepCollectionEquality()
+                    .equals(other.totalDonations, totalDonations)) &&
+            (identical(other.supportedProjects, supportedProjects) ||
+                const DeepCollectionEquality()
+                    .equals(other.supportedProjects, supportedProjects)));
+  }
+
+  @override
+  int get hashCode =>
+      runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(totalDonations) ^
+      const DeepCollectionEquality().hash(supportedProjects);
+
+  @JsonKey(ignore: true)
+  @override
+  _$EmptyDonationStatisticsCopyWith<_EmptyDonationStatistics> get copyWith =>
+      __$EmptyDonationStatisticsCopyWithImpl<_EmptyDonationStatistics>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            num totalDonations, List<ConciseProjectInfo> supportedProjects)
+        $default, {
+    required TResult Function(
+            num totalDonations, List<ConciseProjectInfo>? supportedProjects)
+        empty,
+  }) {
+    return empty(totalDonations, supportedProjects);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            num totalDonations, List<ConciseProjectInfo> supportedProjects)?
+        $default, {
+    TResult Function(
+            num totalDonations, List<ConciseProjectInfo>? supportedProjects)?
+        empty,
+    required TResult orElse(),
+  }) {
+    if (empty != null) {
+      return empty(totalDonations, supportedProjects);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_DonationStatistics value) $default, {
+    required TResult Function(_EmptyDonationStatistics value) empty,
+  }) {
+    return empty(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_DonationStatistics value)? $default, {
+    TResult Function(_EmptyDonationStatistics value)? empty,
+    required TResult orElse(),
+  }) {
+    if (empty != null) {
+      return empty(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$_$_EmptyDonationStatisticsToJson(this)..['runtimeType'] = 'empty';
+  }
+}
+
+abstract class _EmptyDonationStatistics implements DonationStatistics {
+  const factory _EmptyDonationStatistics(
+          {num totalDonations, List<ConciseProjectInfo>? supportedProjects}) =
+      _$_EmptyDonationStatistics;
+
+  factory _EmptyDonationStatistics.fromJson(Map<String, dynamic> json) =
+      _$_EmptyDonationStatistics.fromJson;
+
+  @override
+  num get totalDonations => throw _privateConstructorUsedError;
+  List<ConciseProjectInfo>? get supportedProjects =>
+      throw _privateConstructorUsedError;
+  @override
+  @JsonKey(ignore: true)
+  _$EmptyDonationStatisticsCopyWith<_EmptyDonationStatistics> get copyWith =>
       throw _privateConstructorUsedError;
 }

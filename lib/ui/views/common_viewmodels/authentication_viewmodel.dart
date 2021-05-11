@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/enums/authentication_method.dart';
+import 'package:good_wallet/exceptions/firestore_api_exception.dart';
+import 'package:good_wallet/exceptions/user_data_service_exception.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
@@ -27,27 +29,32 @@ abstract class AuthenticationViewModel extends FormViewModel {
     if (!result.hasError) {
       log.i("Authentication successful, now initializing user data");
 
-      final UserDataServiceResult result2 =
-          await (runBusyFuture(initializeUser(result.user!)));
-
-      if (!result2.hasError) {
-        // authenticated and initialized -> go to successRoute
-        navigationService!.replaceWith(successRoute);
-      } else {
-        log.e("Failed initializing user with error: ${result2.errorMessage}");
-        setValidationMessage(
-            "Authentication successful but initiliazation failed due to an internal problem. Please, try again later or contact our support.");
+      try {
+        await (runBusyFuture(initializeUser(result.user!)));
+      } catch (e) {
+        log.e("Failed initializing user with error: ${e.toString()}");
+        String publicFacingMessage =
+            "Authentication successful but initiliazation failed due to an internal problem. Please, try again later or contact our support.";
+        if (e is UserDataServiceException)
+          setValidationMessage(e.prettyDetails ?? publicFacingMessage);
+        if (e is FirestoreApiException)
+          setValidationMessage(e.prettyDetails ?? publicFacingMessage);
+        else
+          setValidationMessage(publicFacingMessage);
+        return;
       }
-    } else {
-      log.w("User could not be logged in or signed-up, error thrown:");
-      log.w(result.errorMessage);
 
+      // authenticated and initialized -> go to successRoute
+      navigationService!.replaceWith(successRoute);
+    } else {
+      log.e(
+          "User could not be logged in or signed-up, error: ${result.errorMessage}");
       // set validation message if we have an error
       setValidationMessage(result.errorMessage);
     }
   }
 
-  Future<UserDataServiceResult> initializeUser(User user) async {
+  Future initializeUser(User user) async {
     return await _userDataService!.initializeCurrentUser(user);
   }
 

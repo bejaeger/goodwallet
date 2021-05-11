@@ -34,7 +34,7 @@ class TransfersHistoryViewModel extends StreamViewModel<List<MoneyTransfer>> {
   // Need to add listeners otherwise this will be empty
   //List<MoneyTransfer> get latestTransfers => _userDataService!.getTransfers(type: type);
 
-  String get uid => _userDataService!.currentUser.id;
+  String get uid => _userDataService!.currentUser.uid;
 
   // Listen to stream of latest donations and transactions
   // void addDataListeners() {

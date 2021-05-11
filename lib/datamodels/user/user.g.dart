@@ -11,12 +11,32 @@ _$_User _$_$_UserFromJson(Map<String, dynamic> json) {
     uid: json['uid'] as String,
     fullName: json['fullName'] as String,
     email: json['email'] as String,
-    keywordList:
-        (json['keywordList'] as List<dynamic>).map((e) => e as String).toList(),
+    keywordList: (json['keywordList'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
   );
 }
 
 Map<String, dynamic> _$_$_UserToJson(_$_User instance) => <String, dynamic>{
+      'uid': instance.uid,
+      'fullName': instance.fullName,
+      'email': instance.email,
+      'keywordList': User._checkIfKeywordsAreSet(instance.keywordList),
+    };
+
+_$_EmptyUser _$_$_EmptyUserFromJson(Map<String, dynamic> json) {
+  return _$_EmptyUser(
+    uid: json['uid'] as String? ?? '',
+    fullName: json['fullName'] as String? ?? '',
+    email: json['email'] as String? ?? '',
+    keywordList: (json['keywordList'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$_$_EmptyUserToJson(_$_EmptyUser instance) =>
+    <String, dynamic>{
       'uid': instance.uid,
       'fullName': instance.fullName,
       'email': instance.email,

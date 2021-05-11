@@ -10,7 +10,7 @@ import 'package:good_wallet/ui/widgets/alternative_screen_header.dart';
 import 'package:good_wallet/ui/widgets/alternative_screen_header_small.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
-import 'package:good_wallet/utils/datamodel_helpers.dart';
+import 'package:good_wallet/utils/string_utils.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
-import 'package:good_wallet/datamodels/user/user_model.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -21,17 +21,16 @@ class BaseModel extends BaseViewModel {
 
   final baseModelLog = getLogger("BaseModel");
 
-  GWUser get currentUser => _userDataService!.currentUser;
+  User get currentUser => _userDataService!.currentUser;
 
-  UserStatus? userStatus;
   bool get isUserSignedIn =>
-      userStatus == UserStatus.SignedIn || userStatus == UserStatus.Initialized;
-  bool get isUserInitialized => userStatus == UserStatus.Initialized;
+      _userDataService!.userStatus == UserStatus.SignedIn ||
+      _userDataService!.userStatus == UserStatus.Initialized;
+  bool get isUserInitialized =>
+      _userDataService!.userStatus == UserStatus.Initialized;
 
-  late UserStatistics userStats;
-
-  StreamSubscription? _userState;
-  StreamSubscription? _userStats;
+  UserStatistics userStats = getEmptyUserStatistics();
+  StreamSubscription? _userStatsSubscription;
 
   BaseModel() {
     baseModelLog.i("Initialized!");
@@ -39,20 +38,11 @@ class BaseModel extends BaseViewModel {
     //--------------------------------------
     // Set up top-level listeners
 
-    //  listen to changes in auth state
-    _userState = _userDataService!.userStateSubject.listen(
-      (state) {
-        baseModelLog.v("Listened to auth state change update: state = $state");
-        userStatus = state;
-        notifyListeners();
-      },
-    );
-
     // listen to changes in wallet
-    _userStats = _userDataService!.userStatsSubject.listen(
-      (wallet) {
+    _userStatsSubscription = _userDataService!.userStatsSubject.listen(
+      (stats) {
         baseModelLog.v("Listened to wallet update");
-        userStats = wallet;
+        userStats = stats;
         notifyListeners();
       },
     );
@@ -71,8 +61,7 @@ class BaseModel extends BaseViewModel {
 
   @override
   dispose() {
-    _userState?.cancel();
-    _userStats?.cancel();
+    _userStatsSubscription?.cancel();
     super.dispose();
   }
 }

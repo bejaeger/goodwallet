@@ -8,7 +8,7 @@ import 'package:good_wallet/datamodels/money_pools/base/concise_money_pool_info.
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/transfers/transfer_details.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
-import 'package:good_wallet/datamodels/user/user_model.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/fund_transfer_type.dart';
 import 'package:good_wallet/enums/money_source.dart';
@@ -34,7 +34,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
   final SnackbarService? _snackbarService = locator<SnackbarService>();
   final UserDataService? _userDataService = locator<UserDataService>();
   final DialogService? _dialogService = locator<DialogService>();
-  GWUser get currentUser => _userDataService!.currentUser;
+  User get currentUser => _userDataService!.currentUser;
   final DummyPaymentService _dummyPaymentService =
       locator<DummyPaymentService>();
   final log = getLogger("transfer_funds_amount_viewmodel.dart");
@@ -239,7 +239,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
           transferDetails: TransferDetails(
             recipientId: receiverInfo.moneyPoolId,
             recipientName: receiverInfo.name,
-            senderId: currentUser.id,
+            senderId: currentUser.uid,
             senderName: currentUser.fullName,
             currency: 'cad',
             amount: scaleAmountForStripe(amount!),
@@ -263,7 +263,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
         transferDetails: TransferDetails(
           recipientId: receiverInfo.uid,
           recipientName: receiverInfo.name,
-          senderId: currentUser.id,
+          senderId: currentUser.uid,
           senderName: currentUser.fullName,
           amount: scaleAmountForStripe(amount!),
           currency: 'cad',
@@ -286,7 +286,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
         transferDetails: TransferDetails(
           recipientId: "DummyId",
           recipientName: receiverInfo.title,
-          senderId: currentUser.id,
+          senderId: currentUser.uid,
           senderName: currentUser.fullName,
           amount: scaleAmountForStripe(amount!),
           currency: 'cad',

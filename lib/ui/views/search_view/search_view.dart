@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/user/user_model.dart';
 import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
@@ -7,7 +6,7 @@ import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/search_view/search_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
-import 'package:good_wallet/utils/datamodel_helpers.dart';
+import 'package:good_wallet/utils/string_utils.dart';
 import 'package:good_wallet/utils/debouncer.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';

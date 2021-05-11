@@ -18,7 +18,7 @@ class RaiseMoneyViewModel extends BaseModel {
   Future fetchMoneyPools({bool force = false}) async {
     setBusy(true);
     try {
-      await _moneyPoolService!.loadMoneyPools(currentUser.id, force);
+      await _moneyPoolService!.loadMoneyPools(currentUser.uid, force);
     } catch (e) {
       // Need to set some validation
       log.e("Could not fetch money pools, error: ${e.toString()}");

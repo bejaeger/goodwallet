@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
-import 'package:good_wallet/utils/datamodel_helpers.dart';
+import 'package:good_wallet/utils/string_utils.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
 class CallToActionButtonRectangular extends StatelessWidget {

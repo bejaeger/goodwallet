@@ -63,6 +63,7 @@ abstract class $UserStatisticsCopyWith<$Res> {
       MoneyTransferStatistics moneyTransferStatistics,
       DonationStatistics donationStatistics});
 
+  $MoneyTransferStatisticsCopyWith<$Res> get moneyTransferStatistics;
   $DonationStatisticsCopyWith<$Res> get donationStatistics;
 }
 
@@ -98,6 +99,14 @@ class _$UserStatisticsCopyWithImpl<$Res>
   }
 
   @override
+  $MoneyTransferStatisticsCopyWith<$Res> get moneyTransferStatistics {
+    return $MoneyTransferStatisticsCopyWith<$Res>(
+        _value.moneyTransferStatistics, (value) {
+      return _then(_value.copyWith(moneyTransferStatistics: value));
+    });
+  }
+
+  @override
   $DonationStatisticsCopyWith<$Res> get donationStatistics {
     return $DonationStatisticsCopyWith<$Res>(_value.donationStatistics,
         (value) {
@@ -118,6 +127,8 @@ abstract class _$UserStatisticsCopyWith<$Res>
       MoneyTransferStatistics moneyTransferStatistics,
       DonationStatistics donationStatistics});
 
+  @override
+  $MoneyTransferStatisticsCopyWith<$Res> get moneyTransferStatistics;
   @override
   $DonationStatisticsCopyWith<$Res> get donationStatistics;
 }
