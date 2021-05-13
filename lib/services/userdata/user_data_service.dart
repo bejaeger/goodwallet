@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
@@ -53,7 +54,8 @@ class UserDataService {
 
   // subject to keep track and expose wallet
   BehaviorSubject<UserStatistics> userStatsSubject =
-      BehaviorSubject<UserStatistics>();
+      BehaviorSubject<UserStatistics>.seeded(getEmptyUserStatistics());
+  UserStatistics? get userStats => userStatsSubject.value;
 
   // current user with all our custom data attached to it
   late User _currentUser;
@@ -63,8 +65,9 @@ class UserDataService {
   }
 
   // list of latest transactions and their subscriptions
-  Map<String, List<MoneyTransfer>> latestTransfers = {};
-  Map<String, StreamSubscription?> _transfersSubscriptions = {};
+  Map<MoneyTransferQueryConfig, List<MoneyTransfer>> latestTransfers = {};
+  Map<MoneyTransferQueryConfig, StreamSubscription?> _transfersSubscriptions =
+      {};
 
   // Listen to auth state changes.
   // This is useful in scenarios where we want to
@@ -160,7 +163,7 @@ class UserDataService {
         uid: user.uid,
         email: email,
         fullName: name,
-        keywordList: keywords,
+        searchKeywords: keywords,
       );
       UserStatistics stats = getEmptyUserStatistics();
       await _firestoreApi.createUser(user: myuser, stats: stats);
@@ -441,14 +444,16 @@ class UserDataService {
   }
 
   Stream<List<MoneyTransfer>> getCombinedMoneyTransfersStream(
-      {required Query outgoing, required Query incoming, int? maxNumber}) {
+      {required Query outgoing,
+      required Query incoming,
+      int? maxNumberReturns}) {
     // combine streams with rxdart
-    Stream<QuerySnapshot> outSnapshot = maxNumber == null
+    Stream<QuerySnapshot> outSnapshot = maxNumberReturns == null
         ? outgoing.snapshots()
-        : outgoing.limit(maxNumber).snapshots();
-    Stream<QuerySnapshot> inSnapshot = maxNumber == null
+        : outgoing.limit(maxNumberReturns).snapshots();
+    Stream<QuerySnapshot> inSnapshot = maxNumberReturns == null
         ? incoming.snapshots()
-        : incoming.limit(maxNumber).snapshots();
+        : incoming.limit(maxNumberReturns).snapshots();
 
     return Rx.combineLatest2<QuerySnapshot, QuerySnapshot, List<MoneyTransfer>>(
         outSnapshot, inSnapshot,
@@ -484,12 +489,26 @@ class UserDataService {
     });
   }
 
+  isSupportedFirestoreQueryFilter({dynamic isEqualToFilter}) {
+    if (isEqualToFilter == null) return true;
+    if (isEqualToFilter.length > 1) return false;
+    return true;
+  }
+
   // Get query for transaction with given direction.
   // optionally set the maximum number of documents retrieved
   Stream<List<MoneyTransfer>> getTransferDataStream(
-      {required TransferType type, int? maxNumber}) {
+      {required MoneyTransferQueryConfig config}) {
+    // check arguments:
+    if (!isSupportedFirestoreQueryFilter(
+        isEqualToFilter: config.isEqualToFilter)) {
+      throw UserDataServiceException(
+          message:
+              "The provided firestore query filter: '$config.isEqualToFilter' is not supported at the moment!");
+    }
+
     Query query;
-    if (type == TransferType.All) {
+    if (config.type == TransferType.All) {
       Query outgoing = _paymentsCollectionReference
           .where("transferDetails.senderId", isEqualTo: currentUser.uid)
           .orderBy("createdAt", descending: true);
@@ -500,7 +519,7 @@ class UserDataService {
           getCombinedMoneyTransfersStream(
               outgoing: outgoing, incoming: incoming);
       return transfersStream;
-    } else if (type == TransferType.Peer2PeerSent) {
+    } else if (config.type == TransferType.Peer2PeerSent) {
       query = _paymentsCollectionReference
           .where("transferDetails.senderId", isEqualTo: currentUser.uid)
           // document fields are the same so the type is Peer2Peer here
@@ -508,13 +527,13 @@ class UserDataService {
           .orderBy("createdAt", descending: true);
       // .where("createdAt",
       // isGreaterThan: Timestamp.fromDate(DateTime(2021, 5, 8)));
-    } else if (type == TransferType.Peer2PeerReceived) {
+    } else if (config.type == TransferType.Peer2PeerReceived) {
       query = _paymentsCollectionReference
           .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
           // document fields are the same so the type is Peer2Peer here
           .where("type", isEqualTo: "Peer2Peer")
           .orderBy("createdAt", descending: true);
-    } else if (type == TransferType.Peer2Peer) {
+    } else if (config.type == TransferType.Peer2Peer) {
       Query querySent = _paymentsCollectionReference
           .where("transferDetails.senderId", isEqualTo: currentUser.uid)
           // document fields are the same so the type is Peer2Peer here
@@ -526,37 +545,48 @@ class UserDataService {
           .where("type", isEqualTo: "Peer2Peer")
           .orderBy("createdAt", descending: true);
       Stream<List<MoneyTransfer>>? stream = getCombinedMoneyTransfersStream(
-          outgoing: querySent, incoming: queryReceived, maxNumber: maxNumber);
+          outgoing: querySent,
+          incoming: queryReceived,
+          maxNumberReturns: config.maxNumberReturns);
       return stream;
-    } else if (type == TransferType.Donation) {
+    } else if (config.type == TransferType.Donation) {
       query = _paymentsCollectionReference
           .where("transferDetails.senderId", isEqualTo: currentUser.uid)
           .where("type", isEqualTo: "Donation")
           .orderBy("createdAt", descending: true);
-    } else if (type == TransferType.MoneyPoolPayout) {
+    } else if (config.type == TransferType.MoneyPoolPayout) {
       // This is querying for the full payout documents holding
       // all MoneyPoolPayoutTransfers. Look in moneyPoolPayouts collection
       query = _moneyPoolPayoutsCollectionReference
           .where("paidOutUserIds", arrayContains: currentUser.uid)
           .orderBy("createdAt", descending: true);
-    } else if (type == TransferType.MoneyPoolPayoutTransfer) {
+    } else if (config.type == TransferType.MoneyPoolPayoutTransfer) {
       query = _paymentsCollectionReference
           .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
           .where("type", isEqualTo: "MoneyPoolPayoutTransfer")
           .orderBy("createdAt", descending: true);
-    } else if (type == TransferType.MoneyPoolContribution) {
-      query = _paymentsCollectionReference
-          .where("transferDetails.senderId", isEqualTo: currentUser.uid)
-          .where("type", isEqualTo: "MoneyPoolContribution")
-          .orderBy("createdAt", descending: true);
+    } else if (config.type == TransferType.MoneyPoolContribution) {
+      if (config.isEqualToFilter == null) {
+        query = _paymentsCollectionReference
+            .where("transferDetails.senderId", isEqualTo: currentUser.uid)
+            .where("type", isEqualTo: "MoneyPoolContribution")
+            .orderBy("createdAt", descending: true);
+      } else {
+        query = _paymentsCollectionReference
+            .where(config.isEqualToFilter!.keys.first,
+                isEqualTo: config.isEqualToFilter!.values.first)
+            .where("transferDetails.senderId", isEqualTo: currentUser.uid)
+            .where("type", isEqualTo: "MoneyPoolContribution")
+            .orderBy("createdAt", descending: true);
+      }
     } else {
       // TODO: Throw exception and make return value non-nullable
-      log.e(
-          "Could not find stream corresponding to provided transfer type '$type'");
+      log.e("Could not find stream corresponding to provided config '$config'");
       throw Exception("Exception occured. TODO: Add proper Exception here!");
     }
 
-    if (maxNumber != null) query = query.limit(maxNumber);
+    if (config.maxNumberReturns != null)
+      query = query.limit(config.maxNumberReturns!);
 
     // convert Stream<QuerySnapshot> to Stream<List<MoneyTransfer>>
     Stream<List<MoneyTransfer>> returnStream = query.snapshots().map(
@@ -569,64 +599,74 @@ class UserDataService {
     return returnStream;
   }
 
-  String getStreamConfigString({required TransferType type, int? maxNumber}) {
-    // TODO: Make maxNumber treatment smarter!
-    Map<String, String> config = {
-      "type": type.toString(),
-      "maxNumber": maxNumber.toString()
-    };
-    return config.toString();
-  }
-
   // More generic class to listen to firestore collections for updates.
   // callback can be used to provide notifyListeners from the viewmodel
   // to the service
   void addTransferDataListener(
-      {required TransferType type, int? maxNumber, void Function()? callback}) {
-    // TODO: We need to make sure that the callback is called!
-
-    String configString =
-        getStreamConfigString(type: type, maxNumber: maxNumber);
-
+      {required MoneyTransferQueryConfig config, void Function()? callback}) {
     // TODO: Treat type MoneyPoolPayout
-    if (type == TransferType.MoneyPoolPayout) {
+    if (config.type == TransferType.MoneyPoolPayout) {
       log.e(
           "Can't listen to money pool payouts at the moment. NOT YET IMPLEMENTED");
+      if (callback != null) callback();
       return;
     }
 
-    if (_transfersSubscriptions.containsKey(configString)) {
+    if (_transfersSubscriptions.containsKey(config)) {
       log.v(
-          "Stream with config '$configString' already listened to, not adding a second listener!");
+          "Stream with config '$config' already listened to, resuming it in case it has been paused!");
+      _transfersSubscriptions[config]?.resume();
+      if (callback != null) callback();
       return;
     } else {
-      log.i("Setting up listener for transfers with config $configString.");
-      Stream<List<MoneyTransfer>> snapshot =
-          getTransferDataStream(type: type, maxNumber: maxNumber);
-      // listen to combined stream and add transactions to controller
-      _transfersSubscriptions[configString] = snapshot.listen(
-        (transactions) {
-          latestTransfers[configString] = transactions;
-          log.v(
-              "Listened to ${transactions.length} transfers with config $configString. Limit was set to $maxNumber");
-          if (callback != null) callback();
-        },
-      );
+      log.i("Setting up listener for transfers with config $config.");
+      Stream<List<MoneyTransfer>> snapshot;
+      try {
+        snapshot = getTransferDataStream(config: config);
+
+        // listen to combined stream and add transactions to controller
+        _transfersSubscriptions[config] = snapshot.listen(
+          (transactions) {
+            // Option to make the list unique!
+            if (config.makeUnique != null) {
+              // TODO: Make function that makes this list unique for senderNames
+              latestTransfers[config] = transactions.toSet().toList();
+            } else {
+              latestTransfers[config] = transactions;
+            }
+            log.v(
+                "Listened to ${transactions.length} transfers with config $config. Max returns were specified with ${config.maxNumberReturns}");
+            if (callback != null) callback();
+          },
+        );
+      } catch (e) {
+        rethrow;
+      }
     }
+  }
+
+  // pause the listener
+  void pauseTransferDataListener(
+      {required MoneyTransferQueryConfig config, void Function()? callback}) {
+    log.v("Remove transfer data listener with config: '$config'");
+    _transfersSubscriptions[config]?.pause();
   }
 
   // Get transactions for type and direction
   // Could be done better! User has to parse redundant information
-  List<MoneyTransfer> getTransfers(
-      {required TransferType type, int? maxNumber}) {
-    String configString =
-        getStreamConfigString(type: type, maxNumber: maxNumber);
-    if (!latestTransfers.containsKey(configString)) {
+  List<MoneyTransfer> getTransfers({required MoneyTransferQueryConfig config}) {
+    if (config.type == TransferType.Invalid) {
       log.w(
-          "Did not find any transfers for config $configString. Please add a listener with 'addTransferDataListener()'. Returning empty list");
+          "You tried to retrieve list of money transfers of invalid type. Returning empty list");
+      return [];
+    }
+
+    if (!latestTransfers.containsKey(config)) {
+      log.w(
+          "Did not find any transfers for config $config. Please add a listener with 'addTransferDataListener()'. Returning empty list");
       return [];
     } else {
-      return latestTransfers[configString]!;
+      return latestTransfers[config]!;
     }
   }
 

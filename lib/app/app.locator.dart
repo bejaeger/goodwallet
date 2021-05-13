@@ -22,7 +22,7 @@ import '../services/userdata/user_data_service.dart';
 import '../ui/views/layout/navigation_bar_viewmodel.dart';
 import '../ui/views/wallet/wallet_viewmodel.dart';
 
-final locator = StackedLocator.instance.locator;
+final locator = StackedLocator.instance;
 
 void setupLocator() {
   locator.registerLazySingleton(() => NavigationService());
@@ -38,7 +38,7 @@ void setupLocator() {
   locator.registerLazySingleton(() => FirebaseAuthenticationService());
   locator.registerLazySingleton(() => QRCodeService());
   locator.registerLazySingleton(() => CausesDataService());
-  locator.registerSingleton(DummyPaymentService());
   locator.registerSingleton(FirestoreApi());
+  locator.registerSingleton(DummyPaymentService());
   locator.registerSingleton(UserDataService());
 }

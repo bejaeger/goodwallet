@@ -1,6 +1,6 @@
 enum BottomSheetType {
-  raise,
-  donate,
-  sendMoney,
-  moneyPoolInvitation,
+  Raise,
+  Donate,
+  SendMoney,
+  MoneyPoolInvitation,
 }

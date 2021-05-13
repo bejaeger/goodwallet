@@ -1,26 +1,20 @@
 // PMs job
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:good_wallet/apis/firestore_api.dart';
+import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
-import 'package:good_wallet/datamodels/transfers/transfer_details.dart';
 import 'package:good_wallet/utils/logger.dart';
 
 class DummyPaymentService {
   final log = getLogger("dummy_payment_service.dart");
+  final FirestoreApi? _firestoreApi = locator<FirestoreApi>();
 
-  final CollectionReference _paymentsCollectionReference =
-      FirebaseFirestore.instance.collection("payments");
-
-  // Pushed the data to firestore which will trigger a firebase cloud function
-  // that updates the good wallets!
-  Future processTransfer(MoneyTransfer transfer) async {
+  // For now this is just an intermediary!
+  // Eventually we want to setup a StripePaymentService
+  Future processTransfer({required MoneyTransfer moneyTransfer}) async {
     try {
-      var docRef = _paymentsCollectionReference.doc();
-      var newTransfer = transfer.copyWith(transferId: docRef.id);
-      docRef.set(newTransfer.toJson());
-      log.i(
-          "Added the following transfer document to ${docRef.path}: ${newTransfer.toJson()}");
+      _firestoreApi!.createMoneyTransfer(moneyTransfer: moneyTransfer);
     } catch (e) {
-      log.e("Couldn't process dummy transfer: ${e.toString()}");
+      log.e("Couldn't process Dummy Transfer: ${e.toString()}");
       rethrow;
     }
   }

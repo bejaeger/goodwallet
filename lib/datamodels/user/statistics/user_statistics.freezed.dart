@@ -22,10 +22,12 @@ class _$UserStatisticsTearOff {
 
   _UserStatistics call(
       {required num currentBalance,
+      required num prepaidFundBalance,
       required MoneyTransferStatistics moneyTransferStatistics,
       required DonationStatistics donationStatistics}) {
     return _UserStatistics(
       currentBalance: currentBalance,
+      prepaidFundBalance: prepaidFundBalance,
       moneyTransferStatistics: moneyTransferStatistics,
       donationStatistics: donationStatistics,
     );
@@ -42,6 +44,7 @@ const $UserStatistics = _$UserStatisticsTearOff();
 /// @nodoc
 mixin _$UserStatistics {
   num get currentBalance => throw _privateConstructorUsedError;
+  num get prepaidFundBalance => throw _privateConstructorUsedError;
   MoneyTransferStatistics get moneyTransferStatistics =>
       throw _privateConstructorUsedError;
   DonationStatistics get donationStatistics =>
@@ -60,6 +63,7 @@ abstract class $UserStatisticsCopyWith<$Res> {
       _$UserStatisticsCopyWithImpl<$Res>;
   $Res call(
       {num currentBalance,
+      num prepaidFundBalance,
       MoneyTransferStatistics moneyTransferStatistics,
       DonationStatistics donationStatistics});
 
@@ -79,6 +83,7 @@ class _$UserStatisticsCopyWithImpl<$Res>
   @override
   $Res call({
     Object? currentBalance = freezed,
+    Object? prepaidFundBalance = freezed,
     Object? moneyTransferStatistics = freezed,
     Object? donationStatistics = freezed,
   }) {
@@ -86,6 +91,10 @@ class _$UserStatisticsCopyWithImpl<$Res>
       currentBalance: currentBalance == freezed
           ? _value.currentBalance
           : currentBalance // ignore: cast_nullable_to_non_nullable
+              as num,
+      prepaidFundBalance: prepaidFundBalance == freezed
+          ? _value.prepaidFundBalance
+          : prepaidFundBalance // ignore: cast_nullable_to_non_nullable
               as num,
       moneyTransferStatistics: moneyTransferStatistics == freezed
           ? _value.moneyTransferStatistics
@@ -124,6 +133,7 @@ abstract class _$UserStatisticsCopyWith<$Res>
   @override
   $Res call(
       {num currentBalance,
+      num prepaidFundBalance,
       MoneyTransferStatistics moneyTransferStatistics,
       DonationStatistics donationStatistics});
 
@@ -147,6 +157,7 @@ class __$UserStatisticsCopyWithImpl<$Res>
   @override
   $Res call({
     Object? currentBalance = freezed,
+    Object? prepaidFundBalance = freezed,
     Object? moneyTransferStatistics = freezed,
     Object? donationStatistics = freezed,
   }) {
@@ -154,6 +165,10 @@ class __$UserStatisticsCopyWithImpl<$Res>
       currentBalance: currentBalance == freezed
           ? _value.currentBalance
           : currentBalance // ignore: cast_nullable_to_non_nullable
+              as num,
+      prepaidFundBalance: prepaidFundBalance == freezed
+          ? _value.prepaidFundBalance
+          : prepaidFundBalance // ignore: cast_nullable_to_non_nullable
               as num,
       moneyTransferStatistics: moneyTransferStatistics == freezed
           ? _value.moneyTransferStatistics
@@ -173,6 +188,7 @@ class __$UserStatisticsCopyWithImpl<$Res>
 class _$_UserStatistics implements _UserStatistics {
   _$_UserStatistics(
       {required this.currentBalance,
+      required this.prepaidFundBalance,
       required this.moneyTransferStatistics,
       required this.donationStatistics});
 
@@ -182,13 +198,15 @@ class _$_UserStatistics implements _UserStatistics {
   @override
   final num currentBalance;
   @override
+  final num prepaidFundBalance;
+  @override
   final MoneyTransferStatistics moneyTransferStatistics;
   @override
   final DonationStatistics donationStatistics;
 
   @override
   String toString() {
-    return 'UserStatistics(currentBalance: $currentBalance, moneyTransferStatistics: $moneyTransferStatistics, donationStatistics: $donationStatistics)';
+    return 'UserStatistics(currentBalance: $currentBalance, prepaidFundBalance: $prepaidFundBalance, moneyTransferStatistics: $moneyTransferStatistics, donationStatistics: $donationStatistics)';
   }
 
   @override
@@ -198,6 +216,9 @@ class _$_UserStatistics implements _UserStatistics {
             (identical(other.currentBalance, currentBalance) ||
                 const DeepCollectionEquality()
                     .equals(other.currentBalance, currentBalance)) &&
+            (identical(other.prepaidFundBalance, prepaidFundBalance) ||
+                const DeepCollectionEquality()
+                    .equals(other.prepaidFundBalance, prepaidFundBalance)) &&
             (identical(
                     other.moneyTransferStatistics, moneyTransferStatistics) ||
                 const DeepCollectionEquality().equals(
@@ -211,6 +232,7 @@ class _$_UserStatistics implements _UserStatistics {
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(currentBalance) ^
+      const DeepCollectionEquality().hash(prepaidFundBalance) ^
       const DeepCollectionEquality().hash(moneyTransferStatistics) ^
       const DeepCollectionEquality().hash(donationStatistics);
 
@@ -228,6 +250,7 @@ class _$_UserStatistics implements _UserStatistics {
 abstract class _UserStatistics implements UserStatistics {
   factory _UserStatistics(
       {required num currentBalance,
+      required num prepaidFundBalance,
       required MoneyTransferStatistics moneyTransferStatistics,
       required DonationStatistics donationStatistics}) = _$_UserStatistics;
 
@@ -236,6 +259,8 @@ abstract class _UserStatistics implements UserStatistics {
 
   @override
   num get currentBalance => throw _privateConstructorUsedError;
+  @override
+  num get prepaidFundBalance => throw _privateConstructorUsedError;
   @override
   MoneyTransferStatistics get moneyTransferStatistics =>
       throw _privateConstructorUsedError;

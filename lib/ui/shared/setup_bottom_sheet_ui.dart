@@ -12,13 +12,13 @@ void setupBottomSheetUi() {
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
 
   final builders = {
-    BottomSheetType.raise: (context, sheetRequest, completer) =>
+    BottomSheetType.Raise: (context, sheetRequest, completer) =>
         RaiseMoneyBottomSheetView(request: sheetRequest, completer: completer),
-    BottomSheetType.sendMoney: (context, sheetRequest, completer) =>
+    BottomSheetType.SendMoney: (context, sheetRequest, completer) =>
         SendMoneyBottomSheetView(request: sheetRequest, completer: completer),
-    BottomSheetType.donate: (context, sheetRequest, completer) =>
+    BottomSheetType.Donate: (context, sheetRequest, completer) =>
         GiveBottomSheetView(request: sheetRequest, completer: completer),
-    BottomSheetType.moneyPoolInvitation: (context, sheetRequest, completer) =>
+    BottomSheetType.MoneyPoolInvitation: (context, sheetRequest, completer) =>
         MoneyPoolInvitationBottomSheetView(
             request: sheetRequest, completer: completer),
   };

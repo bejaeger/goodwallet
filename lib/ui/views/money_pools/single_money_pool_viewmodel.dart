@@ -1,11 +1,15 @@
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/datamodels/money_pools/base/concise_money_pool_info.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
-import 'package:good_wallet/enums/fund_transfer_type.dart';
+import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
@@ -25,21 +29,26 @@ class SingleMoneyPoolViewModel extends BaseModel {
 
   final log = getLogger("single_money_pool_viewmodel.dart");
 
-  List<MoneyTransfer> contributions = [];
   List<MoneyPoolPayout> payouts = [];
-  List<MoneyTransfer> latestTransfers = [];
 
+  MoneyTransferQueryConfig _queryConfig =
+      MoneyTransferQueryConfig(type: TransferType.Invalid);
   // get latest money pool contributions for send money bottom sheet view
   // Need to add listeners otherwise this will be empty
-  List<MoneyTransfer> get latestContributions =>
-      _userDataService!.getTransfers(type: TransferType.MoneyPoolContribution);
+  // List<MoneyTransfer> get latestContributions =>
+  //     _userDataService!.getTransfers(config: _queryConfig);
+  Stream<List<MoneyTransfer>> get latestContributions =>
+      _userDataService!.getTransferDataStream(config: _queryConfig);
 
   MoneyPool moneyPool;
+
   SingleMoneyPoolViewModel({required this.moneyPool}) {
-    setBusy(true);
-    _userDataService!.addTransferDataListener(
-        type: TransferType.MoneyPoolContribution,
-        callback: () => setBusy(false));
+    _queryConfig = _queryConfig.copyWith(
+      type: TransferType.MoneyPoolContribution,
+      isEqualToFilter: {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
+    );
+    // _userDataService!.addTransferDataListener(
+    //     config: _queryConfig, callback: () => notifyListeners());
   }
 
   Future fetchPayouts([bool force = false]) async {
@@ -48,6 +57,8 @@ class SingleMoneyPoolViewModel extends BaseModel {
       payouts =
           await _moneyPoolService!.getMoneyPoolPayouts(moneyPool.moneyPoolId);
     }
+    // if not done listening the listener callback from the constructor
+    // will set the model business false;
     setBusy(false);
   }
 
@@ -65,7 +76,7 @@ class SingleMoneyPoolViewModel extends BaseModel {
     String? messageToShow;
     dynamic userInfo = await _navigationService!.navigateTo(Routes.searchView,
         arguments:
-            SearchViewArguments(searchType: SearchType.userToInviteToMP));
+            SearchViewArguments(searchType: SearchType.UserToInviteToMP));
     if (userInfo is PublicUserInfo) {
       log.i(
           "Selected user to invite to money pool with name ${userInfo.name}!");
@@ -99,11 +110,21 @@ class SingleMoneyPoolViewModel extends BaseModel {
   }
 
   Future navigateToTransferFundAmountView(dynamic moneyPool) async {
+    final recipientInfo = RecipientInfo.moneyPool(
+      name: moneyPool.name,
+      id: moneyPool.moneyPoolId,
+      moneyPoolInfo: ConciseMoneyPoolInfo(
+          total: moneyPool.total,
+          name: moneyPool.name,
+          moneyPoolId: moneyPool.moneyPoolId),
+    );
     var result = await _navigationService!.navigateTo(
-        Routes.transferFundsAmountView,
-        arguments: TransferFundsAmountViewArguments(
-            type: FundTransferType.moneyPoolContributionFromBank,
-            receiverInfo: moneyPool));
+      Routes.transferFundsAmountView,
+      arguments: TransferFundsAmountViewArguments(
+          senderInfo: SenderInfo(moneySource: MoneySource.Bank),
+          type: TransferType.MoneyPoolContribution,
+          recipientInfo: recipientInfo),
+    );
     if (result == "contributed") {
       updateMoneyPool();
     }
@@ -148,4 +169,6 @@ class SingleMoneyPoolViewModel extends BaseModel {
       updateMoneyPool();
     }
   }
+
+  // TODO: Cancel TransferDataListener!
 }

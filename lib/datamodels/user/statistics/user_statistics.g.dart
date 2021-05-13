@@ -9,6 +9,7 @@ part of 'user_statistics.dart';
 _$_UserStatistics _$_$_UserStatisticsFromJson(Map<String, dynamic> json) {
   return _$_UserStatistics(
     currentBalance: json['currentBalance'] as num,
+    prepaidFundBalance: json['prepaidFundBalance'] as num,
     moneyTransferStatistics: MoneyTransferStatistics.fromJson(
         json['moneyTransferStatistics'] as Map<String, dynamic>),
     donationStatistics: DonationStatistics.fromJson(
@@ -19,6 +20,7 @@ _$_UserStatistics _$_$_UserStatisticsFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$_$_UserStatisticsToJson(_$_UserStatistics instance) =>
     <String, dynamic>{
       'currentBalance': instance.currentBalance,
+      'prepaidFundBalance': instance.prepaidFundBalance,
       'moneyTransferStatistics': instance.moneyTransferStatistics.toJson(),
       'donationStatistics': instance.donationStatistics.toJson(),
     };

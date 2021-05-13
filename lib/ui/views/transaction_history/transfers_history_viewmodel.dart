@@ -1,7 +1,7 @@
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
-import 'package:good_wallet/enums/transfer_direction.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -17,7 +17,8 @@ class TransfersHistoryViewModel extends StreamViewModel<List<MoneyTransfer>> {
 
   @override
   Stream<List<MoneyTransfer>> get stream =>
-      locator<UserDataService>().getTransferDataStream(type: TransferType.All);
+      locator<UserDataService>().getTransferDataStream(
+          config: MoneyTransferQueryConfig(type: TransferType.All));
   List<MoneyTransfer>? get transfers => data;
   final log = getLogger("transfers_history_viewmodel.dart");
 

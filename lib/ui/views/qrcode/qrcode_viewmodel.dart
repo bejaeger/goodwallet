@@ -1,9 +1,10 @@
-import 'dart:convert';
-
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
-import 'package:good_wallet/enums/fund_transfer_type.dart';
+import 'package:good_wallet/enums/money_source.dart';
+import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/exceptions/qrcode_service_exception.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
@@ -53,7 +54,10 @@ class QRCodeViewModel extends BaseModel {
         "Successfully read user information from QR Code, navigate to send money view");
     _navigationService!.replaceWith(Routes.transferFundsAmountView,
         arguments: TransferFundsAmountViewArguments(
-            type: FundTransferType.transferToPeer, receiverInfo: userInfo!));
+            senderInfo: SenderInfo(moneySource: MoneySource.Bank),
+            type: TransferType.Peer2PeerSent,
+            recipientInfo:
+                RecipientInfo.user(name: userInfo!.name, id: userInfo.uid)));
 
     setBusy(false);
   }

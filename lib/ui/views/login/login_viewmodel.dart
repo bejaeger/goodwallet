@@ -7,7 +7,6 @@ import 'package:good_wallet/enums/auth_mode.dart';
 import 'package:good_wallet/enums/authentication_method.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/authentication_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
-import 'package:stacked_services/stacked_services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 import 'package:good_wallet/ui/views/login/login_view.form.dart';
@@ -16,7 +15,6 @@ class LoginViewModel extends AuthenticationViewModel {
   LoginViewModel() : super(successRoute: Routes.layoutTemplateViewMobile);
   //    kIsWeb ? Routes.walletView : Routes.layoutTemplateViewMobile);
 
-  final NavigationService? _navigationService = locator<NavigationService>();
   final log = getLogger("login_viewmodel.dart");
   // stacked firebase services
   final FirebaseAuthenticationService? _firebaseAuthenticationService =
@@ -36,7 +34,7 @@ class LoginViewModel extends AuthenticationViewModel {
       //   log.i("Login with apple");
       //   return _firebaseAuthenticationService!.signInWithApple();
     } else if (method == AuthenticationMethod.dummy) {
-      log.i("Login with dummy account");
+      log.i("Login with test account");
       return _firebaseAuthenticationService!
           .loginWithEmail(email: "test@gmail.com", password: "m1m1m1");
     } else {

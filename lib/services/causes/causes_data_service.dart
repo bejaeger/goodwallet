@@ -14,7 +14,6 @@ class CausesDataService {
       locator<GlobalGivingAPIService>();
   final CollectionReference _causesCollectionReference =
       FirebaseFirestore.instance.collection("causes");
-  final UserDataService? _userDataService = locator<UserDataService>();
 
   final log = getLogger("causes_data_service.dart");
   List<Project> projects = [];

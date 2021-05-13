@@ -1,8 +1,10 @@
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
-import 'package:good_wallet/datamodels/user/public_user_info.dart';
-import 'package:good_wallet/enums/fund_transfer_type.dart';
+import 'package:good_wallet/enums/money_source.dart';
+import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -24,14 +26,15 @@ class SendMoneyBottomSheetViewModel extends BaseModel {
   }
 
   void navigateToTransferFundsAmountView(MoneyTransfer previousTransaction) {
-    var userInfo = PublicUserInfo(
+    var userInfo = RecipientInfo.user(
         name: previousTransaction.transferDetails.recipientName,
-        uid: previousTransaction.transferDetails.recipientId);
+        id: previousTransaction.transferDetails.recipientId);
     _navigationService!.navigateTo(
       Routes.transferFundsAmountView,
       arguments: TransferFundsAmountViewArguments(
-        type: FundTransferType.transferToPeer,
-        receiverInfo: userInfo,
+        type: TransferType.Peer2PeerSent,
+        senderInfo: SenderInfo(moneySource: MoneySource.Bank),
+        recipientInfo: userInfo,
       ),
     );
   }

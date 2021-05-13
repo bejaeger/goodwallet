@@ -18,7 +18,6 @@ class CausesFilterViewMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<CausesFilterViewModel>.reactive(
       viewModelBuilder: () => CausesFilterViewModel(),
-      onModelReady: (model) async => await model.fetchCauses(),
       builder: (context, model, child) => TabBarLayout(
         initialIndex: initialIndex!,
         title: "Social Projects",
@@ -119,27 +118,6 @@ class CausesFilterListViewMobile extends StatelessWidget {
                           ),
                         ),
                       ),
-
-                    // {
-                    //   return ListTile(
-                    //     title: Text(content[index]),
-                    //   );
-                    // }
-
-                    // //itemBuilder: (context, index) => Padding(
-                    //   padding: const EdgeInsets.only(bottom: 8.0),
-                    //   child: RaisedButton(
-                    //     onPressed: null,
-                    //     child: Text(model.projects![index]),
-                    // ), // add a list with the project themes
-                    // child: GlobalGivingProjectCardMobile(
-                    //   project: model.projects![index],
-                    //   onTap: () async =>
-                    //       await model.navigateToProjectScreen(index),
-                    //   onTapFavorite: model.showNotImplementedSnackbar,
-                    // ),
-                    //),
-                    // ),
                     if (type == CausesFilterListType.GoodWalletFund)
                       ListView.builder(
                           shrinkWrap: true,

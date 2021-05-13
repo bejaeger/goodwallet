@@ -37,6 +37,8 @@ class MoneyPoolPayout with _$MoneyPoolPayout {
     )
     @Default("placeholder")
         String payoutId,
+    @Default(true)
+        bool deleteMoneyPool,
   }) = _MoneyPoolPayout;
 
   factory MoneyPoolPayout.fromJson(Map<String, dynamic> json) =>

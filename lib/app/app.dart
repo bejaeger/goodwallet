@@ -100,8 +100,8 @@ import 'package:stacked_services/stacked_services.dart';
     //   presolveUsing: LocalStorageService.getInstance,
     // ),
 
-    Singleton(classType: DummyPaymentService),
     Singleton(classType: FirestoreApi),
+    Singleton(classType: DummyPaymentService),
     Singleton(classType: UserDataService),
 
     // don't register the auth service lazily because we want it

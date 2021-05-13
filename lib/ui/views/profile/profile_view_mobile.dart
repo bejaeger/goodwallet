@@ -135,17 +135,19 @@ class ProfileViewMobile extends StatelessWidget {
           _buildStatItem(
               context,
               "Total donations",
-              formatAmount(_model.userStats.donations),
+              formatAmount(_model.userStats.donationStatistics.totalDonations),
               ColorSettings.primaryColor),
           _buildStatItem(
               context,
               "Total raised",
-              formatAmount(_model.userStats.raised),
+              formatAmount(
+                  _model.userStats.moneyTransferStatistics.totalRaised),
               ColorSettings.primaryColor),
           _buildStatItem(
               context,
               "Total gifted",
-              formatAmount(_model.userStats.transferredToPeers),
+              formatAmount(
+                  _model.userStats.moneyTransferStatistics.totalSentToPeers),
               ColorSettings.primaryColor),
 
           // Row(

@@ -21,10 +21,10 @@ class _$MoneyPoolTearOff {
   const _$MoneyPoolTearOff();
 
   _MoneyPool call(
-      {required String name,
+      {required num total,
+      required String name,
       required String adminUID,
       required String adminName,
-      required num total,
       required String currency,
       String? description,
       required MoneyPoolSettings moneyPoolSettings,
@@ -36,10 +36,10 @@ class _$MoneyPoolTearOff {
       @JsonKey(name: "moneyPoolId", toJson: MoneyPool._checkIfMoneyPoolIdIsSet)
           String moneyPoolId = "placeholder"}) {
     return _MoneyPool(
+      total: total,
       name: name,
       adminUID: adminUID,
       adminName: adminName,
-      total: total,
       currency: currency,
       description: description,
       moneyPoolSettings: moneyPoolSettings,
@@ -62,10 +62,10 @@ const $MoneyPool = _$MoneyPoolTearOff();
 
 /// @nodoc
 mixin _$MoneyPool {
+  num get total => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get adminUID => throw _privateConstructorUsedError;
   String get adminName => throw _privateConstructorUsedError;
-  num get total => throw _privateConstructorUsedError;
   String get currency => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   MoneyPoolSettings get moneyPoolSettings => throw _privateConstructorUsedError;
@@ -90,10 +90,10 @@ abstract class $MoneyPoolCopyWith<$Res> {
   factory $MoneyPoolCopyWith(MoneyPool value, $Res Function(MoneyPool) then) =
       _$MoneyPoolCopyWithImpl<$Res>;
   $Res call(
-      {String name,
+      {num total,
+      String name,
       String adminUID,
       String adminName,
-      num total,
       String currency,
       String? description,
       MoneyPoolSettings moneyPoolSettings,
@@ -118,10 +118,10 @@ class _$MoneyPoolCopyWithImpl<$Res> implements $MoneyPoolCopyWith<$Res> {
 
   @override
   $Res call({
+    Object? total = freezed,
     Object? name = freezed,
     Object? adminUID = freezed,
     Object? adminName = freezed,
-    Object? total = freezed,
     Object? currency = freezed,
     Object? description = freezed,
     Object? moneyPoolSettings = freezed,
@@ -133,6 +133,10 @@ class _$MoneyPoolCopyWithImpl<$Res> implements $MoneyPoolCopyWith<$Res> {
     Object? moneyPoolId = freezed,
   }) {
     return _then(_value.copyWith(
+      total: total == freezed
+          ? _value.total
+          : total // ignore: cast_nullable_to_non_nullable
+              as num,
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -145,10 +149,6 @@ class _$MoneyPoolCopyWithImpl<$Res> implements $MoneyPoolCopyWith<$Res> {
           ? _value.adminName
           : adminName // ignore: cast_nullable_to_non_nullable
               as String,
-      total: total == freezed
-          ? _value.total
-          : total // ignore: cast_nullable_to_non_nullable
-              as num,
       currency: currency == freezed
           ? _value.currency
           : currency // ignore: cast_nullable_to_non_nullable
@@ -203,10 +203,10 @@ abstract class _$MoneyPoolCopyWith<$Res> implements $MoneyPoolCopyWith<$Res> {
       __$MoneyPoolCopyWithImpl<$Res>;
   @override
   $Res call(
-      {String name,
+      {num total,
+      String name,
       String adminUID,
       String adminName,
-      num total,
       String currency,
       String? description,
       MoneyPoolSettings moneyPoolSettings,
@@ -233,10 +233,10 @@ class __$MoneyPoolCopyWithImpl<$Res> extends _$MoneyPoolCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? total = freezed,
     Object? name = freezed,
     Object? adminUID = freezed,
     Object? adminName = freezed,
-    Object? total = freezed,
     Object? currency = freezed,
     Object? description = freezed,
     Object? moneyPoolSettings = freezed,
@@ -248,6 +248,10 @@ class __$MoneyPoolCopyWithImpl<$Res> extends _$MoneyPoolCopyWithImpl<$Res>
     Object? moneyPoolId = freezed,
   }) {
     return _then(_MoneyPool(
+      total: total == freezed
+          ? _value.total
+          : total // ignore: cast_nullable_to_non_nullable
+              as num,
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -260,10 +264,6 @@ class __$MoneyPoolCopyWithImpl<$Res> extends _$MoneyPoolCopyWithImpl<$Res>
           ? _value.adminName
           : adminName // ignore: cast_nullable_to_non_nullable
               as String,
-      total: total == freezed
-          ? _value.total
-          : total // ignore: cast_nullable_to_non_nullable
-              as num,
       currency: currency == freezed
           ? _value.currency
           : currency // ignore: cast_nullable_to_non_nullable
@@ -309,10 +309,10 @@ class __$MoneyPoolCopyWithImpl<$Res> extends _$MoneyPoolCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$_MoneyPool implements _MoneyPool {
   _$_MoneyPool(
-      {required this.name,
+      {required this.total,
+      required this.name,
       required this.adminUID,
       required this.adminName,
-      required this.total,
       required this.currency,
       this.description,
       required this.moneyPoolSettings,
@@ -328,13 +328,13 @@ class _$_MoneyPool implements _MoneyPool {
       _$_$_MoneyPoolFromJson(json);
 
   @override
+  final num total;
+  @override
   final String name;
   @override
   final String adminUID;
   @override
   final String adminName;
-  @override
-  final num total;
   @override
   final String currency;
   @override
@@ -357,13 +357,15 @@ class _$_MoneyPool implements _MoneyPool {
 
   @override
   String toString() {
-    return 'MoneyPool(name: $name, adminUID: $adminUID, adminName: $adminName, total: $total, currency: $currency, description: $description, moneyPoolSettings: $moneyPoolSettings, createdAt: $createdAt, contributingUsers: $contributingUsers, invitedUsers: $invitedUsers, contributingUserIds: $contributingUserIds, invitedUserIds: $invitedUserIds, moneyPoolId: $moneyPoolId)';
+    return 'MoneyPool(total: $total, name: $name, adminUID: $adminUID, adminName: $adminName, currency: $currency, description: $description, moneyPoolSettings: $moneyPoolSettings, createdAt: $createdAt, contributingUsers: $contributingUsers, invitedUsers: $invitedUsers, contributingUserIds: $contributingUserIds, invitedUserIds: $invitedUserIds, moneyPoolId: $moneyPoolId)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _MoneyPool &&
+            (identical(other.total, total) ||
+                const DeepCollectionEquality().equals(other.total, total)) &&
             (identical(other.name, name) ||
                 const DeepCollectionEquality().equals(other.name, name)) &&
             (identical(other.adminUID, adminUID) ||
@@ -372,8 +374,6 @@ class _$_MoneyPool implements _MoneyPool {
             (identical(other.adminName, adminName) ||
                 const DeepCollectionEquality()
                     .equals(other.adminName, adminName)) &&
-            (identical(other.total, total) ||
-                const DeepCollectionEquality().equals(other.total, total)) &&
             (identical(other.currency, currency) ||
                 const DeepCollectionEquality()
                     .equals(other.currency, currency)) &&
@@ -406,10 +406,10 @@ class _$_MoneyPool implements _MoneyPool {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(total) ^
       const DeepCollectionEquality().hash(name) ^
       const DeepCollectionEquality().hash(adminUID) ^
       const DeepCollectionEquality().hash(adminName) ^
-      const DeepCollectionEquality().hash(total) ^
       const DeepCollectionEquality().hash(currency) ^
       const DeepCollectionEquality().hash(description) ^
       const DeepCollectionEquality().hash(moneyPoolSettings) ^
@@ -433,10 +433,10 @@ class _$_MoneyPool implements _MoneyPool {
 
 abstract class _MoneyPool implements MoneyPool {
   factory _MoneyPool(
-      {required String name,
+      {required num total,
+      required String name,
       required String adminUID,
       required String adminName,
-      required num total,
       required String currency,
       String? description,
       required MoneyPoolSettings moneyPoolSettings,
@@ -452,13 +452,13 @@ abstract class _MoneyPool implements MoneyPool {
       _$_MoneyPool.fromJson;
 
   @override
+  num get total => throw _privateConstructorUsedError;
+  @override
   String get name => throw _privateConstructorUsedError;
   @override
   String get adminUID => throw _privateConstructorUsedError;
   @override
   String get adminName => throw _privateConstructorUsedError;
-  @override
-  num get total => throw _privateConstructorUsedError;
   @override
   String get currency => throw _privateConstructorUsedError;
   @override

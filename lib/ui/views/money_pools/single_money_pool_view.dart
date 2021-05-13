@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
+import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
@@ -22,8 +23,8 @@ class SingleMoneyPoolView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<SingleMoneyPoolViewModel>.reactive(
       viewModelBuilder: () => SingleMoneyPoolViewModel(moneyPool: moneyPool),
-      onModelReady: (model) async {
-        await model.fetchPayouts();
+      onModelReady: (model) {
+        model.fetchPayouts();
       },
       builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
         child: RefreshIndicator(
@@ -209,46 +210,73 @@ class SingleMoneyPoolView extends StatelessWidget {
                             );
                           },
                         ),
-                      if (model.payouts.length > 0) verticalSpaceRegular,
-                      if (model.latestContributions.length > 0)
-                        SectionHeader(
-                          title: "Contributions",
-                        ),
-                      if (model.latestContributions.length > 0)
-                        ListView.builder(
-                          physics: ScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: model.latestContributions.length,
-                          itemBuilder: (context, index) {
-                            var contribution = model.latestContributions[index];
-                            return ListTile(
-                                leading: CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: MyColors.paletteBlue,
-                                  child: Text(
-                                      getInitialsFromName(contribution
-                                          .transferDetails.senderName),
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 14)),
-                                ),
-                                title: Text(
-                                  contribution.transferDetails.senderName,
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  DateFormat.MMMEd()
-                                      .format(contribution.createdAt.toDate()),
-                                  style: textTheme(context).bodyText2!.copyWith(
-                                        fontSize: 15,
+                      StreamBuilder(
+                        stream: model.latestContributions,
+                        builder: (context,
+                            AsyncSnapshot<List<MoneyTransfer>> snapshot) {
+                          return snapshot.data == null
+                              ? model.isBusy
+                                  ? Container()
+                                  : LinearProgressIndicator()
+                              : Column(
+                                  children: [
+                                    if (snapshot.data != null)
+                                      verticalSpaceRegular,
+                                    if (snapshot.data != null)
+                                      SectionHeader(
+                                        title: "Contributions",
                                       ),
-                                ),
-                                trailing: Text(formatAmount(
-                                    contribution.transferDetails.amount)));
-                          },
-                        ),
+                                    if (snapshot.data != null)
+                                      verticalSpaceSmall,
+                                    if (snapshot.data != null)
+                                      ListView.builder(
+                                        physics: ScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount: snapshot.data!.length,
+                                        itemBuilder: (context, index) {
+                                          var contribution =
+                                              snapshot.data![index];
+                                          return ListTile(
+                                              leading: CircleAvatar(
+                                                radius: 20,
+                                                backgroundColor:
+                                                    MyColors.paletteBlue,
+                                                child: Text(
+                                                    getInitialsFromName(
+                                                        contribution
+                                                            .transferDetails
+                                                            .senderName),
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 14)),
+                                              ),
+                                              title: Text(
+                                                contribution
+                                                    .transferDetails.senderName,
+                                                style: TextStyle(
+                                                  fontSize: 16.0,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              subtitle: Text(
+                                                DateFormat.MMMEd().format(
+                                                    contribution.createdAt
+                                                        .toDate()),
+                                                style: textTheme(context)
+                                                    .bodyText2!
+                                                    .copyWith(
+                                                      fontSize: 15,
+                                                    ),
+                                              ),
+                                              trailing: Text(formatAmount(
+                                                  contribution.transferDetails
+                                                      .amount)));
+                                        },
+                                      ),
+                                  ],
+                                );
+                        },
+                      ),
                       verticalSpaceLarge,
                     ]),
             ],

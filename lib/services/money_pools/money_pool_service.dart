@@ -306,8 +306,10 @@ class MoneyPoolService {
         moneyTransfers.add(
           MoneyTransfer.moneyPoolPayoutTransfer(
               transferDetails: element,
-              moneyPoolInfo:
-                  ConciseMoneyPoolInfo.fromJson(data.moneyPool.toJson()),
+              moneyPoolInfo: ConciseMoneyPoolInfo(
+                  moneyPoolId: data.moneyPool.moneyPoolId,
+                  name: data.moneyPool.name,
+                  total: data.moneyPool.total),
               payoutId: docRef.id,
               createdAt: FieldValue.serverTimestamp()),
         );

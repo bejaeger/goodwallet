@@ -45,7 +45,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                       color: ColorSettings.primaryColorLight,
                       title: "Donate",
                       onPressed: () =>
-                          model.navigateToTransferFundAmountView(project)),
+                          model.navigateToTransferFundAmountView(project!)),
                 ],
               ),
             ),

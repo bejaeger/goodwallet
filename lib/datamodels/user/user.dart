@@ -1,6 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:good_wallet/datamodels/user/statistics/money_transfer_statistics.dart';
-import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/exceptions/datamodel_exception.dart';
 
 part 'user.freezed.dart';
@@ -8,15 +6,15 @@ part 'user.g.dart';
 
 @freezed
 class User with _$User {
-  static List<String> _checkIfKeywordsAreSet(List<String>? keywordList) {
-    if (keywordList == null) {
+  static List<String> _checkIfKeywordsAreSet(List<String>? searchKeywords) {
+    if (searchKeywords == null) {
       throw DataModelException(
           message:
               "User: You can't serialize User data that still has no 'keywordList' attached!",
           devDetails:
               "Please provide a 'keywordList' which will be used to query usernames with Firestore queries");
     } else
-      return keywordList;
+      return searchKeywords;
   }
 
   @JsonSerializable(explicitToJson: true)
@@ -27,7 +25,7 @@ class User with _$User {
     @JsonKey(
       toJson: User._checkIfKeywordsAreSet,
     )
-        List<String>? keywordList,
+        List<String>? searchKeywords,
   }) = _User;
 
   factory User.empty({

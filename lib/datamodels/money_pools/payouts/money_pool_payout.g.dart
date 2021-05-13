@@ -21,6 +21,7 @@ _$_MoneyPoolPayout _$_$_MoneyPoolPayoutFromJson(Map<String, dynamic> json) {
     status: _$enumDecodeNullable(_$TransferStatusEnumMap, json['status']) ??
         TransferStatus.Initialized,
     payoutId: json['payoutId'] as String,
+    deleteMoneyPool: json['deleteMoneyPool'] as bool? ?? true,
   );
 }
 
@@ -34,6 +35,7 @@ Map<String, dynamic> _$_$_MoneyPoolPayoutToJson(_$_MoneyPoolPayout instance) =>
       'type': _$TransferTypeEnumMap[instance.type],
       'status': _$TransferStatusEnumMap[instance.status],
       'payoutId': MoneyPoolPayout._checkIftransferIdIsSet(instance.payoutId),
+      'deleteMoneyPool': instance.deleteMoneyPool,
     };
 
 K _$enumDecode<K, V>(

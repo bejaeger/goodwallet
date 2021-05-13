@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
@@ -13,6 +14,8 @@ class FirestoreApi {
       FirebaseFirestore.instance.collection('users');
   final String userStatisticsCollectionKey = "statistics";
   final String userSummaryStatisticsDocumentKey = "summaryStats";
+  final CollectionReference paymentsCollection =
+      FirebaseFirestore.instance.collection('payments');
 
   ////////////////////////////////////////////////////////
   // Create user documents
@@ -91,6 +94,26 @@ class FirestoreApi {
       }
       return UserStatistics.fromJson(event.data()!);
     });
+  }
+
+  ///////////////////////////////////////////////////////
+  // Push transfer document to firestore
+  Future createMoneyTransfer({required MoneyTransfer moneyTransfer}) async {
+    try {
+      final docRef = paymentsCollection.doc();
+      final newTransfer = moneyTransfer.copyWith(transferId: docRef.id);
+      await docRef.set(newTransfer.toJson());
+      log.i(
+          "Added the following transfer document to ${docRef.path}: ${newTransfer.toJson()}");
+    } catch (e) {
+      log.e("Couldn't process transfer: ${e.toString()}");
+      throw FirestoreApiException(
+          message: "Something failed when pushing the data to Firestore",
+          devDetails:
+              "This should not happen and is due to an error on the Firestore side or the datamodels that were being pushed!",
+          prettyDetails:
+              "An internal error occured on our side, please apologize and try again later.");
+    }
   }
 
   /////////////////////////////////////////////////////////

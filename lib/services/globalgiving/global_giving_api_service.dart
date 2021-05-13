@@ -82,17 +82,29 @@ class GlobalGivingAPIService {
   }
 
   Future getProjectsOfTheMonth({bool addToFirestore = false}) async {
+    // List<String> projectIds = [
+    //   "14516",
+    //   "3935",
+    //   "5607",
+    //   "31919",
+    //   "9451",
+    //   "2291",
+    //   "8799",
+    //   "1877",
+    //   "6066",
+    //   "898"
+    // ];
     List<String> projectIds = [
-      "14516",
-      "3935",
-      "5607",
-      "31919",
-      "9451",
-      "2291",
-      "8799",
-      "1877",
-      "6066",
-      "898"
+      "52192", // indian covid disaster response
+      "11187", // Save the Bengal Tiger
+      "5582", // mosquito nets
+      "8799", // tree planting
+      "5607", // girls education
+      "36738", // global giving climate action fund
+      "7871", // panama poverty fight
+      "9790", // forest
+      "24007", // cancer
+      "898", // uganda education
     ];
     Uri url = Uri.https(
       "api.globalgiving.org",

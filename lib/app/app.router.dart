@@ -12,10 +12,12 @@ import 'package:stacked/stacked.dart';
 
 import '../datamodels/causes/project.dart';
 import '../datamodels/money_pools/base/money_pool.dart';
+import '../datamodels/transfers/bookkeeping/recipient_info.dart';
+import '../datamodels/transfers/bookkeeping/sender_info.dart';
 import '../datamodels/user/public_user_info.dart';
 import '../enums/featured_app_type.dart';
-import '../enums/fund_transfer_type.dart';
 import '../enums/search_type.dart';
+import '../enums/transfer_type.dart';
 import '../ui/views/causes/causes_filter_view_mobile.dart';
 import '../ui/views/causes/causes_view.dart';
 import '../ui/views/causes/causes_view_mobile.dart';
@@ -356,7 +358,8 @@ class StackedRouter extends RouterBase {
         builder: (context) => TransferFundsAmountView(
           key: args.key,
           type: args.type,
-          receiverInfo: args.receiverInfo,
+          senderInfo: args.senderInfo,
+          recipientInfo: args.recipientInfo,
           onContinuePressed: args.onContinuePressed,
         ),
         settings: data,
@@ -482,19 +485,21 @@ class SearchViewArguments {
   final Key? key;
   final SearchType searchType;
   SearchViewArguments(
-      {this.key, this.searchType = SearchType.userToTransferTo});
+      {this.key, this.searchType = SearchType.UserToTransferTo});
 }
 
 /// TransferFundsAmountView arguments holder class
 class TransferFundsAmountViewArguments {
   final Key? key;
-  final FundTransferType type;
-  final dynamic receiverInfo;
+  final TransferType type;
+  final SenderInfo senderInfo;
+  final RecipientInfo? recipientInfo;
   final void Function()? onContinuePressed;
   TransferFundsAmountViewArguments(
       {this.key,
       required this.type,
-      this.receiverInfo,
+      required this.senderInfo,
+      this.recipientInfo,
       this.onContinuePressed});
 }
 

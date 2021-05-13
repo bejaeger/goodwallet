@@ -10,6 +10,7 @@ class UserStatistics with _$UserStatistics {
   @JsonSerializable(explicitToJson: true)
   factory UserStatistics({
     required num currentBalance,
+    required num prepaidFundBalance,
     required MoneyTransferStatistics moneyTransferStatistics,
     required DonationStatistics donationStatistics,
   }) = _UserStatistics;
@@ -24,6 +25,7 @@ class UserStatistics with _$UserStatistics {
 UserStatistics getEmptyUserStatistics() {
   return UserStatistics(
       currentBalance: 0,
+      prepaidFundBalance: 0,
       moneyTransferStatistics:
           MoneyTransferStatistics(totalRaised: 0, totalSentToPeers: 0),
       donationStatistics:

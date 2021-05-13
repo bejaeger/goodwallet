@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/enums/fund_transfer_type.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
+import 'package:good_wallet/enums/money_source.dart';
+import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_view.form.dart';
 import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_viewmodel.dart';
-import 'package:good_wallet/ui/widgets/alternative_screen_header.dart';
 import 'package:good_wallet/ui/widgets/alternative_screen_header_small.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
@@ -22,17 +24,25 @@ import 'package:stacked/stacked_annotations.dart';
 // 4. Top up of money pool fund
 // 5. committing money
 
+// TODO: Make unions of recipientInfo and senderInfo
+// This allows for easy switching of UI and is scalable and maintainable!
+
 @FormView(fields: [
   FormTextField(name: 'amount'),
 ])
 class TransferFundsAmountView extends StatelessWidget
     with $TransferFundsAmountView {
-  final FundTransferType type;
-  final dynamic receiverInfo;
+  final TransferType type;
+  final SenderInfo senderInfo;
+  RecipientInfo? recipientInfo;
   final void Function()? onContinuePressed;
 
   TransferFundsAmountView(
-      {Key? key, required this.type, this.receiverInfo, this.onContinuePressed})
+      {Key? key,
+      required this.type,
+      required this.senderInfo,
+      this.recipientInfo,
+      this.onContinuePressed})
       : super(key: key);
 
   @override
@@ -41,24 +51,17 @@ class TransferFundsAmountView extends StatelessWidget
       onModelReady: (model) {
         listenToFormUpdated(model);
       },
-      viewModelBuilder: () =>
-          TransferFundsAmountViewModel(type: type, receiverInfo: receiverInfo),
+      viewModelBuilder: () => TransferFundsAmountViewModel(
+          type: type, senderInfo: senderInfo, recipientInfo: recipientInfo),
       builder: (context, model, child) {
-        late String headline;
-        if (type == FundTransferType.transferToPeer)
-          headline = "#GiveTheGiftOfGiving";
-        else if (type == FundTransferType.commitment)
-          headline = "#CommitForGood";
-        else if (type == FundTransferType.prepaidFundTopUp)
-          headline = "#TopUpForGood";
-        else if (type == FundTransferType.donation)
-          headline = "#Give";
-        else if (type == FundTransferType.moneyPoolContribution)
-          headline = "#RaiseTogether";
-        else if (type == FundTransferType.moneyPoolContributionFromBank)
-          headline = "#RaiseTogether";
-        else
-          headline = "Transfer";
+        String headline = recipientInfo != null
+            ? recipientInfo!.maybeMap(
+                donation: (value) => "#Give",
+                user: (value) => "GiveTheGiftOfGiving",
+                moneyPool: (value) => "#RaiseTogehter",
+                orElse: () => "#CommitForGood",
+              )
+            : "#CommitForGood";
         return ConstrainedWidthWithScaffoldLayout(
           resizeToAvoidBottomInset: false,
           child: Padding(
@@ -76,39 +79,29 @@ class TransferFundsAmountView extends StatelessWidget
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // Source of transaction
-                        if (type == FundTransferType.transferToPeer ||
-                            type == FundTransferType.commitment ||
-                            type == FundTransferType.prepaidFundTopUp ||
-                            type == FundTransferType.donationFromBank)
+                        if (senderInfo.moneySource == MoneySource.Bank)
                           bankInstituteIcon(context),
-                        if (type == FundTransferType.moneyPoolContribution)
+                        if (senderInfo.moneySource == MoneySource.PrepaidFund)
                           prepaidFundIcon(context),
-                        if (type ==
-                            FundTransferType.moneyPoolContributionFromBank)
-                          bankInstituteIcon(context),
-
-                        if (type == FundTransferType.donation)
+                        if (senderInfo.moneySource == MoneySource.GoodWallet)
                           goodWalletIcon(
-                              context, model.userWallet.currentBalance),
+                              context, model.userStats.currentBalance),
 
                         // Arrow
                         horizontalSpaceRegular,
                         Icon(Icons.arrow_forward_rounded, size: 40),
                         horizontalSpaceRegular,
 
-                        // Receiver
-                        if (type == FundTransferType.transferToPeer)
+                        // Recipients
+                        if (type == TransferType.Peer2PeerSent)
                           avatarWithUserName(context),
-                        if (type == FundTransferType.commitment)
+                        if (type == TransferType.PrepaidFund) topUp(context),
+                        if (type == TransferType.Commitment)
                           hashTagCommitForGood(context),
-                        if (type == FundTransferType.prepaidFundTopUp)
-                          topUp(context),
-                        if (type == FundTransferType.donation ||
-                            type == FundTransferType.donationFromBank)
+
+                        if (recipientInfo is DonationRecipientInfo)
                           projectSummary(context),
-                        if (type == FundTransferType.moneyPoolContribution ||
-                            type ==
-                                FundTransferType.moneyPoolContributionFromBank)
+                        if (recipientInfo is MoneyPoolRecipientInfo)
                           moneyPoolSummary(context),
                       ],
                     ),
@@ -163,10 +156,8 @@ class TransferFundsAmountView extends StatelessWidget
                               await model.showBottomSheetAndProcessPayment();
                             },
                           ),
-                    if (type == FundTransferType.donation ||
-                        type == FundTransferType.donationFromBank ||
-                        type == FundTransferType.moneyPoolContribution ||
-                        type == FundTransferType.moneyPoolContributionFromBank)
+                    if (type == TransferType.Donation ||
+                        type == TransferType.MoneyPoolPayoutTransfer)
                       TextButton(
                         onPressed: () async {
                           await model.changePaymentMethod();
@@ -233,11 +224,11 @@ class TransferFundsAmountView extends StatelessWidget
         CircleAvatar(
           radius: 28,
           backgroundColor: MyColors.paletteBlue,
-          child: Text(getInitialsFromName(receiverInfo.name),
+          child: Text(getInitialsFromName(recipientInfo!.name),
               style: TextStyle(color: Colors.white, fontSize: 16)),
         ),
         verticalSpaceSmall,
-        Text(receiverInfo.name,
+        Text(recipientInfo!.name,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: textTheme(context).headline6!.copyWith(fontSize: 15)),
@@ -251,13 +242,13 @@ class TransferFundsAmountView extends StatelessWidget
         CircleAvatar(
           radius: 28,
           backgroundColor: MyColors.primaryRed,
-          child: Text(getInitialsFromName(receiverInfo.title),
+          child: Text(getInitialsFromName(recipientInfo!.name),
               style: TextStyle(color: Colors.white, fontSize: 16)),
         ),
         verticalSpaceSmall,
         SizedBox(
           width: screenWidthWithoutPadding(context, percentage: 0.35),
-          child: Text(receiverInfo.title,
+          child: Text(recipientInfo!.name,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: textTheme(context).headline6!.copyWith(fontSize: 14)),
@@ -272,13 +263,13 @@ class TransferFundsAmountView extends StatelessWidget
         CircleAvatar(
           radius: 28,
           backgroundColor: MyColors.paletteGreen,
-          child: Text(getInitialsFromName(receiverInfo.name),
+          child: Text(getInitialsFromName(recipientInfo!.name),
               style: TextStyle(color: Colors.white, fontSize: 16)),
         ),
         verticalSpaceSmall,
         SizedBox(
           width: screenWidthWithoutPadding(context, percentage: 0.35),
-          child: Text(receiverInfo.name,
+          child: Text(recipientInfo!.name,
               maxLines: 2,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,

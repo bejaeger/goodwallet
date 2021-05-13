@@ -29,7 +29,7 @@ class BaseModel extends BaseViewModel {
   bool get isUserInitialized =>
       _userDataService!.userStatus == UserStatus.Initialized;
 
-  UserStatistics userStats = getEmptyUserStatistics();
+  UserStatistics get userStats => _userDataService!.userStats!;
   StreamSubscription? _userStatsSubscription;
 
   BaseModel() {
@@ -41,8 +41,7 @@ class BaseModel extends BaseViewModel {
     // listen to changes in wallet
     _userStatsSubscription = _userDataService!.userStatsSubject.listen(
       (stats) {
-        baseModelLog.v("Listened to wallet update");
-        userStats = stats;
+        baseModelLog.v("Listened to stats update");
         notifyListeners();
       },
     );
