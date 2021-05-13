@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/causes/good_wallet_fund_model.dart';
-import 'package:good_wallet/ui/shared/image_paths.dart';
+import 'package:good_wallet/datamodels/causes/concise_info/concise_project_info.dart';
 import 'package:good_wallet/ui/widgets/carousel_card.dart';
 
 class GoodWalletFundCardMobile extends StatelessWidget {
-  final GoodWalletFundModel fund;
+  final ConciseProjectInfo fund;
   final Function? onTap;
   final Alignment? imageAlignment;
   final ImageProvider? backgroundImage;
@@ -21,7 +20,7 @@ class GoodWalletFundCardMobile extends StatelessWidget {
     return SizedBox(
       height: 200,
       child: CarouselCard(
-        title: fund.title,
+        title: fund.name,
         onTap: onTap as void Function()?,
         explanation: fund.description,
         backgroundImage: backgroundImage,

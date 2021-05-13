@@ -5,7 +5,7 @@ import 'package:good_wallet/ui/views/wallet/wallet_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/ui/widgets/causes/global_giving_project_card.dart';
 import 'package:good_wallet/ui/widgets/wallet/news_feed_card.dart';
-import 'package:good_wallet/utils/datamodel_helpers.dart';
+import 'package:good_wallet/utils/string_utils.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
@@ -18,7 +18,6 @@ class WalletView extends StatelessWidget {
       viewModelBuilder: () => locator<WalletViewModel>(),
       onModelReady: (model) async {
         model.getProjects();
-        model.listenToTransactions();
       },
       fireOnModelReadyOnce: true,
       disposeViewModel: false,
@@ -133,7 +132,7 @@ class WalletView extends StatelessWidget {
                   ),
                   verticalSpace(10),
                   Text(
-                    "${model.userWallet.currentBalance * 0.01}.00 \$",
+                    "${model.userStats.currentBalance * 0.01}.00 \$",
                     style: TextStyle(
                       fontSize: 35,
                       color: Colors.grey[800],
@@ -250,7 +249,7 @@ class WalletView extends StatelessWidget {
                         ),
                         verticalSpace(10),
                         Text(
-                          "${model.userWallet.donations * 0.01}.00 \$",
+                          "${model.userStats.donations * 0.01}.00 \$",
                           style: TextStyle(
                             fontSize: 35,
                             color: Colors.grey[800],
@@ -279,7 +278,7 @@ class WalletView extends StatelessWidget {
                         ),
                         verticalSpace(10),
                         Text(
-                          "${model.userWallet.transferredToPeers * 0.01}.00 \$",
+                          "${model.userStats.transferredToPeers * 0.01}.00 \$",
                           style: TextStyle(
                             fontSize: 35,
                             color: Colors.grey[800],

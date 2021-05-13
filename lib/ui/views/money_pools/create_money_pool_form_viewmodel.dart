@@ -4,7 +4,7 @@ import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/datamodels/money_pools/settings/money_pool_settings.dart';
 import 'package:good_wallet/datamodels/money_pools/users/contributing_user.dart';
-import 'package:good_wallet/datamodels/user/user_model.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:stacked/stacked.dart';
@@ -16,7 +16,7 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
   final UserDataService? _userDataService = locator<UserDataService>();
-  MyUser get currentUser => _userDataService!.currentUser;
+  User get currentUser => _userDataService!.currentUser;
 
   final log = getLogger("create_money_pool_form_viewmodel.dart");
 
@@ -42,15 +42,15 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
       setBusy(true);
       MoneyPool moneyPool = MoneyPool(
         adminName: currentUser.fullName,
-        adminUID: currentUser.id,
+        adminUID: currentUser.uid,
         name: nameValue!,
         total: 0,
         moneyPoolSettings: MoneyPoolSettings(showTotal: true),
         currency: 'cad',
         description: descriptionValue,
-        contributingUserIds: [currentUser.id],
+        contributingUserIds: [currentUser.uid],
         contributingUsers: [
-          ContributingUser(uid: currentUser.id, name: currentUser.fullName)
+          ContributingUser(uid: currentUser.uid, name: currentUser.fullName)
         ],
         invitedUserIds: [],
         invitedUsers: [],
@@ -59,7 +59,7 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
 
       try {
         moneyPool = await _moneyPoolService!.createAndReturnMoneyPool(
-            moneyPool, currentUser.id, currentUser.fullName);
+            moneyPool, currentUser.uid, currentUser.fullName);
       } catch (e) {
         log.e("Could not create money pool, error: ${e.toString()}");
         setValidationMessage(

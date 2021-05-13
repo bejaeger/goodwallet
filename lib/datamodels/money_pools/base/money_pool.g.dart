@@ -8,10 +8,10 @@ part of 'money_pool.dart';
 
 _$_MoneyPool _$_$_MoneyPoolFromJson(Map<String, dynamic> json) {
   return _$_MoneyPool(
+    total: json['total'] as num,
     name: json['name'] as String,
     adminUID: json['adminUID'] as String,
     adminName: json['adminName'] as String,
-    total: json['total'] as num,
     currency: json['currency'] as String,
     description: json['description'] as String?,
     moneyPoolSettings: MoneyPoolSettings.fromJson(
@@ -35,10 +35,10 @@ _$_MoneyPool _$_$_MoneyPoolFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$_$_MoneyPoolToJson(_$_MoneyPool instance) =>
     <String, dynamic>{
+      'total': instance.total,
       'name': instance.name,
       'adminUID': instance.adminUID,
       'adminName': instance.adminName,
-      'total': instance.total,
       'currency': instance.currency,
       'description': instance.description,
       'moneyPoolSettings': instance.moneyPoolSettings.toJson(),

@@ -27,8 +27,9 @@ class _$MoneyPoolPayoutTearOff {
       required dynamic createdAt,
       TransferType type = TransferType.MoneyPoolPayout,
       TransferStatus status = TransferStatus.Initialized,
-      @JsonKey(name: "transferId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
-          String transferId = "placeholder"}) {
+      @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
+          String payoutId = "placeholder",
+      bool deleteMoneyPool = true}) {
     return _MoneyPoolPayout(
       transfersDetails: transfersDetails,
       paidOutUsersIds: paidOutUsersIds,
@@ -36,7 +37,8 @@ class _$MoneyPoolPayoutTearOff {
       createdAt: createdAt,
       type: type,
       status: status,
-      transferId: transferId,
+      payoutId: payoutId,
+      deleteMoneyPool: deleteMoneyPool,
     );
   }
 
@@ -57,8 +59,9 @@ mixin _$MoneyPoolPayout {
   dynamic get createdAt => throw _privateConstructorUsedError;
   TransferType get type => throw _privateConstructorUsedError;
   TransferStatus get status => throw _privateConstructorUsedError;
-  @JsonKey(name: "transferId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
-  String get transferId => throw _privateConstructorUsedError;
+  @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
+  String get payoutId => throw _privateConstructorUsedError;
+  bool get deleteMoneyPool => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -78,8 +81,9 @@ abstract class $MoneyPoolPayoutCopyWith<$Res> {
       dynamic createdAt,
       TransferType type,
       TransferStatus status,
-      @JsonKey(name: "transferId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
-          String transferId});
+      @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
+          String payoutId,
+      bool deleteMoneyPool});
 
   $MoneyPoolCopyWith<$Res> get moneyPool;
 }
@@ -101,7 +105,8 @@ class _$MoneyPoolPayoutCopyWithImpl<$Res>
     Object? createdAt = freezed,
     Object? type = freezed,
     Object? status = freezed,
-    Object? transferId = freezed,
+    Object? payoutId = freezed,
+    Object? deleteMoneyPool = freezed,
   }) {
     return _then(_value.copyWith(
       transfersDetails: transfersDetails == freezed
@@ -128,10 +133,14 @@ class _$MoneyPoolPayoutCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as TransferStatus,
-      transferId: transferId == freezed
-          ? _value.transferId
-          : transferId // ignore: cast_nullable_to_non_nullable
+      payoutId: payoutId == freezed
+          ? _value.payoutId
+          : payoutId // ignore: cast_nullable_to_non_nullable
               as String,
+      deleteMoneyPool: deleteMoneyPool == freezed
+          ? _value.deleteMoneyPool
+          : deleteMoneyPool // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 
@@ -157,8 +166,9 @@ abstract class _$MoneyPoolPayoutCopyWith<$Res>
       dynamic createdAt,
       TransferType type,
       TransferStatus status,
-      @JsonKey(name: "transferId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
-          String transferId});
+      @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
+          String payoutId,
+      bool deleteMoneyPool});
 
   @override
   $MoneyPoolCopyWith<$Res> get moneyPool;
@@ -183,7 +193,8 @@ class __$MoneyPoolPayoutCopyWithImpl<$Res>
     Object? createdAt = freezed,
     Object? type = freezed,
     Object? status = freezed,
-    Object? transferId = freezed,
+    Object? payoutId = freezed,
+    Object? deleteMoneyPool = freezed,
   }) {
     return _then(_MoneyPoolPayout(
       transfersDetails: transfersDetails == freezed
@@ -210,10 +221,14 @@ class __$MoneyPoolPayoutCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as TransferStatus,
-      transferId: transferId == freezed
-          ? _value.transferId
-          : transferId // ignore: cast_nullable_to_non_nullable
+      payoutId: payoutId == freezed
+          ? _value.payoutId
+          : payoutId // ignore: cast_nullable_to_non_nullable
               as String,
+      deleteMoneyPool: deleteMoneyPool == freezed
+          ? _value.deleteMoneyPool
+          : deleteMoneyPool // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -229,8 +244,9 @@ class _$_MoneyPoolPayout implements _MoneyPoolPayout {
       required this.createdAt,
       this.type = TransferType.MoneyPoolPayout,
       this.status = TransferStatus.Initialized,
-      @JsonKey(name: "transferId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
-          this.transferId = "placeholder"});
+      @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
+          this.payoutId = "placeholder",
+      this.deleteMoneyPool = true});
 
   factory _$_MoneyPoolPayout.fromJson(Map<String, dynamic> json) =>
       _$_$_MoneyPoolPayoutFromJson(json);
@@ -250,12 +266,15 @@ class _$_MoneyPoolPayout implements _MoneyPoolPayout {
   @override
   final TransferStatus status;
   @override
-  @JsonKey(name: "transferId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
-  final String transferId;
+  @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
+  final String payoutId;
+  @JsonKey(defaultValue: true)
+  @override
+  final bool deleteMoneyPool;
 
   @override
   String toString() {
-    return 'MoneyPoolPayout(transfersDetails: $transfersDetails, paidOutUsersIds: $paidOutUsersIds, moneyPool: $moneyPool, createdAt: $createdAt, type: $type, status: $status, transferId: $transferId)';
+    return 'MoneyPoolPayout(transfersDetails: $transfersDetails, paidOutUsersIds: $paidOutUsersIds, moneyPool: $moneyPool, createdAt: $createdAt, type: $type, status: $status, payoutId: $payoutId, deleteMoneyPool: $deleteMoneyPool)';
   }
 
   @override
@@ -278,9 +297,12 @@ class _$_MoneyPoolPayout implements _MoneyPoolPayout {
                 const DeepCollectionEquality().equals(other.type, type)) &&
             (identical(other.status, status) ||
                 const DeepCollectionEquality().equals(other.status, status)) &&
-            (identical(other.transferId, transferId) ||
+            (identical(other.payoutId, payoutId) ||
                 const DeepCollectionEquality()
-                    .equals(other.transferId, transferId)));
+                    .equals(other.payoutId, payoutId)) &&
+            (identical(other.deleteMoneyPool, deleteMoneyPool) ||
+                const DeepCollectionEquality()
+                    .equals(other.deleteMoneyPool, deleteMoneyPool)));
   }
 
   @override
@@ -292,7 +314,8 @@ class _$_MoneyPoolPayout implements _MoneyPoolPayout {
       const DeepCollectionEquality().hash(createdAt) ^
       const DeepCollectionEquality().hash(type) ^
       const DeepCollectionEquality().hash(status) ^
-      const DeepCollectionEquality().hash(transferId);
+      const DeepCollectionEquality().hash(payoutId) ^
+      const DeepCollectionEquality().hash(deleteMoneyPool);
 
   @JsonKey(ignore: true)
   @override
@@ -313,8 +336,9 @@ abstract class _MoneyPoolPayout implements MoneyPoolPayout {
       required dynamic createdAt,
       TransferType type,
       TransferStatus status,
-      @JsonKey(name: "transferId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
-          String transferId}) = _$_MoneyPoolPayout;
+      @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
+          String payoutId,
+      bool deleteMoneyPool}) = _$_MoneyPoolPayout;
 
   factory _MoneyPoolPayout.fromJson(Map<String, dynamic> json) =
       _$_MoneyPoolPayout.fromJson;
@@ -333,8 +357,10 @@ abstract class _MoneyPoolPayout implements MoneyPoolPayout {
   @override
   TransferStatus get status => throw _privateConstructorUsedError;
   @override
-  @JsonKey(name: "transferId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
-  String get transferId => throw _privateConstructorUsedError;
+  @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
+  String get payoutId => throw _privateConstructorUsedError;
+  @override
+  bool get deleteMoneyPool => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$MoneyPoolPayoutCopyWith<_MoneyPoolPayout> get copyWith =>

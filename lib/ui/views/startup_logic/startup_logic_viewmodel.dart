@@ -18,17 +18,20 @@ class StartUpLogicViewModel extends BaseModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
 
-  StreamSubscription? _userStateSubscription;
-
   final log = getLogger("startup_logic_viewmodel.dart");
+
+  UserStatus? userStatus;
+  StreamSubscription? _userStateSubscription;
 
   void handleStartUpLogic() {
     _userStateSubscription = _userDataService!.userStateSubject.listen(
       (state) async {
+        log.v("Listened to auth state change update: state = $state");
+        userStatus = state;
         if (state == UserStatus.Initialized) {
           // TODO: improve transition!
           log.i("User already signed in, navigating to home view");
-          await _moneyPoolService!.init(currentUser.id);
+          await _moneyPoolService!.init(currentUser.uid);
           Future.delayed(Duration(seconds: 1));
           await _navigationService!.replaceWith(
             Routes.layoutTemplateViewMobile,
@@ -39,11 +42,14 @@ class StartUpLogicViewModel extends BaseModel {
           _navigationService!.replaceWith(
             Routes.loginView,
           );
-          // _userStateSubscription?.cancel();
+          _userStateSubscription?.cancel();
         }
         if (state == UserStatus.SignedInNotInitialized) {
-          log.e(
+          log.wtf(
               "Found user in SignedInNotInitialized state. Please check the code, this is bad!");
+          _navigationService!.replaceWith(
+            Routes.loginView,
+          );
         }
         log.i("Listened to user state!");
         // cancel afterwards

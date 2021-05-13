@@ -75,7 +75,7 @@ class SendMoneyViewModel extends BaseModel {
     _userDataService!.userStateSubject.listen((state) async {
       if (state == UserStatus.SignedIn) {
         bool result = await _firestorePaymentDataService!
-            .handlePaymentSuccess(currentUser.id);
+            .handlePaymentSuccess(currentUser.uid);
         if (result)
           _paymentStatus = "success";
         else
@@ -95,7 +95,7 @@ class SendMoneyViewModel extends BaseModel {
     _userDataService!.userStateSubject.listen((state) async {
       if (state == UserStatus.SignedIn) {
         await _firestorePaymentDataService!
-            .handlePaymentFailure(currentUser.id);
+            .handlePaymentFailure(currentUser.uid);
         _paymentStatus = "failure";
         notifyListeners();
       }

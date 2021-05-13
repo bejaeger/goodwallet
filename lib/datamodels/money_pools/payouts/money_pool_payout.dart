@@ -14,9 +14,9 @@ class MoneyPoolPayout with _$MoneyPoolPayout {
     if (id == "placeholder") {
       throw DataModelException(
           message:
-              "MoneyPoolPayout: You can't serialize a money pool payout model that still has a placeholder for the 'transferId'!",
+              "MoneyPoolPayout: You can't serialize a money pool payout model that still has a placeholder for the 'payoutId'!",
           devDetails:
-              "Please provide a valid 'transferId' by creating a new 'Transaction' with the copyWith constructor and adding the firestore DocumentReference id as 'transferId'");
+              "Please provide a valid 'payoutId' by creating a new 'Transaction' with the copyWith constructor and adding the firestore DocumentReference id as 'payoutId'");
     } else
       return id;
   }
@@ -32,11 +32,13 @@ class MoneyPoolPayout with _$MoneyPoolPayout {
     @Default(TransferStatus.Initialized)
         TransferStatus status,
     @JsonKey(
-      name: "transferId",
+      name: "payoutId",
       toJson: MoneyPoolPayout._checkIftransferIdIsSet,
     )
     @Default("placeholder")
-        String transferId,
+        String payoutId,
+    @Default(true)
+        bool deleteMoneyPool,
   }) = _MoneyPoolPayout;
 
   factory MoneyPoolPayout.fromJson(Map<String, dynamic> json) =>

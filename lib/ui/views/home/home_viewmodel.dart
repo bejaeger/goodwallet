@@ -1,11 +1,13 @@
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
-import 'package:good_wallet/enums/fund_transfer_type.dart';
-import 'package:good_wallet/enums/transfer_direction.dart';
+import 'package:good_wallet/enums/money_source.dart';
+import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
@@ -19,26 +21,27 @@ class HomeViewModel extends BaseModel {
   final UserDataService? _userDataService = locator<UserDataService>();
   final log = getLogger("home_viewmodel.dart");
 
-  // get latest money pool contributions for send money bottom sheet view
+  // get latest outgoing peer 2 peer transfers used in send money bottom sheet view
   // Need to add listeners otherwise this will be empty
+  MoneyTransferQueryConfig _queryConfigTransactionToPeers =
+      MoneyTransferQueryConfig(
+          type: TransferType.Peer2PeerSent, makeUnique: true);
   List<MoneyTransfer> get latestTransactionToPeers =>
-      _userDataService!.getTransactionsForDirection<MoneyTransfer>(
-          direction: TransferDirection.TransferredToPeers);
+      _userDataService!.getTransfers(config: _queryConfigTransactionToPeers);
 
   // get latest donations for give bottom sheet view
   // Need to add listeners otherwise this will be empty
+  MoneyTransferQueryConfig _queryConfigDonations =
+      MoneyTransferQueryConfig(type: TransferType.Donation, makeUnique: true);
   List<MoneyTransfer> get latestDonations =>
-      _userDataService!.getTransactionsForDirection<MoneyTransfer>(
-          direction: TransferDirection.Donation);
+      _userDataService!.getTransfers(config: _queryConfigDonations);
 
-  // Listen to stream of latest donations and transactions
+  // Listen to streams of latest donations and transactions to be displayed
+  // instantly when pulling up bottom sheets
   Future listenToData() async {
-    // _userDataService!.addTransactionListener(
-    //     direction: TransactionDirection.TransferredToPeers, maxNumber: 10);
-    _userDataService!.addTransactionListener(
-        direction: TransferDirection.TransferredToPeers, maxNumber: 10);
-    _userDataService!.addTransactionListener(
-        direction: TransferDirection.Donation, maxNumber: 5);
+    _userDataService!
+        .addTransferDataListener(config: _queryConfigTransactionToPeers);
+    _userDataService!.addTransferDataListener(config: _queryConfigDonations);
   }
 
   Future fetchData() async {
@@ -60,7 +63,7 @@ class HomeViewModel extends BaseModel {
 
   Future showRaiseMoneyBottomSheet() async {
     var sheetResponse = await _bottomSheetService!.showCustomSheet(
-      variant: BottomSheetType.raise,
+      variant: BottomSheetType.Raise,
       barrierDismissible: true,
     );
     if (sheetResponse != null) {
@@ -71,7 +74,7 @@ class HomeViewModel extends BaseModel {
 
   Future showSendMoneyBottomSheet() async {
     var sheetResponse = await _bottomSheetService!.showCustomSheet(
-      variant: BottomSheetType.sendMoney,
+      variant: BottomSheetType.SendMoney,
       barrierDismissible: true,
       customData: latestTransactionToPeers,
     );
@@ -83,7 +86,7 @@ class HomeViewModel extends BaseModel {
 
   Future showDonationBottomSheet() async {
     var sheetResponse = await _bottomSheetService!.showCustomSheet(
-      variant: BottomSheetType.donate,
+      variant: BottomSheetType.Donate,
       barrierDismissible: true,
       customData: latestDonations,
     );
@@ -104,7 +107,9 @@ class HomeViewModel extends BaseModel {
   }
 
   Future navigateToTransactionsHistoryView() async {
-    _navigationService!.navigateTo(Routes.transactionsView);
+    _navigationService!.navigateTo(
+      Routes.transfersHistoryView,
+    );
   }
 
   void navigateToQRCodeView() {
@@ -132,7 +137,8 @@ class HomeViewModel extends BaseModel {
   Future navigateToTransferFundAmountView() async {
     await _navigationService!.navigateTo(Routes.transferFundsAmountView,
         arguments: TransferFundsAmountViewArguments(
-            type: FundTransferType.commitment));
+            senderInfo: SenderInfo(moneySource: MoneySource.Bank),
+            type: TransferType.Commitment));
   }
 
   Future navigateToFavoriteCharitiesView() async {
@@ -140,5 +146,13 @@ class HomeViewModel extends BaseModel {
         arguments: LayoutTemplateViewMobileArguments(
             initialBottomNavBarIndex: BottomNavigatorIndex.Give.index,
             initialTabBarIndex: 2));
+  }
+
+  @override
+  void dispose() {
+    _userDataService!
+        .pauseTransferDataListener(config: _queryConfigTransactionToPeers);
+    _userDataService!.pauseTransferDataListener(config: _queryConfigDonations);
+    super.dispose();
   }
 }

@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
-import 'package:good_wallet/datamodels/payments/wallet_balances_model.dart';
+import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
@@ -24,49 +23,14 @@ class WalletViewModel extends BaseModel {
   // objects to be exposed
   List<dynamic>? _transactions;
   List<dynamic>? get transactions => _transactions;
-  WalletBalancesModel _wallet = WalletBalancesModel.empty();
-  WalletBalancesModel get wallet => _wallet;
 
   // projects to be exposed
-  List<GoodWalletProjectModel>? _projects;
-  List<GoodWalletProjectModel>? get projects => _projects;
-
-  void listenToTransactions() {
-    // Listen to transaction collection if user is logged in otherwise cancel
-    // subscription
-    // Function to be called in initialization of viewmodel or on onModelReady
-    _userDataService!.userStateSubject.listen(
-      (state) {
-        if (isUserSignedIn) {
-          _transactionSubscription =
-              _userDataService!.listenToTransactionsRealTime().listen(
-            (transactionsData) {
-              List<dynamic> updatedTransactions = transactionsData;
-              if (updatedTransactions != null &&
-                  updatedTransactions.length > 0) {
-                log.i("Start listening to user wallet data");
-                // sort with date
-                updatedTransactions
-                    .sort((a, b) => b.createdAt.compareTo(a.createdAt));
-                _transactions = updatedTransactions;
-                notifyListeners();
-              } else {
-                log.w(
-                    "Not able to listen to transaction data. Maybe there are no transactions for that user recorded yet?");
-              }
-            },
-          );
-        } else {
-          log.i("Cancelling subsciption to listen to user transactions");
-          _transactionSubscription?.cancel();
-        }
-      },
-    );
-  }
+  List<Project>? _projects;
+  List<Project>? get projects => _projects;
 
   // Make a stream listening to projects!
   Future getProjects() async {
-    List<GoodWalletProjectModel> newProjects = [];
+    List<Project> newProjects = [];
     var newProject = await _ggApiService!.getRandomProject();
     if (newProject != null) {
       newProjects.add(newProject);

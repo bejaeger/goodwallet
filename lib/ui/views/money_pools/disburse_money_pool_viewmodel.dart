@@ -113,10 +113,12 @@ class DisburseMoneyPoolViewModel extends BaseModel {
         paidOutIds.add(element.userPayoutFormModel.selectedUser!.uid);
       });
       MoneyPoolPayout data = MoneyPoolPayout(
-          transfersDetails: allDetails,
-          moneyPool: moneyPool,
-          paidOutUsersIds: paidOutIds,
-          createdAt: firestore.FieldValue.serverTimestamp());
+        transfersDetails: allDetails,
+        moneyPool: moneyPool,
+        paidOutUsersIds: paidOutIds,
+        createdAt: firestore.FieldValue.serverTimestamp(),
+        deleteMoneyPool: getSummedPayoutAmount() == moneyPool.total,
+      );
       return data;
     } catch (e) {
       log.e(
@@ -130,9 +132,9 @@ class DisburseMoneyPoolViewModel extends BaseModel {
   // 1. check if inputs are valid
   // 2. show bottom sheet and ask for confirmation
   // 3. then construct money pool payout object
-  // 4. push to firebase
-  // 5. cloud function takes care of the payouts
-  // 6. Ask user to close or keep money pool and navigate accordingly
+  // 4. Ask user to close or keep money pool and navigate accordingly
+  // 5. push to firestore
+  // 6. cloud function takes care of the payouts
   Future submitMoneyPoolPayout() async {
     // 1
     if (!isValidPayoutData()) {
@@ -148,16 +150,26 @@ class DisburseMoneyPoolViewModel extends BaseModel {
     if (sheetResponse?.confirmed == true) {
       // 3
       try {
-        setBusy(true);
         MoneyPoolPayout data = _getPayoutDataFromForms();
+
+        MoneyPoolPayout? newData;
+        // if money pool is setup for deletion, ask user if he really wants
+        // to discontinue the usaage of the money pool
+        if (data.deleteMoneyPool == true) {
+          var sheetResponse2 = await _showDeletionConfirmationBottomSheet();
+          if (sheetResponse2?.confirmed == true) {
+            newData = data.copyWith(deleteMoneyPool: false);
+          }
+        }
+        newData = newData ?? data;
+
         // 4 & 5
         // TODO: This could also provide a return value to be sure things have been dealt with
-        await _moneyPoolService!.submitMoneyPoolPayout(data);
+        setBusy(true);
+        await _moneyPoolService!.submitMoneyPoolPayout(newData);
         setBusy(false);
 
-        // 6
-        var sheetResponse2 = await _showBottomSheetAfterPayout();
-        if (sheetResponse2?.confirmed == true) {
+        if (newData.deleteMoneyPool == false) {
           // navigate to money pool
           _navigationService!.back(result: "paidOut");
         } else {
@@ -184,7 +196,7 @@ class DisburseMoneyPoolViewModel extends BaseModel {
 
   Future _showConfirmationBottomSheet() async {
     String description =
-        "Are you sure you would like to disburse and close this money pool?";
+        "Are you sure you would like to payout this money pool?";
     if (getSummedPayoutAmount() < moneyPool.total)
       description =
           "Please note that your specified disbursement does not cover the total money pool, you can continue to use the money pool?";
@@ -204,11 +216,9 @@ class DisburseMoneyPoolViewModel extends BaseModel {
     );
   }
 
-  Future _showBottomSheetAfterPayout() async {
+  Future _showDeletionConfirmationBottomSheet() async {
     return await _bottomSheetService!.showBottomSheet(
-      title: 'Success!',
-      description:
-          "Would you like to continue to use this money pool or delete it?",
+      title: "Would you like to continue to use this money pool or delete it?",
       confirmButtonTitle: 'Continue usage',
       cancelButtonTitle: 'Delete',
     );

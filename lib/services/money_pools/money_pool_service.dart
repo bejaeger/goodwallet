@@ -4,6 +4,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
+import 'package:good_wallet/datamodels/money_pools/base/concise_money_pool_info.dart';
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
 import 'package:good_wallet/datamodels/money_pools/users/contributing_user.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
@@ -16,6 +17,8 @@ class MoneyPoolService {
       FirebaseFirestore.instance.collection("moneypools");
   final CollectionReference _moneyPoolPayoutsCollectionReference =
       FirebaseFirestore.instance.collection("moneyPoolPayouts");
+  final CollectionReference _paymentsCollectionReference =
+      FirebaseFirestore.instance.collection("payments");
 
   // will also enable collection group queries for this collection
   final String contributionsKey = "moneyPoolContributions";
@@ -255,17 +258,15 @@ class MoneyPoolService {
   }
 
   // returns list of user money pool contributions
-  Future<List<MoneyPoolContribution>> getMoneyPoolContributions(
-      String mpid) async {
-    List<MoneyPoolContribution> returnList = [];
-    QuerySnapshot snapshot = await _moneyPoolsCollectionReference
-        .doc(mpid)
-        .collection(contributionsKey)
+  Future<List<MoneyTransfer>> getMoneyPoolContributions(String mpid) async {
+    List<MoneyTransfer> returnList = [];
+    QuerySnapshot snapshot = await _paymentsCollectionReference
+        .where("moneyPoolInfo.moneyPoolId", isEqualTo: mpid)
+        .where("type", isEqualTo: "MoneyPoolContribution")
         .get();
     if (snapshot.docs.isNotEmpty) {
       returnList = snapshot.docs
-          .map((element) =>
-              MoneyTransfer.fromJson(element.data()) as MoneyPoolContribution)
+          .map((element) => MoneyTransfer.fromJson(element.data()))
           .toList();
     }
     log.i("Fetched ${returnList.length} money pool contributions");
@@ -291,11 +292,33 @@ class MoneyPoolService {
 
   // adds payout data to firestore which will trigger a cloud function
   // to update all the good wallets
+  // Additionally add money transfer document to payment collection
+  // mainly for "read" purposes!
   Future submitMoneyPoolPayout(MoneyPoolPayout data) async {
     try {
       DocumentReference docRef = _moneyPoolPayoutsCollectionReference.doc();
-      var newData = data.copyWith(transferId: docRef.id);
+      var newData = data.copyWith(payoutId: docRef.id);
       await docRef.set(newData.toJson());
+
+      // Push each money pool payout transfer to payments collection
+      List<MoneyTransfer> moneyTransfers = [];
+      data.transfersDetails.forEach((element) {
+        moneyTransfers.add(
+          MoneyTransfer.moneyPoolPayoutTransfer(
+              transferDetails: element,
+              moneyPoolInfo: ConciseMoneyPoolInfo(
+                  moneyPoolId: data.moneyPool.moneyPoolId,
+                  name: data.moneyPool.name,
+                  total: data.moneyPool.total),
+              payoutId: docRef.id,
+              createdAt: FieldValue.serverTimestamp()),
+        );
+      });
+      moneyTransfers.forEach((element) {
+        DocumentReference docRef = _paymentsCollectionReference.doc();
+        var newElement = element.copyWith(transferId: docRef.id);
+        docRef.set(newElement.toJson());
+      });
     } catch (e) {
       log.e("Error when pushing data to firestore: ${e.toString()}");
       rethrow;

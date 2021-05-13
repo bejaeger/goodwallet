@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/app/app.locator.dart';
-import 'package:good_wallet/datamodels/causes/good_wallet_fund_model.dart';
+import 'package:good_wallet/datamodels/causes/concise_info/concise_project_info.dart';
 import 'package:good_wallet/enums/causes_filter_list_type.dart';
 import 'package:good_wallet/ui/layout_widgets/tabbar_layout.dart';
 import 'package:good_wallet/ui/views/causes/causes_filter_viewmodel.dart';
-import 'package:good_wallet/ui/views/causes/causes_viewmodel.dart';
-import 'package:good_wallet/ui/widgets/causes/global_giving_project_card.dart';
 import 'package:good_wallet/ui/widgets/causes/good_wallet_fund_card.dart';
 import 'package:good_wallet/ui/widgets/small_wallet_card.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
@@ -21,14 +18,13 @@ class CausesFilterViewMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<CausesFilterViewModel>.reactive(
       viewModelBuilder: () => CausesFilterViewModel(),
-      onModelReady: (model) async => await model.fetchCauses(),
       builder: (context, model, child) => TabBarLayout(
         initialIndex: initialIndex!,
         title: "Social Projects",
         titleTrailingWidget: SmallWalletCard(
             onTap: model.navigateToTransactionsHistoryView,
             width: 80,
-            balance: model.userWallet.currentBalance),
+            balance: model.userStats.currentBalance),
         tabs: [
           Container(
               width: screenWidth(context) * 0.25, child: Tab(text: "Themes")),
@@ -122,37 +118,16 @@ class CausesFilterListViewMobile extends StatelessWidget {
                           ),
                         ),
                       ),
-
-                    // {
-                    //   return ListTile(
-                    //     title: Text(content[index]),
-                    //   );
-                    // }
-
-                    // //itemBuilder: (context, index) => Padding(
-                    //   padding: const EdgeInsets.only(bottom: 8.0),
-                    //   child: RaisedButton(
-                    //     onPressed: null,
-                    //     child: Text(model.projects![index]),
-                    // ), // add a list with the project themes
-                    // child: GlobalGivingProjectCardMobile(
-                    //   project: model.projects![index],
-                    //   onTap: () async =>
-                    //       await model.navigateToProjectScreen(index),
-                    //   onTapFavorite: model.showNotImplementedSnackbar,
-                    // ),
-                    //),
-                    // ),
                     if (type == CausesFilterListType.GoodWalletFund)
                       ListView.builder(
                           shrinkWrap: true,
                           physics: ScrollPhysics(),
                           itemCount: model.goodWalletFunds.length,
                           itemBuilder: (context, index) {
-                            GoodWalletFundModel fund =
+                            ConciseProjectInfo fund =
                                 model.goodWalletFunds[index];
                             Alignment alignment =
-                                fund.title == "Friend Referral Fund"
+                                fund.name == "Friend Referral Fund"
                                     ? Alignment.bottomCenter
                                     : Alignment.center;
                             return Padding(

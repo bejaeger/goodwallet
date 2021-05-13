@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
+import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'dart:math';
@@ -40,8 +40,7 @@ class GlobalGivingAPIService {
       int randomProjectNumber =
           random.nextInt(numberProjects); // seems limitted
       var jsonProject = fetchedProjects[randomProjectNumber];
-      GoodWalletProjectModel project =
-          GoodWalletProjectModel.fromGlobalGivingAPICall(
+      Project project = getProjectFromGlobalGivingAPICall(
         jsonProject,
       );
       return project;
@@ -70,10 +69,9 @@ class GlobalGivingAPIService {
           jsonResponse["projects"]["project"] as List<dynamic>;
       int numberProjects = fetchedProjects.length - 1;
 
-      List<GoodWalletProjectModel> projectList = [];
+      List<Project> projectList = [];
       for (int i = 0; i < numberProjects; i++) {
-        GoodWalletProjectModel project =
-            GoodWalletProjectModel.fromGlobalGivingAPICall(fetchedProjects[i]);
+        Project project = getProjectFromGlobalGivingAPICall(fetchedProjects[i]);
         projectList.add(project);
       }
       return projectList;
@@ -84,17 +82,29 @@ class GlobalGivingAPIService {
   }
 
   Future getProjectsOfTheMonth({bool addToFirestore = false}) async {
+    // List<String> projectIds = [
+    //   "14516",
+    //   "3935",
+    //   "5607",
+    //   "31919",
+    //   "9451",
+    //   "2291",
+    //   "8799",
+    //   "1877",
+    //   "6066",
+    //   "898"
+    // ];
     List<String> projectIds = [
-      "14516",
-      "3935",
-      "5607",
-      "31919",
-      "9451",
-      "2291",
-      "8799",
-      "1877",
-      "6066",
-      "898"
+      "52192", // indian covid disaster response
+      "11187", // Save the Bengal Tiger
+      "5582", // mosquito nets
+      "8799", // tree planting
+      "5607", // girls education
+      "36738", // global giving climate action fund
+      "7871", // panama poverty fight
+      "9790", // forest
+      "24007", // cancer
+      "898", // uganda education
     ];
     Uri url = Uri.https(
       "api.globalgiving.org",
@@ -107,10 +117,10 @@ class GlobalGivingAPIService {
     return _getProjectListFromHTTPCall(url, addToFirestore);
   }
 
-  Future<List<GoodWalletProjectModel>> _getProjectListFromHTTPCall(
+  Future<List<Project>> _getProjectListFromHTTPCall(
       Uri url, bool addToFirestore) async {
     http.Response? response = await fetchProject(url);
-    List<GoodWalletProjectModel> projectList = [];
+    List<Project> projectList = [];
     //if (response == null) return response;
     try {
       var jsonResponse = convert.jsonDecode(response!.body);
@@ -118,8 +128,7 @@ class GlobalGivingAPIService {
           jsonResponse["projects"]["project"] as List<dynamic>;
       int numberProjects = fetchedProjects.length;
       for (int i = 0; i < numberProjects; i++) {
-        GoodWalletProjectModel project =
-            GoodWalletProjectModel.fromGlobalGivingAPICall(
+        Project project = getProjectFromGlobalGivingAPICall(
           fetchedProjects[i],
         );
         if (addToFirestore) _causesCollectionReference.add(project.toJson());

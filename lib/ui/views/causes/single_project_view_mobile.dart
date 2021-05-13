@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/causes/good_wallet_project_model.dart';
+import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
@@ -10,7 +10,7 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class SingleProjectViewMobile extends StatelessWidget {
-  final GoodWalletProjectModel? project;
+  final Project? project;
   const SingleProjectViewMobile({Key? key, required this.project})
       : super(key: key);
 
@@ -24,7 +24,7 @@ class SingleProjectViewMobile extends StatelessWidget {
             AlternativeScreenHeaderImage(
               backgroundWidget:
                   Image.network(project!.imageUrl!, fit: BoxFit.cover),
-              title: project!.title!,
+              title: project!.name,
               onTopLeftButtonPressed: model.navigateBack,
               topRightWidget: IconButton(
                 icon: Icon(Icons.favorite_border,
@@ -45,7 +45,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                       color: ColorSettings.primaryColorLight,
                       title: "Donate",
                       onPressed: () =>
-                          model.navigateToTransferFundAmountView(project)),
+                          model.navigateToTransferFundAmountView(project!)),
                 ],
               ),
             ),
@@ -57,12 +57,12 @@ class SingleProjectViewMobile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    project!.organization!.name!,
+                    project!.organization!.name,
                     softWrap: true,
                     style: textTheme(context).headline6,
                   ),
                   Text(
-                    project!.organization!.url!,
+                    project!.organization!.url,
                     softWrap: true,
                   ),
                   verticalSpaceMedium,

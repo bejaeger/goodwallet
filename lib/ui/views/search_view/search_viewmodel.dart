@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
-import 'package:good_wallet/enums/fund_transfer_type.dart';
+import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/search_type.dart';
+import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -18,12 +21,15 @@ class SearchViewModel extends BaseModel {
   final log = getLogger("search_viewmodel.dart");
 
   void selectUser(int index, SearchType searchType) {
-    if (searchType == SearchType.userToTransferTo) {
+    if (searchType == SearchType.UserToTransferTo) {
       _navigationService!.replaceWith(Routes.transferFundsAmountView,
           arguments: TransferFundsAmountViewArguments(
-              type: FundTransferType.transferToPeer,
-              receiverInfo: userInfoList[index]));
-    } else if (searchType == SearchType.userToInviteToMP) {
+              senderInfo: SenderInfo(moneySource: MoneySource.Bank),
+              type: TransferType.Peer2PeerSent,
+              recipientInfo: RecipientInfo.user(
+                  name: userInfoList[index].name,
+                  id: userInfoList[index].uid)));
+    } else if (searchType == SearchType.UserToInviteToMP) {
       // TODO: invite user! We pop screen and handle the rest in single_money_pool_viewmodel!
       _navigationService!.back(result: userInfoList[index]);
     }
@@ -37,11 +43,10 @@ class SearchViewModel extends BaseModel {
         .get();
     userInfoList = foundUsers.docs.map((DocumentSnapshot doc) {
       return PublicUserInfo(
-          name: doc.get("fullName") as String,
-          email: doc.get("email") as String,
-          uid: doc.get("id") as String);
+          name: doc.get("fullName"),
+          uid: doc.get("uid"),
+          email: doc.get("email"));
     }).toList();
-
     log.i("Queried users and found ${userInfoList.length} matches");
     notifyListeners();
   }

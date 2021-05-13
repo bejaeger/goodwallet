@@ -10,13 +10,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
-import '../datamodels/causes/good_wallet_project_model.dart';
+import '../datamodels/causes/project.dart';
 import '../datamodels/money_pools/base/money_pool.dart';
+import '../datamodels/transfers/bookkeeping/recipient_info.dart';
+import '../datamodels/transfers/bookkeeping/sender_info.dart';
 import '../datamodels/user/public_user_info.dart';
 import '../enums/featured_app_type.dart';
-import '../enums/fund_transfer_type.dart';
 import '../enums/search_type.dart';
-import '../enums/transfer_direction.dart';
+import '../enums/transfer_type.dart';
 import '../ui/views/causes/causes_filter_view_mobile.dart';
 import '../ui/views/causes/causes_view.dart';
 import '../ui/views/causes/causes_view_mobile.dart';
@@ -41,7 +42,7 @@ import '../ui/views/qrcode/qrcode_view_mobile.dart';
 import '../ui/views/raise_money/raise_money_view.dart';
 import '../ui/views/search_view/search_view.dart';
 import '../ui/views/startup_logic/startup_logic_view.dart';
-import '../ui/views/transaction_history/transactions_view.dart';
+import '../ui/views/transaction_history/transfers_history_view.dart';
 import '../ui/views/transfer_funds/transfer_funds_amount_view.dart';
 import '../ui/views/wallet/wallet_view.dart';
 
@@ -65,7 +66,6 @@ class Routes {
   static const String createAccountView = '/create-account-view';
   static const String singleFeaturedAppView = '/single-featured-app-view';
   static const String moneyPoolsView = '/money-pools-view';
-  static const String transactionsView = '/transactions-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String raiseMoneyView = '/raise-money-view';
   static const String causesFilterViewMobile = '/causes-filter-view-mobile';
@@ -74,6 +74,7 @@ class Routes {
   static const String searchView = '/search-view';
   static const String transferFundsAmountView = '/transfer-funds-amount-view';
   static const String disburseMoneyPoolView = '/disburse-money-pool-view';
+  static const String transfersHistoryView = '/transfers-history-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -93,7 +94,6 @@ class Routes {
     createAccountView,
     singleFeaturedAppView,
     moneyPoolsView,
-    transactionsView,
     qRCodeViewMobile,
     raiseMoneyView,
     causesFilterViewMobile,
@@ -102,6 +102,7 @@ class Routes {
     searchView,
     transferFundsAmountView,
     disburseMoneyPoolView,
+    transfersHistoryView,
   };
 }
 
@@ -127,7 +128,6 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.createAccountView, page: CreateAccountView),
     RouteDef(Routes.singleFeaturedAppView, page: SingleFeaturedAppView),
     RouteDef(Routes.moneyPoolsView, page: MoneyPoolsView),
-    RouteDef(Routes.transactionsView, page: TransactionsView),
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
     RouteDef(Routes.raiseMoneyView, page: RaiseMoneyView),
     RouteDef(Routes.causesFilterViewMobile, page: CausesFilterViewMobile),
@@ -136,6 +136,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.searchView, page: SearchView),
     RouteDef(Routes.transferFundsAmountView, page: TransferFundsAmountView),
     RouteDef(Routes.disburseMoneyPoolView, page: DisburseMoneyPoolView),
+    RouteDef(Routes.transfersHistoryView, page: TransfersHistoryView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -293,18 +294,6 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
-    TransactionsView: (data) {
-      var args = data.getArgs<TransactionsViewArguments>(
-        orElse: () => TransactionsViewArguments(),
-      );
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => TransactionsView(
-          key: args.key,
-          historyType: args.historyType,
-        ),
-        settings: data,
-      );
-    },
     QRCodeViewMobile: (data) {
       var args = data.getArgs<QRCodeViewMobileArguments>(
         orElse: () => QRCodeViewMobileArguments(),
@@ -369,7 +358,8 @@ class StackedRouter extends RouterBase {
         builder: (context) => TransferFundsAmountView(
           key: args.key,
           type: args.type,
-          receiverInfo: args.receiverInfo,
+          senderInfo: args.senderInfo,
+          recipientInfo: args.recipientInfo,
           onContinuePressed: args.onContinuePressed,
         ),
         settings: data,
@@ -382,6 +372,12 @@ class StackedRouter extends RouterBase {
           key: args.key,
           moneyPool: args.moneyPool,
         ),
+        settings: data,
+      );
+    },
+    TransfersHistoryView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const TransfersHistoryView(),
         settings: data,
       );
     },
@@ -439,7 +435,7 @@ class LayoutTemplateViewMobileArguments {
 /// SingleProjectViewMobile arguments holder class
 class SingleProjectViewMobileArguments {
   final Key? key;
-  final GoodWalletProjectModel? project;
+  final Project? project;
   SingleProjectViewMobileArguments({this.key, required this.project});
 }
 
@@ -461,14 +457,6 @@ class MoneyPoolsViewArguments {
   final Key? key;
   final bool forceReload;
   MoneyPoolsViewArguments({this.key, this.forceReload = false});
-}
-
-/// TransactionsView arguments holder class
-class TransactionsViewArguments {
-  final Key? key;
-  final TransferDirection historyType;
-  TransactionsViewArguments(
-      {this.key, this.historyType = TransferDirection.InOrOut});
 }
 
 /// QRCodeViewMobile arguments holder class
@@ -497,19 +485,21 @@ class SearchViewArguments {
   final Key? key;
   final SearchType searchType;
   SearchViewArguments(
-      {this.key, this.searchType = SearchType.userToTransferTo});
+      {this.key, this.searchType = SearchType.UserToTransferTo});
 }
 
 /// TransferFundsAmountView arguments holder class
 class TransferFundsAmountViewArguments {
   final Key? key;
-  final FundTransferType type;
-  final dynamic receiverInfo;
+  final TransferType type;
+  final SenderInfo senderInfo;
+  final RecipientInfo? recipientInfo;
   final void Function()? onContinuePressed;
   TransferFundsAmountViewArguments(
       {this.key,
       required this.type,
-      this.receiverInfo,
+      required this.senderInfo,
+      this.recipientInfo,
       this.onContinuePressed});
 }
 

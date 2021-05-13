@@ -2,8 +2,10 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/data/description_texts.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
-import 'package:good_wallet/enums/fund_transfer_type.dart';
+import 'package:good_wallet/enums/money_source.dart';
+import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -25,8 +27,8 @@ class MoneyPoolsViewModel extends BaseModel {
   Future fetchMoneyPools({bool force = false}) async {
     setBusy(true);
     try {
-      await _moneyPoolService!.loadMoneyPools(currentUser.id, force);
-      await _moneyPoolService!.loadMoneyPoolsInvitedTo(currentUser.id);
+      await _moneyPoolService!.loadMoneyPools(currentUser.uid, force);
+      await _moneyPoolService!.loadMoneyPoolsInvitedTo(currentUser.uid);
     } catch (e) {
       // Need to set some validation
       log.e("Could not fetch money pools, error: ${e.toString()}");
@@ -44,7 +46,7 @@ class MoneyPoolsViewModel extends BaseModel {
 
   Future showInvitationBottomSheet(int index) async {
     var sheetResponse = await _bottomSheetService!.showCustomSheet(
-      variant: BottomSheetType.moneyPoolInvitation,
+      variant: BottomSheetType.MoneyPoolInvitation,
       customData: moneyPoolsInvitedTo[index],
       barrierDismissible: true,
     );
@@ -56,7 +58,7 @@ class MoneyPoolsViewModel extends BaseModel {
         setBusy(true);
         // accepted invitation
         bool success = await _moneyPoolService!.acceptInvitation(
-            currentUser.id, currentUser.fullName, moneyPoolsInvitedTo[index]);
+            currentUser.uid, currentUser.fullName, moneyPoolsInvitedTo[index]);
         if (success is String)
           _snackbarService!.showSnackbar(
               title: "Invitation could not be accepted",
@@ -67,7 +69,7 @@ class MoneyPoolsViewModel extends BaseModel {
       } else {
         // devlined invitation
         await _moneyPoolService!
-            .declineInvitation(currentUser.id, moneyPoolsInvitedTo[index]);
+            .declineInvitation(currentUser.uid, moneyPoolsInvitedTo[index]);
         _snackbarService!.showSnackbar(message: "Declined invitation");
       }
     }
@@ -85,6 +87,7 @@ class MoneyPoolsViewModel extends BaseModel {
   void navigateToTransferFundAmountView() {
     _navigationService!.navigateTo(Routes.transferFundsAmountView,
         arguments: TransferFundsAmountViewArguments(
-            type: FundTransferType.prepaidFundTopUp));
+            senderInfo: SenderInfo(moneySource: MoneySource.Bank),
+            type: TransferType.PrepaidFund));
   }
 }

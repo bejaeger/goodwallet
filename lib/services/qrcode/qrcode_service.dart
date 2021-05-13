@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
-import 'package:good_wallet/datamodels/user/user_model.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
+import 'package:good_wallet/exceptions/qrcode_service_exception.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -11,12 +12,12 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 class QRCodeService {
   final log = getLogger("qr_code_service.dart");
 
-  String getEncodedUserInfo(MyUser currentUser) {
+  String getEncodedUserInfo(User currentUser) {
     // Format for data stored in QR image
     // the format: key1: name, key2: name
     // easily converted later on
     return jsonEncode({
-      "uid": currentUser.id.toString(),
+      "uid": currentUser.uid.toString(),
       "name": currentUser.fullName.toString()
     });
   }
@@ -27,20 +28,26 @@ class QRCodeService {
       if (json["uid"] != null && json["name"] != null) {
         return PublicUserInfo(uid: json["uid"], name: json["name"]);
       }
-      return PublicUserInfo.error(
-          errorMessage:
+      throw QRCodeServiceException(
+          message:
+              "QR code has wrong format. If this error persists please contact support.",
+          prettyDetails:
               "QR code has wrong format. If this error persists please contact support.");
     } on FormatException catch (e) {
       log.e(
           "Scanned code does not seem to be a Good Wallet users QR code. Failed with error ${e.toString()}");
-      return PublicUserInfo.error(
-          errorMessage:
+      throw QRCodeServiceException(
+          message:
+              "Scanned code does not seem to be a Good Wallet users' QR code. Please try again.",
+          prettyDetails:
               "Scanned code does not seem to be a Good Wallet users' QR code. Please try again.");
     } catch (e) {
       log.e(
           "Could not find user information in scanned code because of error ${e.toString()}");
-      return PublicUserInfo.error(
-          errorMessage:
+      throw QRCodeServiceException(
+          message:
+              "Failed to scan QR code. Try to increase the brightness of your screen.",
+          prettyDetails:
               "Failed to scan QR code. Try to increase the brightness of your screen.");
     }
   }

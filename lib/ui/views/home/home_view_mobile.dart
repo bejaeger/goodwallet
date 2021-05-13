@@ -64,9 +64,11 @@ class HomeViewMobile extends StatelessWidget {
                                     onCommitButtonPressed:
                                         model.navigateToTransferFundAmountView,
                                     currentBalance:
-                                        model.userWallet.currentBalance,
-                                    totalDonations: model.userWallet.donations,
-                                    totalRaised: model.userWallet.raised,
+                                        model.userStats.currentBalance,
+                                    totalDonations: model.userStats
+                                        .donationStatistics.totalDonations,
+                                    totalRaised: model.userStats
+                                        .moneyTransferStatistics.totalRaised,
                                     userInfo: model.getQRCodeUserInfoString(),
                                     showGoodometer: false,
                                   ),

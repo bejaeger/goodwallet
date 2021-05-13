@@ -22,10 +22,10 @@ class MoneyPool with _$MoneyPool {
 
   @JsonSerializable(explicitToJson: true)
   factory MoneyPool({
+    required num total,
     required String name,
     required String adminUID,
     required String adminName,
-    required num total,
     required String currency,
     String? description,
     required MoneyPoolSettings moneyPoolSettings,

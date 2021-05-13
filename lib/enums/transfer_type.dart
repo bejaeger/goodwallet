@@ -1,7 +1,13 @@
 enum TransferType {
   Peer2Peer,
+  Peer2PeerSent,
+  Peer2PeerReceived,
   Donation,
+  MoneyPoolPayoutTransfer,
+  MoneyPoolPayout, // multiple MoneyPoolPayoutTransfers
   MoneyPoolContribution,
-  MoneyPoolPayout,
-  PrepaidFundTopUp
+  PrepaidFund,
+  Commitment,
+  All,
+  Invalid,
 }
