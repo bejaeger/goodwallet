@@ -126,7 +126,7 @@ class SingleMoneyPoolViewModel extends BaseModel {
           recipientInfo: recipientInfo),
     );
     if (result == "contributed") {
-      updateMoneyPool();
+      await updateMoneyPool();
     }
   }
 
@@ -166,9 +166,7 @@ class SingleMoneyPoolViewModel extends BaseModel {
         arguments: DisburseMoneyPoolViewArguments(moneyPool: moneyPool));
     if (result == "paidOut") {
       // could have a fancy animation here
-      updateMoneyPool();
+      await updateMoneyPool();
     }
   }
-
-  // TODO: Cancel TransferDataListener!
 }

@@ -19,20 +19,21 @@ class HomeViewModel extends BaseModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final QRCodeService? _qrCodeService = locator<QRCodeService>();
   final UserDataService? _userDataService = locator<UserDataService>();
+  final DialogService? _dialogService = locator<DialogService>();
   final log = getLogger("home_viewmodel.dart");
 
   // get latest outgoing peer 2 peer transfers used in send money bottom sheet view
   // Need to add listeners otherwise this will be empty
   MoneyTransferQueryConfig _queryConfigTransactionToPeers =
       MoneyTransferQueryConfig(
-          type: TransferType.Peer2PeerSent, makeUnique: true);
+          type: TransferType.Peer2PeerSent, makeUniqueRecipient: true);
   List<MoneyTransfer> get latestTransactionToPeers =>
       _userDataService!.getTransfers(config: _queryConfigTransactionToPeers);
 
   // get latest donations for give bottom sheet view
   // Need to add listeners otherwise this will be empty
-  MoneyTransferQueryConfig _queryConfigDonations =
-      MoneyTransferQueryConfig(type: TransferType.Donation, makeUnique: true);
+  MoneyTransferQueryConfig _queryConfigDonations = MoneyTransferQueryConfig(
+      type: TransferType.Donation, makeUniqueRecipient: true);
   List<MoneyTransfer> get latestDonations =>
       _userDataService!.getTransfers(config: _queryConfigDonations);
 
@@ -60,6 +61,9 @@ class HomeViewModel extends BaseModel {
   String getQRCodeUserInfoString() {
     return _qrCodeService!.getEncodedUserInfo(currentUser);
   }
+
+  ////////////////////////////////////////////////////////////////////
+  /// Bottom sheets
 
   Future showRaiseMoneyBottomSheet() async {
     var sheetResponse = await _bottomSheetService!.showCustomSheet(
@@ -96,6 +100,9 @@ class HomeViewModel extends BaseModel {
     }
   }
 
+  //////////////////////////////////////////////////////////
+  /// Navigation
+  ///
   Future navigateToSingleFeaturedAppView(FeaturedAppType type) async {
     log.i("Navigating to single featured app view");
     await _navigationService!.navigateTo(Routes.singleFeaturedAppView,
@@ -146,6 +153,15 @@ class HomeViewModel extends BaseModel {
         arguments: LayoutTemplateViewMobileArguments(
             initialBottomNavBarIndex: BottomNavigatorIndex.Give.index,
             initialTabBarIndex: 2));
+  }
+
+  void navigateToHomeWithAnimation() {
+    _navigationService!.navigateTo(Routes.layoutTemplateViewMobile,
+        arguments: LayoutTemplateViewMobileArguments(showDialog: true));
+  }
+
+  Future showDialog() async {
+    await _dialogService!.showDialog(title: "DIAALOG SUPER!");
   }
 
   @override

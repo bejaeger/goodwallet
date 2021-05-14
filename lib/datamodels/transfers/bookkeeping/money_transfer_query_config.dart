@@ -11,7 +11,7 @@ class MoneyTransferQueryConfig with _$MoneyTransferQueryConfig {
     Map<String, String>?
         isEqualToFilter, // e.g. {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
     int? maxNumberReturns,
-    bool? makeUnique,
+    bool? makeUniqueRecipient,
   }) = _MoneyTransferQueryConfig;
 
   factory MoneyTransferQueryConfig.fromJson(Map<String, dynamic> json) =>

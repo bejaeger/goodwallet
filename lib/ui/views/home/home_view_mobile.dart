@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_icon_paths.dart';
@@ -8,180 +9,200 @@ import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/ui/widgets/carousel_card.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/ui/widgets/good_wallet_card.dart';
-import 'package:good_wallet/ui/widgets/pledge_button.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class HomeViewMobile extends StatelessWidget {
+  final bool showDialog;
+  const HomeViewMobile({Key? key, required this.showDialog}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
-      viewModelBuilder: () => HomeViewModel(),
-      onModelReady: (model) => model.listenToData(),
-      builder: (context, model, child) => !model.isUserInitialized
-          ? Center(child: CircularProgressIndicator())
-          : Scaffold(
-              body: RefreshIndicator(
-                onRefresh: () async => await model.fetchData(),
-                child: CustomScrollView(
-                  key: PageStorageKey('storage-key'),
-                  physics: ScrollPhysics(),
-                  slivers: [
-                    CustomSliverAppBarSmall(
-                      title: "Home",
-                      onSecondRightIconPressed: model.navigateToProfileView,
-                      secondRightIcon: Icon(
-                        Icons.person,
-                        size: 28,
-                      ),
-                      onRightIconPressed: model.showNotImplementedSnackbar,
-                      rightIcon:
-                          Icon(Icons.notifications_none_rounded, size: 28),
-                    ),
-                    SliverList(
-                      delegate: SliverChildListDelegate(
-                        [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(width: LayoutSettings.horizontalPadding),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+        viewModelBuilder: () => HomeViewModel(),
+        onModelReady: (model) async {
+          if (showDialog)
+            SchedulerBinding.instance?.addPostFrameCallback((timeStamp) async {
+              await model.showDialog();
+            });
+          model.listenToData();
+          return;
+        },
+        builder: (context, model, child) {
+          return !model.isUserInitialized
+              ? Center(child: CircularProgressIndicator())
+              : Scaffold(
+                  body: RefreshIndicator(
+                    onRefresh: () async => await model.fetchData(),
+                    child: CustomScrollView(
+                      key: PageStorageKey('storage-key'),
+                      physics: ScrollPhysics(),
+                      slivers: [
+                        CustomSliverAppBarSmall(
+                          title: "Home",
+                          onSecondRightIconPressed: model.navigateToProfileView,
+                          secondRightIcon: Icon(
+                            Icons.person,
+                            size: 28,
+                          ),
+                          onRightIconPressed: model.showNotImplementedSnackbar,
+                          rightIcon:
+                              Icon(Icons.notifications_none_rounded, size: 28),
+                        ),
+                        SliverList(
+                          delegate: SliverChildListDelegate(
+                            [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  verticalSpaceMedium,
-                                  Text("Hi " + model.currentUser.fullName,
-                                      style: textTheme(context).headline4),
-                                  verticalSpaceSmall,
-                                  GoodWalletCard(
-                                    onCardTap:
-                                        model.navigateToTransactionsHistoryView,
-                                    onQRCodeTap: model.navigateToQRCodeView,
-                                    onHistoryButtonPressed:
-                                        model.navigateToTransactionsHistoryView,
-                                    onDonateButtonPressed:
-                                        model.showDonationBottomSheet,
-                                    onCommitButtonPressed:
-                                        model.navigateToTransferFundAmountView,
-                                    currentBalance:
-                                        model.userStats.currentBalance,
-                                    totalDonations: model.userStats
-                                        .donationStatistics.totalDonations,
-                                    totalRaised: model.userStats
-                                        .moneyTransferStatistics.totalRaised,
-                                    userInfo: model.getQRCodeUserInfoString(),
-                                    showGoodometer: false,
-                                  ),
-                                  verticalSpaceRegular,
-                                  Text("Services",
-                                      style: textTheme(context).headline6),
-                                  verticalSpaceRegular,
                                   SizedBox(
-                                    width: screenWidthWithoutPadding(context),
-                                    child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          CallToActionButtonRound(
-                                            text: "Send money",
-                                            onPressed:
-                                                model.showSendMoneyBottomSheet,
-                                            color: MyColors.lightRed
-                                                .withOpacity(0.3),
-                                            icon: Icon(Icons.send_rounded,
-                                                color: MyColors.lightRed),
-                                          ),
-                                          CallToActionButtonRound(
-                                            text: "Create money pool",
-                                            onPressed: model
-                                                .navigateToCreateMoneyPoolsView,
-                                            color: MyColors.paletteTurquoise
-                                                .withOpacity(0.3),
-                                            icon: Image.asset(
-                                                ImageIconPaths.circleOfPeople,
-                                                color:
-                                                    MyColors.paletteTurquoise),
-                                          ),
-                                          CallToActionButtonRound(
-                                            text: "Invite friends",
-                                            onPressed: model
-                                                .showNotImplementedSnackbar,
-                                            color:
-                                                MyColors.gold.withOpacity(0.3),
-                                            icon: Image.asset(
-                                                ImageIconPaths.huggingPeople,
-                                                color: MyColors.gold),
-                                          ),
-                                          CallToActionButtonRound(
-                                            text: "Explore apps",
-                                            onPressed: model
-                                                .showNotImplementedSnackbar,
-                                            color: MyColors.paletteBlue
-                                                .withOpacity(0.3),
-                                            icon: Image.asset(
-                                              ImageIconPaths.appsAroundGlobus,
-                                            ),
-                                          ),
-                                          // CallToActionButtonRound(
-                                          //   text: "Send money",
-                                          //   onPressed:
-                                          //       model.showSendMoneyBottomSheet,
-                                          //   color: MyColors.lightRed
-                                          //       .withOpacity(0.3),
-                                          //   icon: Icon(Icons.send_rounded,
-                                          //       color: MyColors.lightRed),
-                                          // ),
-                                        ],
+                                      width: LayoutSettings.horizontalPadding),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      verticalSpaceMedium,
+                                      Text("Hi " + model.currentUser.fullName,
+                                          style: textTheme(context).headline4),
+                                      verticalSpaceSmall,
+                                      GoodWalletCard(
+                                        onCardTap: model
+                                            .navigateToTransactionsHistoryView,
+                                        onQRCodeTap: model.navigateToQRCodeView,
+                                        onHistoryButtonPressed: model
+                                            .navigateToTransactionsHistoryView,
+                                        onDonateButtonPressed:
+                                            model.showDonationBottomSheet,
+                                        onCommitButtonPressed: model
+                                            .navigateToTransferFundAmountView,
+                                        currentBalance:
+                                            model.userStats.currentBalance,
+                                        totalDonations: model.userStats
+                                            .donationStatistics.totalDonations,
+                                        totalRaised: model
+                                            .userStats
+                                            .moneyTransferStatistics
+                                            .totalRaised,
+                                        userInfo:
+                                            model.getQRCodeUserInfoString(),
+                                        showGoodometer: false,
                                       ),
-                                    ),
+                                      verticalSpaceRegular,
+                                      Text("Services",
+                                          style: textTheme(context).headline6),
+                                      verticalSpaceRegular,
+                                      SizedBox(
+                                        width:
+                                            screenWidthWithoutPadding(context),
+                                        child: FittedBox(
+                                          fit: BoxFit.contain,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              CallToActionButtonRound(
+                                                text: "Send money",
+                                                onPressed: model
+                                                    .showSendMoneyBottomSheet,
+                                                color: MyColors.lightRed
+                                                    .withOpacity(0.3),
+                                                icon: Icon(Icons.send_rounded,
+                                                    color: MyColors.lightRed),
+                                              ),
+                                              CallToActionButtonRound(
+                                                text: "Create money pool",
+                                                onPressed: model
+                                                    .navigateToCreateMoneyPoolsView,
+                                                color: MyColors.paletteTurquoise
+                                                    .withOpacity(0.3),
+                                                icon: Image.asset(
+                                                    ImageIconPaths
+                                                        .circleOfPeople,
+                                                    color: MyColors
+                                                        .paletteTurquoise),
+                                              ),
+                                              CallToActionButtonRound(
+                                                text: "Invite friends",
+                                                onPressed: model
+                                                    .showNotImplementedSnackbar,
+                                                color: MyColors.gold
+                                                    .withOpacity(0.3),
+                                                icon: Image.asset(
+                                                    ImageIconPaths
+                                                        .huggingPeople,
+                                                    color: MyColors.gold),
+                                              ),
+                                              CallToActionButtonRound(
+                                                text: "Explore apps",
+                                                onPressed: model
+                                                    .showNotImplementedSnackbar,
+                                                color: MyColors.paletteBlue
+                                                    .withOpacity(0.3),
+                                                icon: Image.asset(
+                                                  ImageIconPaths
+                                                      .appsAroundGlobus,
+                                                ),
+                                              ),
+                                              // CallToActionButtonRound(
+                                              //   text: "Send money",
+                                              //   onPressed:
+                                              //       model.showSendMoneyBottomSheet,
+                                              //   color: MyColors.lightRed
+                                              //       .withOpacity(0.3),
+                                              //   icon: Icon(Icons.send_rounded,
+                                              //       color: MyColors.lightRed),
+                                              // ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
+                                  SizedBox(
+                                      width: LayoutSettings.horizontalPadding),
                                 ],
                               ),
-                              SizedBox(width: LayoutSettings.horizontalPadding),
+                              //verticalSpaceTiny,
+                              //_sendMoneyButton(context, model),
+                              verticalSpaceTiny,
+                              SectionHeader(
+                                  title: "Projects you supported",
+                                  onTextButtonTap:
+                                      model.showNotImplementedSnackbar),
+                              FeaturedProjectsCarousel(model: model),
+                              // verticalSpaceMedium,
+                              // SectionHeader(
+                              //   title: "Stats",
+                              //   //onTextButtonTap: model.showNotImplementedSnackbar,
+                              // ),
+                              // verticalSpaceTiny,
+                              // StatisticsDisplay(model: model),
+                              verticalSpaceRegular,
+                              SectionHeader(
+                                title: "Featured apps",
+                                onTextButtonTap:
+                                    model.showNotImplementedSnackbar,
+                              ),
+                              FeaturedAppsCarousel(model: model),
+                              // verticalSpaceRegular,
+                              // SectionHeader(
+                              //     title: "Projects you supported",
+                              //     onTextButtonTap:
+                              //         model.showNotImplementedSnackbar),
+                              // FeaturedProjectsCarousel(model: model),
+                              // //FeaturedAppsCarousel(model: model),
+                              // verticalSpaceMedium,
+                              verticalSpaceMassive,
                             ],
                           ),
-                          //verticalSpaceTiny,
-                          //_sendMoneyButton(context, model),
-                          verticalSpaceTiny,
-                          SectionHeader(
-                              title: "Projects you supported",
-                              onTextButtonTap:
-                                  model.showNotImplementedSnackbar),
-                          FeaturedProjectsCarousel(model: model),
-                          // verticalSpaceMedium,
-                          // SectionHeader(
-                          //   title: "Stats",
-                          //   //onTextButtonTap: model.showNotImplementedSnackbar,
-                          // ),
-                          // verticalSpaceTiny,
-                          // StatisticsDisplay(model: model),
-                          verticalSpaceRegular,
-                          SectionHeader(
-                            title: "Featured apps",
-                            onTextButtonTap: model.showNotImplementedSnackbar,
-                          ),
-                          FeaturedAppsCarousel(model: model),
-                          // verticalSpaceRegular,
-                          // SectionHeader(
-                          //     title: "Projects you supported",
-                          //     onTextButtonTap:
-                          //         model.showNotImplementedSnackbar),
-                          // FeaturedProjectsCarousel(model: model),
-                          // //FeaturedAppsCarousel(model: model),
-                          // verticalSpaceMedium,
-                          verticalSpaceMassive,
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            ),
-    );
+                  ),
+                );
+        });
   }
 
   Widget _sendMoneyButton(BuildContext context, dynamic model) {

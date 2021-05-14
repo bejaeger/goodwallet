@@ -47,7 +47,7 @@ class QRCodeViewMobile extends StatelessWidget {
 }
 
 class ScanQRCode extends StatefulWidget {
-  final Future Function(Barcode? result) analyzeScanResult;
+  final Future Function({required Barcode result}) analyzeScanResult;
 
   const ScanQRCode({Key? key, required this.analyzeScanResult})
       : super(key: key);
@@ -148,7 +148,7 @@ class _ScanQRCodeState extends State<ScanQRCode> {
     controller.scannedDataStream.listen((scanData) async {
       // analyzes scanned result and navigates to new
       // screen if qr code scan was successfull
-      await widget.analyzeScanResult(scanData);
+      await widget.analyzeScanResult(result: scanData);
     });
   }
 

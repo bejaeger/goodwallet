@@ -87,6 +87,8 @@ dev_dependencies:
   stacked_generator: ^0.4.1
   freezed: ^0.14.1+3
   json_serializable: 4.1.1
+  # Testing
+  mockito:
 
   
   #auto_route_generator:

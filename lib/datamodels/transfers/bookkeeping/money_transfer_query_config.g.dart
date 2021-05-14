@@ -14,7 +14,7 @@ _$_MoneyTransferQueryConfig _$_$_MoneyTransferQueryConfigFromJson(
       (k, e) => MapEntry(k, e as String),
     ),
     maxNumberReturns: json['maxNumberReturns'] as int?,
-    makeUnique: json['makeUnique'] as bool?,
+    makeUniqueRecipient: json['makeUniqueRecipient'] as bool?,
   );
 }
 
@@ -24,7 +24,7 @@ Map<String, dynamic> _$_$_MoneyTransferQueryConfigToJson(
       'type': _$TransferTypeEnumMap[instance.type],
       'isEqualToFilter': instance.isEqualToFilter,
       'maxNumberReturns': instance.maxNumberReturns,
-      'makeUnique': instance.makeUnique,
+      'makeUniqueRecipient': instance.makeUniqueRecipient,
     };
 
 K _$enumDecode<K, V>(

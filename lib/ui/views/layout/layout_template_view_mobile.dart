@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
-import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/causes/causes_filter_view_mobile.dart';
-import 'package:good_wallet/ui/views/causes/causes_view_mobile.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_viewmodel.dart';
 import 'package:good_wallet/ui/views/money_pools/money_pools_view.dart';
-import 'package:good_wallet/ui/views/raise_money/raise_money_view.dart';
-import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:stacked/stacked.dart';
 
 class LayoutTemplateViewMobile extends StatefulWidget {
   final int? initialBottomNavBarIndex;
   final int? initialTabBarIndex;
+  final bool showDialog;
 
   const LayoutTemplateViewMobile(
-      {Key? key, this.initialBottomNavBarIndex, this.initialTabBarIndex = 0})
+      {Key? key,
+      this.initialBottomNavBarIndex,
+      this.initialTabBarIndex = 0,
+      this.showDialog = false})
       : super(key: key);
 
   @override
@@ -84,7 +84,7 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
 
   List<Widget> _buildScreens() {
     return [
-      HomeViewMobile(),
+      HomeViewMobile(showDialog: widget.showDialog),
       CausesFilterViewMobile(initialIndex: widget.initialTabBarIndex),
       MoneyPoolsView()
     ];

@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
+import 'package:good_wallet/exceptions/qrcode_service_exception.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -29,13 +30,12 @@ void main() {
         expect(result.name, expectedResult.name);
       });
 
-      test(
-          'When an invalid code is scanned, service should return proper error message',
+      test('When an invalid code is scanned, service should throw an error',
           () {
         var service = QRCodeService();
         var barcode = Barcode("SOME RESULT", BarcodeFormat.qrcode, null);
-        var result = service.analyzeScanResult(barcode);
-        //expect(result.errorMessage != null, true);
+        expect(() => service.analyzeScanResult(barcode),
+            throwsA(isA<QRCodeServiceException>()));
       });
     });
   });

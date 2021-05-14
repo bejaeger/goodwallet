@@ -237,13 +237,18 @@ class StackedRouter extends RouterBase {
           key: args.key,
           initialBottomNavBarIndex: args.initialBottomNavBarIndex,
           initialTabBarIndex: args.initialTabBarIndex,
+          showDialog: args.showDialog,
         ),
         settings: data,
       );
     },
     HomeViewMobile: (data) {
+      var args = data.getArgs<HomeViewMobileArguments>(nullOk: false);
       return MaterialPageRoute<dynamic>(
-        builder: (context) => HomeViewMobile(),
+        builder: (context) => HomeViewMobile(
+          key: args.key,
+          showDialog: args.showDialog,
+        ),
         settings: data,
       );
     },
@@ -428,8 +433,19 @@ class LayoutTemplateViewMobileArguments {
   final Key? key;
   final int? initialBottomNavBarIndex;
   final int? initialTabBarIndex;
+  final bool showDialog;
   LayoutTemplateViewMobileArguments(
-      {this.key, this.initialBottomNavBarIndex, this.initialTabBarIndex = 0});
+      {this.key,
+      this.initialBottomNavBarIndex,
+      this.initialTabBarIndex = 0,
+      this.showDialog = false});
+}
+
+/// HomeViewMobile arguments holder class
+class HomeViewMobileArguments {
+  final Key? key;
+  final bool showDialog;
+  HomeViewMobileArguments({this.key, required this.showDialog});
 }
 
 /// SingleProjectViewMobile arguments holder class

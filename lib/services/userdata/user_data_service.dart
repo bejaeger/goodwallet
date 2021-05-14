@@ -1,16 +1,19 @@
-// Service to connect to user data stored on firestore
+// Intermediary between Firestore and Viewmodels
 
 // Functionalities
 // - initializing current User (id, e-mail, fullname, wallet balances)
 // - exposing currentUser
-// - exposing stream of wallet balances
+// - exposing stream of statistics
+// - allows to retrieve any transfer document
+
+// TODO: Get rid of FirebaseAuth dependence or make it such
+// that it can be mocked out in unit tests
+// Potentially add authStateChange to FirebaseAuthenticationService
 
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
-import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
@@ -28,24 +31,11 @@ class UserDataService {
   final log = getLogger("user_data_service.dart");
 
   // firestore collections
-  // TODO: Replace with FirestoreApi
   final _firestoreApi = locator<FirestoreApi>();
-  final CollectionReference _paymentsCollectionReference =
-      FirebaseFirestore.instance.collection("payments");
-  final CollectionReference _usersCollectionReference =
-      FirebaseFirestore.instance.collection("users");
-  final CollectionReference _moneyPoolPayoutsCollectionReference =
-      FirebaseFirestore.instance.collection("moneyPoolPayouts");
 
   final FirebaseAuthenticationService? _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
   final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
-
-  // controller to expose stream of wallet transactions and payments
-  final StreamController<List<dynamic>> _transactionsController =
-      StreamController<List<dynamic>>.broadcast();
-  final StreamController<List<dynamic>> _walletTransactionsController =
-      StreamController<List<dynamic>>.broadcast();
 
   // subject to keep track of initialization of user
   BehaviorSubject<UserStatus> userStateSubject =
@@ -59,6 +49,7 @@ class UserDataService {
 
   // current user with all our custom data attached to it
   late User _currentUser;
+  // Get current user
   User get currentUser => _currentUser;
   void setCurrentUser(User user) {
     _currentUser = user;
@@ -76,10 +67,10 @@ class UserDataService {
   // will become more useful thinking about PWAs especially
   // on desktop.
   late Stream<firebase.User?> userStream;
-  final firebase.FirebaseAuth _firebaseAuth = firebase.FirebaseAuth.instance;
+  //final firebase.FirebaseAuth _firebaseAuth = firebase.FirebaseAuth.instance;
 
   UserDataService() {
-    userStream = _firebaseAuth.authStateChanges();
+    userStream = _firebaseAuthenticationService!.authStateChanges;
     userStream.listen(
       (user) async {
         if (user != null) {
@@ -179,9 +170,11 @@ class UserDataService {
     }
   }
 
-  ////////////////////////////////////////////////////////////
-  /// Setting up listeners
+  ///////////////////////////////////////////////////////////////
   ///
+  /// Functions related to user data
+
+  /// Setting up user stats listener
   Future listenToUserSummaryStats(String uid) async {
     try {
       _firestoreApi
@@ -192,411 +185,36 @@ class UserDataService {
     }
   }
 
-  /////////////////////////////////////////////////////
-  /// Functions related to money transfers
-  Stream listenToTransactionsRealTime() {
-    // Function listening to payments collections
-    // where user is found in senderUid or recipientUid
-
-    // TODO: Add limit to this query and only load more
-    // when user asks for it!
-    // keyword: pagination
-    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
-
-    if (userStateSubject.value != UserStatus.Initialized)
-      log.i("User not initialized, the following code will break");
-
-    // There is no OR query for different fields in firebase
-    // Get single streams and combine later with rxDart
-
-    Stream<QuerySnapshot> outgoing = _paymentsCollectionReference
-        .where("transferDetails.senderId", isEqualTo: currentUser.uid)
-        .orderBy("createdAt",
-            descending: true) // already added because needed with limit!
-        .snapshots();
-    Stream<QuerySnapshot> incoming = _paymentsCollectionReference
-        .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
-        .orderBy("createdAt", descending: true)
-        .snapshots();
-
-    // combine streams with rxdart
-    Stream<List<dynamic>> transactionStream = Rx.combineLatest2(
-        outgoing, incoming, (dynamic outSnapshot, dynamic inSnapshot) {
-      // list of transactions to be returned
-      List<dynamic> transactions = <dynamic>[];
-
-      if (outSnapshot.docs.isNotEmpty) {
-        transactions.addAll(outSnapshot.docs
-            .map((snapshot) => MoneyTransfer.fromJson(snapshot.data()))
-            .toList());
-      }
-      if (inSnapshot.docs.isNotEmpty) {
-        List<dynamic> inTransactions = inSnapshot.docs
-            .map((snapshot) => MoneyTransfer.fromJson(snapshot.data()))
-            .toList();
-        List<dynamic> transactionIds =
-            transactions.map((element) => element.transactionId).toList();
-        inTransactions.forEach((element) {
-          // Add logic to find top ups (transactions to own account!)
-          // Can be deprecated once data is already stored accordingly with topUp = true!
-          if (!transactionIds.contains(element.transactionId)) {
-            transactions.add(element);
-          } else {
-            element.topUp = true;
-            transactions.removeWhere(
-                (el2) => el2.transactionId == element.transactionId);
-            transactions.add(element);
-          }
-        });
-      }
-
-      return transactions;
-    });
-    // listen to combined stream and add transactions to controller
-    transactionStream.listen((transactions) {
-      _transactionsController.add(transactions);
-    });
-    // return stream from controller
-    return _transactionsController.stream;
-  }
-
-  Stream listenToWalletTransactionsRealTime() {
-    // Function listening to collections to fetch
-    // incoming and outgoing (donations) money of the Good Wallet
-
-    // TODO: Add limit to this query and only load more
-    // when user asks for it!
-    // keyword: pagination
-    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
-
-    if (userStateSubject.value != UserStatus.Initialized)
-      log.i("User not initialized, the following code will break");
-
-    // There is no OR query for different fields in firebase
-    // Get single streams and combine later with rxDart
-
-    // outgoing = donations
-    Stream<QuerySnapshot> outgoing = _usersCollectionReference
-        .doc(_currentUser.uid)
-        .collection("donations")
-        .orderBy("createdAt",
-            descending: true) // already added because needed with limit!
-        .snapshots();
-    Stream<QuerySnapshot> incoming = _paymentsCollectionReference
-        .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
-        .orderBy("createdAt", descending: true)
-        .snapshots();
-
-    // combine streams with rxdart
-    Stream<List<dynamic>> transactionStream = Rx.combineLatest2(
-        outgoing, incoming, (dynamic outSnapshot, dynamic inSnapshot) {
-      // list of transactions to be returned
-      List<dynamic> transactions = <dynamic>[];
-
-      if (outSnapshot.docs.isNotEmpty) {
-        transactions.addAll(outSnapshot.docs
-            .map((snapshot) => MoneyTransfer.fromJson(snapshot.data()))
-            .toList());
-      }
-      if (inSnapshot.docs.isNotEmpty) {
-        List<dynamic> inTransactions = inSnapshot.docs
-            .map((snapshot) => MoneyTransfer.fromJson(snapshot.data()))
-            .toList();
-        List<dynamic> transactionIds =
-            transactions.map((element) => element.transactionId).toList();
-        inTransactions.forEach((element) {
-          // Add logic to find top ups (transactions to own account!)
-          // Can be deprecated once data is already stored accordingly with topUp = true!
-          if (!transactionIds.contains(element.transactionId)) {
-            transactions.add(element);
-          } else {
-            element.topUp = true;
-            transactions.removeWhere(
-                (el2) => el2.transactionId == element.transactionId);
-            transactions.add(element);
-          }
-        });
-      }
-
-      return transactions;
-    });
-    // listen to combined stream and add transactions to controller
-    transactionStream.listen((transactions) {
-      _walletTransactionsController.add(transactions);
-    });
-    // return stream from controller
-    return _walletTransactionsController.stream;
-  }
-
-  Future<List<dynamic>> getListOfDonations() async {
-    // TODO: Add limit to this query and only load more
-    // when user asks for it!
-    // keyword: pagination
-    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
-
-    if (userStateSubject.value != UserStatus.Initialized)
-      log.i("User not initialized, the following code will break!");
-
-    List<dynamic> listOfDonations = <dynamic>[];
-
-    QuerySnapshot donationsSnapshot = await _usersCollectionReference
-        .doc(_currentUser.uid)
-        .collection("donations")
-        .orderBy("createdAt", descending: true)
-        .get();
-    if (donationsSnapshot.docs.isNotEmpty) {
-      listOfDonations.addAll(donationsSnapshot.docs
-          .map((snapshot) => MoneyTransfer.fromJson(snapshot.data()))
-          .toList());
-    } else {
-      log.e("Snapshot of donations collectoin is empty");
-    }
-
-    return listOfDonations;
-  }
-
-  Future<List<dynamic>> getListOfTransactionsToPeers() async {
-    // TODO: Add limit to this query and only load more
-    // when user asks for it!
-    // keyword: pagination
-    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
-
-    if (userStateSubject.value != UserStatus.Initialized)
-      log.i("User not initialized, the following code will break!");
-
-    List<dynamic> listOfTransactionsToPeers = <dynamic>[];
-    QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
-        .where("transferDetails.senderId", isEqualTo: currentUser.uid)
-        .orderBy("createdAt",
-            descending: true) // already added because needed with limit!
-        .get();
-    if (transactionsSnapshot.docs.isNotEmpty) {
-      try {
-        listOfTransactionsToPeers.addAll(transactionsSnapshot.docs
-            .map((snapshot) => MoneyTransfer.fromJson(snapshot.data()))
-            .toList());
-      } catch (e) {
-        log.e("Could not map firestore data into TransactionModel");
-      }
-    } else {
-      log.e("Snapshot of donations collecton is empty");
-    }
-
-    return listOfTransactionsToPeers;
-  }
-
-  Future<List<dynamic>> getListOfIncomingTransactions() async {
-    // TODO: Add limit to this query and only load more
-    // when user asks for it!
-    // keyword: pagination
-    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
-
-    if (userStateSubject.value != UserStatus.Initialized)
-      log.i("User not initialized, the following code will break!");
-
-    List<dynamic> listOfTransactions = <dynamic>[];
-    QuerySnapshot transactionsSnapshot = await _paymentsCollectionReference
-        .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
-        .orderBy("createdAt",
-            descending: true) // already added because needed with limit!
-        .get();
-    if (transactionsSnapshot.docs.isNotEmpty) {
-      try {
-        listOfTransactions.addAll(transactionsSnapshot.docs
-            .map((snapshot) => MoneyTransfer.fromJson(snapshot.data()))
-            .toList());
-      } catch (e) {
-        log.e("Could not map firestore data into TransactionModel");
-      }
-    } else {
-      log.e("Snapshot of donations collection is empty");
-    }
-
-    return listOfTransactions;
-  }
-
-  Future<List<dynamic>> getListOfMoneyPoolPayouts() async {
-    // TODO: Add limit to this query and only load more
-    // when user asks for it!
-    // keyword: pagination
-    // @see https://www.filledstacks.com/post/how-to-perform-real-time-pagination-with-firestore/
-
-    if (userStateSubject.value != UserStatus.Initialized)
-      log.i("User not initialized, the following code will break!");
-
-    List<dynamic> listOfTransactions = <dynamic>[];
-    QuerySnapshot transactionsSnapshot =
-        await _moneyPoolPayoutsCollectionReference
-            .where("paidOutUsersIds", arrayContains: currentUser.uid)
-            .get();
-    if (transactionsSnapshot.docs.isNotEmpty) {
-      try {
-        listOfTransactions.addAll(transactionsSnapshot.docs
-            .map((snapshot) => MoneyPoolPayout.fromJson(snapshot.data()))
-            .toList());
-      } catch (e) {
-        log.e("Could not map firestore data into MoneyPoolPayout");
-      }
-    } else {
-      log.e("Snapshot of donations collection is empty");
-    }
-    return listOfTransactions;
-  }
-
-  Stream<List<MoneyTransfer>> getCombinedMoneyTransfersStream(
-      {required Query outgoing,
-      required Query incoming,
-      int? maxNumberReturns}) {
-    // combine streams with rxdart
-    Stream<QuerySnapshot> outSnapshot = maxNumberReturns == null
-        ? outgoing.snapshots()
-        : outgoing.limit(maxNumberReturns).snapshots();
-    Stream<QuerySnapshot> inSnapshot = maxNumberReturns == null
-        ? incoming.snapshots()
-        : incoming.limit(maxNumberReturns).snapshots();
-
-    return Rx.combineLatest2<QuerySnapshot, QuerySnapshot, List<MoneyTransfer>>(
-        outSnapshot, inSnapshot,
-        (QuerySnapshot outSnapshot, QuerySnapshot inSnapshot) {
-      // list of transactions to be returned
-      List<MoneyTransfer> transactions = [];
-      if (outSnapshot.docs.isNotEmpty) {
-        transactions.addAll(outSnapshot.docs
-            .map((snapshot) => MoneyTransfer.fromJson(snapshot.data()))
-            .toList());
-      }
-      if (inSnapshot.docs.isNotEmpty) {
-        List<MoneyTransfer> inTransactions = inSnapshot.docs
-            .map((snapshot) => MoneyTransfer.fromJson(snapshot.data()))
-            .toList();
-        List<String> transactionIds =
-            transactions.map((element) => element.transferId).toList();
-        inTransactions.forEach((element) {
-          // TODO: Resolve conflicts properly
-          // Add logic to find top ups (transactions to own account!)
-          // Can be deprecated once data is already stored accordingly with topUp = true!
-          if (!transactionIds.contains(element.transferId)) {
-            transactions.add(element);
-          } else {
-            transactions
-                .removeWhere((el2) => el2.transferId == element.transferId);
-            transactions.add(element);
-          }
-        });
-      }
-      transactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      return transactions;
-    });
-  }
-
-  isSupportedFirestoreQueryFilter({dynamic isEqualToFilter}) {
-    if (isEqualToFilter == null) return true;
-    if (isEqualToFilter.length > 1) return false;
-    return true;
-  }
-
   // Get query for transaction with given direction.
   // optionally set the maximum number of documents retrieved
   Stream<List<MoneyTransfer>> getTransferDataStream(
       {required MoneyTransferQueryConfig config}) {
     // check arguments:
-    if (!isSupportedFirestoreQueryFilter(
-        isEqualToFilter: config.isEqualToFilter)) {
+    if (!isValidFirestoreQueryConfig(config: config)) {
       throw UserDataServiceException(
           message:
               "The provided firestore query filter: '$config.isEqualToFilter' is not supported at the moment!");
     }
+    return _firestoreApi.getTransferDataStream(
+        config: config, uid: currentUser.uid);
+  }
 
-    Query query;
-    if (config.type == TransferType.All) {
-      Query outgoing = _paymentsCollectionReference
-          .where("transferDetails.senderId", isEqualTo: currentUser.uid)
-          .orderBy("createdAt", descending: true);
-      Query incoming = _paymentsCollectionReference
-          .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
-          .orderBy("createdAt", descending: true);
-      Stream<List<MoneyTransfer>> transfersStream =
-          getCombinedMoneyTransfersStream(
-              outgoing: outgoing, incoming: incoming);
-      return transfersStream;
-    } else if (config.type == TransferType.Peer2PeerSent) {
-      query = _paymentsCollectionReference
-          .where("transferDetails.senderId", isEqualTo: currentUser.uid)
-          // document fields are the same so the type is Peer2Peer here
-          .where("type", isEqualTo: "Peer2Peer")
-          .orderBy("createdAt", descending: true);
-      // .where("createdAt",
-      // isGreaterThan: Timestamp.fromDate(DateTime(2021, 5, 8)));
-    } else if (config.type == TransferType.Peer2PeerReceived) {
-      query = _paymentsCollectionReference
-          .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
-          // document fields are the same so the type is Peer2Peer here
-          .where("type", isEqualTo: "Peer2Peer")
-          .orderBy("createdAt", descending: true);
-    } else if (config.type == TransferType.Peer2Peer) {
-      Query querySent = _paymentsCollectionReference
-          .where("transferDetails.senderId", isEqualTo: currentUser.uid)
-          // document fields are the same so the type is Peer2Peer here
-          .where("type", isEqualTo: "Peer2Peer")
-          .orderBy("createdAt", descending: true);
-      Query queryReceived = _paymentsCollectionReference
-          .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
-          // document fields are the same so the type is Peer2Peer here
-          .where("type", isEqualTo: "Peer2Peer")
-          .orderBy("createdAt", descending: true);
-      Stream<List<MoneyTransfer>>? stream = getCombinedMoneyTransfersStream(
-          outgoing: querySent,
-          incoming: queryReceived,
-          maxNumberReturns: config.maxNumberReturns);
-      return stream;
-    } else if (config.type == TransferType.Donation) {
-      query = _paymentsCollectionReference
-          .where("transferDetails.senderId", isEqualTo: currentUser.uid)
-          .where("type", isEqualTo: "Donation")
-          .orderBy("createdAt", descending: true);
-    } else if (config.type == TransferType.MoneyPoolPayout) {
-      // This is querying for the full payout documents holding
-      // all MoneyPoolPayoutTransfers. Look in moneyPoolPayouts collection
-      query = _moneyPoolPayoutsCollectionReference
-          .where("paidOutUserIds", arrayContains: currentUser.uid)
-          .orderBy("createdAt", descending: true);
-    } else if (config.type == TransferType.MoneyPoolPayoutTransfer) {
-      query = _paymentsCollectionReference
-          .where("transferDetails.recipientId", isEqualTo: currentUser.uid)
-          .where("type", isEqualTo: "MoneyPoolPayoutTransfer")
-          .orderBy("createdAt", descending: true);
-    } else if (config.type == TransferType.MoneyPoolContribution) {
-      if (config.isEqualToFilter == null) {
-        query = _paymentsCollectionReference
-            .where("transferDetails.senderId", isEqualTo: currentUser.uid)
-            .where("type", isEqualTo: "MoneyPoolContribution")
-            .orderBy("createdAt", descending: true);
-      } else {
-        query = _paymentsCollectionReference
-            .where(config.isEqualToFilter!.keys.first,
-                isEqualTo: config.isEqualToFilter!.values.first)
-            .where("transferDetails.senderId", isEqualTo: currentUser.uid)
-            .where("type", isEqualTo: "MoneyPoolContribution")
-            .orderBy("createdAt", descending: true);
-      }
-    } else {
-      // TODO: Throw exception and make return value non-nullable
-      log.e("Could not find stream corresponding to provided config '$config'");
-      throw Exception("Exception occured. TODO: Add proper Exception here!");
+  // Get transfers for config. Using this function makes only sense
+  // if a listener has been added with addTransferDataListener, seebe low
+  List<MoneyTransfer> getTransfers({required MoneyTransferQueryConfig config}) {
+    if (config.type == TransferType.Invalid) {
+      log.w(
+          "You tried to retrieve list of money transfers of invalid type. Returning empty list");
+      return [];
     }
 
-    if (config.maxNumberReturns != null)
-      query = query.limit(config.maxNumberReturns!);
-
-    // convert Stream<QuerySnapshot> to Stream<List<MoneyTransfer>>
-    Stream<List<MoneyTransfer>> returnStream = query.snapshots().map(
-          (event) => event.docs
-              .map(
-                (doc) => MoneyTransfer.fromJson(doc.data()),
-              )
-              .toList(),
-        );
-    return returnStream;
+    if (!latestTransfers.containsKey(config)) {
+      log.w(
+          "Did not find any transfers for config $config. Please add a listener with 'addTransferDataListener()'. Returning empty list");
+      return [];
+    } else {
+      return latestTransfers[config]!;
+    }
   }
 
   // More generic class to listen to firestore collections for updates.
@@ -604,7 +222,7 @@ class UserDataService {
   // to the service
   void addTransferDataListener(
       {required MoneyTransferQueryConfig config, void Function()? callback}) {
-    // TODO: Treat type MoneyPoolPayout
+    // TODO: Support for type MoneyPoolPayout
     if (config.type == TransferType.MoneyPoolPayout) {
       log.e(
           "Can't listen to money pool payouts at the moment. NOT YET IMPLEMENTED");
@@ -628,9 +246,9 @@ class UserDataService {
         _transfersSubscriptions[config] = snapshot.listen(
           (transactions) {
             // Option to make the list unique!
-            if (config.makeUnique != null) {
-              // TODO: Make function that makes this list unique for senderNames
-              latestTransfers[config] = transactions.toSet().toList();
+            if (config.makeUniqueRecipient != null) {
+              latestTransfers[config] =
+                  getMoneyTransfersWithUniqueSender(transactions);
             } else {
               latestTransfers[config] = transactions;
             }
@@ -652,22 +270,26 @@ class UserDataService {
     _transfersSubscriptions[config]?.pause();
   }
 
-  // Get transactions for type and direction
-  // Could be done better! User has to parse redundant information
-  List<MoneyTransfer> getTransfers({required MoneyTransferQueryConfig config}) {
-    if (config.type == TransferType.Invalid) {
-      log.w(
-          "You tried to retrieve list of money transfers of invalid type. Returning empty list");
-      return [];
-    }
+  ///////////////////////////////////////////////
+  /// Helpers
 
-    if (!latestTransfers.containsKey(config)) {
-      log.w(
-          "Did not find any transfers for config $config. Please add a listener with 'addTransferDataListener()'. Returning empty list");
-      return [];
-    } else {
-      return latestTransfers[config]!;
-    }
+  /// Return list with removed duplicates
+  List<MoneyTransfer> getMoneyTransfersWithUniqueSender(
+      List<MoneyTransfer> transfer) {
+    List<MoneyTransfer> returnTransfers = [];
+    transfer.forEach((element) {
+      if (!returnTransfers.any((returnElement) =>
+          returnElement.transferDetails.recipientId ==
+          element.transferDetails.recipientId)) returnTransfers.add(element);
+    });
+    return returnTransfers;
+  }
+
+  bool isValidFirestoreQueryConfig({required MoneyTransferQueryConfig config}) {
+    if (config.isEqualToFilter != null && config.isEqualToFilter!.length > 1)
+      return false;
+    if (config.type == TransferType.Invalid) return false;
+    return true;
   }
 
   ///////////////////////////////////////////////////

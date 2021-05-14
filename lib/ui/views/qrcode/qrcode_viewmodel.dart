@@ -26,14 +26,14 @@ class QRCodeViewModel extends BaseModel {
     await _navigationService!.replaceWith(Routes.searchView);
   }
 
-  Future analyzeScanResult([Barcode? result]) async {
+  Future analyzeScanResult({required Barcode result}) async {
     if (isBusy) {
       return null;
     }
     setBusy(true);
     var deadTime = Duration(seconds: 3);
     log.i(
-        "Scanned code with result '${result?.code}' and format '${result?.format}");
+        "Scanned code with result '${result.code}' and format '${result.format}");
     PublicUserInfo? userInfo;
     try {
       userInfo = _qrCodeService!.analyzeScanResult(result);

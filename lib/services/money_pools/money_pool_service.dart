@@ -69,36 +69,6 @@ class MoneyPoolService {
     _updateNumberInvitedMoneyPools(moneyPoolsInvitedTo.length);
   }
 
-  // returns list of invited users for specific money pool
-  Future<List<PublicUserInfo>> getInvitedUsers(String mpid) async {
-    DocumentSnapshot snapshot =
-        await _moneyPoolsCollectionReference.doc(mpid).get();
-    List invitedUsers = snapshot.get("invitedUsers");
-    List<PublicUserInfo> returnList =
-        invitedUsers.map((s) => PublicUserInfo.fromJson(s.data())).toList();
-    log.i("Fetched ${returnList.length} invited users");
-    return returnList;
-  }
-
-  // Get list of contributing users for given money pool
-  Future<List> getContributingUsers(String mpid) async {
-    DocumentSnapshot snapshot =
-        await _moneyPoolsCollectionReference.doc(mpid).get();
-    List contributingUsers = [];
-    try {
-      List contributingUsersList = snapshot.get("contributingUsers");
-      contributingUsers.addAll(contributingUsersList.map((element) {
-        ContributingUser.fromJson(element);
-      }).toList());
-    } on StateError catch (e) {
-      log.e(
-          "Returning empty list, likely because array with name 'contributingUsers' could not be found in document. Error thrown: ${e.toString()}");
-      return [];
-    }
-    log.i("Fetched ${contributingUsers.length} contributing users");
-    return contributingUsers;
-  }
-
   // Invites user by adding user info to money pool document
   // Adds to: invitedUserIds and invitedUsers (PublicFacingUserInfo)
   Future addInvitedUserToMoneyPool(
@@ -210,6 +180,7 @@ class MoneyPoolService {
     moneyPool.contributingUsers.add(newContributingUser);
     moneyPool.contributingUserIds.add(uid);
 
+    // TODO: Add cloud function for this update
     // update money pool
     // This call should be made with a cloud function!
     await updateMoneyPool(moneyPool);
@@ -255,22 +226,6 @@ class MoneyPoolService {
           "Could not find data of money pool with id $mpid, returning null empty pool");
       return null;
     }
-  }
-
-  // returns list of user money pool contributions
-  Future<List<MoneyTransfer>> getMoneyPoolContributions(String mpid) async {
-    List<MoneyTransfer> returnList = [];
-    QuerySnapshot snapshot = await _paymentsCollectionReference
-        .where("moneyPoolInfo.moneyPoolId", isEqualTo: mpid)
-        .where("type", isEqualTo: "MoneyPoolContribution")
-        .get();
-    if (snapshot.docs.isNotEmpty) {
-      returnList = snapshot.docs
-          .map((element) => MoneyTransfer.fromJson(element.data()))
-          .toList();
-    }
-    log.i("Fetched ${returnList.length} money pool contributions");
-    return returnList;
   }
 
   // returns list of money pool payouts

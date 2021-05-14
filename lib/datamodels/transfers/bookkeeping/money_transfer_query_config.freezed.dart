@@ -25,12 +25,12 @@ class _$MoneyTransferQueryConfigTearOff {
       {required TransferType type,
       Map<String, String>? isEqualToFilter,
       int? maxNumberReturns,
-      bool? makeUnique}) {
+      bool? makeUniqueRecipient}) {
     return _MoneyTransferQueryConfig(
       type: type,
       isEqualToFilter: isEqualToFilter,
       maxNumberReturns: maxNumberReturns,
-      makeUnique: makeUnique,
+      makeUniqueRecipient: makeUniqueRecipient,
     );
   }
 
@@ -48,7 +48,7 @@ mixin _$MoneyTransferQueryConfig {
   Map<String, String>? get isEqualToFilter =>
       throw _privateConstructorUsedError; // e.g. {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
   int? get maxNumberReturns => throw _privateConstructorUsedError;
-  bool? get makeUnique => throw _privateConstructorUsedError;
+  bool? get makeUniqueRecipient => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -65,7 +65,7 @@ abstract class $MoneyTransferQueryConfigCopyWith<$Res> {
       {TransferType type,
       Map<String, String>? isEqualToFilter,
       int? maxNumberReturns,
-      bool? makeUnique});
+      bool? makeUniqueRecipient});
 }
 
 /// @nodoc
@@ -82,7 +82,7 @@ class _$MoneyTransferQueryConfigCopyWithImpl<$Res>
     Object? type = freezed,
     Object? isEqualToFilter = freezed,
     Object? maxNumberReturns = freezed,
-    Object? makeUnique = freezed,
+    Object? makeUniqueRecipient = freezed,
   }) {
     return _then(_value.copyWith(
       type: type == freezed
@@ -97,9 +97,9 @@ class _$MoneyTransferQueryConfigCopyWithImpl<$Res>
           ? _value.maxNumberReturns
           : maxNumberReturns // ignore: cast_nullable_to_non_nullable
               as int?,
-      makeUnique: makeUnique == freezed
-          ? _value.makeUnique
-          : makeUnique // ignore: cast_nullable_to_non_nullable
+      makeUniqueRecipient: makeUniqueRecipient == freezed
+          ? _value.makeUniqueRecipient
+          : makeUniqueRecipient // ignore: cast_nullable_to_non_nullable
               as bool?,
     ));
   }
@@ -116,7 +116,7 @@ abstract class _$MoneyTransferQueryConfigCopyWith<$Res>
       {TransferType type,
       Map<String, String>? isEqualToFilter,
       int? maxNumberReturns,
-      bool? makeUnique});
+      bool? makeUniqueRecipient});
 }
 
 /// @nodoc
@@ -136,7 +136,7 @@ class __$MoneyTransferQueryConfigCopyWithImpl<$Res>
     Object? type = freezed,
     Object? isEqualToFilter = freezed,
     Object? maxNumberReturns = freezed,
-    Object? makeUnique = freezed,
+    Object? makeUniqueRecipient = freezed,
   }) {
     return _then(_MoneyTransferQueryConfig(
       type: type == freezed
@@ -151,9 +151,9 @@ class __$MoneyTransferQueryConfigCopyWithImpl<$Res>
           ? _value.maxNumberReturns
           : maxNumberReturns // ignore: cast_nullable_to_non_nullable
               as int?,
-      makeUnique: makeUnique == freezed
-          ? _value.makeUnique
-          : makeUnique // ignore: cast_nullable_to_non_nullable
+      makeUniqueRecipient: makeUniqueRecipient == freezed
+          ? _value.makeUniqueRecipient
+          : makeUniqueRecipient // ignore: cast_nullable_to_non_nullable
               as bool?,
     ));
   }
@@ -166,7 +166,7 @@ class _$_MoneyTransferQueryConfig implements _MoneyTransferQueryConfig {
       {required this.type,
       this.isEqualToFilter,
       this.maxNumberReturns,
-      this.makeUnique});
+      this.makeUniqueRecipient});
 
   factory _$_MoneyTransferQueryConfig.fromJson(Map<String, dynamic> json) =>
       _$_$_MoneyTransferQueryConfigFromJson(json);
@@ -178,11 +178,11 @@ class _$_MoneyTransferQueryConfig implements _MoneyTransferQueryConfig {
   @override // e.g. {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
   final int? maxNumberReturns;
   @override
-  final bool? makeUnique;
+  final bool? makeUniqueRecipient;
 
   @override
   String toString() {
-    return 'MoneyTransferQueryConfig(type: $type, isEqualToFilter: $isEqualToFilter, maxNumberReturns: $maxNumberReturns, makeUnique: $makeUnique)';
+    return 'MoneyTransferQueryConfig(type: $type, isEqualToFilter: $isEqualToFilter, maxNumberReturns: $maxNumberReturns, makeUniqueRecipient: $makeUniqueRecipient)';
   }
 
   @override
@@ -197,9 +197,9 @@ class _$_MoneyTransferQueryConfig implements _MoneyTransferQueryConfig {
             (identical(other.maxNumberReturns, maxNumberReturns) ||
                 const DeepCollectionEquality()
                     .equals(other.maxNumberReturns, maxNumberReturns)) &&
-            (identical(other.makeUnique, makeUnique) ||
+            (identical(other.makeUniqueRecipient, makeUniqueRecipient) ||
                 const DeepCollectionEquality()
-                    .equals(other.makeUnique, makeUnique)));
+                    .equals(other.makeUniqueRecipient, makeUniqueRecipient)));
   }
 
   @override
@@ -208,7 +208,7 @@ class _$_MoneyTransferQueryConfig implements _MoneyTransferQueryConfig {
       const DeepCollectionEquality().hash(type) ^
       const DeepCollectionEquality().hash(isEqualToFilter) ^
       const DeepCollectionEquality().hash(maxNumberReturns) ^
-      const DeepCollectionEquality().hash(makeUnique);
+      const DeepCollectionEquality().hash(makeUniqueRecipient);
 
   @JsonKey(ignore: true)
   @override
@@ -227,7 +227,7 @@ abstract class _MoneyTransferQueryConfig implements MoneyTransferQueryConfig {
       {required TransferType type,
       Map<String, String>? isEqualToFilter,
       int? maxNumberReturns,
-      bool? makeUnique}) = _$_MoneyTransferQueryConfig;
+      bool? makeUniqueRecipient}) = _$_MoneyTransferQueryConfig;
 
   factory _MoneyTransferQueryConfig.fromJson(Map<String, dynamic> json) =
       _$_MoneyTransferQueryConfig.fromJson;
@@ -240,7 +240,7 @@ abstract class _MoneyTransferQueryConfig implements MoneyTransferQueryConfig {
   @override // e.g. {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
   int? get maxNumberReturns => throw _privateConstructorUsedError;
   @override
-  bool? get makeUnique => throw _privateConstructorUsedError;
+  bool? get makeUniqueRecipient => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$MoneyTransferQueryConfigCopyWith<_MoneyTransferQueryConfig> get copyWith =>

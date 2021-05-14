@@ -22,9 +22,9 @@ class QRCodeService {
     });
   }
 
-  PublicUserInfo analyzeScanResult(Barcode? result) {
+  PublicUserInfo analyzeScanResult(Barcode result) {
     try {
-      var json = jsonDecode(result!.code);
+      var json = jsonDecode(result.code);
       if (json["uid"] != null && json["name"] != null) {
         return PublicUserInfo(uid: json["uid"], name: json["name"]);
       }

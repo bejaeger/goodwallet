@@ -110,8 +110,13 @@ exports.processMoneyTransfer = functions.firestore
         // TODO: Update causes balance
         const senderId = transferDetails["senderId"];
         const amount = transferDetails["amount"];
+        const sourceType = transferDetails["sourceType"];
 
-        const deduct = admin.firestore.FieldValue.increment(-amount);
+        let valueToDeduct;
+        if (sourceType === "Bank") valueToDeduct = 0;
+        if (sourceType === "GoodWallet") valueToDeduct = -amount;
+        const deduct = admin.firestore.FieldValue.increment(valueToDeduct);
+
         const add = admin.firestore.FieldValue.increment(amount);
         const docRef = getUserSummaryStatisticsDocument(senderId);
         await docRef.update({
