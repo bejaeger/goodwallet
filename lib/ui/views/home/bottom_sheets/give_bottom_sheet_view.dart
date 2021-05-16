@@ -3,6 +3,7 @@ import 'package:good_wallet/ui/layout_widgets/bottom_sheet_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/bottom_sheets/give_bottom_sheet_viewmodel.dart';
+import 'package:good_wallet/ui/widgets/carousel_card.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -39,29 +40,32 @@ class GiveBottomSheetView extends StatelessWidget {
                       height: 120,
                       width: screenWidthPercentage(context, percentage: 1),
                       child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          itemCount: model.latestDonations.length,
-                          itemBuilder: (context, index) => Row(
-                                children: [
-                                  SizedBox(
-                                      width: LayoutSettings.horizontalPadding),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16.0),
-                                      color: MyColors.paletteTurquoise,
-                                    ),
-                                    width: screenWidthPercentage(context,
-                                        percentage: 0.8),
-                                    child: Center(
-                                      child: Text(
-                                          model.latestDonations[index]
-                                              .transferDetails.recipientName,
-                                          style: textTheme(context).headline5),
-                                    ),
-                                  ),
-                                ],
-                              )),
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemCount: model.latestDonations.length,
+                        itemBuilder: (context, index) {
+                          final data = model.latestDonations[index];
+                          return Row(
+                            children: [
+                              SizedBox(width: LayoutSettings.horizontalPadding),
+                              CarouselCard(
+                                title: data.transferDetails.recipientName,
+                                explanationAlignment: Alignment.bottomLeft,
+                                backgroundImage: data.maybeMap(
+                                    donation: (value) =>
+                                        value.projectInfo.imagePath != null
+                                            ? NetworkImage(
+                                                value.projectInfo.imagePath!)
+                                            : null,
+                                    orElse: () => null),
+                                onTap: () => model
+                                    .navigateToTransferFundsAmountView(data),
+                                //
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
                 ],
               ),

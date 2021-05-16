@@ -2,24 +2,23 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/setup_bottom_sheet_ui.dart';
-import 'package:good_wallet/ui/views/layout/layout_template_view.dart';
 import 'package:good_wallet/utils/logger.dart';
-import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:good_wallet/utils/unfocuser.dart';
 import 'package:logger/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'app/app.router.dart' as auto_router;
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:good_wallet/utils/logger.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 void main() async {
   final log = getLogger("main.dart");
   try {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
+    // will remove the leading # in the URL
+    setPathUrlStrategy();
     setupLocator();
     setupBottomSheetUi();
     Logger.level = Level.verbose;

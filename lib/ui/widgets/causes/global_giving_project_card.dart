@@ -10,14 +10,19 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
   final Project project;
   final void Function()? onTap;
   final void Function()? onTapFavorite;
+  final bool displayArea;
 
   GlobalGivingProjectCardMobile(
-      {required this.project, this.onTap, this.onTapFavorite});
+      {required this.project,
+      this.onTap,
+      this.onTapFavorite,
+      this.displayArea = false});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Card(
+        elevation: 5,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: SizedBox(
@@ -62,14 +67,15 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
                       size: 22, color: ColorSettings.whiteTextColor),
                 ),
               ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: IconButton(
-                  icon: Icon(Icons.favorite_border,
-                      size: 22, color: ColorSettings.whiteTextColor),
-                  onPressed: onTapFavorite,
+              if (onTapFavorite != null)
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: IconButton(
+                    icon: Icon(Icons.favorite_border,
+                        size: 22, color: ColorSettings.whiteTextColor),
+                    onPressed: onTapFavorite,
+                  ),
                 ),
-              ),
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Padding(
@@ -78,7 +84,7 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
                   child: SizedBox(
                     width: screenWidthWithoutPadding(context, percentage: 0.7),
                     child: Text(
-                      project.name,
+                      displayArea ? project.area : project.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: textTheme(context).headline5,

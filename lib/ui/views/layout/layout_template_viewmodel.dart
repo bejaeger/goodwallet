@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/enums/user_status.dart';
-import 'package:good_wallet/services/money_pools/money_pool_service.dart';
+import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:rxdart/subjects.dart';
 
 class LayoutTemplateViewModel extends BaseModel {
-  final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
+  final MoneyPoolsService? _moneyPoolService = locator<MoneyPoolsService>();
   final UserDataService? _userDataService = locator<UserDataService>();
 
   List<MoneyPool> get moneyPoolsInvitedTo =>

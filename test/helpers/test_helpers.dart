@@ -3,7 +3,7 @@ import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/user_status.dart';
-import 'package:good_wallet/services/money_pools/money_pool_service.dart';
+import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -14,14 +14,15 @@ import 'package:stacked_services/stacked_services.dart';
 import 'test_helpers.mocks.dart';
 
 @GenerateMocks([], customMocks: [
+  // our services
   MockSpec<UserDataService>(returnNullOnMissingStub: true),
-  MockSpec<MoneyPoolService>(returnNullOnMissingStub: true),
+  MockSpec<MoneyPoolsService>(returnNullOnMissingStub: true),
   MockSpec<FirestoreApi>(returnNullOnMissingStub: true),
 
   // stacked services
   MockSpec<NavigationService>(returnNullOnMissingStub: true),
   MockSpec<SnackbarService>(returnNullOnMissingStub: true),
-  MockSpec<FirebaseAuthenticationService>(returnNullOnMissingStub: true)
+  MockSpec<FirebaseAuthenticationService>(returnNullOnMissingStub: true),
 ])
 UserDataService getAndRegisterUserDataService({
   UserStatus userStatus = UserStatus.SignedOut,
@@ -37,10 +38,10 @@ UserDataService getAndRegisterUserDataService({
   return service;
 }
 
-MoneyPoolService getAndRegisterMoneyPoolService() {
-  _removeRegistrationIfExists<MoneyPoolService>();
+MoneyPoolsService getAndRegisterMoneyPoolService() {
+  _removeRegistrationIfExists<MoneyPoolsService>();
   final service = MockMoneyPoolService();
-  locator.registerSingleton<MoneyPoolService>(service);
+  locator.registerSingleton<MoneyPoolsService>(service);
   return service;
 }
 
@@ -63,11 +64,11 @@ FirebaseAuthenticationService getAndRegisterFirebaseAuthenticationService({
 }) {
   _removeRegistrationIfExists<FirebaseAuthenticationService>();
   final service = MockFirebaseAuthenticationService();
-  Stream<firebase.User?> userStream(firebase.User? user) async* {
-    yield user;
-  }
-
-  when(service.authStateChanges).thenAnswer((_) => userStream(currentUser));
+  // Stream<firebase.User?> userStream(firebase.User? user) async* {
+  //   yield user;
+  // }
+  // when(service.authStateChanges).thenAnswer((_) => userStream(currentUser));
+  when(service.authStateChanges).thenAnswer((_) => Stream.value(currentUser));
   locator.registerSingleton<FirebaseAuthenticationService>(service);
   return service;
 }
@@ -90,7 +91,7 @@ void registerServices() {
 
 void unregisterServices() {
   locator.unregister<UserDataService>();
-  locator.unregister<MoneyPoolService>();
+  locator.unregister<MoneyPoolsService>();
   locator.unregister<SnackbarService>();
   locator.unregister<NavigationService>();
   locator.unregister<FirestoreApi>();

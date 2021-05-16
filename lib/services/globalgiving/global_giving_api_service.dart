@@ -1,4 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:good_wallet/apis/firestore_api.dart';
+import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -10,8 +11,8 @@ import 'package:good_wallet/utils/logger.dart';
 
 class GlobalGivingAPIService {
   final log = getLogger("global_giving_api_service.dart");
-  final CollectionReference _causesCollectionReference =
-      FirebaseFirestore.instance.collection("causes");
+
+  final _firestoreApi = locator<FirestoreApi>();
 
   Future getRandomProject() async {
     // test request for specific project
@@ -131,7 +132,7 @@ class GlobalGivingAPIService {
         Project project = getProjectFromGlobalGivingAPICall(
           fetchedProjects[i],
         );
-        if (addToFirestore) _causesCollectionReference.add(project.toJson());
+        if (addToFirestore) _firestoreApi.createProject(project: project);
         projectList.add(project);
       }
     } catch (e) {

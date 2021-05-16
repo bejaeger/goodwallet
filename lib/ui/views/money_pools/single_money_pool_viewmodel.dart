@@ -12,7 +12,8 @@ import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
-import 'package:good_wallet/services/money_pools/money_pool_service.dart';
+import 'package:good_wallet/exceptions/firestore_api_exception.dart';
+import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
@@ -21,7 +22,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 
 class SingleMoneyPoolViewModel extends BaseModel {
-  final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
+  final MoneyPoolsService? _moneyPoolService = locator<MoneyPoolsService>();
   final NavigationService? _navigationService = locator<NavigationService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
   final DialogService? _dialogService = locator<DialogService>();
@@ -31,19 +32,21 @@ class SingleMoneyPoolViewModel extends BaseModel {
 
   List<MoneyPoolPayout> payouts = [];
 
-  MoneyTransferQueryConfig _queryConfig =
-      MoneyTransferQueryConfig(type: TransferType.Invalid);
+  MoneyTransferQueryConfig? _queryConfig;
+
   // get latest money pool contributions for send money bottom sheet view
   // Need to add listeners otherwise this will be empty
   // List<MoneyTransfer> get latestContributions =>
   //     _userDataService!.getTransfers(config: _queryConfig);
   Stream<List<MoneyTransfer>> get latestContributions =>
-      _userDataService!.getTransferDataStream(config: _queryConfig);
+      _userDataService!.getTransferDataStream(
+          config: _queryConfig ??
+              MoneyTransferQueryConfig(type: TransferType.Invalid));
 
   MoneyPool moneyPool;
 
   SingleMoneyPoolViewModel({required this.moneyPool}) {
-    _queryConfig = _queryConfig.copyWith(
+    _queryConfig = MoneyTransferQueryConfig(
       type: TransferType.MoneyPoolContribution,
       isEqualToFilter: {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
     );
@@ -132,12 +135,26 @@ class SingleMoneyPoolViewModel extends BaseModel {
 
   // Fetch and thus update money pool e.g. after contribution has been made
   Future updateMoneyPool() async {
-    this.moneyPool =
-        await _moneyPoolService!.getMoneyPool(moneyPool.moneyPoolId);
+    setBusy(true);
+    try {
+      this.moneyPool =
+          await _moneyPoolService!.getMoneyPool(moneyPool.moneyPoolId);
+    } catch (e) {
+      if (e is FirestoreApiException) {
+        if (e.prettyDetails != null) {
+          await _dialogService!
+              .showDialog(title: "Error", description: e.prettyDetails);
+          navigateBack();
+          return;
+        }
+      } else {
+        rethrow;
+      }
+    }
 
     // can already be done for transfer_view
-    fetchPayouts(true);
-    notifyListeners();
+    await fetchPayouts(true);
+    setBusy(false);
   }
 
   Future showMoneyPoolPayoutDetailsDialog(MoneyPoolPayout data) async {

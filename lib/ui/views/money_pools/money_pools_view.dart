@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
@@ -21,12 +22,10 @@ class MoneyPoolsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<MoneyPoolsViewModel>.reactive(
       viewModelBuilder: () => MoneyPoolsViewModel(),
-      onModelReady: (model) async {
-        model.fetchMoneyPools(force: forceReload);
-      },
+      onModelReady: (model) => model.listenToMoneyPools(),
       builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
         child: RefreshIndicator(
-          onRefresh: () async => await model.fetchMoneyPools(force: true),
+          onRefresh: () async => await model.refresh(),
           child: CustomScrollView(
             key: PageStorageKey('storage-key'),
             physics: AlwaysScrollableScrollPhysics(),

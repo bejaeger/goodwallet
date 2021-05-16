@@ -4,7 +4,7 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/user_status.dart';
-import 'package:good_wallet/services/money_pools/money_pool_service.dart';
+import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -13,7 +13,7 @@ import 'package:good_wallet/utils/logger.dart';
 class StartUpLogicViewModel extends BaseViewModel {
   final UserDataService? _userDataService = locator<UserDataService>();
   final NavigationService? _navigationService = locator<NavigationService>();
-  final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
+  final MoneyPoolsService? _moneyPoolService = locator<MoneyPoolsService>();
   User get currentUser => _userDataService!.currentUser;
 
   final log = getLogger("startup_logic_viewmodel.dart");
@@ -28,7 +28,7 @@ class StartUpLogicViewModel extends BaseViewModel {
         userStatus = state;
         if (state == UserStatus.Initialized) {
           log.i("User already signed in, navigating to home view");
-          await _moneyPoolService!.init(currentUser.uid);
+          _moneyPoolService!.init(uid: currentUser.uid);
           _navigationService!.replaceWith(
             Routes.layoutTemplateViewMobile,
           );

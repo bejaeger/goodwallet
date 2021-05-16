@@ -8,6 +8,7 @@ import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
+import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
@@ -48,7 +49,7 @@ class HomeViewModel extends BaseModel {
   Future fetchData() async {
     // Dummy so far...could consider changing the balance!
     // so far we listen to the wallet with a stream
-    Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: 500));
     notifyListeners();
   }
 

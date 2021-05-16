@@ -54,8 +54,4 @@ class WalletViewModel extends BaseModel {
   Future navigateToWelcomeView() async {
     await _navigationService!.navigateTo(Routes.welcomeView);
   }
-
-  Future navigateToDonationView() async {
-    await _navigationService!.navigateTo(Routes.donationView);
-  }
 }

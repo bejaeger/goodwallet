@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:good_wallet/datamodels/causes/project.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
@@ -20,6 +24,10 @@ class FirestoreApi {
       FirebaseFirestore.instance.collection('payments');
   final CollectionReference _moneyPoolPayoutsCollection =
       FirebaseFirestore.instance.collection("moneyPoolPayouts");
+  final CollectionReference _moneyPoolsCollection =
+      FirebaseFirestore.instance.collection('moneyPools');
+  final CollectionReference _projectsCollection =
+      FirebaseFirestore.instance.collection('projects');
 
   ////////////////////////////////////////////////////////
   // Create user documents
@@ -53,8 +61,8 @@ class FirestoreApi {
   ////////////////////////////////////////////////////////
   // Get user if exists
 
-  Future<User?> getUser({required String uid}) async {
-    if (uid.isEmpty) {
+  Future<User?> getUser({required String? uid}) async {
+    if (uid == null || uid.isEmpty) {
       throw FirestoreApiException(
           message:
               'Your userId passed in is empty. Please pass in a valid user if from your Firebase user.');
@@ -259,6 +267,174 @@ class FirestoreApi {
               "This should not happen and is due to an error on the Firestore side or the datamodels that were being pushed!",
           prettyDetails:
               "An internal error occured on our side, please apologize and try again later.");
+    }
+  }
+
+  //////////////////////////////////////////////////////////
+  /// Listen to money pools collection
+
+  /// invitations
+  Stream<List<MoneyPool>> getMoneyPoolsInvitedToStream({required String uid}) {
+    try {
+      final returnStream = _moneyPoolsCollection
+          .where("invitedUserIds", arrayContains: uid)
+          .snapshots()
+          .map((event) =>
+              event.docs.map((doc) => MoneyPool.fromJson(doc.data())).toList());
+      return returnStream;
+    } catch (e) {
+      throw FirestoreApiException(
+          message:
+              "Unknown expection when listening to money pools the user is invited to",
+          devDetails: '$e');
+    }
+  }
+
+  ///  money pools the user is contributing to
+  Stream<List<MoneyPool>> getMoneyPoolsStream({required String uid}) {
+    try {
+      final returnStream = _moneyPoolsCollection
+          .where("contributingUserIds", arrayContains: uid)
+          .snapshots()
+          .map((event) =>
+              event.docs.map((doc) => MoneyPool.fromJson(doc.data())).toList());
+      return returnStream;
+    } catch (e) {
+      throw FirestoreApiException(
+          message:
+              "Unknown expection when listening to money pools the user is contributing to",
+          devDetails: '$e');
+    }
+  }
+
+  /////////////////////////////////////////////////////////
+  /// Money pool CRUD
+
+  // Updates money pool document
+  // Probably we want to call a cloud function instead
+  Future updateMoneyPool(MoneyPool moneyPool) async {
+    // probably we want to call a cloud function instead
+    log.i("Updating money pool: ${moneyPool.toJson()}");
+    try {
+      _moneyPoolsCollection
+          .doc(moneyPool.moneyPoolId)
+          .update(moneyPool.toJson());
+    } catch (e) {
+      throw FirestoreApiException(
+          message: "Unknown expection when updating money pool",
+          devDetails: '$e');
+    }
+  }
+
+  // Creates money pool and returns it
+  // TODO: probably we want to call a cloud function instead
+  Future<MoneyPool> createAndReturnMoneyPool(
+      {required MoneyPool moneyPool}) async {
+    try {
+      DocumentReference docRef = _moneyPoolsCollection.doc();
+      var newMoneyPool = moneyPool.copyWith(moneyPoolId: docRef.id);
+      await docRef.set(newMoneyPool.toJson());
+      log.i("Created money pool: ${newMoneyPool.toJson()}");
+      return newMoneyPool;
+    } catch (e) {
+      throw FirestoreApiException(
+          message: "Unusual expection when creating and returning money pool",
+          devDetails: '$e');
+    }
+  }
+
+  // Get money pool
+  // Gets and returns money pool from firestore
+  Future getMoneyPool(String mpid) async {
+    try {
+      DocumentSnapshot snapshot = await _moneyPoolsCollection.doc(mpid).get();
+      if (snapshot.data() != null) {
+        return MoneyPool.fromJson(snapshot.data()!);
+      } else {
+        log.wtf(
+            "Could not find data of money pool with id $mpid, returning null");
+        throw FirestoreApiException(
+            message: "Unusual expection when trying to get Money Pool",
+            devDetails:
+                "This can happen if a user views a money pool while it is deleted by another user!",
+            prettyDetails:
+                "This money pool does not exist anymore. Please refer to the admin of that money pool, he might have closed it :)");
+      }
+    } catch (e) {
+      if (e is FirestoreApiException)
+        rethrow;
+      else {
+        throw FirestoreApiException(
+            message: "Unusual expection when trying to get Money Pool",
+            devDetails: '$e');
+      }
+    }
+  }
+
+  // deletes money pool documents
+  // TODO: probably we want to call a cloud function instead
+  Future deleteMoneyPool(String moneyPoolId) async {
+    try {
+      await _moneyPoolsCollection.doc(moneyPoolId).delete();
+    } catch (e) {
+      throw FirestoreApiException(
+          message:
+              "Unusual expection when trying to delete the money pool document",
+          devDetails: '$e');
+    }
+  }
+
+  ////////////////////////////////////////////////////////////
+  /// Projects data
+
+  ///  Get project with id
+  Future<Project> getProjectWithId({required String id}) async {
+    try {
+      DocumentSnapshot snapshot = await _projectsCollection.doc(id).get();
+      if (snapshot.data() != null) {
+        return Project.fromJson(snapshot.data()!);
+      } else {
+        log.wtf("Could not find data of project with id $id, returning null");
+        throw FirestoreApiException(
+            message: "Unusual expection when trying to get Project",
+            devDetails:
+                "This can happen if a project has been deleted from the database!",
+            prettyDetails:
+                "Unfortunately, this project is not supported anymore.");
+      }
+    } catch (e) {
+      if (e is FirestoreApiException)
+        rethrow;
+      else {
+        throw FirestoreApiException(
+            message: "Unusual expection when trying to get Project",
+            devDetails: '$e');
+      }
+    }
+  }
+
+  ///  Listen to projects collection
+  Stream<List<Project>> getProjectsStream({required String uid}) {
+    try {
+      final returnStream = _projectsCollection.snapshots().map((event) =>
+          event.docs.map((doc) => Project.fromJson(doc.data())).toList());
+      return returnStream;
+    } catch (e) {
+      throw FirestoreApiException(
+          message: "Unknown expection when listening to projects collection",
+          devDetails: '$e');
+    }
+  }
+
+  ///  Listen to projects collection
+  Future createProject({required Project project}) async {
+    try {
+      await _projectsCollection.add(project.toJson());
+    } catch (e) {
+      throw FirestoreApiException(
+          message:
+              "Unknown expection when adding project to projects collection",
+          devDetails: '$e');
     }
   }
 

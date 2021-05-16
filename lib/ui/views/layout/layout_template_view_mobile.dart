@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
-import 'package:good_wallet/ui/views/causes/causes_filter_view_mobile.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_viewmodel.dart';
 import 'package:good_wallet/ui/views/money_pools/money_pools_view.dart';
+import 'package:good_wallet/ui/views/projects/projects_view.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:stacked/stacked.dart';
 
@@ -85,7 +85,8 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
   List<Widget> _buildScreens() {
     return [
       HomeViewMobile(showDialog: widget.showDialog),
-      CausesFilterViewMobile(initialIndex: widget.initialTabBarIndex),
+      ProjectsView(),
+      //CausesFilterViewMobile(initialIndex: widget.initialTabBarIndex),
       MoneyPoolsView()
     ];
   }

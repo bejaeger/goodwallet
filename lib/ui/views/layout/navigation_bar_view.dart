@@ -56,10 +56,6 @@ class NavigationBar extends StatelessWidget {
                         //     onPressed: () =>
                         //         model.navigateToSendMoneyView()),
                         horizontalSpaceMedium,
-                        _NavBarItem(
-                            label: 'Give',
-                            onPressed: () => model.navigateToDonationView()),
-                        horizontalSpaceMedium,
                         model.isUserSignedIn
                             ? _NavBarItem(
                                 label: 'Logout',

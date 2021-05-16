@@ -51,6 +51,8 @@ class TransferFundsAmountViewModel extends FormViewModel {
   final RecipientInfo? recipientInfo;
   final SenderInfo senderInfo;
   num? amount;
+
+  // TODO: Validate inputs here...if Donation, recipientInfo must not be null!
   TransferFundsAmountViewModel(
       {required this.type, this.recipientInfo, required this.senderInfo});
 
@@ -347,6 +349,11 @@ class TransferFundsAmountViewModel extends FormViewModel {
     _navigationService!.clearTillFirstAndShow(Routes.layoutTemplateViewMobile,
         arguments: LayoutTemplateViewMobileArguments(
             initialBottomNavBarIndex: BottomNavigatorIndex.Home.index));
+  }
+
+  Future navigateToSingleProjectScreen({required String projectId}) async {
+    await _navigationService!.navigateTo(Routes.singleProjectViewMobile,
+        arguments: SingleProjectViewMobileArguments(projectId: projectId));
   }
 
   ////////////////////////////////////////////////////////////////

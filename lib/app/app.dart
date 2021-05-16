@@ -1,16 +1,13 @@
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/services/causes/causes_data_service.dart';
 import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
-import 'package:good_wallet/services/money_pools/money_pool_service.dart';
+import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
+import 'package:good_wallet/services/projects/projects_service.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
-import 'package:good_wallet/ui/views/causes/causes_filter_view_mobile.dart';
-import 'package:good_wallet/ui/views/causes/causes_view.dart';
-import 'package:good_wallet/ui/views/causes/causes_view_mobile.dart';
-import 'package:good_wallet/ui/views/causes/single_project_view_mobile.dart';
 import 'package:good_wallet/ui/views/featured_applications/single_featured_app_view.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/home/welcome_view.dart';
@@ -23,13 +20,16 @@ import 'package:good_wallet/ui/views/money_pools/create_money_pool_form_view.dar
 import 'package:good_wallet/ui/views/money_pools/create_money_pool_intro_view.dart';
 import 'package:good_wallet/ui/views/money_pools/disburse_money_pool_view.dart';
 import 'package:good_wallet/ui/views/money_pools/money_pools_view.dart';
+import 'package:good_wallet/ui/views/money_pools/money_pools_viewmodel.dart';
 import 'package:good_wallet/ui/views/money_pools/single_money_pool_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_cancel_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_success_view.dart';
 import 'package:good_wallet/ui/views/payments/send_money_view.dart';
 import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
+import 'package:good_wallet/ui/views/projects/projects_for_area_view.dart';
+import 'package:good_wallet/ui/views/projects/projects_view.dart';
+import 'package:good_wallet/ui/views/projects/single_project_view_mobile.dart';
 import 'package:good_wallet/ui/views/qrcode/qrcode_view_mobile.dart';
-import 'package:good_wallet/ui/views/raise_money/raise_money_view.dart';
 import 'package:good_wallet/ui/views/search_view/search_view.dart';
 import 'package:good_wallet/ui/views/startup_logic/startup_logic_view.dart';
 import 'package:good_wallet/ui/views/transaction_history/transfers_history_view.dart';
@@ -45,7 +45,6 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: WelcomeView),
     MaterialRoute(page: WalletView),
     MaterialRoute(page: SendMoneyView),
-    MaterialRoute(page: DonationView),
     MaterialRoute(page: PaymentSuccessView),
     MaterialRoute(page: PaymentCancelView),
     MaterialRoute(page: LayoutTemplate),
@@ -57,24 +56,23 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: CreateMoneyPoolFormView),
     MaterialRoute(page: LayoutTemplateViewMobile),
     MaterialRoute(page: HomeViewMobile),
-    MaterialRoute(page: SingleProjectViewMobile),
     MaterialRoute(page: ProfileViewMobile),
     MaterialRoute(page: CreateAccountView),
 
     MaterialRoute(page: SingleFeaturedAppView),
     MaterialRoute(page: MoneyPoolsView),
     MaterialRoute(page: QRCodeViewMobile),
-    MaterialRoute(page: RaiseMoneyView),
-    MaterialRoute(page: CausesFilterViewMobile),
-    MaterialRoute(page: CausesViewMobile),
     MaterialRoute(page: StartUpLogicView),
     MaterialRoute(page: SearchView),
     MaterialRoute(page: TransferFundsAmountView),
     MaterialRoute(page: DisburseMoneyPoolView),
     MaterialRoute(page: TransfersHistoryView),
+    MaterialRoute(page: ProjectsView),
+    MaterialRoute(page: ProjectsForAreaView),
+    MaterialRoute(page: SingleProjectViewMobile),
   ],
   dependencies: [
-    // Registers all singletons
+    // Services
     LazySingleton(classType: NavigationService),
     LazySingleton(classType: DialogService),
     LazySingleton(classType: SnackbarService),
@@ -83,16 +81,17 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(classType: StripePaymentService),
     LazySingleton(classType: GlobalGivingAPIService),
 
-    // viewmodels
-    LazySingleton(classType: WalletViewModel),
     // TODO: Check whether this is deprecated
     LazySingleton(classType: NavigationBarViewModel),
-    LazySingleton(classType: MoneyPoolService),
-    LazySingleton(
-      classType: FirebaseAuthenticationService,
-    ),
+    LazySingleton(classType: MoneyPoolsService),
+    LazySingleton(classType: FirebaseAuthenticationService),
+    LazySingleton(classType: ProjectsService),
     LazySingleton(classType: QRCodeService),
     LazySingleton(classType: CausesDataService),
+
+    // View Models
+    LazySingleton(classType: MoneyPoolsViewModel),
+    LazySingleton(classType: WalletViewModel),
 
     // We don't really need local storage atm! (maybe for offline support at some point)
     // Presolve(

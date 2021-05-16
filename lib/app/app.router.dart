@@ -18,10 +18,6 @@ import '../datamodels/user/public_user_info.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/search_type.dart';
 import '../enums/transfer_type.dart';
-import '../ui/views/causes/causes_filter_view_mobile.dart';
-import '../ui/views/causes/causes_view.dart';
-import '../ui/views/causes/causes_view_mobile.dart';
-import '../ui/views/causes/single_project_view_mobile.dart';
 import '../ui/views/featured_applications/single_featured_app_view.dart';
 import '../ui/views/home/home_view_mobile.dart';
 import '../ui/views/home/welcome_view.dart';
@@ -38,8 +34,10 @@ import '../ui/views/payments/payment_cancel_view.dart';
 import '../ui/views/payments/payment_success_view.dart';
 import '../ui/views/payments/send_money_view.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
+import '../ui/views/projects/projects_for_area_view.dart';
+import '../ui/views/projects/projects_view.dart';
+import '../ui/views/projects/single_project_view_mobile.dart';
 import '../ui/views/qrcode/qrcode_view_mobile.dart';
-import '../ui/views/raise_money/raise_money_view.dart';
 import '../ui/views/search_view/search_view.dart';
 import '../ui/views/startup_logic/startup_logic_view.dart';
 import '../ui/views/transaction_history/transfers_history_view.dart';
@@ -50,7 +48,6 @@ class Routes {
   static const String welcomeView = '/welcome-view';
   static const String walletView = '/wallet-view';
   static const String sendMoneyView = '/send-money-view';
-  static const String donationView = '/donation-view';
   static const String paymentSuccessView = '/payment-success-view';
   static const String paymentCancelView = '/payment-cancel-view';
   static const String layoutTemplate = '/layout-template';
@@ -61,25 +58,23 @@ class Routes {
   static const String createMoneyPoolFormView = '/create-money-pool-form-view';
   static const String layoutTemplateViewMobile = '/layout-template-view-mobile';
   static const String homeViewMobile = '/home-view-mobile';
-  static const String singleProjectViewMobile = '/single-project-view-mobile';
   static const String profileViewMobile = '/profile-view-mobile';
   static const String createAccountView = '/create-account-view';
   static const String singleFeaturedAppView = '/single-featured-app-view';
   static const String moneyPoolsView = '/money-pools-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
-  static const String raiseMoneyView = '/raise-money-view';
-  static const String causesFilterViewMobile = '/causes-filter-view-mobile';
-  static const String causesViewMobile = '/causes-view-mobile';
   static const String startUpLogicView = '/start-up-logic-view';
   static const String searchView = '/search-view';
   static const String transferFundsAmountView = '/transfer-funds-amount-view';
   static const String disburseMoneyPoolView = '/disburse-money-pool-view';
   static const String transfersHistoryView = '/transfers-history-view';
+  static const String projectsView = '/projects-view';
+  static const String projectsForAreaView = '/projects-for-area-view';
+  static const String singleProjectViewMobile = '/single-project-view-mobile';
   static const all = <String>{
     welcomeView,
     walletView,
     sendMoneyView,
-    donationView,
     paymentSuccessView,
     paymentCancelView,
     layoutTemplate,
@@ -89,20 +84,19 @@ class Routes {
     createMoneyPoolFormView,
     layoutTemplateViewMobile,
     homeViewMobile,
-    singleProjectViewMobile,
     profileViewMobile,
     createAccountView,
     singleFeaturedAppView,
     moneyPoolsView,
     qRCodeViewMobile,
-    raiseMoneyView,
-    causesFilterViewMobile,
-    causesViewMobile,
     startUpLogicView,
     searchView,
     transferFundsAmountView,
     disburseMoneyPoolView,
     transfersHistoryView,
+    projectsView,
+    projectsForAreaView,
+    singleProjectViewMobile,
   };
 }
 
@@ -113,7 +107,6 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.welcomeView, page: WelcomeView),
     RouteDef(Routes.walletView, page: WalletView),
     RouteDef(Routes.sendMoneyView, page: SendMoneyView),
-    RouteDef(Routes.donationView, page: DonationView),
     RouteDef(Routes.paymentSuccessView, page: PaymentSuccessView),
     RouteDef(Routes.paymentCancelView, page: PaymentCancelView),
     RouteDef(Routes.layoutTemplate, page: LayoutTemplate),
@@ -123,20 +116,19 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.createMoneyPoolFormView, page: CreateMoneyPoolFormView),
     RouteDef(Routes.layoutTemplateViewMobile, page: LayoutTemplateViewMobile),
     RouteDef(Routes.homeViewMobile, page: HomeViewMobile),
-    RouteDef(Routes.singleProjectViewMobile, page: SingleProjectViewMobile),
     RouteDef(Routes.profileViewMobile, page: ProfileViewMobile),
     RouteDef(Routes.createAccountView, page: CreateAccountView),
     RouteDef(Routes.singleFeaturedAppView, page: SingleFeaturedAppView),
     RouteDef(Routes.moneyPoolsView, page: MoneyPoolsView),
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
-    RouteDef(Routes.raiseMoneyView, page: RaiseMoneyView),
-    RouteDef(Routes.causesFilterViewMobile, page: CausesFilterViewMobile),
-    RouteDef(Routes.causesViewMobile, page: CausesViewMobile),
     RouteDef(Routes.startUpLogicView, page: StartUpLogicView),
     RouteDef(Routes.searchView, page: SearchView),
     RouteDef(Routes.transferFundsAmountView, page: TransferFundsAmountView),
     RouteDef(Routes.disburseMoneyPoolView, page: DisburseMoneyPoolView),
     RouteDef(Routes.transfersHistoryView, page: TransfersHistoryView),
+    RouteDef(Routes.projectsView, page: ProjectsView),
+    RouteDef(Routes.projectsForAreaView, page: ProjectsForAreaView),
+    RouteDef(Routes.singleProjectViewMobile, page: SingleProjectViewMobile),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -163,12 +155,6 @@ class StackedRouter extends RouterBase {
           userInfoMap: args.userInfoMap,
           openSearchBarOnBuild: args.openSearchBarOnBuild,
         ),
-        settings: data,
-      );
-    },
-    DonationView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => DonationView(),
         settings: data,
       );
     },
@@ -252,16 +238,6 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
-    SingleProjectViewMobile: (data) {
-      var args = data.getArgs<SingleProjectViewMobileArguments>(nullOk: false);
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => SingleProjectViewMobile(
-          key: args.key,
-          project: args.project,
-        ),
-        settings: data,
-      );
-    },
     ProfileViewMobile: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => ProfileViewMobile(),
@@ -311,34 +287,6 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
-    RaiseMoneyView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => const RaiseMoneyView(),
-        settings: data,
-      );
-    },
-    CausesFilterViewMobile: (data) {
-      var args = data.getArgs<CausesFilterViewMobileArguments>(
-        orElse: () => CausesFilterViewMobileArguments(),
-      );
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => CausesFilterViewMobile(
-          key: args.key,
-          initialIndex: args.initialIndex,
-        ),
-        settings: data,
-      );
-    },
-    CausesViewMobile: (data) {
-      var args = data.getArgs<CausesViewMobileArguments>(nullOk: false);
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => CausesViewMobile(
-          key: args.key,
-          theme: args.theme,
-        ),
-        settings: data,
-      );
-    },
     StartUpLogicView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => const StartUpLogicView(),
@@ -383,6 +331,34 @@ class StackedRouter extends RouterBase {
     TransfersHistoryView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => const TransfersHistoryView(),
+        settings: data,
+      );
+    },
+    ProjectsView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const ProjectsView(),
+        settings: data,
+      );
+    },
+    ProjectsForAreaView: (data) {
+      var args = data.getArgs<ProjectsForAreaViewArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => ProjectsForAreaView(
+          key: args.key,
+          projects: args.projects,
+          area: args.area,
+        ),
+        settings: data,
+      );
+    },
+    SingleProjectViewMobile: (data) {
+      var args = data.getArgs<SingleProjectViewMobileArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => SingleProjectViewMobile(
+          key: args.key,
+          project: args.project,
+          projectId: args.projectId,
+        ),
         settings: data,
       );
     },
@@ -448,13 +424,6 @@ class HomeViewMobileArguments {
   HomeViewMobileArguments({this.key, required this.showDialog});
 }
 
-/// SingleProjectViewMobile arguments holder class
-class SingleProjectViewMobileArguments {
-  final Key? key;
-  final Project? project;
-  SingleProjectViewMobileArguments({this.key, required this.project});
-}
-
 /// CreateAccountView arguments holder class
 class CreateAccountViewArguments {
   final Key? key;
@@ -480,20 +449,6 @@ class QRCodeViewMobileArguments {
   final Key? key;
   final int initialIndex;
   QRCodeViewMobileArguments({this.key, this.initialIndex = 0});
-}
-
-/// CausesFilterViewMobile arguments holder class
-class CausesFilterViewMobileArguments {
-  final Key? key;
-  final int? initialIndex;
-  CausesFilterViewMobileArguments({this.key, this.initialIndex});
-}
-
-/// CausesViewMobile arguments holder class
-class CausesViewMobileArguments {
-  final Key? key;
-  final String theme;
-  CausesViewMobileArguments({this.key, required this.theme});
 }
 
 /// SearchView arguments holder class
@@ -524,4 +479,22 @@ class DisburseMoneyPoolViewArguments {
   final Key? key;
   final MoneyPool moneyPool;
   DisburseMoneyPoolViewArguments({this.key, required this.moneyPool});
+}
+
+/// ProjectsForAreaView arguments holder class
+class ProjectsForAreaViewArguments {
+  final Key? key;
+  final List<Project> projects;
+  final String area;
+  ProjectsForAreaViewArguments(
+      {this.key, required this.projects, required this.area});
+}
+
+/// SingleProjectViewMobile arguments holder class
+class SingleProjectViewMobileArguments {
+  final Key? key;
+  final Project? project;
+  final String projectId;
+  SingleProjectViewMobileArguments(
+      {this.key, this.project, required this.projectId});
 }

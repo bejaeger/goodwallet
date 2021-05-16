@@ -220,15 +220,19 @@ class SingleMoneyPoolView extends StatelessWidget {
                                   : LinearProgressIndicator()
                               : Column(
                                   children: [
-                                    if (snapshot.data != null)
+                                    if (snapshot.data != null &&
+                                        snapshot.data!.length > 0)
                                       verticalSpaceRegular,
-                                    if (snapshot.data != null)
+                                    if (snapshot.data != null &&
+                                        snapshot.data!.length > 0)
                                       SectionHeader(
                                         title: "Contributions",
                                       ),
-                                    if (snapshot.data != null)
+                                    if (snapshot.data != null &&
+                                        snapshot.data!.length > 0)
                                       verticalSpaceSmall,
-                                    if (snapshot.data != null)
+                                    if (snapshot.data != null &&
+                                        snapshot.data!.length > 0)
                                       ListView.builder(
                                         physics: ScrollPhysics(),
                                         shrinkWrap: true,

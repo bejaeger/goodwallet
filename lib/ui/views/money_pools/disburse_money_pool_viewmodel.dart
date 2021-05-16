@@ -11,7 +11,7 @@ import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/transfers/transfer_details.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/money_source.dart';
-import 'package:good_wallet/services/money_pools/money_pool_service.dart';
+import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/ui/views/money_pools/components/user_payout_form.dart';
 import 'package:good_wallet/ui/views/money_pools/components/user_payout_form_model.dart';
@@ -22,7 +22,7 @@ import 'package:stacked_services/stacked_services.dart';
 class DisburseMoneyPoolViewModel extends BaseModel {
   MoneyPool moneyPool;
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
-  final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
+  final MoneyPoolsService? _moneyPoolService = locator<MoneyPoolsService>();
   final NavigationService? _navigationService = locator<NavigationService>();
   // Available balance
   late num availableBalance;

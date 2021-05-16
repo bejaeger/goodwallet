@@ -21,7 +21,6 @@ import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/exceptions/user_data_service_exception.dart';
-import 'package:good_wallet/services/money_pools/money_pool_service.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:good_wallet/utils/string_utils.dart';
 import 'package:rxdart/rxdart.dart';
@@ -35,7 +34,6 @@ class UserDataService {
 
   final FirebaseAuthenticationService? _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
-  final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
 
   // subject to keep track of initialization of user
   BehaviorSubject<UserStatus> userStateSubject =
@@ -60,28 +58,43 @@ class UserDataService {
   Map<MoneyTransferQueryConfig, StreamSubscription?> _transfersSubscriptions =
       {};
 
-  // Listen to auth state changes.
+  StreamSubscription? userStreamSubscription;
+  // Argument implemented for testing purposes
+  UserDataService({bool startListeningToAuthStateChanges = true}) {
+    if (startListeningToAuthStateChanges) {
+      listenToAuthStateChanges();
+    }
+  }
+
+  // Listen to auth state changes with option to await first results
+  // (the latter is useful for unit testing)
   // This is useful in scenarios where we want to
-  // show certain content without the need register for the user.
+  // show certain content without the need to register for the user.
   // This might not be of need for mobile but
   // will become more useful thinking about PWAs especially
   // on desktop.
-  late Stream<firebase.User?> userStream;
-  //final firebase.FirebaseAuth _firebaseAuth = firebase.FirebaseAuth.instance;
-
-  UserDataService() {
-    userStream = _firebaseAuthenticationService!.authStateChanges;
-    userStream.listen(
-      (user) async {
-        if (user != null) {
-          _changeUserStatus(UserStatus.SignedIn);
-          initializeCurrentUser(user);
-        } else {
-          _changeUserStatus(UserStatus.SignedOut);
+  Future<firebase.User?> listenToAuthStateChanges() {
+    var completer = Completer<firebase.User?>();
+    if (userStreamSubscription == null) {
+      userStreamSubscription =
+          _firebaseAuthenticationService!.authStateChanges.listen((user) {
+        authStateChangesOnDataCallback(user);
+        if (!completer.isCompleted) {
+          completer.complete();
         }
-        log.i("User status changed to ${userStateSubject.value}");
-      },
-    );
+      });
+    }
+    return completer.future;
+  }
+
+  void authStateChangesOnDataCallback(firebase.User? user) {
+    if (user != null) {
+      _changeUserStatus(UserStatus.SignedIn);
+      initializeCurrentUser(user);
+    } else {
+      _changeUserStatus(UserStatus.SignedOut);
+    }
+    log.i("User status changed to ${userStateSubject.value}");
   }
 
   void _changeUserStatus(UserStatus status) {
@@ -120,7 +133,6 @@ class UserDataService {
   Future _populateCurrentUser(firebase.User user) async {
     try {
       final populatedUser = await _firestoreApi.getUser(uid: user.uid);
-
       if (populatedUser != null) {
         _currentUser = populatedUser;
       } else {
@@ -301,8 +313,6 @@ class UserDataService {
     userStatsSubject.add(getEmptyUserStatistics());
     // set current user to null
     _currentUser = User.empty();
-    // remove money Pools
-    _moneyPoolService!.clearData();
     // actually log out from firebase
     await _firebaseAuthenticationService!.logout();
     // set auth state to signed out

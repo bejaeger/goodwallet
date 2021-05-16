@@ -6,14 +6,14 @@ import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
-import 'package:good_wallet/services/money_pools/money_pool_service.dart';
+import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class MoneyPoolsViewModel extends BaseModel {
   final NavigationService? _navigationService = locator<NavigationService>();
-  final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
+  final MoneyPoolsService? _moneyPoolService = locator<MoneyPoolsService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
   final DialogService? _dialogService = locator<DialogService>();
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
@@ -24,17 +24,16 @@ class MoneyPoolsViewModel extends BaseModel {
 
   final log = getLogger("money_pools_viewmodel.dart");
 
-  Future fetchMoneyPools({bool force = false}) async {
+  // Starting money pool listener. Should only ever be called once!
+  Future listenToMoneyPools() async {
     setBusy(true);
-    try {
-      await _moneyPoolService!.loadMoneyPools(currentUser.uid, force);
-      await _moneyPoolService!.loadMoneyPoolsInvitedTo(currentUser.uid);
-    } catch (e) {
-      // Need to set some validation
-      log.e("Could not fetch money pools, error: ${e.toString()}");
-      log.e("NEED TO SET SOME public facing validation method HERE!");
-    }
+    await _moneyPoolService!.listenToMoneyPools(uid: currentUser.uid);
     setBusy(false);
+  }
+
+  Future refresh() async {
+    await Future.delayed(Duration(seconds: 1));
+    notifyListeners();
   }
 
   Future showInformationDialog() async {

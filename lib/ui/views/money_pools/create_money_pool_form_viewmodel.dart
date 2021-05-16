@@ -5,7 +5,7 @@ import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/datamodels/money_pools/settings/money_pool_settings.dart';
 import 'package:good_wallet/datamodels/money_pools/users/contributing_user.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
-import 'package:good_wallet/services/money_pools/money_pool_service.dart';
+import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -14,7 +14,7 @@ import 'package:good_wallet/utils/logger.dart';
 
 class CreateMoneyPoolFormViewModel extends FormViewModel {
   final NavigationService? _navigationService = locator<NavigationService>();
-  final MoneyPoolService? _moneyPoolService = locator<MoneyPoolService>();
+  final MoneyPoolsService? _moneyPoolService = locator<MoneyPoolsService>();
   final UserDataService? _userDataService = locator<UserDataService>();
   User get currentUser => _userDataService!.currentUser;
 
@@ -58,8 +58,8 @@ class CreateMoneyPoolFormViewModel extends FormViewModel {
       );
 
       try {
-        moneyPool = await _moneyPoolService!.createAndReturnMoneyPool(
-            moneyPool, currentUser.uid, currentUser.fullName);
+        moneyPool = await _moneyPoolService!
+            .createAndReturnMoneyPool(moneyPool: moneyPool);
       } catch (e) {
         log.e("Could not create money pool, error: ${e.toString()}");
         setValidationMessage(

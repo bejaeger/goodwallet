@@ -99,8 +99,12 @@ class TransferFundsAmountView extends StatelessWidget
                         if (type == TransferType.Commitment)
                           hashTagCommitForGood(context),
 
+                        // TODO: make sure recipientInfo is not null!
                         if (recipientInfo is DonationRecipientInfo)
-                          projectSummary(context),
+                          projectSummary(
+                              context,
+                              () => model.navigateToSingleProjectScreen(
+                                  projectId: recipientInfo!.id)),
                         if (recipientInfo is MoneyPoolRecipientInfo)
                           moneyPoolSummary(context),
                       ],
@@ -236,24 +240,28 @@ class TransferFundsAmountView extends StatelessWidget
     );
   }
 
-  Widget projectSummary(BuildContext context) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 28,
-          backgroundColor: MyColors.primaryRed,
-          child: Text(getInitialsFromName(recipientInfo!.name),
-              style: TextStyle(color: Colors.white, fontSize: 16)),
-        ),
-        verticalSpaceSmall,
-        SizedBox(
-          width: screenWidthWithoutPadding(context, percentage: 0.35),
-          child: Text(recipientInfo!.name,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: textTheme(context).headline6!.copyWith(fontSize: 14)),
-        ),
-      ],
+  Widget projectSummary(BuildContext context, void Function()? onTap) {
+    return GestureDetector(
+      onTap: () => null,
+      //onTap,
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 28,
+            backgroundColor: MyColors.primaryRed,
+            child: Text(getInitialsFromName(recipientInfo!.name),
+                style: TextStyle(color: Colors.white, fontSize: 16)),
+          ),
+          verticalSpaceSmall,
+          SizedBox(
+            width: screenWidthWithoutPadding(context, percentage: 0.35),
+            child: Text(recipientInfo!.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme(context).headline6!.copyWith(fontSize: 14)),
+          ),
+        ],
+      ),
     );
   }
 

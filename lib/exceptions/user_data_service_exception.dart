@@ -11,6 +11,6 @@ class UserDataServiceException implements Exception {
 
   @override
   String toString() {
-    return 'UserDataService (in-house exception): $message ${devDetails != null ? '- $devDetails' : ''}';
+    return 'UserDataServiceException (in-house exception): $message ${devDetails != null ? '- $devDetails' : ''}';
   }
 }

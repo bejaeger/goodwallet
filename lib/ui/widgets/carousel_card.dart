@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
-import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
 // Carousel card to be used in carousels see e.g. home view
@@ -11,15 +10,17 @@ class CarouselCard extends StatelessWidget {
   final String? explanation;
   final Color backgroundColor;
   final Alignment? imageAlignment;
+  final Alignment explanationAlignment;
   final ImageProvider? backgroundImage;
 
   const CarouselCard(
       {Key? key,
       required this.title,
       required this.onTap,
-      required this.explanation,
+      this.explanation,
       this.backgroundColor = MyColors.paletteBlue,
       this.imageAlignment,
+      this.explanationAlignment = Alignment.centerLeft,
       this.backgroundImage})
       : super(key: key);
 
@@ -74,16 +75,17 @@ class CarouselCard extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Stack(
                   children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: SizedBox(
-                          width:
-                              screenWidthPercentage(context, percentage: 0.55),
-                          child: Text(explanation!,
-                              style: textTheme(context)
-                                  .bodyText1!
-                                  .copyWith(fontSize: 16))),
-                    ),
+                    if (explanation != null)
+                      Align(
+                        alignment: explanationAlignment,
+                        child: SizedBox(
+                            width: screenWidthPercentage(context,
+                                percentage: 0.55),
+                            child: Text(explanation!,
+                                style: textTheme(context)
+                                    .bodyText1!
+                                    .copyWith(fontSize: 16))),
+                      ),
                     Align(
                       alignment: Alignment.topRight,
                       child: Icon(Icons.arrow_forward_ios,
