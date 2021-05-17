@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/money_pools/money_pools_service.dart';
@@ -14,12 +15,12 @@ import 'package:stacked_services/stacked_services.dart';
 import 'test_helpers.mocks.dart';
 
 @GenerateMocks([], customMocks: [
-  // our services
+  // our services registered with get_it
   MockSpec<UserDataService>(returnNullOnMissingStub: true),
   MockSpec<MoneyPoolsService>(returnNullOnMissingStub: true),
   MockSpec<FirestoreApi>(returnNullOnMissingStub: true),
 
-  // stacked services
+  // stacked services registered with get_it
   MockSpec<NavigationService>(returnNullOnMissingStub: true),
   MockSpec<SnackbarService>(returnNullOnMissingStub: true),
   MockSpec<FirebaseAuthenticationService>(returnNullOnMissingStub: true),
@@ -40,7 +41,7 @@ UserDataService getAndRegisterUserDataService({
 
 MoneyPoolsService getAndRegisterMoneyPoolService() {
   _removeRegistrationIfExists<MoneyPoolsService>();
-  final service = MockMoneyPoolService();
+  final service = MockMoneyPoolsService();
   locator.registerSingleton<MoneyPoolsService>(service);
   return service;
 }
@@ -73,9 +74,16 @@ FirebaseAuthenticationService getAndRegisterFirebaseAuthenticationService({
   return service;
 }
 
-FirestoreApi getAndRegisterFirestoreApi() {
+FirestoreApi getAndRegisterFirestoreApi({User? user}) {
   _removeRegistrationIfExists<FirestoreApi>();
   final service = MockFirestoreApi();
+  when(service.getUser(uid: anyNamed("uid")))
+      .thenAnswer((realInvocation) async => user);
+  final userStats = getEmptyUserStatistics();
+  when(service.getUserSummaryStatisticsStream(uid: anyNamed("uid"))).thenAnswer(
+      (realInvocation) => BehaviorSubject<UserStatistics>.seeded(userStats));
+  when(service.createUser(user: anyNamed("user"), stats: anyNamed("stats")))
+      .thenAnswer((realInvocation) async {});
   locator.registerSingleton<FirestoreApi>(service);
   return service;
 }

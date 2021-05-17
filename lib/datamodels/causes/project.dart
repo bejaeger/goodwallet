@@ -12,6 +12,7 @@ class Project with _$Project {
   @JsonSerializable(explicitToJson: true)
   factory Project({
     required String name,
+    // TODO: prepare toJson without id set properly as in MoneyTransfer!
     required String id,
     required String area,
     required CauseType causeType,

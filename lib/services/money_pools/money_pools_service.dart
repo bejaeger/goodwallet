@@ -19,8 +19,6 @@ import 'package:rxdart/subjects.dart';
 class MoneyPoolsService {
   final _firestoreApi = locator<FirestoreApi>();
 
-  final CollectionReference _moneyPoolsCollectionReference =
-      FirebaseFirestore.instance.collection("moneypools");
   final CollectionReference _moneyPoolPayoutsCollectionReference =
       FirebaseFirestore.instance.collection("moneyPoolPayouts");
   final CollectionReference _paymentsCollectionReference =
@@ -76,9 +74,9 @@ class MoneyPoolsService {
 
   // adds listener to money pools the user is contributing to
   // allows to wait for the first emission of the stream via the completer
-  Future<void> listenToMoneyPools({required String uid}) async {
-    var completer = Completer<void>();
+  Future<void>? listenToMoneyPools({required String uid}) async {
     if (_moneyPoolsStreamSubscription == null) {
+      var completer = Completer<void>();
       _moneyPoolsStreamSubscription =
           _firestoreApi.getMoneyPoolsStream(uid: uid).listen((snapshot) {
         moneyPools = snapshot;
@@ -87,11 +85,11 @@ class MoneyPoolsService {
         }
         log.v("Listened to ${moneyPools.length} moneyPools");
       });
+      return completer.future;
     } else {
       log.w(
           "Money pool stream already listened to, not adding another listener");
     }
-    return completer.future;
   }
 
   Future<MoneyPool> createAndReturnMoneyPool({required MoneyPool moneyPool}) {

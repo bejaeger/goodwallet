@@ -29,9 +29,7 @@ import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 class UserDataService {
   final log = getLogger("user_data_service.dart");
 
-  // firestore collections
   final _firestoreApi = locator<FirestoreApi>();
-
   final FirebaseAuthenticationService? _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
 
@@ -73,24 +71,27 @@ class UserDataService {
   // This might not be of need for mobile but
   // will become more useful thinking about PWAs especially
   // on desktop.
-  Future<firebase.User?> listenToAuthStateChanges() {
-    var completer = Completer<firebase.User?>();
+  Future<void>? listenToAuthStateChanges() async {
     if (userStreamSubscription == null) {
+      var completer = Completer<void>();
       userStreamSubscription =
-          _firebaseAuthenticationService!.authStateChanges.listen((user) {
-        authStateChangesOnDataCallback(user);
+          _firebaseAuthenticationService!.authStateChanges.listen((user) async {
+        await authStateChangesOnDataCallback(user);
         if (!completer.isCompleted) {
           completer.complete();
         }
       });
+      return completer.future;
+    } else {
+      log.w(
+          "Auth state changes already listened to, not adding another listener");
     }
-    return completer.future;
   }
 
-  void authStateChangesOnDataCallback(firebase.User? user) {
+  Future<void> authStateChangesOnDataCallback(firebase.User? user) async {
     if (user != null) {
       _changeUserStatus(UserStatus.SignedIn);
-      initializeCurrentUser(user);
+      await initializeCurrentUser(user);
     } else {
       _changeUserStatus(UserStatus.SignedOut);
     }
@@ -112,8 +113,8 @@ class UserDataService {
     if (userStateSubject.value != UserStatus.Initialized) {
       log.i("Populating current user");
       try {
-        await _populateCurrentUser(user);
-        await listenToUserSummaryStats(user.uid);
+        await _syncOrCreateUserAccount(user: user);
+        await listenToUserSummaryStats(uid: user.uid);
         _changeUserStatus(UserStatus.Initialized);
       } catch (e) {
         // this should produce an error. listened to in start up logic
@@ -130,7 +131,7 @@ class UserDataService {
   }
 
   // populating current user
-  Future _populateCurrentUser(firebase.User user) async {
+  Future _syncOrCreateUserAccount({required firebase.User user}) async {
     try {
       final populatedUser = await _firestoreApi.getUser(uid: user.uid);
       if (populatedUser != null) {
@@ -143,7 +144,12 @@ class UserDataService {
         log.i(
             "Create user because this seems to be the first time a user is logging in with third-party authentification");
         try {
-          final nowPopulatedUser = await createUser(user);
+          final nowPopulatedUser = await createUser(
+            user: User(
+                uid: user.uid,
+                fullName: user.displayName ?? "",
+                email: user.email ?? ""),
+          );
           _currentUser = nowPopulatedUser;
         } catch (e) {
           rethrow;
@@ -156,21 +162,14 @@ class UserDataService {
   }
 
   // create user documents (user info, statistics) in firestore
-  Future<User> createUser(firebase.User user, [String? fullName]) async {
+  Future<User> createUser({required User user}) async {
     // create a new user profile on firestore
     try {
-      String name = fullName ?? (user.displayName ?? "");
-      String email = user.email ?? "";
-      List<String> keywords = getListOfKeywordsFromString(name);
-      User myuser = User(
-        uid: user.uid,
-        email: email,
-        fullName: name,
-        searchKeywords: keywords,
-      );
+      List<String> keywords = getListOfKeywordsFromString(user.fullName);
+      User newUser = user.copyWith(searchKeywords: keywords);
       UserStatistics stats = getEmptyUserStatistics();
-      await _firestoreApi.createUser(user: myuser, stats: stats);
-      return myuser;
+      //await _firestoreApi.createUser(user: newUser, stats: stats);
+      return newUser;
     } catch (e) {
       log.e("Error in createUser(): ${e.toString()}");
       throw UserDataServiceException(
@@ -187,7 +186,7 @@ class UserDataService {
   /// Functions related to user data
 
   /// Setting up user stats listener
-  Future listenToUserSummaryStats(String uid) async {
+  Future listenToUserSummaryStats({required String uid}) async {
     try {
       _firestoreApi
           .getUserSummaryStatisticsStream(uid: uid)

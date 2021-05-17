@@ -58,7 +58,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                                 title: "Donate",
                                 onPressed: () =>
                                     model.navigateToTransferFundAmountView(
-                                        project!)),
+                                        model.project!)),
                           ],
                         ),
                       ),
@@ -70,17 +70,17 @@ class SingleProjectViewMobile extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              project!.organization!.name,
+                              model.project!.organization!.name,
                               softWrap: true,
                               style: textTheme(context).headline6,
                             ),
                             Text(
-                              project!.organization!.url,
+                              model.project!.organization!.url,
                               softWrap: true,
                             ),
                             verticalSpaceMedium,
                             Text(
-                              project!.summary!,
+                              model.project!.summary!,
                               softWrap: true,
                             ),
                           ],

@@ -242,8 +242,7 @@ class TransferFundsAmountView extends StatelessWidget
 
   Widget projectSummary(BuildContext context, void Function()? onTap) {
     return GestureDetector(
-      onTap: () => null,
-      //onTap,
+      onTap: onTap,
       child: Column(
         children: [
           CircleAvatar(

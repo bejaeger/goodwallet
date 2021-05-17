@@ -31,9 +31,9 @@ class ProjectsService {
 
   // adds listener to projects collection
   // allows to wait for the first emission of the stream via the completer
-  Future<void> listenToProjects({required String uid}) async {
-    var completer = Completer<void>();
+  Future<void>? listenToProjects({required String uid}) async {
     if (_projectsStreamSubscription == null) {
+      var completer = Completer<void>();
       _projectsStreamSubscription =
           _firestoreApi.getProjectsStream(uid: uid).listen((snapshot) {
         projects = snapshot;
@@ -42,10 +42,10 @@ class ProjectsService {
         }
         log.v("Listened to ${projects.length} Projects");
       });
+      return completer.future;
     } else {
       log.w("Projects stream already listened to, not adding another listener");
     }
-    return completer.future;
   }
 
   List<Project> getProjectsUniqueArea() {

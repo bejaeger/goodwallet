@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
@@ -61,13 +62,7 @@ class FirestoreApi {
   ////////////////////////////////////////////////////////
   // Get user if exists
 
-  Future<User?> getUser({required String? uid}) async {
-    if (uid == null || uid.isEmpty) {
-      throw FirestoreApiException(
-          message:
-              'Your userId passed in is empty. Please pass in a valid user if from your Firebase user.');
-    }
-
+  Future<User?> getUser({required String uid}) async {
     var userData = await _usersCollection.doc(uid).get();
     if (!userData.exists) {
       log.v("User does not exist");
@@ -429,7 +424,9 @@ class FirestoreApi {
   ///  Listen to projects collection
   Future createProject({required Project project}) async {
     try {
-      await _projectsCollection.add(project.toJson());
+      final docRef = _projectsCollection.doc();
+      final newProject = project.copyWith(id: docRef.id);
+      await docRef.set(newProject.toJson());
     } catch (e) {
       throw FirestoreApiException(
           message:

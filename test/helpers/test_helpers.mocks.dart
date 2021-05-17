@@ -2,33 +2,33 @@
 // in good_wallet/test/helpers/test_helpers.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i14;
+import 'dart:async' as _i15;
 
 import 'package:cloud_firestore/cloud_firestore.dart' as _i7;
-import 'package:firebase_auth/firebase_auth.dart' as _i5;
+import 'package:firebase_auth/firebase_auth.dart' as _i8;
 import 'package:flutter/src/widgets/framework.dart' as _i21;
 import 'package:flutter/src/widgets/navigator.dart' as _i22;
-import 'package:good_wallet/apis/firestore_api.dart' as _i18;
-import 'package:good_wallet/datamodels/causes/project.dart' as _i19;
-import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart' as _i6;
+import 'package:good_wallet/apis/firestore_api.dart' as _i19;
+import 'package:good_wallet/datamodels/causes/project.dart' as _i6;
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart' as _i5;
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart'
-    as _i17;
+    as _i18;
 import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart'
-    as _i12;
-import 'package:good_wallet/datamodels/transfers/money_transfer.dart' as _i13;
-import 'package:good_wallet/datamodels/user/public_user_info.dart' as _i16;
+    as _i13;
+import 'package:good_wallet/datamodels/transfers/money_transfer.dart' as _i14;
+import 'package:good_wallet/datamodels/user/public_user_info.dart' as _i17;
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart'
-    as _i11;
+    as _i12;
 import 'package:good_wallet/datamodels/user/user.dart' as _i4;
-import 'package:good_wallet/enums/user_status.dart' as _i10;
+import 'package:good_wallet/enums/user_status.dart' as _i11;
 import 'package:good_wallet/services/money_pools/money_pools_service.dart'
-    as _i15;
-import 'package:good_wallet/services/userdata/user_data_service.dart' as _i9;
+    as _i16;
+import 'package:good_wallet/services/userdata/user_data_service.dart' as _i10;
 import 'package:logger/src/logger.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:rxdart/src/subjects/behavior_subject.dart' as _i3;
 import 'package:stacked_firebase_auth/src/firebase_authentication_service.dart'
-    as _i8;
+    as _i9;
 import 'package:stacked_services/src/navigation_service.dart' as _i20;
 import 'package:stacked_services/src/snackbar/snackbar_config.dart' as _i24;
 import 'package:stacked_services/src/snackbar/snackbar_service.dart' as _i23;
@@ -47,9 +47,9 @@ class _FakeBehaviorSubject<T> extends _i1.Fake
 
 class _FakeUser extends _i1.Fake implements _i4.User {}
 
-class _FakeUser extends _i1.Fake implements _i5.User {}
+class _FakeMoneyPool extends _i1.Fake implements _i5.MoneyPool {}
 
-class _FakeMoneyPool extends _i1.Fake implements _i6.MoneyPool {}
+class _FakeProject extends _i1.Fake implements _i6.Project {}
 
 class _FakeCollectionReference extends _i1.Fake
     implements _i7.CollectionReference {}
@@ -57,56 +57,56 @@ class _FakeCollectionReference extends _i1.Fake
 class _FakeDocumentReference extends _i1.Fake implements _i7.DocumentReference {
 }
 
-class _FakeFirebaseAuth extends _i1.Fake implements _i5.FirebaseAuth {}
+class _FakeFirebaseAuth extends _i1.Fake implements _i8.FirebaseAuth {}
 
 class _FakeFirebaseAuthenticationResult extends _i1.Fake
-    implements _i8.FirebaseAuthenticationResult {}
+    implements _i9.FirebaseAuthenticationResult {}
 
 /// A class which mocks [UserDataService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserDataService extends _i1.Mock implements _i9.UserDataService {
+class MockUserDataService extends _i1.Mock implements _i10.UserDataService {
   @override
   _i2.Logger get log =>
       (super.noSuchMethod(Invocation.getter(#log), returnValue: _FakeLogger())
           as _i2.Logger);
   @override
-  _i3.BehaviorSubject<_i10.UserStatus> get userStateSubject =>
+  _i3.BehaviorSubject<_i11.UserStatus> get userStateSubject =>
       (super.noSuchMethod(Invocation.getter(#userStateSubject),
-              returnValue: _FakeBehaviorSubject<_i10.UserStatus>())
-          as _i3.BehaviorSubject<_i10.UserStatus>);
+              returnValue: _FakeBehaviorSubject<_i11.UserStatus>())
+          as _i3.BehaviorSubject<_i11.UserStatus>);
   @override
   set userStateSubject(
-          _i3.BehaviorSubject<_i10.UserStatus>? _userStateSubject) =>
+          _i3.BehaviorSubject<_i11.UserStatus>? _userStateSubject) =>
       super.noSuchMethod(
           Invocation.setter(#userStateSubject, _userStateSubject),
           returnValueForMissingStub: null);
   @override
-  _i3.BehaviorSubject<_i11.UserStatistics> get userStatsSubject =>
+  _i3.BehaviorSubject<_i12.UserStatistics> get userStatsSubject =>
       (super.noSuchMethod(Invocation.getter(#userStatsSubject),
-              returnValue: _FakeBehaviorSubject<_i11.UserStatistics>())
-          as _i3.BehaviorSubject<_i11.UserStatistics>);
+              returnValue: _FakeBehaviorSubject<_i12.UserStatistics>())
+          as _i3.BehaviorSubject<_i12.UserStatistics>);
   @override
   set userStatsSubject(
-          _i3.BehaviorSubject<_i11.UserStatistics>? _userStatsSubject) =>
+          _i3.BehaviorSubject<_i12.UserStatistics>? _userStatsSubject) =>
       super.noSuchMethod(
           Invocation.setter(#userStatsSubject, _userStatsSubject),
           returnValueForMissingStub: null);
   @override
-  Map<_i12.MoneyTransferQueryConfig, List<_i13.MoneyTransfer>>
+  Map<_i13.MoneyTransferQueryConfig, List<_i14.MoneyTransfer>>
       get latestTransfers => (super
               .noSuchMethod(Invocation.getter(#latestTransfers), returnValue: <
-                  _i12.MoneyTransferQueryConfig, List<_i13.MoneyTransfer>>{})
-          as Map<_i12.MoneyTransferQueryConfig, List<_i13.MoneyTransfer>>);
+                  _i13.MoneyTransferQueryConfig, List<_i14.MoneyTransfer>>{})
+          as Map<_i13.MoneyTransferQueryConfig, List<_i14.MoneyTransfer>>);
   @override
   set latestTransfers(
-          Map<_i12.MoneyTransferQueryConfig, List<_i13.MoneyTransfer>>?
+          Map<_i13.MoneyTransferQueryConfig, List<_i14.MoneyTransfer>>?
               _latestTransfers) =>
       super.noSuchMethod(Invocation.setter(#latestTransfers, _latestTransfers),
           returnValueForMissingStub: null);
   @override
   set userStreamSubscription(
-          _i14.StreamSubscription<dynamic>? _userStreamSubscription) =>
+          _i15.StreamSubscription<dynamic>? _userStreamSubscription) =>
       super.noSuchMethod(
           Invocation.setter(#userStreamSubscription, _userStreamSubscription),
           returnValueForMissingStub: null);
@@ -119,76 +119,77 @@ class MockUserDataService extends _i1.Mock implements _i9.UserDataService {
       super.noSuchMethod(Invocation.method(#setCurrentUser, [user]),
           returnValueForMissingStub: null);
   @override
-  _i14.Future<_i5.User?> listenToAuthStateChanges() =>
+  _i15.Future<void>? listenToAuthStateChanges() =>
       (super.noSuchMethod(Invocation.method(#listenToAuthStateChanges, []),
-              returnValue: Future<_i5.User?>.value(_FakeUser()))
-          as _i14.Future<_i5.User?>);
+          returnValueForMissingStub: Future.value()) as _i15.Future<void>?);
   @override
-  void authStateChangesOnDataCallback(_i5.User? user) => super.noSuchMethod(
-      Invocation.method(#authStateChangesOnDataCallback, [user]),
-      returnValueForMissingStub: null);
+  _i15.Future<void> authStateChangesOnDataCallback(_i8.User? user) => (super
+      .noSuchMethod(Invocation.method(#authStateChangesOnDataCallback, [user]),
+          returnValue: Future<void>.value(null),
+          returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<dynamic> initializeCurrentUser(_i5.User? user) =>
+  _i15.Future<dynamic> initializeCurrentUser(_i8.User? user) =>
       (super.noSuchMethod(Invocation.method(#initializeCurrentUser, [user]),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Future<_i4.User> createUser(_i5.User? user, [String? fullName]) =>
-      (super.noSuchMethod(Invocation.method(#createUser, [user, fullName]),
+  _i15.Future<_i4.User> createUser({_i4.User? user}) =>
+      (super.noSuchMethod(Invocation.method(#createUser, [], {#user: user}),
               returnValue: Future<_i4.User>.value(_FakeUser()))
-          as _i14.Future<_i4.User>);
+          as _i15.Future<_i4.User>);
   @override
-  _i14.Future<dynamic> listenToUserSummaryStats(String? uid) =>
-      (super.noSuchMethod(Invocation.method(#listenToUserSummaryStats, [uid]),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+  _i15.Future<dynamic> listenToUserSummaryStats({String? uid}) =>
+      (super.noSuchMethod(
+          Invocation.method(#listenToUserSummaryStats, [], {#uid: uid}),
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Stream<List<_i13.MoneyTransfer>> getTransferDataStream(
-          {_i12.MoneyTransferQueryConfig? config}) =>
+  _i15.Stream<List<_i14.MoneyTransfer>> getTransferDataStream(
+          {_i13.MoneyTransferQueryConfig? config}) =>
       (super.noSuchMethod(
               Invocation.method(#getTransferDataStream, [], {#config: config}),
-              returnValue: Stream<List<_i13.MoneyTransfer>>.empty())
-          as _i14.Stream<List<_i13.MoneyTransfer>>);
+              returnValue: Stream<List<_i14.MoneyTransfer>>.empty())
+          as _i15.Stream<List<_i14.MoneyTransfer>>);
   @override
-  List<_i13.MoneyTransfer> getTransfers(
-          {_i12.MoneyTransferQueryConfig? config}) =>
+  List<_i14.MoneyTransfer> getTransfers(
+          {_i13.MoneyTransferQueryConfig? config}) =>
       (super.noSuchMethod(
           Invocation.method(#getTransfers, [], {#config: config}),
-          returnValue: <_i13.MoneyTransfer>[]) as List<_i13.MoneyTransfer>);
+          returnValue: <_i14.MoneyTransfer>[]) as List<_i14.MoneyTransfer>);
   @override
   void addTransferDataListener(
-          {_i12.MoneyTransferQueryConfig? config, void Function()? callback}) =>
+          {_i13.MoneyTransferQueryConfig? config, void Function()? callback}) =>
       super.noSuchMethod(
           Invocation.method(#addTransferDataListener, [],
               {#config: config, #callback: callback}),
           returnValueForMissingStub: null);
   @override
   void pauseTransferDataListener(
-          {_i12.MoneyTransferQueryConfig? config, void Function()? callback}) =>
+          {_i13.MoneyTransferQueryConfig? config, void Function()? callback}) =>
       super.noSuchMethod(
           Invocation.method(#pauseTransferDataListener, [],
               {#config: config, #callback: callback}),
           returnValueForMissingStub: null);
   @override
-  List<_i13.MoneyTransfer> getMoneyTransfersWithUniqueSender(
-          List<_i13.MoneyTransfer>? transfer) =>
+  List<_i14.MoneyTransfer> getMoneyTransfersWithUniqueSender(
+          List<_i14.MoneyTransfer>? transfer) =>
       (super.noSuchMethod(
           Invocation.method(#getMoneyTransfersWithUniqueSender, [transfer]),
-          returnValue: <_i13.MoneyTransfer>[]) as List<_i13.MoneyTransfer>);
+          returnValue: <_i14.MoneyTransfer>[]) as List<_i14.MoneyTransfer>);
   @override
-  bool isValidFirestoreQueryConfig({_i12.MoneyTransferQueryConfig? config}) =>
+  bool isValidFirestoreQueryConfig({_i13.MoneyTransferQueryConfig? config}) =>
       (super.noSuchMethod(
           Invocation.method(
               #isValidFirestoreQueryConfig, [], {#config: config}),
           returnValue: false) as bool);
   @override
-  _i14.Future<dynamic> handleLogoutEvent() =>
+  _i15.Future<dynamic> handleLogoutEvent() =>
       (super.noSuchMethod(Invocation.method(#handleLogoutEvent, []),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
 }
 
 /// A class which mocks [MoneyPoolsService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMoneyPoolsService extends _i1.Mock implements _i15.MoneyPoolsService {
+class MockMoneyPoolsService extends _i1.Mock implements _i16.MoneyPoolsService {
   @override
   String get contributionsKey =>
       (super.noSuchMethod(Invocation.getter(#contributionsKey), returnValue: '')
@@ -198,19 +199,19 @@ class MockMoneyPoolsService extends _i1.Mock implements _i15.MoneyPoolsService {
       (super.noSuchMethod(Invocation.getter(#log), returnValue: _FakeLogger())
           as _i2.Logger);
   @override
-  List<_i6.MoneyPool> get moneyPools =>
+  List<_i5.MoneyPool> get moneyPools =>
       (super.noSuchMethod(Invocation.getter(#moneyPools),
-          returnValue: <_i6.MoneyPool>[]) as List<_i6.MoneyPool>);
+          returnValue: <_i5.MoneyPool>[]) as List<_i5.MoneyPool>);
   @override
-  set moneyPools(List<_i6.MoneyPool>? _moneyPools) =>
+  set moneyPools(List<_i5.MoneyPool>? _moneyPools) =>
       super.noSuchMethod(Invocation.setter(#moneyPools, _moneyPools),
           returnValueForMissingStub: null);
   @override
-  List<_i6.MoneyPool> get moneyPoolsInvitedTo =>
+  List<_i5.MoneyPool> get moneyPoolsInvitedTo =>
       (super.noSuchMethod(Invocation.getter(#moneyPoolsInvitedTo),
-          returnValue: <_i6.MoneyPool>[]) as List<_i6.MoneyPool>);
+          returnValue: <_i5.MoneyPool>[]) as List<_i5.MoneyPool>);
   @override
-  set moneyPoolsInvitedTo(List<_i6.MoneyPool>? _moneyPoolsInvitedTo) =>
+  set moneyPoolsInvitedTo(List<_i5.MoneyPool>? _moneyPoolsInvitedTo) =>
       super.noSuchMethod(
           Invocation.setter(#moneyPoolsInvitedTo, _moneyPoolsInvitedTo),
           returnValueForMissingStub: null);
@@ -231,60 +232,59 @@ class MockMoneyPoolsService extends _i1.Mock implements _i15.MoneyPoolsService {
       super.noSuchMethod(Invocation.method(#init, [], {#uid: uid}),
           returnValueForMissingStub: null);
   @override
-  _i14.Future<dynamic> listenToMoneyPoolsInvitedTo({String? uid}) =>
+  _i15.Future<dynamic> listenToMoneyPoolsInvitedTo({String? uid}) =>
       (super.noSuchMethod(
           Invocation.method(#listenToMoneyPoolsInvitedTo, [], {#uid: uid}),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Future<dynamic> addInvitedUserToMoneyPool(
-          {_i16.PublicUserInfo? userInfo, _i6.MoneyPool? moneyPool}) =>
+  _i15.Future<dynamic> addInvitedUserToMoneyPool(
+          {_i17.PublicUserInfo? userInfo, _i5.MoneyPool? moneyPool}) =>
       (super.noSuchMethod(
           Invocation.method(#addInvitedUserToMoneyPool, [],
               {#userInfo: userInfo, #moneyPool: moneyPool}),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Future<void> listenToMoneyPools({String? uid}) => (super.noSuchMethod(
+  _i15.Future<void>? listenToMoneyPools({String? uid}) => (super.noSuchMethod(
       Invocation.method(#listenToMoneyPools, [], {#uid: uid}),
-      returnValue: Future<void>.value(null),
-      returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+      returnValueForMissingStub: Future.value()) as _i15.Future<void>?);
   @override
-  _i14.Future<_i6.MoneyPool> createAndReturnMoneyPool(
-          {_i6.MoneyPool? moneyPool}) =>
+  _i15.Future<_i5.MoneyPool> createAndReturnMoneyPool(
+          {_i5.MoneyPool? moneyPool}) =>
       (super.noSuchMethod(
               Invocation.method(
                   #createAndReturnMoneyPool, [], {#moneyPool: moneyPool}),
-              returnValue: Future<_i6.MoneyPool>.value(_FakeMoneyPool()))
-          as _i14.Future<_i6.MoneyPool>);
+              returnValue: Future<_i5.MoneyPool>.value(_FakeMoneyPool()))
+          as _i15.Future<_i5.MoneyPool>);
   @override
-  _i14.Future<dynamic> acceptInvitation(
-          String? uid, String? name, _i6.MoneyPool? moneyPool) =>
+  _i15.Future<dynamic> acceptInvitation(
+          String? uid, String? name, _i5.MoneyPool? moneyPool) =>
       (super.noSuchMethod(
           Invocation.method(#acceptInvitation, [uid, name, moneyPool]),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Future<dynamic> declineInvitation(
-          String? uid, _i6.MoneyPool? moneyPool) =>
+  _i15.Future<dynamic> declineInvitation(
+          String? uid, _i5.MoneyPool? moneyPool) =>
       (super.noSuchMethod(
           Invocation.method(#declineInvitation, [uid, moneyPool]),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Future<dynamic> getMoneyPool(String? mpid) =>
+  _i15.Future<dynamic> getMoneyPool(String? mpid) =>
       (super.noSuchMethod(Invocation.method(#getMoneyPool, [mpid]),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Future<dynamic> deleteMoneyPool(String? mpid) =>
+  _i15.Future<dynamic> deleteMoneyPool(String? mpid) =>
       (super.noSuchMethod(Invocation.method(#deleteMoneyPool, [mpid]),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Future<List<_i17.MoneyPoolPayout>> getMoneyPoolPayouts(String? mpid) =>
+  _i15.Future<List<_i18.MoneyPoolPayout>> getMoneyPoolPayouts(String? mpid) =>
       (super.noSuchMethod(Invocation.method(#getMoneyPoolPayouts, [mpid]),
-              returnValue: Future<List<_i17.MoneyPoolPayout>>.value(
-                  <_i17.MoneyPoolPayout>[]))
-          as _i14.Future<List<_i17.MoneyPoolPayout>>);
+              returnValue: Future<List<_i18.MoneyPoolPayout>>.value(
+                  <_i18.MoneyPoolPayout>[]))
+          as _i15.Future<List<_i18.MoneyPoolPayout>>);
   @override
-  _i14.Future<dynamic> submitMoneyPoolPayout(_i17.MoneyPoolPayout? data) =>
+  _i15.Future<dynamic> submitMoneyPoolPayout(_i18.MoneyPoolPayout? data) =>
       (super.noSuchMethod(Invocation.method(#submitMoneyPoolPayout, [data]),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
   void clearData() => super.noSuchMethod(Invocation.method(#clearData, []),
       returnValueForMissingStub: null);
@@ -293,7 +293,7 @@ class MockMoneyPoolsService extends _i1.Mock implements _i15.MoneyPoolsService {
 /// A class which mocks [FirestoreApi].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockFirestoreApi extends _i1.Mock implements _i18.FirestoreApi {
+class MockFirestoreApi extends _i1.Mock implements _i19.FirestoreApi {
   @override
   _i2.Logger get log =>
       (super.noSuchMethod(Invocation.getter(#log), returnValue: _FakeLogger())
@@ -307,47 +307,47 @@ class MockFirestoreApi extends _i1.Mock implements _i18.FirestoreApi {
       (super.noSuchMethod(Invocation.getter(#userSummaryStatisticsDocumentKey),
           returnValue: '') as String);
   @override
-  _i14.Future<void> createUser({_i4.User? user, _i11.UserStatistics? stats}) =>
+  _i15.Future<void> createUser({_i4.User? user, _i12.UserStatistics? stats}) =>
       (super.noSuchMethod(
           Invocation.method(#createUser, [], {#user: user, #stats: stats}),
           returnValue: Future<void>.value(null),
-          returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> createUserInfo({_i4.User? user}) =>
+  _i15.Future<void> createUserInfo({_i4.User? user}) =>
       (super.noSuchMethod(Invocation.method(#createUserInfo, [], {#user: user}),
           returnValue: Future<void>.value(null),
-          returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<void> createUserStatistics(
-          {String? uid, _i11.UserStatistics? stats}) =>
+  _i15.Future<void> createUserStatistics(
+          {String? uid, _i12.UserStatistics? stats}) =>
       (super.noSuchMethod(
           Invocation.method(
               #createUserStatistics, [], {#uid: uid, #stats: stats}),
           returnValue: Future<void>.value(null),
-          returnValueForMissingStub: Future.value()) as _i14.Future<void>);
+          returnValueForMissingStub: Future.value()) as _i15.Future<void>);
   @override
-  _i14.Future<_i4.User?> getUser({String? uid}) =>
+  _i15.Future<_i4.User?> getUser({String? uid}) =>
       (super.noSuchMethod(Invocation.method(#getUser, [], {#uid: uid}),
               returnValue: Future<_i4.User?>.value(_FakeUser()))
-          as _i14.Future<_i4.User?>);
+          as _i15.Future<_i4.User?>);
   @override
-  _i14.Stream<_i11.UserStatistics> getUserSummaryStatisticsStream(
+  _i15.Stream<_i12.UserStatistics> getUserSummaryStatisticsStream(
           {String? uid}) =>
       (super.noSuchMethod(
           Invocation.method(#getUserSummaryStatisticsStream, [], {#uid: uid}),
           returnValue:
-              Stream<_i11.UserStatistics>.empty()) as _i14
-          .Stream<_i11.UserStatistics>);
+              Stream<_i12.UserStatistics>.empty()) as _i15
+          .Stream<_i12.UserStatistics>);
   @override
-  _i14.Stream<List<_i13.MoneyTransfer>> getTransferDataStream(
-          {_i12.MoneyTransferQueryConfig? config, String? uid}) =>
+  _i15.Stream<List<_i14.MoneyTransfer>> getTransferDataStream(
+          {_i13.MoneyTransferQueryConfig? config, String? uid}) =>
       (super.noSuchMethod(
               Invocation.method(
                   #getTransferDataStream, [], {#config: config, #uid: uid}),
-              returnValue: Stream<List<_i13.MoneyTransfer>>.empty())
-          as _i14.Stream<List<_i13.MoneyTransfer>>);
+              returnValue: Stream<List<_i14.MoneyTransfer>>.empty())
+          as _i15.Stream<List<_i14.MoneyTransfer>>);
   @override
-  _i14.Stream<List<_i13.MoneyTransfer>> getCombinedMoneyTransfersStream(
+  _i15.Stream<List<_i14.MoneyTransfer>> getCombinedMoneyTransfersStream(
           {_i7.Query? outgoing, _i7.Query? incoming, int? maxNumberReturns}) =>
       (super.noSuchMethod(
               Invocation.method(#getCombinedMoneyTransfersStream, [], {
@@ -355,57 +355,62 @@ class MockFirestoreApi extends _i1.Mock implements _i18.FirestoreApi {
                 #incoming: incoming,
                 #maxNumberReturns: maxNumberReturns
               }),
-              returnValue: Stream<List<_i13.MoneyTransfer>>.empty())
-          as _i14.Stream<List<_i13.MoneyTransfer>>);
+              returnValue: Stream<List<_i14.MoneyTransfer>>.empty())
+          as _i15.Stream<List<_i14.MoneyTransfer>>);
   @override
-  _i14.Future<dynamic> createMoneyTransfer(
-          {_i13.MoneyTransfer? moneyTransfer}) =>
+  _i15.Future<dynamic> createMoneyTransfer(
+          {_i14.MoneyTransfer? moneyTransfer}) =>
       (super.noSuchMethod(
           Invocation.method(
               #createMoneyTransfer, [], {#moneyTransfer: moneyTransfer}),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Stream<List<_i6.MoneyPool>> getMoneyPoolsInvitedToStream(
+  _i15.Stream<List<_i5.MoneyPool>> getMoneyPoolsInvitedToStream(
           {String? uid}) =>
       (super.noSuchMethod(
               Invocation.method(#getMoneyPoolsInvitedToStream, [], {#uid: uid}),
-              returnValue: Stream<List<_i6.MoneyPool>>.empty())
-          as _i14.Stream<List<_i6.MoneyPool>>);
+              returnValue: Stream<List<_i5.MoneyPool>>.empty())
+          as _i15.Stream<List<_i5.MoneyPool>>);
   @override
-  _i14.Stream<List<_i6.MoneyPool>> getMoneyPoolsStream({String? uid}) =>
+  _i15.Stream<List<_i5.MoneyPool>> getMoneyPoolsStream({String? uid}) =>
       (super.noSuchMethod(
               Invocation.method(#getMoneyPoolsStream, [], {#uid: uid}),
-              returnValue: Stream<List<_i6.MoneyPool>>.empty())
-          as _i14.Stream<List<_i6.MoneyPool>>);
+              returnValue: Stream<List<_i5.MoneyPool>>.empty())
+          as _i15.Stream<List<_i5.MoneyPool>>);
   @override
-  _i14.Future<dynamic> updateMoneyPool(_i6.MoneyPool? moneyPool) =>
+  _i15.Future<dynamic> updateMoneyPool(_i5.MoneyPool? moneyPool) =>
       (super.noSuchMethod(Invocation.method(#updateMoneyPool, [moneyPool]),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Future<_i6.MoneyPool> createAndReturnMoneyPool(
-          {_i6.MoneyPool? moneyPool}) =>
+  _i15.Future<_i5.MoneyPool> createAndReturnMoneyPool(
+          {_i5.MoneyPool? moneyPool}) =>
       (super.noSuchMethod(
               Invocation.method(
                   #createAndReturnMoneyPool, [], {#moneyPool: moneyPool}),
-              returnValue: Future<_i6.MoneyPool>.value(_FakeMoneyPool()))
-          as _i14.Future<_i6.MoneyPool>);
+              returnValue: Future<_i5.MoneyPool>.value(_FakeMoneyPool()))
+          as _i15.Future<_i5.MoneyPool>);
   @override
-  _i14.Future<dynamic> getMoneyPool(String? mpid) =>
+  _i15.Future<dynamic> getMoneyPool(String? mpid) =>
       (super.noSuchMethod(Invocation.method(#getMoneyPool, [mpid]),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Future<dynamic> deleteMoneyPool(String? moneyPoolId) =>
+  _i15.Future<dynamic> deleteMoneyPool(String? moneyPoolId) =>
       (super.noSuchMethod(Invocation.method(#deleteMoneyPool, [moneyPoolId]),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Stream<List<_i19.Project>> getProjectsStream({String? uid}) => (super
+  _i15.Future<_i6.Project> getProjectWithId({String? id}) =>
+      (super.noSuchMethod(Invocation.method(#getProjectWithId, [], {#id: id}),
+              returnValue: Future<_i6.Project>.value(_FakeProject()))
+          as _i15.Future<_i6.Project>);
+  @override
+  _i15.Stream<List<_i6.Project>> getProjectsStream({String? uid}) => (super
           .noSuchMethod(Invocation.method(#getProjectsStream, [], {#uid: uid}),
-              returnValue: Stream<List<_i19.Project>>.empty())
-      as _i14.Stream<List<_i19.Project>>);
+              returnValue: Stream<List<_i6.Project>>.empty())
+      as _i15.Stream<List<_i6.Project>>);
   @override
-  _i14.Future<dynamic> createProject({_i19.Project? project}) => (super
+  _i15.Future<dynamic> createProject({_i6.Project? project}) => (super
       .noSuchMethod(Invocation.method(#createProject, [], {#project: project}),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
   _i7.CollectionReference getUserStatisticsCollection({String? uid}) =>
       (super.noSuchMethod(
@@ -453,7 +458,7 @@ class MockNavigationService extends _i1.Mock implements _i20.NavigationService {
           }),
           returnValueForMissingStub: null);
   @override
-  _i14.Future<dynamic>? navigateWithTransition(_i21.Widget? page,
+  _i15.Future<dynamic>? navigateWithTransition(_i21.Widget? page,
           {bool? opaque,
           String? transition = r'',
           Duration? duration,
@@ -467,9 +472,9 @@ class MockNavigationService extends _i1.Mock implements _i20.NavigationService {
         #duration: duration,
         #popGesture: popGesture,
         #id: id
-      })) as _i14.Future<dynamic>?);
+      })) as _i15.Future<dynamic>?);
   @override
-  _i14.Future<dynamic>? replaceWithTransition(_i21.Widget? page,
+  _i15.Future<dynamic>? replaceWithTransition(_i21.Widget? page,
           {bool? opaque,
           String? transition = r'',
           Duration? duration,
@@ -483,7 +488,7 @@ class MockNavigationService extends _i1.Mock implements _i20.NavigationService {
         #duration: duration,
         #popGesture: popGesture,
         #id: id
-      })) as _i14.Future<dynamic>?);
+      })) as _i15.Future<dynamic>?);
   @override
   bool back({dynamic result, int? id}) => (super.noSuchMethod(
       Invocation.method(#back, [], {#result: result, #id: id}),
@@ -497,40 +502,40 @@ class MockNavigationService extends _i1.Mock implements _i20.NavigationService {
       super.noSuchMethod(Invocation.method(#popRepeated, [popTimes]),
           returnValueForMissingStub: null);
   @override
-  _i14.Future<dynamic>? navigateTo(String? routeName,
+  _i15.Future<dynamic>? navigateTo(String? routeName,
           {dynamic arguments, int? id}) =>
       (super.noSuchMethod(Invocation.method(
               #navigateTo, [routeName], {#arguments: arguments, #id: id}))
-          as _i14.Future<dynamic>?);
+          as _i15.Future<dynamic>?);
   @override
-  _i14.Future<dynamic>? navigateToView(_i21.Widget? view,
+  _i15.Future<dynamic>? navigateToView(_i21.Widget? view,
           {dynamic arguments, int? id}) =>
       (super.noSuchMethod(Invocation.method(
               #navigateToView, [view], {#arguments: arguments, #id: id}))
-          as _i14.Future<dynamic>?);
+          as _i15.Future<dynamic>?);
   @override
-  _i14.Future<dynamic>? replaceWith(String? routeName,
+  _i15.Future<dynamic>? replaceWith(String? routeName,
           {dynamic arguments, int? id}) =>
       (super.noSuchMethod(Invocation.method(
               #replaceWith, [routeName], {#arguments: arguments, #id: id}))
-          as _i14.Future<dynamic>?);
+          as _i15.Future<dynamic>?);
   @override
-  _i14.Future<dynamic>? clearStackAndShow(String? routeName,
+  _i15.Future<dynamic>? clearStackAndShow(String? routeName,
           {dynamic arguments, int? id}) =>
       (super.noSuchMethod(Invocation.method(#clearStackAndShow, [routeName],
-          {#arguments: arguments, #id: id})) as _i14.Future<dynamic>?);
+          {#arguments: arguments, #id: id})) as _i15.Future<dynamic>?);
   @override
-  _i14.Future<dynamic>? clearTillFirstAndShow(String? routeName,
+  _i15.Future<dynamic>? clearTillFirstAndShow(String? routeName,
           {dynamic arguments, int? id}) =>
       (super.noSuchMethod(Invocation.method(#clearTillFirstAndShow, [routeName],
-          {#arguments: arguments, #id: id})) as _i14.Future<dynamic>?);
+          {#arguments: arguments, #id: id})) as _i15.Future<dynamic>?);
   @override
-  _i14.Future<dynamic>? clearTillFirstAndShowView(_i21.Widget? view,
+  _i15.Future<dynamic>? clearTillFirstAndShowView(_i21.Widget? view,
           {dynamic arguments, int? id}) =>
       (super.noSuchMethod(Invocation.method(#clearTillFirstAndShowView, [view],
-          {#arguments: arguments, #id: id})) as _i14.Future<dynamic>?);
+          {#arguments: arguments, #id: id})) as _i15.Future<dynamic>?);
   @override
-  _i14.Future<dynamic>? pushNamedAndRemoveUntil(String? routeName,
+  _i15.Future<dynamic>? pushNamedAndRemoveUntil(String? routeName,
           {_i22.RoutePredicate? predicate, dynamic arguments, int? id}) =>
       (super.noSuchMethod(Invocation.method(#pushNamedAndRemoveUntil, [
         routeName
@@ -538,7 +543,7 @@ class MockNavigationService extends _i1.Mock implements _i20.NavigationService {
         #predicate: predicate,
         #arguments: arguments,
         #id: id
-      })) as _i14.Future<dynamic>?);
+      })) as _i15.Future<dynamic>?);
 }
 
 /// A class which mocks [SnackbarService].
@@ -595,7 +600,7 @@ class MockSnackbarService extends _i1.Mock implements _i23.SnackbarService {
           }),
           returnValueForMissingStub: null);
   @override
-  _i14.Future<dynamic>? showCustomSnackBar(
+  _i15.Future<dynamic>? showCustomSnackBar(
           {String? message,
           dynamic customData,
           dynamic variant,
@@ -613,81 +618,81 @@ class MockSnackbarService extends _i1.Mock implements _i23.SnackbarService {
         #onMainButtonTapped: onMainButtonTapped,
         #onTap: onTap,
         #duration: duration
-      })) as _i14.Future<dynamic>?);
+      })) as _i15.Future<dynamic>?);
 }
 
 /// A class which mocks [FirebaseAuthenticationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockFirebaseAuthenticationService extends _i1.Mock
-    implements _i8.FirebaseAuthenticationService {
+    implements _i9.FirebaseAuthenticationService {
   @override
-  _i5.FirebaseAuth get firebaseAuth =>
+  _i8.FirebaseAuth get firebaseAuth =>
       (super.noSuchMethod(Invocation.getter(#firebaseAuth),
-          returnValue: _FakeFirebaseAuth()) as _i5.FirebaseAuth);
+          returnValue: _FakeFirebaseAuth()) as _i8.FirebaseAuth);
   @override
   bool get hasUser =>
       (super.noSuchMethod(Invocation.getter(#hasUser), returnValue: false)
           as bool);
   @override
-  _i14.Stream<_i5.User?> get authStateChanges =>
+  _i15.Stream<_i8.User?> get authStateChanges =>
       (super.noSuchMethod(Invocation.getter(#authStateChanges),
-          returnValue: Stream<_i5.User?>.empty()) as _i14.Stream<_i5.User?>);
+          returnValue: Stream<_i8.User?>.empty()) as _i15.Stream<_i8.User?>);
   @override
-  _i14.Future<_i8.FirebaseAuthenticationResult> signInWithGoogle() =>
+  _i15.Future<_i9.FirebaseAuthenticationResult> signInWithGoogle() =>
       (super.noSuchMethod(Invocation.method(#signInWithGoogle, []),
-              returnValue: Future<_i8.FirebaseAuthenticationResult>.value(
+              returnValue: Future<_i9.FirebaseAuthenticationResult>.value(
                   _FakeFirebaseAuthenticationResult()))
-          as _i14.Future<_i8.FirebaseAuthenticationResult>);
+          as _i15.Future<_i9.FirebaseAuthenticationResult>);
   @override
-  _i14.Future<bool> isAppleSignInAvailable() =>
+  _i15.Future<bool> isAppleSignInAvailable() =>
       (super.noSuchMethod(Invocation.method(#isAppleSignInAvailable, []),
-          returnValue: Future<bool>.value(false)) as _i14.Future<bool>);
+          returnValue: Future<bool>.value(false)) as _i15.Future<bool>);
   @override
-  _i14.Future<_i8.FirebaseAuthenticationResult> signInWithApple(
+  _i15.Future<_i9.FirebaseAuthenticationResult> signInWithApple(
           {String? appleRedirectUri, String? appleClientId}) =>
       (super.noSuchMethod(
               Invocation.method(#signInWithApple, [], {
                 #appleRedirectUri: appleRedirectUri,
                 #appleClientId: appleClientId
               }),
-              returnValue: Future<_i8.FirebaseAuthenticationResult>.value(
+              returnValue: Future<_i9.FirebaseAuthenticationResult>.value(
                   _FakeFirebaseAuthenticationResult()))
-          as _i14.Future<_i8.FirebaseAuthenticationResult>);
+          as _i15.Future<_i9.FirebaseAuthenticationResult>);
   @override
-  _i14.Future<_i8.FirebaseAuthenticationResult> loginWithEmail(
+  _i15.Future<_i9.FirebaseAuthenticationResult> loginWithEmail(
           {String? email, String? password}) =>
       (super.noSuchMethod(
               Invocation.method(
                   #loginWithEmail, [], {#email: email, #password: password}),
-              returnValue: Future<_i8.FirebaseAuthenticationResult>.value(
+              returnValue: Future<_i9.FirebaseAuthenticationResult>.value(
                   _FakeFirebaseAuthenticationResult()))
-          as _i14.Future<_i8.FirebaseAuthenticationResult>);
+          as _i15.Future<_i9.FirebaseAuthenticationResult>);
   @override
-  _i14.Future<_i8.FirebaseAuthenticationResult> createAccountWithEmail(
+  _i15.Future<_i9.FirebaseAuthenticationResult> createAccountWithEmail(
           {String? email, String? password}) =>
       (super.noSuchMethod(
               Invocation.method(#createAccountWithEmail, [],
                   {#email: email, #password: password}),
-              returnValue: Future<_i8.FirebaseAuthenticationResult>.value(
+              returnValue: Future<_i9.FirebaseAuthenticationResult>.value(
                   _FakeFirebaseAuthenticationResult()))
-          as _i14.Future<_i8.FirebaseAuthenticationResult>);
+          as _i15.Future<_i9.FirebaseAuthenticationResult>);
   @override
-  _i14.Future<dynamic> logout() =>
+  _i15.Future<dynamic> logout() =>
       (super.noSuchMethod(Invocation.method(#logout, []),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Future<dynamic> sendResetPasswordLink(String? email) =>
+  _i15.Future<dynamic> sendResetPasswordLink(String? email) =>
       (super.noSuchMethod(Invocation.method(#sendResetPasswordLink, [email]),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Future<dynamic> validatePassword(String? password) =>
+  _i15.Future<dynamic> validatePassword(String? password) =>
       (super.noSuchMethod(Invocation.method(#validatePassword, [password]),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i14.Future<dynamic> updatePassword(String? password) =>
+  _i15.Future<dynamic> updatePassword(String? password) =>
       (super.noSuchMethod(Invocation.method(#updatePassword, [password]),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
   String generateNonce([int? length = 32]) =>
       (super.noSuchMethod(Invocation.method(#generateNonce, [length]),

@@ -32,7 +32,7 @@ class User with _$User {
     @Default("") String uid,
     @Default("") String fullName,
     @Default("") String email,
-    List<String>? keywordList,
+    List<String>? searchKeywords,
   }) = _EmptyUser;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

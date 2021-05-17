@@ -5,17 +5,15 @@ import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:mockito/mockito.dart';
+import '../helpers/mock_firebase_user.dart';
 import '../helpers/test_helpers.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase;
 
 UserDataService _getService({required bool startListeningToAuthStateChanges}) {
   return UserDataService(
       startListeningToAuthStateChanges: startListeningToAuthStateChanges);
 }
 
-class MockFirebaseUser extends Mock implements firebase.User {}
-
-final MockFirebaseUser _mockFirebaseUser = MockFirebaseUser();
+final mockFirebaseUser = MockFirebaseUser();
 
 void main() {
   group('UserDataServiceTest -', () {
@@ -34,38 +32,47 @@ void main() {
     });
   });
 
-  group('authStateChangesOnDataCallback -', () {
+  group('Initialization of user -', () {
     test(
-        'When user is null UserStatus should be SignedOut after listening auth state chance',
+        'When firebase user is null UserStatus should be SignedOut after listening auth state chance',
         () async {
       getAndRegisterFirestoreApi();
-      // register auth with null as user
       getAndRegisterFirebaseAuthenticationService(currentUser: null);
       final service = _getService(startListeningToAuthStateChanges: false);
       await service.listenToAuthStateChanges();
       expect(service.userStatus, UserStatus.SignedOut);
     });
 
+    test(
+        'When firebase user is not null and has an entry in the database UserStatus should be Initialized after awaiting auth state changes',
+        () async {
+      getAndRegisterFirebaseAuthenticationService(
+          currentUser: mockFirebaseUser);
+      getAndRegisterFirestoreApi(
+          user: User(
+              uid: 'dummy_uid', email: 'dummy_email', fullName: 'dummy_name'));
+      when(mockFirebaseUser.uid).thenReturn("UID");
+      when(mockFirebaseUser.email).thenReturn("EMAIL");
+      when(mockFirebaseUser.displayName).thenReturn("NAME");
+      final service = _getService(startListeningToAuthStateChanges: false);
+      await service.listenToAuthStateChanges();
+      expect(service.userStatus, UserStatus.Initialized);
+    });
+
+    ///////////////////
+    //// Not yet working because it says a non-mockito object is tested...what!?
     // test(
-    //     'When user is not null UserStatus should be SignedIn after listening to auth state change',
+    //     'When firebase user is not null but has no entry in the database should create User',
     //     () async {
-    //   final mockFirestoreApi = getAndRegisterFirestoreApi();
-    //   final mockAuth = getAndRegisterFirebaseAuthenticationService(
-    //       currentUser: _mockFirebaseUser);
-
-    //   when(mockFirestoreApi.getUser(uid: anyNamed('uid'))).thenAnswer(
-    //       (realInvocation) async =>
-    //           User(uid: 'id', email: 'dummy_email', fullName: 'dummy_name'));
-
-    //   UserDataService? service;
-    //   try {
-    //     service = _getService(startListeningToAuthStateChanges: false);
-    //     await service.listenToAndAwaitFirstAuthStateChanges();
-    //     expect(service.userStatus, UserStatus.SignedIn);
-    //   } catch (e) {
-    //     print("CAUGHT ERROR");
-    //     expect(service?.userStatus, UserStatus.SignedIn);
-    //   }
+    //   getAndRegisterFirebaseAuthenticationService(
+    //       currentUser: mockFirebaseUser);
+    //   final _firestoreApi = getAndRegisterFirestoreApi(user: null);
+    //   when(mockFirebaseUser.uid).thenReturn("UID");
+    //   when(mockFirebaseUser.email).thenReturn("EMAIL");
+    //   when(mockFirebaseUser.displayName).thenReturn("NAME");
+    //   final service = _getService(startListeningToAuthStateChanges: false);
+    //   await service.listenToAuthStateChanges();
+    //   verify(_firestoreApi.createUser);
     // });
   });
 

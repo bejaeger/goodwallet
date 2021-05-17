@@ -29,7 +29,7 @@ _$_EmptyUser _$_$_EmptyUserFromJson(Map<String, dynamic> json) {
     uid: json['uid'] as String? ?? '',
     fullName: json['fullName'] as String? ?? '',
     email: json['email'] as String? ?? '',
-    keywordList: (json['keywordList'] as List<dynamic>?)
+    searchKeywords: (json['searchKeywords'] as List<dynamic>?)
         ?.map((e) => e as String)
         .toList(),
   );
@@ -40,5 +40,5 @@ Map<String, dynamic> _$_$_EmptyUserToJson(_$_EmptyUser instance) =>
       'uid': instance.uid,
       'fullName': instance.fullName,
       'email': instance.email,
-      'keywordList': instance.keywordList,
+      'searchKeywords': instance.searchKeywords,
     };

@@ -13,7 +13,8 @@ String getInitialsFromName(String name) {
   return initials.join("");
 }
 
-List<String> getListOfKeywordsFromString(String str) {
+List<String> getListOfKeywordsFromString(String? str) {
+  if (str == null) return [];
   List<String> splitList = str.split(' ');
   List<String> searchKeywords = [];
   for (int i = 0; i < splitList.length; i++) {

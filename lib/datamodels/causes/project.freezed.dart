@@ -59,7 +59,8 @@ const $Project = _$ProjectTearOff();
 
 /// @nodoc
 mixin _$Project {
-  String get name => throw _privateConstructorUsedError;
+  String get name =>
+      throw _privateConstructorUsedError; // TODO: prepare toJson without id set properly as in MoneyTransfer!
   String get id => throw _privateConstructorUsedError;
   String get area => throw _privateConstructorUsedError;
   CauseType get causeType => throw _privateConstructorUsedError;
@@ -308,7 +309,7 @@ class _$_Project implements _Project {
 
   @override
   final String name;
-  @override
+  @override // TODO: prepare toJson without id set properly as in MoneyTransfer!
   final String id;
   @override
   final String area;
@@ -422,7 +423,7 @@ abstract class _Project implements Project {
 
   @override
   String get name => throw _privateConstructorUsedError;
-  @override
+  @override // TODO: prepare toJson without id set properly as in MoneyTransfer!
   String get id => throw _privateConstructorUsedError;
   @override
   String get area => throw _privateConstructorUsedError;

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/authentication_method.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
@@ -38,7 +39,13 @@ class CreateAccountViewModel extends AuthenticationViewModel {
       } else {
         // create user in data bank
         try {
-          await (_userDataService!.createUser(result.user!, fullNameValue));
+          final user = result.user!;
+          await _userDataService!.createUser(
+            user: User(
+                uid: user.uid,
+                fullName: fullNameValue ?? (user.displayName ?? ""),
+                email: user.email ?? ""),
+          );
         } catch (e) {
           if (e is FirestoreApiException) {
             return FirebaseAuthenticationResult.error(

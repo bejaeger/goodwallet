@@ -46,12 +46,12 @@ class _$UserTearOff {
       {String uid = "",
       String fullName = "",
       String email = "",
-      List<String>? keywordList}) {
+      List<String>? searchKeywords}) {
     return _EmptyUser(
       uid: uid,
       fullName: fullName,
       email: email,
-      keywordList: keywordList,
+      searchKeywords: searchKeywords,
     );
   }
 
@@ -68,6 +68,8 @@ mixin _$User {
   String get uid => throw _privateConstructorUsedError;
   String get fullName => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
+  @JsonKey(toJson: User._checkIfKeywordsAreSet)
+  List<String>? get searchKeywords => throw _privateConstructorUsedError;
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
@@ -79,7 +81,7 @@ mixin _$User {
                 List<String>? searchKeywords)
         $default, {
     required TResult Function(String uid, String fullName, String email,
-            List<String>? keywordList)
+            List<String>? searchKeywords)
         empty,
   }) =>
       throw _privateConstructorUsedError;
@@ -93,7 +95,7 @@ mixin _$User {
                 List<String>? searchKeywords)?
         $default, {
     TResult Function(String uid, String fullName, String email,
-            List<String>? keywordList)?
+            List<String>? searchKeywords)?
         empty,
     required TResult orElse(),
   }) =>
@@ -120,7 +122,12 @@ mixin _$User {
 abstract class $UserCopyWith<$Res> {
   factory $UserCopyWith(User value, $Res Function(User) then) =
       _$UserCopyWithImpl<$Res>;
-  $Res call({String uid, String fullName, String email});
+  $Res call(
+      {String uid,
+      String fullName,
+      String email,
+      @JsonKey(toJson: User._checkIfKeywordsAreSet)
+          List<String>? searchKeywords});
 }
 
 /// @nodoc
@@ -136,6 +143,7 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
     Object? uid = freezed,
     Object? fullName = freezed,
     Object? email = freezed,
+    Object? searchKeywords = freezed,
   }) {
     return _then(_value.copyWith(
       uid: uid == freezed
@@ -150,6 +158,10 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
+      searchKeywords: searchKeywords == freezed
+          ? _value.searchKeywords
+          : searchKeywords // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -272,7 +284,7 @@ class _$_User implements _User {
                 List<String>? searchKeywords)
         $default, {
     required TResult Function(String uid, String fullName, String email,
-            List<String>? keywordList)
+            List<String>? searchKeywords)
         empty,
   }) {
     return $default(uid, fullName, email, searchKeywords);
@@ -289,7 +301,7 @@ class _$_User implements _User {
                 List<String>? searchKeywords)?
         $default, {
     TResult Function(String uid, String fullName, String email,
-            List<String>? keywordList)?
+            List<String>? searchKeywords)?
         empty,
     required TResult orElse(),
   }) {
@@ -343,6 +355,7 @@ abstract class _User implements User {
   String get fullName => throw _privateConstructorUsedError;
   @override
   String get email => throw _privateConstructorUsedError;
+  @override
   @JsonKey(toJson: User._checkIfKeywordsAreSet)
   List<String>? get searchKeywords => throw _privateConstructorUsedError;
   @override
@@ -357,7 +370,10 @@ abstract class _$EmptyUserCopyWith<$Res> implements $UserCopyWith<$Res> {
       __$EmptyUserCopyWithImpl<$Res>;
   @override
   $Res call(
-      {String uid, String fullName, String email, List<String>? keywordList});
+      {String uid,
+      String fullName,
+      String email,
+      List<String>? searchKeywords});
 }
 
 /// @nodoc
@@ -374,7 +390,7 @@ class __$EmptyUserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
     Object? uid = freezed,
     Object? fullName = freezed,
     Object? email = freezed,
-    Object? keywordList = freezed,
+    Object? searchKeywords = freezed,
   }) {
     return _then(_EmptyUser(
       uid: uid == freezed
@@ -389,9 +405,9 @@ class __$EmptyUserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      keywordList: keywordList == freezed
-          ? _value.keywordList
-          : keywordList // ignore: cast_nullable_to_non_nullable
+      searchKeywords: searchKeywords == freezed
+          ? _value.searchKeywords
+          : searchKeywords // ignore: cast_nullable_to_non_nullable
               as List<String>?,
     ));
   }
@@ -401,7 +417,10 @@ class __$EmptyUserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_EmptyUser implements _EmptyUser {
   _$_EmptyUser(
-      {this.uid = "", this.fullName = "", this.email = "", this.keywordList});
+      {this.uid = "",
+      this.fullName = "",
+      this.email = "",
+      this.searchKeywords});
 
   factory _$_EmptyUser.fromJson(Map<String, dynamic> json) =>
       _$_$_EmptyUserFromJson(json);
@@ -416,11 +435,11 @@ class _$_EmptyUser implements _EmptyUser {
   @override
   final String email;
   @override
-  final List<String>? keywordList;
+  final List<String>? searchKeywords;
 
   @override
   String toString() {
-    return 'User.empty(uid: $uid, fullName: $fullName, email: $email, keywordList: $keywordList)';
+    return 'User.empty(uid: $uid, fullName: $fullName, email: $email, searchKeywords: $searchKeywords)';
   }
 
   @override
@@ -434,9 +453,9 @@ class _$_EmptyUser implements _EmptyUser {
                     .equals(other.fullName, fullName)) &&
             (identical(other.email, email) ||
                 const DeepCollectionEquality().equals(other.email, email)) &&
-            (identical(other.keywordList, keywordList) ||
+            (identical(other.searchKeywords, searchKeywords) ||
                 const DeepCollectionEquality()
-                    .equals(other.keywordList, keywordList)));
+                    .equals(other.searchKeywords, searchKeywords)));
   }
 
   @override
@@ -445,7 +464,7 @@ class _$_EmptyUser implements _EmptyUser {
       const DeepCollectionEquality().hash(uid) ^
       const DeepCollectionEquality().hash(fullName) ^
       const DeepCollectionEquality().hash(email) ^
-      const DeepCollectionEquality().hash(keywordList);
+      const DeepCollectionEquality().hash(searchKeywords);
 
   @JsonKey(ignore: true)
   @override
@@ -463,10 +482,10 @@ class _$_EmptyUser implements _EmptyUser {
                 List<String>? searchKeywords)
         $default, {
     required TResult Function(String uid, String fullName, String email,
-            List<String>? keywordList)
+            List<String>? searchKeywords)
         empty,
   }) {
-    return empty(uid, fullName, email, keywordList);
+    return empty(uid, fullName, email, searchKeywords);
   }
 
   @override
@@ -480,12 +499,12 @@ class _$_EmptyUser implements _EmptyUser {
                 List<String>? searchKeywords)?
         $default, {
     TResult Function(String uid, String fullName, String email,
-            List<String>? keywordList)?
+            List<String>? searchKeywords)?
         empty,
     required TResult orElse(),
   }) {
     if (empty != null) {
-      return empty(uid, fullName, email, keywordList);
+      return empty(uid, fullName, email, searchKeywords);
     }
     return orElse();
   }
@@ -523,7 +542,7 @@ abstract class _EmptyUser implements User {
       {String uid,
       String fullName,
       String email,
-      List<String>? keywordList}) = _$_EmptyUser;
+      List<String>? searchKeywords}) = _$_EmptyUser;
 
   factory _EmptyUser.fromJson(Map<String, dynamic> json) =
       _$_EmptyUser.fromJson;
@@ -534,7 +553,8 @@ abstract class _EmptyUser implements User {
   String get fullName => throw _privateConstructorUsedError;
   @override
   String get email => throw _privateConstructorUsedError;
-  List<String>? get keywordList => throw _privateConstructorUsedError;
+  @override
+  List<String>? get searchKeywords => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$EmptyUserCopyWith<_EmptyUser> get copyWith =>
