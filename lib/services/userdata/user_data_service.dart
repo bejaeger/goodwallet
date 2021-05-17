@@ -168,7 +168,7 @@ class UserDataService {
       List<String> keywords = getListOfKeywordsFromString(user.fullName);
       User newUser = user.copyWith(searchKeywords: keywords);
       UserStatistics stats = getEmptyUserStatistics();
-      //await _firestoreApi.createUser(user: newUser, stats: stats);
+      await _firestoreApi.createUser(user: newUser, stats: stats);
       return newUser;
     } catch (e) {
       log.e("Error in createUser(): ${e.toString()}");
