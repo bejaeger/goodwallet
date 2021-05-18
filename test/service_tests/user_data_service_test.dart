@@ -60,20 +60,21 @@ void main() {
     });
 
     ///////////////////
-    //// Not yet working because it says a non-mockito object is tested...what!?
-    // test(
-    //     'When firebase user is not null but has no entry in the database should create User',
-    //     () async {
-    //   getAndRegisterFirebaseAuthenticationService(
-    //       currentUser: mockFirebaseUser);
-    //   final _firestoreApi = getAndRegisterFirestoreApi(user: null);
-    //   when(mockFirebaseUser.uid).thenReturn("UID");
-    //   when(mockFirebaseUser.email).thenReturn("EMAIL");
-    //   when(mockFirebaseUser.displayName).thenReturn("NAME");
-    //   final service = _getService(startListeningToAuthStateChanges: false);
-    //   await service.listenToAuthStateChanges();
-    //   verify(_firestoreApi.createUser);
-    // });
+    // //// Not yet working because it says a non-mockito object is tested...what!?
+    test(
+        'When firebase user is not null but has no entry in the database should create User',
+        () async {
+      getAndRegisterFirebaseAuthenticationService(
+          currentUser: mockFirebaseUser);
+      final firestoreApi = getAndRegisterFirestoreApi(user: null);
+      when(mockFirebaseUser.uid).thenReturn("UID");
+      when(mockFirebaseUser.email).thenReturn("EMAIL");
+      when(mockFirebaseUser.displayName).thenReturn("NAME");
+      final service = _getService(startListeningToAuthStateChanges: false);
+      await service.listenToAuthStateChanges();
+      verify(firestoreApi.createUser(
+          user: anyNamed("user"), stats: anyNamed("stats")));
+    });
   });
 
   group('isValidFirestoreQueryConfig -', () {

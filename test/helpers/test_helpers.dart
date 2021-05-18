@@ -74,7 +74,7 @@ FirebaseAuthenticationService getAndRegisterFirebaseAuthenticationService({
   return service;
 }
 
-FirestoreApi getAndRegisterFirestoreApi({User? user}) {
+MockFirestoreApi getAndRegisterFirestoreApi({User? user}) {
   _removeRegistrationIfExists<FirestoreApi>();
   final service = MockFirestoreApi();
   when(service.getUser(uid: anyNamed("uid")))
@@ -82,8 +82,6 @@ FirestoreApi getAndRegisterFirestoreApi({User? user}) {
   final userStats = getEmptyUserStatistics();
   when(service.getUserSummaryStatisticsStream(uid: anyNamed("uid"))).thenAnswer(
       (realInvocation) => BehaviorSubject<UserStatistics>.seeded(userStats));
-  when(service.createUser(user: anyNamed("user"), stats: anyNamed("stats")))
-      .thenAnswer((realInvocation) async {});
   locator.registerSingleton<FirestoreApi>(service);
   return service;
 }
