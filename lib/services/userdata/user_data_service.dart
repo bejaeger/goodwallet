@@ -14,6 +14,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
@@ -231,24 +232,19 @@ class UserDataService {
   // More generic class to listen to firestore collections for updates.
   // callback can be used to provide notifyListeners from the viewmodel
   // to the service
-  void addTransferDataListener(
-      {required MoneyTransferQueryConfig config, void Function()? callback}) {
+  Future<void>? addTransferDataListener(
+      {required MoneyTransferQueryConfig config}) {
     // TODO: Support for type MoneyPoolPayout
     if (config.type == TransferType.MoneyPoolPayout) {
       log.e(
           "Can't listen to money pool payouts at the moment. NOT YET IMPLEMENTED");
-      if (callback != null) callback();
-      return;
-    }
-
-    if (_transfersSubscriptions.containsKey(config)) {
+    } else if (_transfersSubscriptions.containsKey(config)) {
       log.v(
           "Stream with config '$config' already listened to, resuming it in case it has been paused!");
       _transfersSubscriptions[config]?.resume();
-      if (callback != null) callback();
-      return;
     } else {
       log.i("Setting up listener for transfers with config $config.");
+      var completer = Completer<void>();
       Stream<List<MoneyTransfer>> snapshot;
       try {
         snapshot = getTransferDataStream(config: config);
@@ -263,11 +259,14 @@ class UserDataService {
             } else {
               latestTransfers[config] = transactions;
             }
+            if (!completer.isCompleted) {
+              completer.complete();
+            }
             log.v(
                 "Listened to ${transactions.length} transfers with config $config. Max returns were specified with ${config.maxNumberReturns}");
-            if (callback != null) callback();
           },
         );
+        return completer.future;
       } catch (e) {
         rethrow;
       }
@@ -301,6 +300,44 @@ class UserDataService {
       return false;
     if (config.type == TransferType.Invalid) return false;
     return true;
+  }
+
+  // helper function that figures out transaction
+  // type based on transaction data
+  TransferType inferTransactionType({required MoneyTransfer transfer}) {
+    if (transfer is MoneyPoolPayout) {
+      return TransferType.MoneyPoolPayout;
+    } else if (transfer is MoneyTransfer) {
+      TransferType direction = transfer.maybeMap(
+        // peer 2 peer transaction could go in 3 directions
+        peer2peer: (value) {
+          if (value.transferDetails.senderId ==
+              value.transferDetails.recipientId) {
+            return TransferType.Commitment;
+          }
+          if (value.transferDetails.senderId == currentUser.uid) {
+            return TransferType.Peer2PeerSent;
+          }
+          if (value.transferDetails.recipientId == currentUser.uid) {
+            return TransferType.Peer2PeerReceived;
+          }
+          log.wtf(
+              "Found unknown type of transaction data. This should never happen, please check your code!");
+          return TransferType.Invalid;
+        },
+        donation: (value) => TransferType.Donation,
+        moneyPoolContribution: (value) => TransferType.MoneyPoolContribution,
+        moneyPoolPayoutTransfer: (value) =>
+            TransferType.MoneyPoolPayoutTransfer,
+        orElse: () => TransferType.Invalid,
+      );
+      log.v("Inferred transaction direction: $direction");
+      return direction;
+    } else {
+      log.wtf(
+          "Found unknown type of transaction data. This should never happen, please check your code!");
+      return TransferType.Invalid;
+    }
   }
 
   ///////////////////////////////////////////////////

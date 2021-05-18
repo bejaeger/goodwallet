@@ -8,7 +8,6 @@ import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
-import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
@@ -38,12 +37,23 @@ class HomeViewModel extends BaseModel {
   List<MoneyTransfer> get latestDonations =>
       _userDataService!.getTransfers(config: _queryConfigDonations);
 
+  // get last three money transfers
+  MoneyTransferQueryConfig _queryConfigLatestTransfers =
+      MoneyTransferQueryConfig(type: TransferType.All, maxNumberReturns: 3);
+  List<MoneyTransfer> get latestTransfers =>
+      _userDataService!.getTransfers(config: _queryConfigLatestTransfers);
+
   // Listen to streams of latest donations and transactions to be displayed
   // instantly when pulling up bottom sheets
   Future listenToData() async {
-    _userDataService!
+    setBusy(true);
+    await _userDataService!
         .addTransferDataListener(config: _queryConfigTransactionToPeers);
-    _userDataService!.addTransferDataListener(config: _queryConfigDonations);
+    await _userDataService!
+        .addTransferDataListener(config: _queryConfigDonations);
+    await _userDataService!
+        .addTransferDataListener(config: _queryConfigLatestTransfers);
+    setBusy(false);
   }
 
   Future fetchData() async {
@@ -53,10 +63,11 @@ class HomeViewModel extends BaseModel {
     notifyListeners();
   }
 
-  Future navigateToDonationView() async {
-    await _navigationService!.replaceWith(Routes.layoutTemplateViewMobile,
-        arguments: LayoutTemplateViewMobileArguments(
-            initialBottomNavBarIndex: BottomNavigatorIndex.Give.index));
+  // helpers
+  // helper function that figures out transaction
+  // type based on transaction data
+  TransferType inferTransactionType(MoneyTransfer transfer) {
+    return _userDataService!.inferTransactionType(transfer: transfer);
   }
 
   String getQRCodeUserInfoString() {
@@ -69,6 +80,17 @@ class HomeViewModel extends BaseModel {
   Future showRaiseMoneyBottomSheet() async {
     var sheetResponse = await _bottomSheetService!.showCustomSheet(
       variant: BottomSheetType.Raise,
+      barrierDismissible: true,
+    );
+    if (sheetResponse != null) {
+      log.i("Response data from bottom sheet: ${sheetResponse.responseData}");
+      if (sheetResponse.responseData is Function) sheetResponse.responseData();
+    }
+  }
+
+  Future showHomeViewMoreBottomSheet() async {
+    var sheetResponse = await _bottomSheetService!.showCustomSheet(
+      variant: BottomSheetType.HomeViewMore,
       barrierDismissible: true,
     );
     if (sheetResponse != null) {
@@ -104,6 +126,13 @@ class HomeViewModel extends BaseModel {
   //////////////////////////////////////////////////////////
   /// Navigation
   ///
+
+  Future navigateToDonationView() async {
+    await _navigationService!.replaceWith(Routes.layoutTemplateViewMobile,
+        arguments: LayoutTemplateViewMobileArguments(
+            initialBottomNavBarIndex: BottomNavigatorIndex.Give.index));
+  }
+
   Future navigateToSingleFeaturedAppView(FeaturedAppType type) async {
     log.i("Navigating to single featured app view");
     await _navigationService!.navigateTo(Routes.singleFeaturedAppView,
@@ -114,7 +143,7 @@ class HomeViewModel extends BaseModel {
     log.e("Not yet implemented");
   }
 
-  Future navigateToTransactionsHistoryView() async {
+  Future navigateToTransfersHistoryView() async {
     _navigationService!.navigateTo(
       Routes.transfersHistoryView,
     );
@@ -142,7 +171,7 @@ class HomeViewModel extends BaseModel {
     await _navigationService!.navigateTo(Routes.createMoneyPoolIntroView);
   }
 
-  Future navigateToTransferFundAmountView() async {
+  Future navigateToCommitMoneyView() async {
     await _navigationService!.navigateTo(Routes.transferFundsAmountView,
         arguments: TransferFundsAmountViewArguments(
             senderInfo: SenderInfo(moneySource: MoneySource.Bank),

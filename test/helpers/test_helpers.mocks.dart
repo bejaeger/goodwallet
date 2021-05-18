@@ -6,32 +6,33 @@ import 'dart:async' as _i15;
 
 import 'package:cloud_firestore/cloud_firestore.dart' as _i7;
 import 'package:firebase_auth/firebase_auth.dart' as _i8;
-import 'package:flutter/src/widgets/framework.dart' as _i21;
-import 'package:flutter/src/widgets/navigator.dart' as _i22;
-import 'package:good_wallet/apis/firestore_api.dart' as _i19;
+import 'package:flutter/src/widgets/framework.dart' as _i22;
+import 'package:flutter/src/widgets/navigator.dart' as _i23;
+import 'package:good_wallet/apis/firestore_api.dart' as _i20;
 import 'package:good_wallet/datamodels/causes/project.dart' as _i6;
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart' as _i5;
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart'
-    as _i18;
+    as _i19;
 import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart'
     as _i13;
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart' as _i14;
-import 'package:good_wallet/datamodels/user/public_user_info.dart' as _i17;
+import 'package:good_wallet/datamodels/user/public_user_info.dart' as _i18;
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart'
     as _i12;
 import 'package:good_wallet/datamodels/user/user.dart' as _i4;
+import 'package:good_wallet/enums/transfer_type.dart' as _i16;
 import 'package:good_wallet/enums/user_status.dart' as _i11;
 import 'package:good_wallet/services/money_pools/money_pools_service.dart'
-    as _i16;
+    as _i17;
 import 'package:good_wallet/services/userdata/user_data_service.dart' as _i10;
 import 'package:logger/src/logger.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:rxdart/src/subjects/behavior_subject.dart' as _i3;
 import 'package:stacked_firebase_auth/src/firebase_authentication_service.dart'
     as _i9;
-import 'package:stacked_services/src/navigation_service.dart' as _i20;
-import 'package:stacked_services/src/snackbar/snackbar_config.dart' as _i24;
-import 'package:stacked_services/src/snackbar/snackbar_service.dart' as _i23;
+import 'package:stacked_services/src/navigation_service.dart' as _i21;
+import 'package:stacked_services/src/snackbar/snackbar_config.dart' as _i25;
+import 'package:stacked_services/src/snackbar/snackbar_service.dart' as _i24;
 
 // ignore_for_file: comment_references
 // ignore_for_file: unnecessary_parenthesis
@@ -155,12 +156,11 @@ class MockUserDataService extends _i1.Mock implements _i10.UserDataService {
           Invocation.method(#getTransfers, [], {#config: config}),
           returnValue: <_i14.MoneyTransfer>[]) as List<_i14.MoneyTransfer>);
   @override
-  void addTransferDataListener(
-          {_i13.MoneyTransferQueryConfig? config, void Function()? callback}) =>
-      super.noSuchMethod(
-          Invocation.method(#addTransferDataListener, [],
-              {#config: config, #callback: callback}),
-          returnValueForMissingStub: null);
+  _i15.Future<void>? addTransferDataListener(
+          {_i13.MoneyTransferQueryConfig? config}) =>
+      (super.noSuchMethod(
+          Invocation.method(#addTransferDataListener, [], {#config: config}),
+          returnValueForMissingStub: Future.value()) as _i15.Future<void>?);
   @override
   void pauseTransferDataListener(
           {_i13.MoneyTransferQueryConfig? config, void Function()? callback}) =>
@@ -181,6 +181,11 @@ class MockUserDataService extends _i1.Mock implements _i10.UserDataService {
               #isValidFirestoreQueryConfig, [], {#config: config}),
           returnValue: false) as bool);
   @override
+  _i16.TransferType inferTransactionType({_i14.MoneyTransfer? transfer}) =>
+      (super.noSuchMethod(
+          Invocation.method(#inferTransactionType, [], {#transfer: transfer}),
+          returnValue: _i16.TransferType.Peer2Peer) as _i16.TransferType);
+  @override
   _i15.Future<dynamic> handleLogoutEvent() =>
       (super.noSuchMethod(Invocation.method(#handleLogoutEvent, []),
           returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
@@ -189,7 +194,7 @@ class MockUserDataService extends _i1.Mock implements _i10.UserDataService {
 /// A class which mocks [MoneyPoolsService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMoneyPoolsService extends _i1.Mock implements _i16.MoneyPoolsService {
+class MockMoneyPoolsService extends _i1.Mock implements _i17.MoneyPoolsService {
   @override
   String get contributionsKey =>
       (super.noSuchMethod(Invocation.getter(#contributionsKey), returnValue: '')
@@ -238,7 +243,7 @@ class MockMoneyPoolsService extends _i1.Mock implements _i16.MoneyPoolsService {
           returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
   _i15.Future<dynamic> addInvitedUserToMoneyPool(
-          {_i17.PublicUserInfo? userInfo, _i5.MoneyPool? moneyPool}) =>
+          {_i18.PublicUserInfo? userInfo, _i5.MoneyPool? moneyPool}) =>
       (super.noSuchMethod(
           Invocation.method(#addInvitedUserToMoneyPool, [],
               {#userInfo: userInfo, #moneyPool: moneyPool}),
@@ -276,13 +281,13 @@ class MockMoneyPoolsService extends _i1.Mock implements _i16.MoneyPoolsService {
       (super.noSuchMethod(Invocation.method(#deleteMoneyPool, [mpid]),
           returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i15.Future<List<_i18.MoneyPoolPayout>> getMoneyPoolPayouts(String? mpid) =>
+  _i15.Future<List<_i19.MoneyPoolPayout>> getMoneyPoolPayouts(String? mpid) =>
       (super.noSuchMethod(Invocation.method(#getMoneyPoolPayouts, [mpid]),
-              returnValue: Future<List<_i18.MoneyPoolPayout>>.value(
-                  <_i18.MoneyPoolPayout>[]))
-          as _i15.Future<List<_i18.MoneyPoolPayout>>);
+              returnValue: Future<List<_i19.MoneyPoolPayout>>.value(
+                  <_i19.MoneyPoolPayout>[]))
+          as _i15.Future<List<_i19.MoneyPoolPayout>>);
   @override
-  _i15.Future<dynamic> submitMoneyPoolPayout(_i18.MoneyPoolPayout? data) =>
+  _i15.Future<dynamic> submitMoneyPoolPayout(_i19.MoneyPoolPayout? data) =>
       (super.noSuchMethod(Invocation.method(#submitMoneyPoolPayout, [data]),
           returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
@@ -293,7 +298,7 @@ class MockMoneyPoolsService extends _i1.Mock implements _i16.MoneyPoolsService {
 /// A class which mocks [FirestoreApi].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockFirestoreApi extends _i1.Mock implements _i19.FirestoreApi {
+class MockFirestoreApi extends _i1.Mock implements _i20.FirestoreApi {
   @override
   _i2.Logger get log =>
       (super.noSuchMethod(Invocation.getter(#log), returnValue: _FakeLogger())
@@ -426,7 +431,7 @@ class MockFirestoreApi extends _i1.Mock implements _i19.FirestoreApi {
 /// A class which mocks [NavigationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNavigationService extends _i1.Mock implements _i20.NavigationService {
+class MockNavigationService extends _i1.Mock implements _i21.NavigationService {
   @override
   String get previousRoute =>
       (super.noSuchMethod(Invocation.getter(#previousRoute), returnValue: '')
@@ -436,9 +441,9 @@ class MockNavigationService extends _i1.Mock implements _i20.NavigationService {
       (super.noSuchMethod(Invocation.getter(#currentRoute), returnValue: '')
           as String);
   @override
-  _i21.GlobalKey<_i22.NavigatorState>? nestedNavigationKey(int? index) =>
+  _i22.GlobalKey<_i23.NavigatorState>? nestedNavigationKey(int? index) =>
       (super.noSuchMethod(Invocation.method(#nestedNavigationKey, [index]))
-          as _i21.GlobalKey<_i22.NavigatorState>?);
+          as _i22.GlobalKey<_i23.NavigatorState>?);
   @override
   void config(
           {bool? enableLog,
@@ -458,7 +463,7 @@ class MockNavigationService extends _i1.Mock implements _i20.NavigationService {
           }),
           returnValueForMissingStub: null);
   @override
-  _i15.Future<dynamic>? navigateWithTransition(_i21.Widget? page,
+  _i15.Future<dynamic>? navigateWithTransition(_i22.Widget? page,
           {bool? opaque,
           String? transition = r'',
           Duration? duration,
@@ -474,7 +479,7 @@ class MockNavigationService extends _i1.Mock implements _i20.NavigationService {
         #id: id
       })) as _i15.Future<dynamic>?);
   @override
-  _i15.Future<dynamic>? replaceWithTransition(_i21.Widget? page,
+  _i15.Future<dynamic>? replaceWithTransition(_i22.Widget? page,
           {bool? opaque,
           String? transition = r'',
           Duration? duration,
@@ -494,7 +499,7 @@ class MockNavigationService extends _i1.Mock implements _i20.NavigationService {
       Invocation.method(#back, [], {#result: result, #id: id}),
       returnValue: false) as bool);
   @override
-  void popUntil(_i22.RoutePredicate? predicate) =>
+  void popUntil(_i23.RoutePredicate? predicate) =>
       super.noSuchMethod(Invocation.method(#popUntil, [predicate]),
           returnValueForMissingStub: null);
   @override
@@ -508,7 +513,7 @@ class MockNavigationService extends _i1.Mock implements _i20.NavigationService {
               #navigateTo, [routeName], {#arguments: arguments, #id: id}))
           as _i15.Future<dynamic>?);
   @override
-  _i15.Future<dynamic>? navigateToView(_i21.Widget? view,
+  _i15.Future<dynamic>? navigateToView(_i22.Widget? view,
           {dynamic arguments, int? id}) =>
       (super.noSuchMethod(Invocation.method(
               #navigateToView, [view], {#arguments: arguments, #id: id}))
@@ -530,13 +535,13 @@ class MockNavigationService extends _i1.Mock implements _i20.NavigationService {
       (super.noSuchMethod(Invocation.method(#clearTillFirstAndShow, [routeName],
           {#arguments: arguments, #id: id})) as _i15.Future<dynamic>?);
   @override
-  _i15.Future<dynamic>? clearTillFirstAndShowView(_i21.Widget? view,
+  _i15.Future<dynamic>? clearTillFirstAndShowView(_i22.Widget? view,
           {dynamic arguments, int? id}) =>
       (super.noSuchMethod(Invocation.method(#clearTillFirstAndShowView, [view],
           {#arguments: arguments, #id: id})) as _i15.Future<dynamic>?);
   @override
   _i15.Future<dynamic>? pushNamedAndRemoveUntil(String? routeName,
-          {_i22.RoutePredicate? predicate, dynamic arguments, int? id}) =>
+          {_i23.RoutePredicate? predicate, dynamic arguments, int? id}) =>
       (super.noSuchMethod(Invocation.method(#pushNamedAndRemoveUntil, [
         routeName
       ], {
@@ -549,14 +554,14 @@ class MockNavigationService extends _i1.Mock implements _i20.NavigationService {
 /// A class which mocks [SnackbarService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSnackbarService extends _i1.Mock implements _i23.SnackbarService {
+class MockSnackbarService extends _i1.Mock implements _i24.SnackbarService {
   @override
-  void registerSnackbarConfig(_i24.SnackbarConfig? config) =>
+  void registerSnackbarConfig(_i25.SnackbarConfig? config) =>
       super.noSuchMethod(Invocation.method(#registerSnackbarConfig, [config]),
           returnValueForMissingStub: null);
   @override
   void registerCustomSnackbarconfig(
-          {dynamic customData, _i24.SnackbarConfig? config}) =>
+          {dynamic customData, _i25.SnackbarConfig? config}) =>
       super.noSuchMethod(
           Invocation.method(#registerCustomSnackbarconfig, [],
               {#customData: customData, #config: config}),
@@ -564,7 +569,7 @@ class MockSnackbarService extends _i1.Mock implements _i23.SnackbarService {
   @override
   void registerCustomMainButtonBuilder(
           {dynamic variant,
-          _i21.Widget Function(String?, Function?)? builder}) =>
+          _i22.Widget Function(String?, Function?)? builder}) =>
       super.noSuchMethod(
           Invocation.method(#registerCustomMainButtonBuilder, [],
               {#variant: variant, #builder: builder}),
@@ -572,8 +577,8 @@ class MockSnackbarService extends _i1.Mock implements _i23.SnackbarService {
   @override
   void registerCustomSnackbarConfig(
           {dynamic variant,
-          _i24.SnackbarConfig? config,
-          _i24.SnackbarConfig Function()? configBuilder}) =>
+          _i25.SnackbarConfig? config,
+          _i25.SnackbarConfig Function()? configBuilder}) =>
       super.noSuchMethod(
           Invocation.method(#registerCustomSnackbarConfig, [], {
             #variant: variant,

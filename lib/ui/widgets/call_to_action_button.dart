@@ -148,9 +148,10 @@ class CallToActionButtonRound extends StatelessWidget {
               text!,
               textAlign: TextAlign.center,
               style: textTheme(context).bodyText2!.copyWith(
-                  fontSize: 13,
+                  letterSpacing: 0,
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: ColorSettings.blackHeadlineColor),
+                  color: ColorSettings.blackTextColor),
             ),
           ),
         ],

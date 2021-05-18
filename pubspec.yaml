@@ -131,6 +131,7 @@ flutter:
     - assets/icons/holding-hands.png
     - assets/images/credit-card-background.png
     - assets/icons/bank-institution.png
+    - assets/icons/agreeing-hands.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

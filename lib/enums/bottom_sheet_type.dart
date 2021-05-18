@@ -3,4 +3,5 @@ enum BottomSheetType {
   Donate,
   SendMoney,
   MoneyPoolInvitation,
+  HomeViewMore,
 }

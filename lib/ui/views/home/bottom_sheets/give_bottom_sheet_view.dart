@@ -33,11 +33,12 @@ class GiveBottomSheetView extends StatelessWidget {
                   if (model.latestDonations.length > 0)
                     SectionHeader(
                       title: "Recently supported",
-                      onTextButtonTap: model.navigateToAllPreviousDonations,
+                      onTextButtonTap: model.navigateToCausesView,
+                      textButtonText: "All projects",
                     ),
                   if (model.latestDonations.length > 0)
                     Container(
-                      height: 120,
+                      height: 130,
                       width: screenWidthPercentage(context, percentage: 1),
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
@@ -70,19 +71,21 @@ class GiveBottomSheetView extends StatelessWidget {
                 ],
               ),
               buttons: [
+                // BottomSheetListEntry(
+                //   completer: completer,
+                //   responseData: model.navigateToCausesView,
+                //   title: "Explore all projects",
+                //   icon: Icon(Icons.favorite,
+                //       size: 32, color: MyColors.primaryRed),
+                // ),
                 BottomSheetListEntry(
                   completer: completer,
-                  responseData: model.navigateToCausesView,
-                  title: "Disaster relief",
+                  responseData: model.showNotImplementedSnackbar,
+                  title: "Disaster relieve package",
+                  description:
+                      "Schedule donation and invite friends to contribute",
                   icon: Icon(Icons.local_hospital_rounded,
                       size: 32, color: MyColors.lightRed),
-                ),
-                BottomSheetListEntry(
-                  completer: completer,
-                  responseData: model.navigateToCausesView,
-                  title: "Explore all featured projects",
-                  icon: Icon(Icons.favorite,
-                      size: 32, color: MyColors.primaryRed),
                 ),
               ],
             ),

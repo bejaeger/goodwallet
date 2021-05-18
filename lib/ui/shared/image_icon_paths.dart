@@ -9,4 +9,5 @@ class ImageIconPaths {
   static const qrcodeScanning = "assets/icons/qrcode-scanning.png";
   static const holdingHands = "assets/icons/holding-hands.png";
   static const bankInstitution = "assets/icons/bank-institution.png";
+  static const agreeingHands = "assets/icons/agreeing-hands.png";
 }

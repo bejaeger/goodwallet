@@ -244,16 +244,12 @@ class TransferFundsAmountViewModel extends FormViewModel {
       MoneyTransfer data = actualRecipientId.maybeMap(
         donation: (value) => MoneyTransfer.donation(
           transferDetails: transferDetails,
-          projectInfo: ConciseProjectInfo(
-              area: value.projectInfo.area, name: value.name, id: value.id),
+          projectInfo: value.projectInfo,
           createdAt: FieldValue.serverTimestamp(),
         ),
         moneyPool: (value) => MoneyTransfer.moneyPoolContribution(
           transferDetails: transferDetails,
-          moneyPoolInfo: ConciseMoneyPoolInfo(
-              moneyPoolId: value.id,
-              name: value.name,
-              total: value.moneyPoolInfo.total),
+          moneyPoolInfo: value.moneyPoolInfo,
           createdAt: FieldValue.serverTimestamp(),
         ),
         orElse: () => MoneyTransfer.peer2peer(

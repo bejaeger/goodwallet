@@ -46,40 +46,8 @@ class TransfersHistoryViewModel extends StreamViewModel<List<MoneyTransfer>> {
 
   // helper function that figures out transaction
   // type based on transaction data
-  TransferType inferTransactionType(MoneyTransfer transactionData) {
-    if (transactionData is MoneyPoolPayout) {
-      return TransferType.MoneyPoolPayout;
-    } else if (transactionData is MoneyTransfer) {
-      TransferType direction = transactionData.maybeMap(
-        // peer 2 peer transaction could go in 3 directions
-        peer2peer: (value) {
-          if (value.transferDetails.senderId == uid &&
-              value.transferDetails.recipientId == uid) {
-            return TransferType.Commitment;
-          }
-          if (value.transferDetails.senderId == uid) {
-            return TransferType.Peer2PeerSent;
-          }
-          if (value.transferDetails.recipientId == uid) {
-            return TransferType.Peer2PeerReceived;
-          }
-          log.wtf(
-              "Found unknown type of transaction data. This should never happen, please check your code!");
-          return TransferType.Invalid;
-        },
-        donation: (value) => TransferType.Donation,
-        moneyPoolContribution: (value) => TransferType.MoneyPoolContribution,
-        moneyPoolPayoutTransfer: (value) =>
-            TransferType.MoneyPoolPayoutTransfer,
-        orElse: () => TransferType.Invalid,
-      );
-      log.v("Inferred transaction direction: $direction");
-      return direction;
-    } else {
-      log.wtf(
-          "Found unknown type of transaction data. This should never happen, please check your code!");
-      return TransferType.Invalid;
-    }
+  TransferType inferTransactionType(MoneyTransfer transfer) {
+    return _userDataService!.inferTransactionType(transfer: transfer);
   }
 
   void showNotImplementedSnackbar() {

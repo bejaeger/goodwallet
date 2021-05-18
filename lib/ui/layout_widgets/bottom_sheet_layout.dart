@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
-import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/bottom_sheets/raise_money_bottom_sheet_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class BottomSheetLayout extends StatelessWidget {
-  final String title;
+  final String? title;
   final List<BottomSheetListEntry>? buttons;
   final Widget? widgetBeforeButtons;
   final Widget? widgetAfterButtons;
 
   const BottomSheetLayout({
     Key? key,
-    required this.title,
+    this.title,
     this.buttons,
     this.widgetBeforeButtons,
     this.widgetAfterButtons,
@@ -49,15 +47,16 @@ class BottomSheetLayout extends StatelessWidget {
               Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: ColorSettings.blackTextColor,
+                  if (title != null)
+                    Text(
+                      title!,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: ColorSettings.blackTextColor,
+                      ),
                     ),
-                  ),
-                  verticalSpaceMedium,
+                  verticalSpaceRegular,
                   if (widgetBeforeButtons != null) widgetBeforeButtons!,
                   if (widgetBeforeButtons != null) verticalSpaceRegular,
                   if (buttons != null)

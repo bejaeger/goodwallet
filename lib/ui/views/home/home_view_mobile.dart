@@ -4,6 +4,8 @@ import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
+import 'package:good_wallet/ui/shared/money_transfers/money_transfer_style_helpers.dart';
+import 'package:good_wallet/ui/shared/money_transfers/transfer_list_tile.dart';
 import 'package:good_wallet/ui/views/home/home_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/ui/widgets/carousel_card.dart';
@@ -29,27 +31,27 @@ class HomeViewMobile extends StatelessWidget {
           return;
         },
         builder: (context, model, child) {
-          return !model.isUserInitialized
-              ? Center(child: CircularProgressIndicator())
-              : Scaffold(
-                  body: RefreshIndicator(
-                    onRefresh: () async => await model.fetchData(),
-                    child: CustomScrollView(
-                      key: PageStorageKey('storage-key'),
-                      physics: ScrollPhysics(),
-                      slivers: [
-                        CustomSliverAppBarSmall(
-                          title: "Home",
-                          onSecondRightIconPressed: model.navigateToProfileView,
-                          secondRightIcon: Icon(
-                            Icons.person,
-                            size: 28,
-                          ),
-                          onRightIconPressed: model.showNotImplementedSnackbar,
-                          rightIcon:
-                              Icon(Icons.notifications_none_rounded, size: 28),
-                        ),
-                        SliverList(
+          return Scaffold(
+            body: RefreshIndicator(
+              onRefresh: () async => await model.fetchData(),
+              child: CustomScrollView(
+                key: PageStorageKey('storage-key'),
+                physics: ScrollPhysics(),
+                slivers: [
+                  CustomSliverAppBarSmall(
+                    title: "Home",
+                    onSecondRightIconPressed: model.navigateToProfileView,
+                    secondRightIcon: Icon(
+                      Icons.person,
+                      size: 28,
+                    ),
+                    onRightIconPressed: model.showNotImplementedSnackbar,
+                    rightIcon: Icon(Icons.notifications_none_rounded, size: 28),
+                  ),
+                  model.isBusy
+                      ? SliverToBoxAdapter(
+                          child: Center(child: CircularProgressIndicator()))
+                      : SliverList(
                           delegate: SliverChildListDelegate(
                             [
                               Row(
@@ -61,20 +63,21 @@ class HomeViewMobile extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      verticalSpaceMedium,
+                                      verticalSpaceRegular,
                                       Text("Hi " + model.currentUser.fullName,
                                           style: textTheme(context).headline4),
+                                      verticalSpaceRegular,
+                                      callToActionButtons(context, model),
                                       verticalSpaceSmall,
                                       GoodWalletCard(
-                                        onCardTap: model
-                                            .navigateToTransactionsHistoryView,
+                                        onCardTap: model.navigateToQRCodeView,
                                         onQRCodeTap: model.navigateToQRCodeView,
-                                        onHistoryButtonPressed: model
-                                            .navigateToTransactionsHistoryView,
-                                        onDonateButtonPressed:
-                                            model.showDonationBottomSheet,
-                                        onCommitButtonPressed: model
-                                            .navigateToTransferFundAmountView,
+                                        // onHistoryButtonPressed: model
+                                        //     .navigateToTransactionsHistoryView,
+                                        // onDonateButtonPressed:
+                                        //     model.showDonationBottomSheet,
+                                        // onCommitButtonPressed:
+                                        //     model.navigateToCommitMoneyView,
                                         currentBalance:
                                             model.userStats.currentBalance,
                                         totalDonations: model.userStats
@@ -83,81 +86,15 @@ class HomeViewMobile extends StatelessWidget {
                                             .userStats
                                             .moneyTransferStatistics
                                             .totalRaised,
+                                        totalGifted: model
+                                            .userStats
+                                            .moneyTransferStatistics
+                                            .totalSentToPeers,
                                         userInfo:
                                             model.getQRCodeUserInfoString(),
                                         showGoodometer: false,
                                       ),
                                       verticalSpaceRegular,
-                                      Text("Services",
-                                          style: textTheme(context).headline6),
-                                      verticalSpaceRegular,
-                                      SizedBox(
-                                        width:
-                                            screenWidthWithoutPadding(context),
-                                        child: FittedBox(
-                                          fit: BoxFit.contain,
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              CallToActionButtonRound(
-                                                text: "Send money",
-                                                onPressed: model
-                                                    .showSendMoneyBottomSheet,
-                                                color: MyColors.lightRed
-                                                    .withOpacity(0.3),
-                                                icon: Icon(Icons.send_rounded,
-                                                    color: MyColors.lightRed),
-                                              ),
-                                              CallToActionButtonRound(
-                                                text: "Create money pool",
-                                                onPressed: model
-                                                    .navigateToCreateMoneyPoolsView,
-                                                color: MyColors.paletteTurquoise
-                                                    .withOpacity(0.3),
-                                                icon: Image.asset(
-                                                    ImageIconPaths
-                                                        .circleOfPeople,
-                                                    color: MyColors
-                                                        .paletteTurquoise),
-                                              ),
-                                              CallToActionButtonRound(
-                                                text: "Invite friends",
-                                                onPressed: model
-                                                    .showNotImplementedSnackbar,
-                                                color: MyColors.gold
-                                                    .withOpacity(0.3),
-                                                icon: Image.asset(
-                                                    ImageIconPaths
-                                                        .huggingPeople,
-                                                    color: MyColors.gold),
-                                              ),
-                                              CallToActionButtonRound(
-                                                text: "Explore apps",
-                                                onPressed: model
-                                                    .showNotImplementedSnackbar,
-                                                color: MyColors.paletteBlue
-                                                    .withOpacity(0.3),
-                                                icon: Image.asset(
-                                                  ImageIconPaths
-                                                      .appsAroundGlobus,
-                                                ),
-                                              ),
-                                              // CallToActionButtonRound(
-                                              //   text: "Send money",
-                                              //   onPressed:
-                                              //       model.showSendMoneyBottomSheet,
-                                              //   color: MyColors.lightRed
-                                              //       .withOpacity(0.3),
-                                              //   icon: Icon(Icons.send_rounded,
-                                              //       color: MyColors.lightRed),
-                                              // ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
                                     ],
                                   ),
                                   SizedBox(
@@ -168,10 +105,52 @@ class HomeViewMobile extends StatelessWidget {
                               //_sendMoneyButton(context, model),
                               verticalSpaceTiny,
                               SectionHeader(
-                                  title: "Projects you supported",
+                                  title: "Recent Activities",
                                   onTextButtonTap:
-                                      model.showNotImplementedSnackbar),
-                              FeaturedProjectsCarousel(model: model),
+                                      model.navigateToTransfersHistoryView),
+                              // TODO: Make widget out of the following three!
+                              if (model.latestTransfers.length == 0)
+                                Divider(
+                                  color: Colors.grey[500],
+                                  thickness: 0.5,
+                                ),
+                              if (model.latestTransfers.length == 0)
+                                ListTile(
+                                    title: Text(
+                                        "Make a new donation or send money")),
+                              if (model.latestTransfers.length == 0)
+                                Divider(
+                                  color: Colors.grey[500],
+                                  thickness: 0.5,
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal:
+                                        LayoutSettings.horizontalPadding),
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: ScrollPhysics(),
+                                  itemCount: model.latestTransfers.length > 3
+                                      ? 3
+                                      : model.latestTransfers.length,
+                                  itemBuilder: (context, index) {
+                                    var data = model.latestTransfers[index];
+                                    return TransferListTile(
+                                      dense: true,
+                                      showBottomDivider: index < 3,
+                                      showTopDivider: index == 0,
+                                      transaction: data,
+                                      style:
+                                          getTransactionsCorrespondingToTypeHistoryEntryStyle(
+                                              data: data,
+                                              type: model
+                                                  .inferTransactionType(data)),
+                                      amount: data.transferDetails.amount,
+                                    );
+                                  },
+                                ),
+                              ),
+                              // FeaturedProjectsCarousel(model: model),
                               // verticalSpaceMedium,
                               // SectionHeader(
                               //   title: "Stats",
@@ -198,11 +177,63 @@ class HomeViewMobile extends StatelessWidget {
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                );
+                ],
+              ),
+            ),
+          );
         });
+  }
+
+  SizedBox callToActionButtons(BuildContext context, HomeViewModel model) {
+    return SizedBox(
+      width: screenWidthWithoutPadding(context),
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            CallToActionButtonRound(
+              text: "Send money",
+              onPressed: model.showSendMoneyBottomSheet,
+              color: ColorSettings.primaryColorDark.withOpacity(0.8),
+              icon:
+                  Icon(Icons.send_rounded, color: ColorSettings.whiteTextColor),
+            ),
+            CallToActionButtonRound(
+              text: "Commit money",
+              onPressed: model.navigateToCommitMoneyView,
+              color: ColorSettings.primaryColorDark.withOpacity(0.8),
+              icon: Image.asset(ImageIconPaths.agreeingHands,
+                  color: ColorSettings.whiteTextColor),
+            ),
+            CallToActionButtonRound(
+              text: "Donate",
+              onPressed: model.showDonationBottomSheet,
+              color: ColorSettings.primaryColorDark.withOpacity(0.8),
+              icon: Icon(Icons.favorite_rounded,
+                  color: ColorSettings.whiteTextColor),
+            ),
+            CallToActionButtonRound(
+              text: "More",
+              onPressed: model.showHomeViewMoreBottomSheet,
+              color: MyColors.paletteBlue.withOpacity(0.5),
+              icon: Icon(Icons.more_vert_rounded,
+                  color: ColorSettings.whiteTextColor),
+            ),
+            // CallToActionButtonRound(
+            //   text: "Send money",
+            //   onPressed:
+            //       model.showSendMoneyBottomSheet,
+            //   color: MyColors.lightRed
+            //       .withOpacity(0.3),
+            //   icon: Icon(Icons.send_rounded,
+            //       color: MyColors.lightRed),
+            // ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _sendMoneyButton(BuildContext context, dynamic model) {
