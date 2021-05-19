@@ -78,7 +78,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       else if (type == TransferType.Peer2PeerSent) {
         await handleTransfer();
       } else if (type == TransferType.Donation) {
-        await handleTransfer();
+        await handleTransfer(type: type);
       } else if (type == TransferType.MoneyPoolContribution) {
         await handleTransfer();
       } else {
@@ -182,8 +182,9 @@ class TransferFundsAmountViewModel extends FormViewModel {
     }
   }
 
-  Future handleTransfer() async {
-    SheetResponse? sheetResponse = await _showPaymentMethodBottomSheet();
+  Future handleTransfer({TransferType? type}) async {
+    SheetResponse? sheetResponse =
+        await _showPaymentMethodBottomSheet(type: type);
     setBusy(true);
     if (sheetResponse?.confirmed == false) {
       // Ask for another final confirmation
@@ -283,10 +284,15 @@ class TransferFundsAmountViewModel extends FormViewModel {
     await Future.delayed(Duration(seconds: 2));
   }
 
-  Future _showPaymentMethodBottomSheet() async {
+  Future _showPaymentMethodBottomSheet({TransferType? type}) async {
+    String description = "OR add new payment method +";
+    if (type != null && type == TransferType.Donation) {
+      description =
+          "To keep growing and reach more people, the Good Wallet Foundation will take a default 5\% of your donation. You are free to choose a any other amount (NOT YET IMPLEMENTED). Thank you for your support!";
+    }
     return await _bottomSheetService!.showBottomSheet(
         title: "Select Payment Method",
-        description: "OR add new payment method +",
+        description: description,
         confirmButtonTitle: "Credit Card / Google Pay",
         cancelButtonTitle: "Test Payment");
   }

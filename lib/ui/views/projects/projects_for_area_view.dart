@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
+import 'package:good_wallet/enums/causes_type.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/projects/projects_for_area_viewmodel.dart';
@@ -48,9 +49,18 @@ class ProjectsForAreaView extends StatelessWidget {
                                 itemBuilder: (context, index) => Padding(
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: GlobalGivingProjectCardMobile(
+                                    showDescription:
+                                        model.projects[index].causeType ==
+                                                CauseType.GoodWalletFund
+                                            ? true
+                                            : false,
                                     project: model.projects[index],
-                                    onTap: () => model
-                                        .navigateToSingleProjectScreen(index),
+                                    onTap: model.projects[index].causeType ==
+                                            CauseType.GoodWalletFund
+                                        ? model.showNotImplementedSnackbar
+                                        : () =>
+                                            model.navigateToSingleProjectScreen(
+                                                index),
                                     onTapFavorite:
                                         model.showNotImplementedSnackbar,
                                   ),

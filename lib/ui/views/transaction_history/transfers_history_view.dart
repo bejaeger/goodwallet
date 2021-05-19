@@ -14,7 +14,7 @@ class TransfersHistoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<TransfersHistoryViewModel>.reactive(
       viewModelBuilder: () => TransfersHistoryViewModel(),
-      initialiseSpecialViewModelsOnce: true,
+      onModelReady: (model) => model.listenToData(),
       builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
         child: Shimmer(
           interval: Duration(hours: 1),

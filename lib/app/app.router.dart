@@ -21,6 +21,7 @@ import '../enums/transfer_type.dart';
 import '../ui/views/featured_applications/single_featured_app_view.dart';
 import '../ui/views/home/home_view_mobile.dart';
 import '../ui/views/home/welcome_view.dart';
+import '../ui/views/in_app_notifications/in_app_notifications_view.dart';
 import '../ui/views/layout/layout_template_view.dart';
 import '../ui/views/layout/layout_template_view_mobile.dart';
 import '../ui/views/login/create_account_view.dart';
@@ -71,6 +72,7 @@ class Routes {
   static const String projectsView = '/projects-view';
   static const String projectsForAreaView = '/projects-for-area-view';
   static const String singleProjectViewMobile = '/single-project-view-mobile';
+  static const String inAppNotificationsView = '/in-app-notifications-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -97,6 +99,7 @@ class Routes {
     projectsView,
     projectsForAreaView,
     singleProjectViewMobile,
+    inAppNotificationsView,
   };
 }
 
@@ -129,6 +132,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.projectsView, page: ProjectsView),
     RouteDef(Routes.projectsForAreaView, page: ProjectsForAreaView),
     RouteDef(Routes.singleProjectViewMobile, page: SingleProjectViewMobile),
+    RouteDef(Routes.inAppNotificationsView, page: InAppNotificationsView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -359,6 +363,12 @@ class StackedRouter extends RouterBase {
           project: args.project,
           projectId: args.projectId,
         ),
+        settings: data,
+      );
+    },
+    InAppNotificationsView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const InAppNotificationsView(),
         settings: data,
       );
     },

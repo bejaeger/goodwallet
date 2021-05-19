@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
+import 'package:good_wallet/enums/causes_type.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
@@ -11,12 +12,14 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
   final void Function()? onTap;
   final void Function()? onTapFavorite;
   final bool displayArea;
+  final bool showDescription;
 
   GlobalGivingProjectCardMobile(
       {required this.project,
       this.onTap,
       this.onTapFavorite,
-      this.displayArea = false});
+      this.displayArea = false,
+      this.showDescription = false});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -31,21 +34,25 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.transparent,
-                        MyColors.black87.withOpacity(0.5)
-                      ],
-                    ),
-                    image: DecorationImage(
-                      image: NetworkImage(project.imageUrl!),
-                      fit: BoxFit.cover,
-                    )),
-              ),
+              if (project.imageUrl != null)
+                Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.transparent,
+                          MyColors.black87.withOpacity(0.5)
+                        ],
+                      ),
+                      image: DecorationImage(
+                        image: project.causeType ==
+                                CauseType.GlobalGivingProject
+                            ? NetworkImage(project.imageUrl!) as ImageProvider
+                            : AssetImage(project.imageUrl!) as ImageProvider,
+                        fit: BoxFit.cover,
+                      )),
+                ),
               DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -59,6 +66,18 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
                   ),
                 ),
               ),
+              if (showDescription && project.summary != null)
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: SizedBox(
+                    width: screenWidth(context, percentage: 0.7),
+                    child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(project.summary!,
+                            style: textTheme(context).bodyText1!.copyWith(
+                                fontSize: 15, fontWeight: FontWeight.w600))),
+                  ),
+                ),
               Align(
                 alignment: Alignment.topRight,
                 child: Padding(

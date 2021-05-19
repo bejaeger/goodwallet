@@ -45,12 +45,15 @@ class HomeViewMobile extends StatelessWidget {
                       Icons.person,
                       size: 28,
                     ),
-                    onRightIconPressed: model.showNotImplementedSnackbar,
+                    onRightIconPressed: model.navigateToNotificationsView,
                     rightIcon: Icon(Icons.notifications_none_rounded, size: 28),
                   ),
                   model.isBusy
                       ? SliverToBoxAdapter(
-                          child: Center(child: CircularProgressIndicator()))
+                          child: SizedBox(
+                              height: 500,
+                              child:
+                                  Center(child: CircularProgressIndicator())))
                       : SliverList(
                           delegate: SliverChildListDelegate(
                             [

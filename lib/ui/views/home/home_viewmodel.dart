@@ -47,6 +47,16 @@ class HomeViewModel extends BaseModel {
   // instantly when pulling up bottom sheets
   Future listenToData() async {
     setBusy(true);
+    // List<Future<void>?> futures = <Future>[];
+    // futures.add(_userDataService!
+    //     .addTransferDataListener(config: _queryConfigTransactionToPeers));
+    // futures.add(_userDataService!
+    //     .addTransferDataListener(config: _queryConfigDonations));
+    // futures.add(_userDataService!
+    //     .addTransferDataListener(config: _queryConfigLatestTransfers));
+    // // waits for all futures to complete
+    // await Future.wait<void>(
+    //     futures.map((e) => e ?? Future.delayed(Duration(milliseconds: 1))));
     await _userDataService!
         .addTransferDataListener(config: _queryConfigTransactionToPeers);
     await _userDataService!
@@ -147,6 +157,10 @@ class HomeViewModel extends BaseModel {
     _navigationService!.navigateTo(
       Routes.transfersHistoryView,
     );
+  }
+
+  void navigateToNotificationsView() {
+    _navigationService!.navigateTo(Routes.inAppNotificationsView);
   }
 
   void navigateToQRCodeView() {

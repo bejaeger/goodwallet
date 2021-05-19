@@ -134,7 +134,7 @@ exports.processMoneyTransfer = functions.firestore
         const moneyPoolId = moneyPoolInfo["moneyPoolId"];
 
         // update contributingUsers array
-        let snapshot = await db.collection("moneypools").doc(moneyPoolId).get();
+        let snapshot = await db.collection("moneyPools").doc(moneyPoolId).get();
         if (snapshot.exists) {
           let userList = snapshot.data()['contributingUsers'];
           let newContributingUsers = userList.map(element => {
@@ -142,7 +142,7 @@ exports.processMoneyTransfer = functions.firestore
             return element;
           });
           const increment = admin.firestore.FieldValue.increment(amount);
-          await db.collection("moneypools").doc(moneyPoolId).update(
+          await db.collection("moneyPools").doc(moneyPoolId).update(
             {
               total: increment,
               contributingUsers: newContributingUsers,

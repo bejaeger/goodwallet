@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/projects/projects_viewmodel.dart';
@@ -29,11 +30,13 @@ class ProjectsView extends StatelessWidget {
                 onRightIconPressed: model.navigateToFavoritesView,
                 rightIcon: Icon(Icons.favorite_border_rounded, size: 28),
                 // Temporarily allow DAN to push new projects to firebase
-                onSecondRightIconPressed:
-                    model.currentUser.uid == "ptWSWNPX4xRyVsb6jwjPfff5C2B3"
-                        ? model.pushGlobalGivingProjectsToFirestore
-                        : null,
-                secondRightIcon: Icon(Icons.plus_one, size: 28),
+                onSecondRightIconPressed: model.showNotImplementedSnackbar,
+                secondRightIcon: Icon(Icons.search_rounded, size: 28),
+                // onSecondRightIconPressed:
+                //     model.currentUser.uid == "ptWSWNPX4xRyVsb6jwjPfff5C2B3"
+                //         ? model.pushGlobalGivingProjectsToFirestore
+                //         : null,
+                // secondRightIcon: Icon(Icons.plus_one, size: 28),
               ),
               model.isBusy
                   ? SliverToBoxAdapter(
@@ -65,10 +68,17 @@ class ProjectsView extends StatelessWidget {
                                     mainAxisSpacing: 15,
                                     crossAxisCount: 2,
                                   ),
-                                  itemCount: model.projectUniqueAreas.length,
+                                  itemCount:
+                                      model.projectUniqueAreas.length + 1,
                                   itemBuilder: (context, index) {
-                                    final data =
-                                        model.projectUniqueAreas[index];
+                                    late Project data;
+                                    if (index == 0) {
+                                      data =
+                                          model.getGoodWalletFundsInfo()[index];
+                                    } else {
+                                      data =
+                                          model.projectUniqueAreas[index - 1];
+                                    }
                                     return GlobalGivingProjectCardMobile(
                                       displayArea: true,
                                       project: data,

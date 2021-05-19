@@ -27,14 +27,23 @@ class HomeViewMoreBottomSheetView extends StatelessWidget {
                   completer: completer,
                   responseData: model.showNotImplementedSnackbar,
                   title: "Invite friends",
-                  description: "Raise through the Good Wallet referral fund",
+                  description: "Raise via the Good Wallet referral fund",
                   icon: Image.asset(ImageIconPaths.huggingPeople),
                 ),
                 BottomSheetListEntry(
                   completer: completer,
                   responseData: model.showNotImplementedSnackbar,
+                  title: "Top-up prepaid fund",
+                  description:
+                      "To send micro-payments without extra transaction fee",
+                  icon: Image.asset(ImageIconPaths.holdingHands),
+                ),
+                BottomSheetListEntry(
+                  completer: completer,
+                  responseData: model.showNotImplementedSnackbar,
                   title: "Checkout our featured apps",
-                  description: "Raise effortlessly",
+                  description:
+                      "Raise effortlessly on multiple connected platforms",
                   icon: Image.asset(ImageIconPaths.appsAroundGlobus),
                 ),
                 //     BottomSheetListEntry(

@@ -154,8 +154,7 @@ class SingleMoneyPoolView extends StatelessWidget {
                                 color: Colors.black,
                               ),
                             ),
-                            subtitle: model.moneyPool.adminUID ==
-                                    model.currentUser.uid
+                            subtitle: model.moneyPool.adminUID == user.uid
                                 ? Text("Admin")
                                 : null,
                             trailing: isInvitedUser

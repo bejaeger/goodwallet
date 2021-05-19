@@ -244,12 +244,12 @@ class UserDataService {
       _transfersSubscriptions[config]?.resume();
     } else {
       log.i("Setting up listener for transfers with config $config.");
-      var completer = Completer<void>();
       Stream<List<MoneyTransfer>> snapshot;
       try {
         snapshot = getTransferDataStream(config: config);
 
         // listen to combined stream and add transactions to controller
+        var completer = Completer<void>();
         _transfersSubscriptions[config] = snapshot.listen(
           (transactions) {
             // Option to make the list unique!
@@ -351,6 +351,11 @@ class UserDataService {
     _currentUser = User.empty();
     // actually log out from firebase
     await _firebaseAuthenticationService!.logout();
+    // cancel all listeners and reset list
+    _transfersSubscriptions.forEach((key, value) {
+      value?.cancel();
+    });
+    _transfersSubscriptions.clear();
     // set auth state to signed out
     userStateSubject.add(UserStatus.SignedOut);
   }
