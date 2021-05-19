@@ -10,11 +10,11 @@ import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
-import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/transfer_base_model.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 
-class HomeViewModel extends BaseModel {
+class HomeViewModel extends TransferBaseViewModel {
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
   final NavigationService? _navigationService = locator<NavigationService>();
   final QRCodeService? _qrCodeService = locator<QRCodeService>();
@@ -47,20 +47,9 @@ class HomeViewModel extends BaseModel {
   // instantly when pulling up bottom sheets
   Future listenToData() async {
     setBusy(true);
-    // List<Future<void>?> futures = <Future>[];
-    // futures.add(_userDataService!
-    //     .addTransferDataListener(config: _queryConfigTransactionToPeers));
-    // futures.add(_userDataService!
-    //     .addTransferDataListener(config: _queryConfigDonations));
-    // futures.add(_userDataService!
-    //     .addTransferDataListener(config: _queryConfigLatestTransfers));
-    // // waits for all futures to complete
-    // await Future.wait<void>(
-    //     futures.map((e) => e ?? Future.delayed(Duration(milliseconds: 1))));
-    await _userDataService!
+    _userDataService!
         .addTransferDataListener(config: _queryConfigTransactionToPeers);
-    await _userDataService!
-        .addTransferDataListener(config: _queryConfigDonations);
+    _userDataService!.addTransferDataListener(config: _queryConfigDonations);
     await _userDataService!
         .addTransferDataListener(config: _queryConfigLatestTransfers);
     setBusy(false);
@@ -73,12 +62,8 @@ class HomeViewModel extends BaseModel {
     notifyListeners();
   }
 
+  ///////////////////////////////////
   // helpers
-  // helper function that figures out transaction
-  // type based on transaction data
-  TransferType inferTransactionType(MoneyTransfer transfer) {
-    return _userDataService!.inferTransactionType(transfer: transfer);
-  }
 
   String getQRCodeUserInfoString() {
     return _qrCodeService!.getEncodedUserInfo(currentUser);

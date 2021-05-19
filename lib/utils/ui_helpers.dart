@@ -68,6 +68,10 @@ TextTheme textTheme(BuildContext context) => Theme.of(context).textTheme;
 String formatDate(DateTime timestamp) {
   return DateFormat.MMMEd().format(timestamp);
 }
+String formatDateDetails(DateTime timestamp) {
+  return DateFormat.yMd().add_jm().format(timestamp);
+}
+
 
 class CenteredView extends StatelessWidget {
   final maxWidth;

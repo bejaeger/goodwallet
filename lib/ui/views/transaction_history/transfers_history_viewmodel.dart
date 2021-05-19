@@ -3,11 +3,11 @@ import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_quer
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/services/userdata/user_data_service.dart';
-import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/transfer_base_model.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class TransfersHistoryViewModel extends BaseModel {
+class TransfersHistoryViewModel extends TransferBaseViewModel {
   final UserDataService? _userDataService = locator<UserDataService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
 
@@ -22,12 +22,6 @@ class TransfersHistoryViewModel extends BaseModel {
     setBusy(false);
     await _userDataService!.addTransferDataListener(config: _transferConfig);
     setBusy(true);
-  }
-
-  // helper function that figures out transaction
-  // type based on transaction data
-  TransferType inferTransactionType(MoneyTransfer transfer) {
-    return _userDataService!.inferTransactionType(transfer: transfer);
   }
 
   void showNotImplementedSnackbar() {

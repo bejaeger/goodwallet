@@ -44,6 +44,8 @@ class TransfersHistoryView extends StatelessWidget {
                         (context, index) {
                           var data = model.transfers![index];
                           return TransferListTile(
+                            onTap: () =>
+                                model.showMoneyTransferInfoDialog(data),
                             transaction: data,
                             style:
                                 getTransactionsCorrespondingToTypeHistoryEntryStyle(

@@ -188,7 +188,7 @@ exports.processMoneyPoolPayout = functions.firestore
 
       if (deleteMoneyPool === false) {
         const deduct = admin.firestore.FieldValue.increment(-totalAmount);
-        const moneyPoolRef = db.collection('moneypools').doc(moneyPool['moneyPoolId']);
+        const moneyPoolRef = db.collection('moneyPools').doc(moneyPool['moneyPoolId']);
         batch.update(moneyPoolRef, {
           total: deduct,
         });

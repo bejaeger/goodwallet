@@ -76,11 +76,11 @@ class TransferFundsAmountViewModel extends FormViewModel {
       if (type == TransferType.PrepaidFund)
         await handleTopUpPayment();
       else if (type == TransferType.Peer2PeerSent) {
-        await handleTransfer();
+        await handleTransfer(type: type);
       } else if (type == TransferType.Donation) {
         await handleTransfer(type: type);
       } else if (type == TransferType.MoneyPoolContribution) {
-        await handleTransfer();
+        await handleTransfer(type: type);
       } else {
         _snackbarService!.showSnackbar(
             title: "Not yet implemented.", message: "I know... it's sad");
@@ -182,7 +182,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
     }
   }
 
-  Future handleTransfer({TransferType? type}) async {
+  Future handleTransfer({required TransferType type}) async {
     SheetResponse? sheetResponse =
         await _showPaymentMethodBottomSheet(type: type);
     setBusy(true);

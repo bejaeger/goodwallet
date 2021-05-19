@@ -25,7 +25,7 @@ import 'test_helpers.mocks.dart';
   MockSpec<SnackbarService>(returnNullOnMissingStub: true),
   MockSpec<FirebaseAuthenticationService>(returnNullOnMissingStub: true),
 ])
-UserDataService getAndRegisterUserDataService({
+MockUserDataService getAndRegisterUserDataService({
   UserStatus userStatus = UserStatus.SignedOut,
   User? currentUser,
 }) {
@@ -39,28 +39,28 @@ UserDataService getAndRegisterUserDataService({
   return service;
 }
 
-MoneyPoolsService getAndRegisterMoneyPoolService() {
+MockMoneyPoolsService getAndRegisterMoneyPoolService() {
   _removeRegistrationIfExists<MoneyPoolsService>();
   final service = MockMoneyPoolsService();
   locator.registerSingleton<MoneyPoolsService>(service);
   return service;
 }
 
-NavigationService getAndRegisterNavigationService() {
+MockNavigationService getAndRegisterNavigationService() {
   _removeRegistrationIfExists<NavigationService>();
   final service = MockNavigationService();
   locator.registerSingleton<NavigationService>(service);
   return service;
 }
 
-SnackbarService getAndRegisterSnackbarService() {
+MockSnackbarService getAndRegisterSnackbarService() {
   _removeRegistrationIfExists<SnackbarService>();
   final service = MockSnackbarService();
   locator.registerSingleton<SnackbarService>(service);
   return service;
 }
 
-FirebaseAuthenticationService getAndRegisterFirebaseAuthenticationService({
+MockFirebaseAuthenticationService getAndRegisterFirebaseAuthenticationService({
   firebase.User? currentUser,
 }) {
   _removeRegistrationIfExists<FirebaseAuthenticationService>();

@@ -47,7 +47,7 @@ class SingleMoneyPoolViewModel extends BaseModel {
 
   SingleMoneyPoolViewModel({required this.moneyPool}) {
     _queryConfig = MoneyTransferQueryConfig(
-      type: TransferType.MoneyPoolContribution,
+      type: TransferType.MoneyPoolContributionReceived,
       isEqualToFilter: {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
     );
     // _userDataService!.addTransferDataListener(
@@ -166,12 +166,12 @@ class SingleMoneyPoolViewModel extends BaseModel {
     });
     List<String> newList = [
       for (int i = 0; i < paidOutUserNames.length; i += 1)
-        paidOutUserNames[i] + " -> " + formatAmount(paidOutAmounts[i])
+        formatAmount(paidOutAmounts[i]) + " -> " + paidOutUserNames[i]
     ];
     await _dialogService!.showDialog(
         title: "Money pool payout",
         description:
-            "Date: ${formatDate(data.createdAt.toDate())}, paid out users: ${newList.join(", ")}");
+            "Date: ${formatDateDetails(data.createdAt.toDate())}\nRecipients:\n  ${newList.join("\n  ")}");
   }
 
   ////////////////////////////////////////////////////

@@ -139,6 +139,8 @@ class HomeViewMobile extends StatelessWidget {
                                   itemBuilder: (context, index) {
                                     var data = model.latestTransfers[index];
                                     return TransferListTile(
+                                      onTap: () => model
+                                          .showMoneyTransferInfoDialog(data),
                                       dense: true,
                                       showBottomDivider: index < 3,
                                       showTopDivider: index == 0,

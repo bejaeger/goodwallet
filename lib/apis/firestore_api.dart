@@ -179,6 +179,19 @@ class FirestoreApi {
             .where("type", isEqualTo: "MoneyPoolContribution")
             .orderBy("createdAt", descending: true);
       }
+    } else if (config.type == TransferType.MoneyPoolContributionReceived) {
+      if (config.isEqualToFilter == null) {
+        throw FirestoreApiException(
+            message: "Tried to access not supported transfers",
+            devDetails:
+                "Please provide the isEqualToFilter argument for the MoneyTransferQueryConfig to specify which money pool you would like to fetch data for");
+      } else {
+        query = _paymentsCollection
+            .where(config.isEqualToFilter!.keys.first,
+                isEqualTo: config.isEqualToFilter!.values.first)
+            .where("type", isEqualTo: "MoneyPoolContribution")
+            .orderBy("createdAt", descending: true);
+      }
     } else {
       log.e("Could not find stream corresponding to provided config '$config'");
       throw Exception("Exception occured. TODO: Add proper Exception here!");
