@@ -63,7 +63,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: SingleFeaturedAppView),
     MaterialRoute(page: MoneyPoolsView),
     MaterialRoute(page: QRCodeViewMobile),
-    MaterialRoute(page: StartUpLogicView),
+    MaterialRoute(page: StartUpLogicView, initial: true),
     MaterialRoute(page: SearchView),
     MaterialRoute(page: TransferFundsAmountView),
     MaterialRoute(page: DisburseMoneyPoolView),

@@ -80,6 +80,7 @@ const _$TransferTypeEnumMap = {
   TransferType.MoneyPoolPayoutTransfer: 'MoneyPoolPayoutTransfer',
   TransferType.MoneyPoolPayout: 'MoneyPoolPayout',
   TransferType.MoneyPoolContribution: 'MoneyPoolContribution',
+  TransferType.MoneyPoolContributionReceived: 'MoneyPoolContributionReceived',
   TransferType.PrepaidFund: 'PrepaidFund',
   TransferType.Commitment: 'Commitment',
   TransferType.All: 'All',

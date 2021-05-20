@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:good_wallet/datamodels/causes/project.dart';
+import 'package:good_wallet/datamodels/money_pools/base/concise_money_pool_info.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
+import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
@@ -179,6 +181,7 @@ class FirestoreApi {
             .where("type", isEqualTo: "MoneyPoolContribution")
             .orderBy("createdAt", descending: true);
       }
+      // All transactions into a specific money pool
     } else if (config.type == TransferType.MoneyPoolContributionReceived) {
       if (config.isEqualToFilter == null) {
         throw FirestoreApiException(
@@ -253,6 +256,7 @@ class FirestoreApi {
           }
         });
       }
+      // TODO: This sometimes causes an exeption. Simply catch it?
       transactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       return transactions;
     });
@@ -269,6 +273,57 @@ class FirestoreApi {
           "Added the following transfer document to ${docRef.path}: ${newTransfer.toJson()}");
     } catch (e) {
       log.e("Couldn't process transfer: ${e.toString()}");
+      throw FirestoreApiException(
+          message: "Something failed when pushing the data to Firestore",
+          devDetails:
+              "This should not happen and is due to an error on the Firestore side or the datamodels that were being pushed!",
+          prettyDetails:
+              "An internal error occured on our side, please apologize and try again later.");
+    }
+  }
+
+  // This will add the money pool payout document and also
+  // create single money transfer documents. This makes it easy
+  // to bookkeep things
+  Future createMoneyPoolPayout({required MoneyPoolPayout payout}) async {
+    try {
+      // make this a batch commit
+      final batch = FirebaseFirestore.instance.batch();
+
+      // add money pool payout to batch
+      final docRef = _moneyPoolPayoutsCollection.doc();
+      final newPayout = payout.copyWith(payoutId: docRef.id);
+      batch.set(docRef, newPayout.toJson());
+
+      // Construct single money transfer documents
+      // Push each money pool payout transfer to payments collection
+      List<MoneyTransfer> moneyTransfers = [];
+      newPayout.transfersDetails.forEach((element) {
+        moneyTransfers.add(
+          MoneyTransfer.moneyPoolPayoutTransfer(
+              transferDetails: element,
+              moneyPoolInfo: ConciseMoneyPoolInfo(
+                  moneyPoolId: newPayout.moneyPool.moneyPoolId,
+                  name: newPayout.moneyPool.name,
+                  total: newPayout.moneyPool.total),
+              payoutId: docRef.id,
+              createdAt: FieldValue.serverTimestamp()),
+        );
+      });
+
+      // add each single money transfer to batch
+      moneyTransfers.forEach((element) {
+        DocumentReference newDocRef = _paymentsCollection.doc();
+        var newElement = element.copyWith(transferId: newDocRef.id);
+        batch.set(newDocRef, newElement.toJson());
+      });
+
+      await batch.commit();
+
+      log.i(
+          "Added the following money pool payout document to ${docRef.path}: ${newPayout.toJson()}");
+    } catch (e) {
+      log.e("Couldn't process money pool payout: ${e.toString()}");
       throw FirestoreApiException(
           message: "Something failed when pushing the data to Firestore",
           devDetails:
@@ -311,6 +366,53 @@ class FirestoreApi {
       throw FirestoreApiException(
           message:
               "Unknown expection when listening to money pools the user is contributing to",
+          devDetails: '$e');
+    }
+  }
+
+  ///  get stream of single money pool
+  Stream<MoneyPool> getMoneyPoolStream({required String mpid}) {
+    try {
+      final returnStream =
+          _moneyPoolsCollection.doc(mpid).snapshots().map((event) {
+        if (event.data() == null) {
+          throw FirestoreApiException(
+              message: "Unknown expection when listening to single money pool",
+              devDetails:
+                  "Somehow the document was not available anymore when it was tried to listen to it. Probably it has been deleted",
+              prettyDetails:
+                  "This money pool does not exist anymore. Please refer to the admin of that money pool, he might have closed it :)");
+        } else {
+          return MoneyPool.fromJson(event.data()!);
+        }
+      });
+      return returnStream;
+    } catch (e) {
+      if (e is FirestoreApi) {
+        rethrow;
+      } else {
+        throw FirestoreApiException(
+            message:
+                "Unknown expection when listening to single money pool the user is contributing to",
+            devDetails: '$e');
+      }
+    }
+  }
+
+  /// Stream of payout documents of money pool
+  Stream<List<MoneyPoolPayout>> getMoneyPoolPayoutsStream(
+      {required String mpid}) {
+    try {
+      final returnStream = _moneyPoolPayoutsCollection
+          .where("moneyPool.moneyPoolId", isEqualTo: mpid)
+          .snapshots()
+          .map((event) => event.docs
+              .map((doc) => MoneyPoolPayout.fromJson(doc.data()))
+              .toList());
+      return returnStream;
+    } catch (e) {
+      throw FirestoreApiException(
+          message: "Unknown expection when listening to money pool payouts",
           devDetails: '$e');
     }
   }

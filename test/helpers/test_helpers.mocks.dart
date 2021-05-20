@@ -12,11 +12,11 @@ import 'package:good_wallet/apis/firestore_api.dart' as _i20;
 import 'package:good_wallet/datamodels/causes/project.dart' as _i6;
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart' as _i5;
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart'
-    as _i19;
+    as _i18;
 import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart'
     as _i13;
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart' as _i14;
-import 'package:good_wallet/datamodels/user/public_user_info.dart' as _i18;
+import 'package:good_wallet/datamodels/user/public_user_info.dart' as _i19;
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart'
     as _i12;
 import 'package:good_wallet/datamodels/user/user.dart' as _i4;
@@ -162,11 +162,14 @@ class MockUserDataService extends _i1.Mock implements _i10.UserDataService {
           Invocation.method(#addTransferDataListener, [], {#config: config}),
           returnValueForMissingStub: Future.value()) as _i15.Future<void>?);
   @override
-  void pauseTransferDataListener(
-          {_i13.MoneyTransferQueryConfig? config, void Function()? callback}) =>
+  void pauseTransferDataListener({_i13.MoneyTransferQueryConfig? config}) =>
       super.noSuchMethod(
-          Invocation.method(#pauseTransferDataListener, [],
-              {#config: config, #callback: callback}),
+          Invocation.method(#pauseTransferDataListener, [], {#config: config}),
+          returnValueForMissingStub: null);
+  @override
+  void cancelTransferDataListener({_i13.MoneyTransferQueryConfig? config}) =>
+      super.noSuchMethod(
+          Invocation.method(#cancelTransferDataListener, [], {#config: config}),
           returnValueForMissingStub: null);
   @override
   List<_i14.MoneyTransfer> getMoneyTransfersWithUniqueSender(
@@ -233,6 +236,17 @@ class MockMoneyPoolsService extends _i1.Mock implements _i17.MoneyPoolsService {
               #numberInvitedMoneyPoolsSubject, _numberInvitedMoneyPoolsSubject),
           returnValueForMissingStub: null);
   @override
+  Map<String, List<_i18.MoneyPoolPayout>> get moneyPoolPayouts =>
+      (super.noSuchMethod(Invocation.getter(#moneyPoolPayouts),
+              returnValue: <String, List<_i18.MoneyPoolPayout>>{})
+          as Map<String, List<_i18.MoneyPoolPayout>>);
+  @override
+  set moneyPoolPayouts(
+          Map<String, List<_i18.MoneyPoolPayout>>? _moneyPoolPayouts) =>
+      super.noSuchMethod(
+          Invocation.setter(#moneyPoolPayouts, _moneyPoolPayouts),
+          returnValueForMissingStub: null);
+  @override
   void init({String? uid}) =>
       super.noSuchMethod(Invocation.method(#init, [], {#uid: uid}),
           returnValueForMissingStub: null);
@@ -243,7 +257,7 @@ class MockMoneyPoolsService extends _i1.Mock implements _i17.MoneyPoolsService {
           returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
   _i15.Future<dynamic> addInvitedUserToMoneyPool(
-          {_i18.PublicUserInfo? userInfo, _i5.MoneyPool? moneyPool}) =>
+          {_i19.PublicUserInfo? userInfo, _i5.MoneyPool? moneyPool}) =>
       (super.noSuchMethod(
           Invocation.method(#addInvitedUserToMoneyPool, [],
               {#userInfo: userInfo, #moneyPool: moneyPool}),
@@ -252,6 +266,12 @@ class MockMoneyPoolsService extends _i1.Mock implements _i17.MoneyPoolsService {
   _i15.Future<void>? listenToMoneyPools({String? uid}) => (super.noSuchMethod(
       Invocation.method(#listenToMoneyPools, [], {#uid: uid}),
       returnValueForMissingStub: Future.value()) as _i15.Future<void>?);
+  @override
+  _i15.Stream<_i5.MoneyPool> getMoneyPoolStream({String? mpid}) =>
+      (super.noSuchMethod(
+              Invocation.method(#getMoneyPoolStream, [], {#mpid: mpid}),
+              returnValue: Stream<_i5.MoneyPool>.empty())
+          as _i15.Stream<_i5.MoneyPool>);
   @override
   _i15.Future<_i5.MoneyPool> createAndReturnMoneyPool(
           {_i5.MoneyPool? moneyPool}) =>
@@ -281,15 +301,22 @@ class MockMoneyPoolsService extends _i1.Mock implements _i17.MoneyPoolsService {
       (super.noSuchMethod(Invocation.method(#deleteMoneyPool, [mpid]),
           returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
   @override
-  _i15.Future<List<_i19.MoneyPoolPayout>> getMoneyPoolPayouts(String? mpid) =>
-      (super.noSuchMethod(Invocation.method(#getMoneyPoolPayouts, [mpid]),
-              returnValue: Future<List<_i19.MoneyPoolPayout>>.value(
-                  <_i19.MoneyPoolPayout>[]))
-          as _i15.Future<List<_i19.MoneyPoolPayout>>);
+  _i15.Future<void>? addMoneyPoolPayoutListener({String? mpid}) =>
+      (super.noSuchMethod(
+          Invocation.method(#addMoneyPoolPayoutListener, [], {#mpid: mpid}),
+          returnValueForMissingStub: Future.value()) as _i15.Future<void>?);
   @override
-  _i15.Future<dynamic> submitMoneyPoolPayout(_i19.MoneyPoolPayout? data) =>
+  List<_i18.MoneyPoolPayout> getMoneyPoolPayouts({String? mpid}) => (super
+      .noSuchMethod(Invocation.method(#getMoneyPoolPayouts, [], {#mpid: mpid}),
+          returnValue: <_i18.MoneyPoolPayout>[]) as List<_i18.MoneyPoolPayout>);
+  @override
+  _i15.Future<dynamic> submitMoneyPoolPayout(_i18.MoneyPoolPayout? data) =>
       (super.noSuchMethod(Invocation.method(#submitMoneyPoolPayout, [data]),
           returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
+  @override
+  void cancelMoneyPoolPayoutListener({String? mpid}) => super.noSuchMethod(
+      Invocation.method(#cancelMoneyPoolPayoutListener, [], {#mpid: mpid}),
+      returnValueForMissingStub: null);
   @override
   void clearData() => super.noSuchMethod(Invocation.method(#clearData, []),
       returnValueForMissingStub: null);
@@ -382,6 +409,19 @@ class MockFirestoreApi extends _i1.Mock implements _i20.FirestoreApi {
               Invocation.method(#getMoneyPoolsStream, [], {#uid: uid}),
               returnValue: Stream<List<_i5.MoneyPool>>.empty())
           as _i15.Stream<List<_i5.MoneyPool>>);
+  @override
+  _i15.Stream<_i5.MoneyPool> getMoneyPoolStream({String? mpid}) =>
+      (super.noSuchMethod(
+              Invocation.method(#getMoneyPoolStream, [], {#mpid: mpid}),
+              returnValue: Stream<_i5.MoneyPool>.empty())
+          as _i15.Stream<_i5.MoneyPool>);
+  @override
+  _i15.Stream<List<_i18.MoneyPoolPayout>> getMoneyPoolPayoutsStream(
+          {String? mpid}) =>
+      (super.noSuchMethod(
+              Invocation.method(#getMoneyPoolPayoutsStream, [], {#mpid: mpid}),
+              returnValue: Stream<List<_i18.MoneyPoolPayout>>.empty())
+          as _i15.Stream<List<_i18.MoneyPoolPayout>>);
   @override
   _i15.Future<dynamic> updateMoneyPool(_i5.MoneyPool? moneyPool) =>
       (super.noSuchMethod(Invocation.method(#updateMoneyPool, [moneyPool]),

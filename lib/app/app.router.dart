@@ -64,7 +64,7 @@ class Routes {
   static const String singleFeaturedAppView = '/single-featured-app-view';
   static const String moneyPoolsView = '/money-pools-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
-  static const String startUpLogicView = '/start-up-logic-view';
+  static const String startUpLogicView = '/';
   static const String searchView = '/search-view';
   static const String transferFundsAmountView = '/transfer-funds-amount-view';
   static const String disburseMoneyPoolView = '/disburse-money-pool-view';

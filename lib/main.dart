@@ -18,7 +18,7 @@ void main() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
     // will remove the leading # in the URL
-    setPathUrlStrategy();
+    setHashUrlStrategy();
     setupLocator();
     setupBottomSheetUi();
     Logger.level = Level.verbose;

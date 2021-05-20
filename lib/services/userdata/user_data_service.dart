@@ -274,10 +274,16 @@ class UserDataService {
   }
 
   // pause the listener
-  void pauseTransferDataListener(
-      {required MoneyTransferQueryConfig config, void Function()? callback}) {
+  void pauseTransferDataListener({required MoneyTransferQueryConfig config}) {
     log.v("Remove transfer data listener with config: '$config'");
     _transfersSubscriptions[config]?.pause();
+  }
+
+  // cancel the listener
+  void cancelTransferDataListener({required MoneyTransferQueryConfig config}) {
+    log.v("Remove transfer data listener with config: '$config'");
+    _transfersSubscriptions[config]?.cancel();
+    _transfersSubscriptions[config] = null;
   }
 
   ///////////////////////////////////////////////

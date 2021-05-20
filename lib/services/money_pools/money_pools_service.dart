@@ -4,14 +4,11 @@
 
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
-import 'package:good_wallet/datamodels/money_pools/base/concise_money_pool_info.dart';
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
 import 'package:good_wallet/datamodels/money_pools/users/contributing_user.dart';
-import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:rxdart/subjects.dart';
@@ -19,15 +16,11 @@ import 'package:rxdart/subjects.dart';
 class MoneyPoolsService {
   final _firestoreApi = locator<FirestoreApi>();
 
-  final CollectionReference _moneyPoolPayoutsCollectionReference =
-      FirebaseFirestore.instance.collection("moneyPoolPayouts");
-  final CollectionReference _paymentsCollectionReference =
-      FirebaseFirestore.instance.collection("payments");
-
   // will also enable collection group queries for this collection
   final String contributionsKey = "moneyPoolContributions";
   final log = getLogger("money_pool_service.dart");
 
+  // map of list of money pools with money Pool id as key
   List<MoneyPool> moneyPools = [];
   StreamSubscription? _moneyPoolsStreamSubscription;
 
@@ -35,6 +28,11 @@ class MoneyPoolsService {
   StreamSubscription? _moneyPoolsInvitedToStreamSubscription;
   BehaviorSubject<int> numberInvitedMoneyPoolsSubject =
       BehaviorSubject<int>.seeded(0);
+
+  // list of money pool payouts and their subscriptions
+  // String will become the money pool id
+  Map<String, List<MoneyPoolPayout>> moneyPoolPayouts = {};
+  Map<String, StreamSubscription?> _moneyPoolPayoutsStreamSubscriptions = {};
 
   void init({required String uid}) {
     // This function is called in startup logic viewmodel
@@ -69,7 +67,7 @@ class MoneyPoolsService {
     // also updates local state!
     moneyPool.invitedUserIds.add(userInfo.uid);
     moneyPool.invitedUsers.add(userInfo);
-    _firestoreApi.updateMoneyPool(moneyPool);
+    await _firestoreApi.updateMoneyPool(moneyPool);
   }
 
   // adds listener to money pools the user is contributing to
@@ -88,8 +86,12 @@ class MoneyPoolsService {
       return completer.future;
     } else {
       log.w(
-          "Money pool stream already listened to, not adding another listener");
+          "Already listening to list of Money pools, not adding another listener");
     }
+  }
+
+  Stream<MoneyPool> getMoneyPoolStream({required String mpid}) {
+    return _firestoreApi.getMoneyPoolStream(mpid: mpid);
   }
 
   Future<MoneyPool> createAndReturnMoneyPool({required MoneyPool moneyPool}) {
@@ -154,21 +156,36 @@ class MoneyPoolsService {
     await _firestoreApi.deleteMoneyPool(mpid);
   }
 
-  // returns list of money pool payouts
-  // likely there will be none or little because
-  // probably usually the money pool is deleted after disbursement
-  Future<List<MoneyPoolPayout>> getMoneyPoolPayouts(String mpid) async {
-    List<MoneyPoolPayout> returnList = [];
-    QuerySnapshot snapshot = await _moneyPoolPayoutsCollectionReference
-        .where("moneyPool.moneyPoolId", isEqualTo: mpid)
-        .get();
-    if (snapshot.docs.isNotEmpty) {
-      returnList = snapshot.docs
-          .map((element) => MoneyPoolPayout.fromJson(element.data()))
-          .toList();
+  // listen to money pool payouts
+  Future<void>? addMoneyPoolPayoutListener({required String mpid}) async {
+    if (_moneyPoolPayoutsStreamSubscriptions[mpid] == null) {
+      var completer = Completer<void>();
+      _moneyPoolPayoutsStreamSubscriptions[mpid] = _firestoreApi
+          .getMoneyPoolPayoutsStream(mpid: mpid)
+          .listen((snapshot) {
+        moneyPoolPayouts[mpid] = snapshot;
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+        log.v("Listened to ${moneyPoolPayouts[mpid]!.length} moneyPoolPayouts");
+      });
+      return completer.future;
+    } else {
+      log.w(
+          "Money pool payout stream already listened to, not adding another listener");
     }
-    log.i("Fetched ${returnList.length} money pool payout documents");
-    return returnList;
+  }
+
+  // Get transfers for config. Using this function makes only sense
+  // if a listener has been added with addTransferDataListener, seebe low
+  List<MoneyPoolPayout> getMoneyPoolPayouts({required String mpid}) {
+    if (!moneyPoolPayouts.containsKey(mpid)) {
+      log.w(
+          "Did not find any payouts for money pool with id $mpid. Please add a listener with 'addMoneyPoolPayoutListener()'. Returning empty list");
+      return [];
+    } else {
+      return moneyPoolPayouts[mpid]!;
+    }
   }
 
   // adds payout data to firestore which will trigger a cloud function
@@ -177,33 +194,18 @@ class MoneyPoolsService {
   // mainly for "read" purposes!
   Future submitMoneyPoolPayout(MoneyPoolPayout data) async {
     try {
-      DocumentReference docRef = _moneyPoolPayoutsCollectionReference.doc();
-      var newData = data.copyWith(payoutId: docRef.id);
-      await docRef.set(newData.toJson());
-
-      // Push each money pool payout transfer to payments collection
-      List<MoneyTransfer> moneyTransfers = [];
-      data.transfersDetails.forEach((element) {
-        moneyTransfers.add(
-          MoneyTransfer.moneyPoolPayoutTransfer(
-              transferDetails: element,
-              moneyPoolInfo: ConciseMoneyPoolInfo(
-                  moneyPoolId: data.moneyPool.moneyPoolId,
-                  name: data.moneyPool.name,
-                  total: data.moneyPool.total),
-              payoutId: docRef.id,
-              createdAt: FieldValue.serverTimestamp()),
-        );
-      });
-      moneyTransfers.forEach((element) {
-        DocumentReference docRef = _paymentsCollectionReference.doc();
-        var newElement = element.copyWith(transferId: docRef.id);
-        docRef.set(newElement.toJson());
-      });
+      await _firestoreApi.createMoneyPoolPayout(payout: data);
     } catch (e) {
       log.e("Error when pushing data to firestore: ${e.toString()}");
       rethrow;
     }
+  }
+
+  // pause the listener
+  void cancelMoneyPoolPayoutListener({required String mpid}) {
+    log.v("Pause transfer data listener with config: '$mpid'");
+    _moneyPoolPayoutsStreamSubscriptions[mpid]?.cancel();
+    _moneyPoolPayoutsStreamSubscriptions[mpid] = null;
   }
 
   void clearData() {
@@ -211,8 +213,15 @@ class MoneyPoolsService {
     moneyPoolsInvitedTo = [];
     _moneyPoolsStreamSubscription?.cancel();
     _moneyPoolsStreamSubscription = null;
+
     _moneyPoolsInvitedToStreamSubscription?.cancel();
     _moneyPoolsInvitedToStreamSubscription = null;
+
+    _moneyPoolPayoutsStreamSubscriptions.forEach((key, value) {
+      value?.cancel();
+    });
+    _moneyPoolPayoutsStreamSubscriptions.clear();
+
     log.i("Cleared lists of money pools");
   }
 }

@@ -30,38 +30,44 @@ class SingleMoneyPoolViewModel extends BaseModel {
 
   final log = getLogger("single_money_pool_viewmodel.dart");
 
-  List<MoneyPoolPayout> payouts = [];
-
-  MoneyTransferQueryConfig? _queryConfig;
+  String _moneyPoolId = "";
+  List<MoneyPoolPayout> get payouts =>
+      _moneyPoolService!.getMoneyPoolPayouts(mpid: _moneyPoolId);
 
   // get latest money pool contributions for send money bottom sheet view
   // Need to add listeners otherwise this will be empty
-  // List<MoneyTransfer> get latestContributions =>
-  //     _userDataService!.getTransfers(config: _queryConfig);
-  Stream<List<MoneyTransfer>> get latestContributions =>
-      _userDataService!.getTransferDataStream(
-          config: _queryConfig ??
-              MoneyTransferQueryConfig(type: TransferType.Invalid));
+  MoneyTransferQueryConfig _queryConfig =
+      MoneyTransferQueryConfig(type: TransferType.Invalid);
+  List<MoneyTransfer> get latestContributions =>
+      _userDataService!.getTransfers(config: _queryConfig);
 
   MoneyPool moneyPool;
-
   SingleMoneyPoolViewModel({required this.moneyPool}) {
+    _moneyPoolId = moneyPool.moneyPoolId;
     _queryConfig = MoneyTransferQueryConfig(
       type: TransferType.MoneyPoolContributionReceived,
-      isEqualToFilter: {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
+      isEqualToFilter: {"moneyPoolInfo.moneyPoolId": _moneyPoolId},
     );
-    // _userDataService!.addTransferDataListener(
-    //     config: _queryConfig, callback: () => notifyListeners());
   }
 
-  Future fetchPayouts([bool force = false]) async {
+  Future listenToData() async {
     setBusy(true);
-    if (payouts.isEmpty || force) {
-      payouts =
-          await _moneyPoolService!.getMoneyPoolPayouts(moneyPool.moneyPoolId);
-    }
-    // if not done listening the listener callback from the constructor
-    // will set the model business false;
+    await _userDataService!.addTransferDataListener(config: _queryConfig);
+    await _moneyPoolService!.addMoneyPoolPayoutListener(mpid: _moneyPoolId);
+    // set up listener to this very money pool and update view when money pool changes
+    _moneyPoolService!.getMoneyPoolStream(mpid: _moneyPoolId).listen((event) {
+      moneyPool = event;
+      notifyListeners();
+    }).onError((e) async {
+      log.wtf(
+          "Something went wrong, probably the money pool has been deleted!");
+      if (e is FirestoreApiException) {
+        await _dialogService!
+            .showDialog(title: "Error", description: e.prettyDetails);
+      }
+    });
+    // ^ Could show dialog?
+
     setBusy(false);
   }
 
@@ -128,9 +134,9 @@ class SingleMoneyPoolViewModel extends BaseModel {
           type: TransferType.MoneyPoolContribution,
           recipientInfo: recipientInfo),
     );
-    if (result == "contributed") {
-      await updateMoneyPool();
-    }
+    // if (result == "contributed") {
+    //   await updateMoneyPool();
+    // }
   }
 
   // Fetch and thus update money pool e.g. after contribution has been made
@@ -151,9 +157,6 @@ class SingleMoneyPoolViewModel extends BaseModel {
         rethrow;
       }
     }
-
-    // can already be done for transfer_view
-    await fetchPayouts(true);
     setBusy(false);
   }
 
@@ -181,9 +184,16 @@ class SingleMoneyPoolViewModel extends BaseModel {
     var result = await _navigationService!.navigateTo(
         Routes.disburseMoneyPoolView,
         arguments: DisburseMoneyPoolViewArguments(moneyPool: moneyPool));
-    if (result == "paidOut") {
-      // could have a fancy animation here
-      await updateMoneyPool();
-    }
+    // if (result == "paidOut") {
+    //   // could have a fancy animation here
+    //   await updateMoneyPool();
+    // }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _moneyPoolService!.cancelMoneyPoolPayoutListener(mpid: _moneyPoolId);
+    _userDataService!.cancelTransferDataListener(config: _queryConfig);
   }
 }

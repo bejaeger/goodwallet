@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
@@ -7,8 +6,6 @@ import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/shared/money_transfers/transfer_history_entry_style.dart';
 
 import 'package:good_wallet/utils/logger.dart';
-
-final _log = getLogger("money_transfer_style_helpers.dart");
 
 // Get style for entry in recent activities / transfer history view
 TransferHistoryEntryStyle getTransactionsCorrespondingToTypeHistoryEntryStyle(
