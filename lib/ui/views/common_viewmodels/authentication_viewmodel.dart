@@ -4,9 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/enums/authentication_method.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
-import 'package:good_wallet/exceptions/user_data_service_exception.dart';
+import 'package:good_wallet/exceptions/user_service_exception.dart';
 import 'package:good_wallet/services/money_pools/money_pools_service.dart';
-import 'package:good_wallet/services/userdata/user_data_service.dart';
+import 'package:good_wallet/services/user/user_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -14,8 +14,8 @@ import 'package:good_wallet/utils/logger.dart';
 
 abstract class AuthenticationViewModel extends FormViewModel {
   final NavigationService? navigationService = locator<NavigationService>();
-  final UserDataService? _userDataService = locator<UserDataService>();
-  final MoneyPoolsService? _moneyPoolService = locator<MoneyPoolsService>();
+  final UserService? _userService = locator<UserService>();
+  final MoneyPoolsService? _moneyPoolsService = locator<MoneyPoolsService>();
   final String successRoute;
   AuthenticationViewModel({required this.successRoute});
   final log = getLogger("authentication_viewmodel.dart");
@@ -33,12 +33,12 @@ abstract class AuthenticationViewModel extends FormViewModel {
 
       try {
         await (runBusyFuture(initializeUser(result.user!)));
-        _moneyPoolService!.init(uid: result.user!.uid);
+        _moneyPoolsService!.init(uid: result.user!.uid);
       } catch (e) {
         log.e("Failed initializing user with error: ${e.toString()}");
         String publicFacingMessage =
             "Authentication successful but initiliazation failed due to an internal problem. Please, try again later or contact our support.";
-        if (e is UserDataServiceException)
+        if (e is UserServiceException)
           setValidationMessage(e.prettyDetails ?? publicFacingMessage);
         if (e is FirestoreApiException)
           setValidationMessage(e.prettyDetails ?? publicFacingMessage);
@@ -58,7 +58,7 @@ abstract class AuthenticationViewModel extends FormViewModel {
   }
 
   Future initializeUser(User user) async {
-    return await _userDataService!.initializeCurrentUser(user);
+    return await _userService!.initializeCurrentUser(user);
   }
 
   // needs to be overrriden!

@@ -7,7 +7,7 @@ import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
-import 'package:good_wallet/services/userdata/user_data_service.dart';
+import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -24,7 +24,7 @@ class SendMoneyViewModel extends BaseModel {
   final optionalMessageController = TextEditingController();
   final FirestorePaymentDataService? _firestorePaymentDataService =
       locator<FirestorePaymentDataService>();
-  final UserDataService? _userDataService = locator<UserDataService>();
+  final UserService? _userService = locator<UserService>();
 
   final TextEditingController _userSelectionController =
       TextEditingController();
@@ -72,7 +72,7 @@ class SendMoneyViewModel extends BaseModel {
 
   void handlePaymentSuccess() async {
     print("INFO: Stripe payment successfull. Handling it");
-    _userDataService!.userStateSubject.listen((state) async {
+    _userService!.userStateSubject.listen((state) async {
       if (state == UserStatus.SignedIn) {
         bool result = await _firestorePaymentDataService!
             .handlePaymentSuccess(currentUser.uid);
@@ -92,7 +92,7 @@ class SendMoneyViewModel extends BaseModel {
 
   void handlePaymentFailure() async {
     print("INFO: Stripe payment cancelled. Handling it");
-    _userDataService!.userStateSubject.listen((state) async {
+    _userService!.userStateSubject.listen((state) async {
       if (state == UserStatus.SignedIn) {
         await _firestorePaymentDataService!
             .handlePaymentFailure(currentUser.uid);

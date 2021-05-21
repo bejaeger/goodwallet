@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/enums/transfer_status.dart';
 
+// Probably lots of this will be moved to cloud functions?
+
 class FirestorePaymentDataService {
   final CollectionReference _paymentsCollectionReference =
       FirebaseFirestore.instance.collection("payments");

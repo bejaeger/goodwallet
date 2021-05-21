@@ -2,24 +2,15 @@
 
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/causes/concise_info/concise_project_info.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
-import 'package:good_wallet/enums/causes_type.dart';
-import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/utils/logger.dart';
 
 class ProjectsService {
   final _firestoreApi = locator<FirestoreApi>();
-
-  final GlobalGivingAPIService? _globalGivingAPIservice =
-      locator<GlobalGivingAPIService>();
-  final CollectionReference _causesCollectionReference =
-      FirebaseFirestore.instance.collection("causes");
 
   final log = getLogger("projects_service.dart");
 
@@ -33,9 +24,9 @@ class ProjectsService {
   // allows to wait for the first emission of the stream via the completer
   Future<void>? listenToProjects({required String uid}) async {
     if (_projectsStreamSubscription == null) {
+      final snapshot = _firestoreApi.getProjectsStream(uid: uid);
       var completer = Completer<void>();
-      _projectsStreamSubscription =
-          _firestoreApi.getProjectsStream(uid: uid).listen((snapshot) {
+      _projectsStreamSubscription = snapshot.listen((snapshot) {
         projects = snapshot;
         if (!completer.isCompleted) {
           completer.complete();

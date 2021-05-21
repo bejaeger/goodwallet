@@ -4,14 +4,15 @@ import 'package:flutter/foundation.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
-import 'package:good_wallet/services/userdata/user_data_service.dart';
+import 'package:good_wallet/managers/transfers_manager.dart';
+import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 abstract class TransferBaseViewModel extends BaseModel {
-  final UserDataService? _userDataService = locator<UserDataService>();
+  final TransfersManager? _transfersManager = locator<TransfersManager>();
   final DialogService? _dialogService = locator<DialogService>();
 
   Future showMoneyTransferInfoDialog(MoneyTransfer transfer) async {
@@ -32,6 +33,6 @@ abstract class TransferBaseViewModel extends BaseModel {
   // helper function that figures out transaction
   // type based on transaction data
   TransferType inferTransactionType(MoneyTransfer transfer) {
-    return _userDataService!.inferTransactionType(transfer: transfer);
+    return _transfersManager!.inferTransactionType(transfer: transfer);
   }
 }

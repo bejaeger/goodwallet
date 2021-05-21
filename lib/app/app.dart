@@ -1,13 +1,13 @@
 import 'package:good_wallet/apis/firestore_api.dart';
-import 'package:good_wallet/services/causes/causes_data_service.dart';
-import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
+import 'package:good_wallet/apis/global_giving_api.dart';
+import 'package:good_wallet/managers/transfers_manager.dart';
 import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
 import 'package:good_wallet/services/payments/stripe_payment_service.dart';
 import 'package:good_wallet/services/projects/projects_service.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
-import 'package:good_wallet/services/userdata/user_data_service.dart';
+import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/ui/views/featured_applications/single_featured_app_view.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/home/welcome_view.dart';
@@ -81,7 +81,7 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(classType: BottomSheetService),
     LazySingleton(classType: FirestorePaymentDataService),
     LazySingleton(classType: StripePaymentService),
-    LazySingleton(classType: GlobalGivingAPIService),
+    LazySingleton(classType: GlobalGivingApi),
 
     // TODO: Check whether this is deprecated
     LazySingleton(classType: NavigationBarViewModel),
@@ -89,26 +89,22 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(classType: FirebaseAuthenticationService),
     LazySingleton(classType: ProjectsService),
     LazySingleton(classType: QRCodeService),
-    LazySingleton(classType: CausesDataService),
 
     // View Models
     LazySingleton(classType: MoneyPoolsViewModel),
     LazySingleton(classType: WalletViewModel),
 
-    // We don't really need local storage atm! (maybe for offline support at some point)
+    // We don't really need local storage atm! (will need this for local search history for example)
     // Presolve(
     //   classType: LocalStorageService,
     //   presolveUsing: LocalStorageService.getInstance,
     // ),
 
+    // The order is important in the following
     Singleton(classType: FirestoreApi),
     Singleton(classType: DummyPaymentService),
-    Singleton(classType: UserDataService),
-
-    // don't register the auth service lazily because we want it
-    // to be initialized at the start of the app. This needs
-    // to happen after all the services that are used inside
-    // authentification service are registered.
+    Singleton(classType: UserService),
+    Singleton(classType: TransfersManager),
   ],
 )
 class AppSetup {

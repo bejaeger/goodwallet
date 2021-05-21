@@ -11,15 +11,15 @@ import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../apis/firestore_api.dart';
-import '../services/causes/causes_data_service.dart';
-import '../services/globalgiving/global_giving_api_service.dart';
+import '../apis/global_giving_api.dart';
+import '../managers/transfers_manager.dart';
 import '../services/money_pools/money_pools_service.dart';
 import '../services/payments/dummy_payment_service.dart';
 import '../services/payments/firestore_payment_data_service.dart';
 import '../services/payments/stripe_payment_service.dart';
 import '../services/projects/projects_service.dart';
 import '../services/qrcode/qrcode_service.dart';
-import '../services/userdata/user_data_service.dart';
+import '../services/user/user_service.dart';
 import '../ui/views/layout/navigation_bar_viewmodel.dart';
 import '../ui/views/money_pools/money_pools_viewmodel.dart';
 import '../ui/views/wallet/wallet_viewmodel.dart';
@@ -33,16 +33,16 @@ void setupLocator() {
   locator.registerLazySingleton(() => BottomSheetService());
   locator.registerLazySingleton(() => FirestorePaymentDataService());
   locator.registerLazySingleton(() => StripePaymentService());
-  locator.registerLazySingleton(() => GlobalGivingAPIService());
+  locator.registerLazySingleton(() => GlobalGivingApi());
   locator.registerLazySingleton(() => NavigationBarViewModel());
   locator.registerLazySingleton(() => MoneyPoolsService());
   locator.registerLazySingleton(() => FirebaseAuthenticationService());
   locator.registerLazySingleton(() => ProjectsService());
   locator.registerLazySingleton(() => QRCodeService());
-  locator.registerLazySingleton(() => CausesDataService());
   locator.registerLazySingleton(() => MoneyPoolsViewModel());
   locator.registerLazySingleton(() => WalletViewModel());
   locator.registerSingleton(FirestoreApi());
   locator.registerSingleton(DummyPaymentService());
-  locator.registerSingleton(UserDataService());
+  locator.registerSingleton(UserService());
+  locator.registerSingleton(TransfersManager());
 }

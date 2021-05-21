@@ -22,7 +22,7 @@ import 'package:stacked_services/stacked_services.dart';
 class DisburseMoneyPoolViewModel extends BaseModel {
   MoneyPool moneyPool;
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
-  final MoneyPoolsService? _moneyPoolService = locator<MoneyPoolsService>();
+  final MoneyPoolsService? _moneyPoolsService = locator<MoneyPoolsService>();
   final NavigationService? _navigationService = locator<NavigationService>();
   // Available balance
   late num availableBalance;
@@ -166,7 +166,7 @@ class DisburseMoneyPoolViewModel extends BaseModel {
         // 4 & 5
         // TODO: This could also provide a return value to be sure things have been dealt with
         setBusy(true);
-        await _moneyPoolService!.submitMoneyPoolPayout(newData);
+        await _moneyPoolsService!.submitMoneyPoolPayout(newData);
         setBusy(false);
 
         if (newData.deleteMoneyPool == false) {
@@ -175,7 +175,7 @@ class DisburseMoneyPoolViewModel extends BaseModel {
         } else {
           // delete money pool and navigate back
           setBusy(true);
-          await _moneyPoolService!.deleteMoneyPool(moneyPool.moneyPoolId);
+          await _moneyPoolsService!.deleteMoneyPool(moneyPool.moneyPoolId);
           _navigationService!.clearTillFirstAndShow(
               Routes.layoutTemplateViewMobile,
               arguments: LayoutTemplateViewMobileArguments(

@@ -5,7 +5,7 @@ import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/authentication_method.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
-import 'package:good_wallet/services/userdata/user_data_service.dart';
+import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/authentication_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_firebase_auth/src/firebase_authentication_service.dart';
@@ -21,7 +21,7 @@ class CreateAccountViewModel extends AuthenticationViewModel {
   final FirebaseAuthenticationService? _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
   final log = getLogger("create_account_viewmodel.dart");
-  final UserDataService? _userDataService = locator<UserDataService>();
+  final UserService? _userService = locator<UserService>();
 
   @override
   Future<FirebaseAuthenticationResult> runAuthentication(
@@ -40,7 +40,7 @@ class CreateAccountViewModel extends AuthenticationViewModel {
         // create user in data bank
         try {
           final user = result.user!;
-          await _userDataService!.createUser(
+          await _userService!.createUser(
             user: User(
                 uid: user.uid,
                 fullName: fullNameValue ?? (user.displayName ?? ""),

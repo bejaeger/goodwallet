@@ -4,31 +4,24 @@
 // - initializing current User (id, e-mail, fullname, wallet balances)
 // - exposing currentUser
 // - exposing stream of statistics
-// - allows to retrieve any transfer document
-
-// TODO: Get rid of FirebaseAuth dependence or make it such
-// that it can be mocked out in unit tests
-// Potentially add authStateChange to FirebaseAuthenticationService
 
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
-import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
-import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/enums/user_status.dart';
-import 'package:good_wallet/exceptions/user_data_service_exception.dart';
+import 'package:good_wallet/exceptions/user_service_exception.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:good_wallet/utils/string_utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 
-class UserDataService {
-  final log = getLogger("user_data_service.dart");
+class UserService {
+  final log = getLogger("user_service.dart");
 
   final _firestoreApi = locator<FirestoreApi>();
   final FirebaseAuthenticationService? _firebaseAuthenticationService =
@@ -59,7 +52,7 @@ class UserDataService {
 
   StreamSubscription? userStreamSubscription;
   // Argument implemented for testing purposes
-  UserDataService({bool startListeningToAuthStateChanges = true}) {
+  UserService({bool startListeningToAuthStateChanges = true}) {
     if (startListeningToAuthStateChanges) {
       listenToAuthStateChanges();
     }
@@ -122,7 +115,7 @@ class UserDataService {
         log.wtf(
             "This should never happen and is likely due to an inconsistency in the backend: ${e.toString()}");
         _changeUserStatus(UserStatus.SignedInNotInitialized);
-        throw UserDataServiceException(
+        throw UserServiceException(
             message: "Initializing current user failed",
             devDetails: e.toString());
       }
@@ -173,7 +166,7 @@ class UserDataService {
       return newUser;
     } catch (e) {
       log.e("Error in createUser(): ${e.toString()}");
-      throw UserDataServiceException(
+      throw UserServiceException(
         message: "Creating user data failed with message",
         devDetails: e.toString(),
         prettyDetails:
@@ -194,155 +187,6 @@ class UserDataService {
           .listen((stats) => userStatsSubject.add(stats));
     } catch (e) {
       rethrow;
-    }
-  }
-
-  // Get query for transaction with given direction.
-  // optionally set the maximum number of documents retrieved
-  Stream<List<MoneyTransfer>> getTransferDataStream(
-      {required MoneyTransferQueryConfig config}) {
-    // check arguments:
-    if (!isValidFirestoreQueryConfig(config: config)) {
-      throw UserDataServiceException(
-          message:
-              "The provided firestore query filter: '$config.isEqualToFilter' is not supported at the moment!");
-    }
-    return _firestoreApi.getTransferDataStream(
-        config: config, uid: currentUser.uid);
-  }
-
-  // Get transfers for config. Using this function makes only sense
-  // if a listener has been added with addTransferDataListener, seebe low
-  List<MoneyTransfer> getTransfers({required MoneyTransferQueryConfig config}) {
-    if (config.type == TransferType.Invalid) {
-      log.w(
-          "You tried to retrieve list of money transfers of invalid type. Returning empty list");
-      return [];
-    }
-
-    if (!latestTransfers.containsKey(config)) {
-      log.w(
-          "Did not find any transfers for config $config. Please add a listener with 'addTransferDataListener()'. Returning empty list");
-      return [];
-    } else {
-      return latestTransfers[config]!;
-    }
-  }
-
-  // More generic class to listen to firestore collections for updates.
-  // callback can be used to provide notifyListeners from the viewmodel
-  // to the service
-  Future<void>? addTransferDataListener(
-      {required MoneyTransferQueryConfig config}) {
-    // TODO: Support for type MoneyPoolPayout
-    if (config.type == TransferType.MoneyPoolPayout) {
-      log.e(
-          "Can't listen to money pool payouts at the moment. NOT YET IMPLEMENTED");
-    } else if (_transfersSubscriptions.containsKey(config)) {
-      log.v(
-          "Stream with config '$config' already listened to, resuming it in case it has been paused!");
-      _transfersSubscriptions[config]?.resume();
-    } else {
-      log.i("Setting up listener for transfers with config $config.");
-      Stream<List<MoneyTransfer>> snapshot;
-      try {
-        snapshot = getTransferDataStream(config: config);
-
-        // listen to combined stream and add transactions to controller
-        var completer = Completer<void>();
-        _transfersSubscriptions[config] = snapshot.listen(
-          (transactions) {
-            // Option to make the list unique!
-            if (config.makeUniqueRecipient != null) {
-              latestTransfers[config] =
-                  getMoneyTransfersWithUniqueSender(transactions);
-            } else {
-              latestTransfers[config] = transactions;
-            }
-            if (!completer.isCompleted) {
-              completer.complete();
-            }
-            log.v(
-                "Listened to ${transactions.length} transfers with config $config. Max returns were specified with ${config.maxNumberReturns}");
-          },
-        );
-        return completer.future;
-      } catch (e) {
-        rethrow;
-      }
-    }
-  }
-
-  // pause the listener
-  void pauseTransferDataListener({required MoneyTransferQueryConfig config}) {
-    log.v("Remove transfer data listener with config: '$config'");
-    _transfersSubscriptions[config]?.pause();
-  }
-
-  // cancel the listener
-  void cancelTransferDataListener({required MoneyTransferQueryConfig config}) {
-    log.v("Remove transfer data listener with config: '$config'");
-    _transfersSubscriptions[config]?.cancel();
-    _transfersSubscriptions[config] = null;
-  }
-
-  ///////////////////////////////////////////////
-  /// Helpers
-
-  /// Return list with removed duplicates
-  List<MoneyTransfer> getMoneyTransfersWithUniqueSender(
-      List<MoneyTransfer> transfer) {
-    List<MoneyTransfer> returnTransfers = [];
-    transfer.forEach((element) {
-      if (!returnTransfers.any((returnElement) =>
-          returnElement.transferDetails.recipientId ==
-          element.transferDetails.recipientId)) returnTransfers.add(element);
-    });
-    return returnTransfers;
-  }
-
-  bool isValidFirestoreQueryConfig({required MoneyTransferQueryConfig config}) {
-    if (config.isEqualToFilter != null && config.isEqualToFilter!.length > 1)
-      return false;
-    if (config.type == TransferType.Invalid) return false;
-    return true;
-  }
-
-  // helper function that figures out transaction
-  // type based on transaction data
-  TransferType inferTransactionType({required MoneyTransfer transfer}) {
-    if (transfer is MoneyPoolPayout) {
-      return TransferType.MoneyPoolPayout;
-    } else if (transfer is MoneyTransfer) {
-      TransferType direction = transfer.maybeMap(
-        // peer 2 peer transaction could go in 3 directions
-        peer2peer: (value) {
-          if (value.transferDetails.senderId ==
-              value.transferDetails.recipientId) {
-            return TransferType.Commitment;
-          }
-          if (value.transferDetails.senderId == currentUser.uid) {
-            return TransferType.Peer2PeerSent;
-          }
-          if (value.transferDetails.recipientId == currentUser.uid) {
-            return TransferType.Peer2PeerReceived;
-          }
-          log.wtf(
-              "Found unknown type of transaction data. This should never happen, please check your code!");
-          return TransferType.Invalid;
-        },
-        donation: (value) => TransferType.Donation,
-        moneyPoolContribution: (value) => TransferType.MoneyPoolContribution,
-        moneyPoolPayoutTransfer: (value) =>
-            TransferType.MoneyPoolPayoutTransfer,
-        orElse: () => TransferType.Invalid,
-      );
-      log.v("Inferred transaction direction: $direction");
-      return direction;
-    } else {
-      log.wtf(
-          "Found unknown type of transaction data. This should never happen, please check your code!");
-      return TransferType.Invalid;
     }
   }
 

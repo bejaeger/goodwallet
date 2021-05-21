@@ -156,12 +156,6 @@ class FirestoreApi {
           .where("transferDetails.senderId", isEqualTo: uid)
           .where("type", isEqualTo: "Donation")
           .orderBy("createdAt", descending: true);
-    } else if (config.type == TransferType.MoneyPoolPayout) {
-      // This is querying for the full payout documents holding
-      // all MoneyPoolPayoutTransfers. Look in moneyPoolPayouts collection
-      query = _moneyPoolPayoutsCollection
-          .where("paidOutUserIds", arrayContains: uid)
-          .orderBy("createdAt", descending: true);
     } else if (config.type == TransferType.MoneyPoolPayoutTransfer) {
       query = _paymentsCollection
           .where("transferDetails.recipientId", isEqualTo: uid)
@@ -197,7 +191,10 @@ class FirestoreApi {
       }
     } else {
       log.e("Could not find stream corresponding to provided config '$config'");
-      throw Exception("Exception occured. TODO: Add proper Exception here!");
+      throw FirestoreApiException(
+          message: "Could not find stream corresponding to config $config",
+          devDetails:
+              "You likely provided a type that is not referring to a MoneyTransfer. Maybe a MoneyPoolPayout document? Then use the 'getMoneyPoolPayoutsStream()' function please of the firestore_api.");
     }
 
     if (config.maxNumberReturns != null)
@@ -282,6 +279,7 @@ class FirestoreApi {
     }
   }
 
+  // -> Might become a cloud function?
   // This will add the money pool payout document and also
   // create single money transfer documents. This makes it easy
   // to bookkeep things

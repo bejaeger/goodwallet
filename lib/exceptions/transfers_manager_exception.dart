@@ -1,9 +1,9 @@
-class UserDataServiceException implements Exception {
+class TransfersManagerException implements Exception {
   final String message;
   final String? devDetails;
   final String? prettyDetails;
 
-  UserDataServiceException({
+  TransfersManagerException({
     required this.message,
     this.devDetails,
     this.prettyDetails,
@@ -11,6 +11,6 @@ class UserDataServiceException implements Exception {
 
   @override
   String toString() {
-    return 'UserDataServiceException (in-house exception): $message ${devDetails != null ? '- $devDetails' : ''}';
+    return 'TransfersManagerException (in-house exception): $message ${devDetails != null ? '- $devDetails' : ''}';
   }
 }
