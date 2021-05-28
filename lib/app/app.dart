@@ -1,6 +1,6 @@
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/apis/global_giving_api.dart';
-import 'package:good_wallet/managers/transfers_manager.dart';
+import 'package:good_wallet/services/transfers_history/transfers_history_service.dart';
 import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/payments/firestore_payment_data_service.dart';
@@ -104,7 +104,7 @@ import 'package:stacked_services/stacked_services.dart';
     Singleton(classType: FirestoreApi),
     Singleton(classType: DummyPaymentService),
     Singleton(classType: UserService),
-    Singleton(classType: TransfersManager),
+    Singleton(classType: TransfersHistoryService),
   ],
 )
 class AppSetup {

@@ -2,10 +2,9 @@
 // Serves as Intermediary between Firestore and Viewmodels
 
 // Functionalities
+// - Add listeners to transfer documents that satisfy criteria provided in config
+// - Return list of transfers according to config
 // - Retrieve Streams of transfer documents
-// - Add listeners to transfer documents
-
-// Could potentially rename again into a "service"
 
 import 'dart:async';
 import 'package:good_wallet/apis/firestore_api.dart';
@@ -19,7 +18,7 @@ import 'package:good_wallet/exceptions/transfers_manager_exception.dart';
 import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/utils/logger.dart';
 
-class TransfersManager {
+class TransfersHistoryService {
   final log = getLogger("transfers_manager.dart");
 
   final _firestoreApi = locator<FirestoreApi>();
@@ -46,11 +45,6 @@ class TransfersManager {
   Stream<List<MoneyTransfer>> getTransferDataStream(
       {required MoneyTransferQueryConfig config}) {
     // check arguments:
-    if (!isValidFirestoreQueryConfig(config: config)) {
-      throw TransfersManagerException(
-          message:
-              "The provided firestore query filter: '$config.isEqualToFilter' is not supported at the moment!");
-    }
     return _firestoreApi.getTransferDataStream(
         config: config, uid: currentUser.uid);
   }
@@ -58,6 +52,8 @@ class TransfersManager {
   // Get transfers for config. Using this function makes only sense
   // if a listener has been added with addTransferDataListener, seebe low
   List<MoneyTransfer> getTransfers({required MoneyTransferQueryConfig config}) {
+    config = returnMassagedConfig(config);
+
     if (config.type == TransferType.Invalid) {
       log.w(
           "You tried to retrieve list of money transfers of invalid type. Returning empty list");
@@ -78,6 +74,8 @@ class TransfersManager {
   // to the service
   Future<void>? addTransferDataListener(
       {required MoneyTransferQueryConfig config}) {
+    config = returnMassagedConfig(config);
+
     if (_transfersSubscriptions.containsKey(config)) {
       log.v(
           "Stream with config '$config' already listened to, resuming it in case it has been paused!");
@@ -111,6 +109,30 @@ class TransfersManager {
         rethrow;
       }
     }
+  }
+
+  // modify transfer config if types are used just to avoid the need
+  // to provide the userId already in the viewmodels
+  // This applies to the following TransferTypes:
+  // User2UserSent
+  // User2UserReceived
+  // User2Project
+  MoneyTransferQueryConfig returnMassagedConfig(
+      MoneyTransferQueryConfig config) {
+    MoneyTransferQueryConfig? newConfig;
+    if (config.type == TransferType.User2UserSent) {
+      newConfig = config.copyWith(
+          type: TransferType.User2User, senderId: currentUser.uid);
+    }
+    if (config.type == TransferType.User2UserReceived) {
+      newConfig = config.copyWith(
+          type: TransferType.User2User, recipientId: currentUser.uid);
+    }
+    if (config.type == TransferType.User2ProjectSent) {
+      newConfig = config.copyWith(
+          type: TransferType.User2Project, senderId: currentUser.uid);
+    }
+    return newConfig ?? config;
   }
 
   // pause the listener
@@ -184,51 +206,6 @@ class TransfersManager {
     return returnTransfers;
   }
 
-  bool isValidFirestoreQueryConfig({required MoneyTransferQueryConfig config}) {
-    if (config.isEqualToFilter != null && config.isEqualToFilter!.length > 1)
-      return false;
-    if (config.type == TransferType.Invalid) return false;
-    return true;
-  }
-
-  // helper function that figures out transaction
-  // type based on transaction data
-  TransferType inferTransactionType({required MoneyTransfer transfer}) {
-    if (transfer is MoneyPoolPayout) {
-      return TransferType.MoneyPoolPayout;
-    } else if (transfer is MoneyTransfer) {
-      TransferType direction = transfer.maybeMap(
-        // peer 2 peer transaction could go in 3 directions
-        peer2peer: (value) {
-          if (value.transferDetails.senderId ==
-              value.transferDetails.recipientId) {
-            return TransferType.Commitment;
-          }
-          if (value.transferDetails.senderId == currentUser.uid) {
-            return TransferType.Peer2PeerSent;
-          }
-          if (value.transferDetails.recipientId == currentUser.uid) {
-            return TransferType.Peer2PeerReceived;
-          }
-          log.wtf(
-              "Found unknown type of transaction data. This should never happen, please check your code!");
-          return TransferType.Invalid;
-        },
-        donation: (value) => TransferType.Donation,
-        moneyPoolContribution: (value) => TransferType.MoneyPoolContribution,
-        moneyPoolPayoutTransfer: (value) =>
-            TransferType.MoneyPoolPayoutTransfer,
-        orElse: () => TransferType.Invalid,
-      );
-      log.v("Inferred transaction direction: $direction");
-      return direction;
-    } else {
-      log.wtf(
-          "Found unknown type of transaction data. This should never happen, please check your code!");
-      return TransferType.Invalid;
-    }
-  }
-
   //////////////////////////
   /// clean-up
   ///
@@ -244,6 +221,6 @@ class TransfersManager {
     });
     _transfersSubscriptions.clear();
 
-    log.i("Cleared lists of money pools");
+    log.i("Cleared lists of transfers");
   }
 }

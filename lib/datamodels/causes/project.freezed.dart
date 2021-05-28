@@ -22,7 +22,8 @@ class _$ProjectTearOff {
 
   _Project call(
       {required String name,
-      required String id,
+      @JsonKey(name: "id", toJson: Project._checkIfIdIsSet)
+          String id = "placeholder",
       required String area,
       required CauseType causeType,
       String? imageUrl,
@@ -59,8 +60,8 @@ const $Project = _$ProjectTearOff();
 
 /// @nodoc
 mixin _$Project {
-  String get name =>
-      throw _privateConstructorUsedError; // TODO: prepare toJson without id set properly as in MoneyTransfer!
+  String get name => throw _privateConstructorUsedError;
+  @JsonKey(name: "id", toJson: Project._checkIfIdIsSet)
   String get id => throw _privateConstructorUsedError;
   String get area => throw _privateConstructorUsedError;
   CauseType get causeType => throw _privateConstructorUsedError;
@@ -84,7 +85,7 @@ abstract class $ProjectCopyWith<$Res> {
       _$ProjectCopyWithImpl<$Res>;
   $Res call(
       {String name,
-      String id,
+      @JsonKey(name: "id", toJson: Project._checkIfIdIsSet) String id,
       String area,
       CauseType causeType,
       String? imageUrl,
@@ -193,7 +194,7 @@ abstract class _$ProjectCopyWith<$Res> implements $ProjectCopyWith<$Res> {
   @override
   $Res call(
       {String name,
-      String id,
+      @JsonKey(name: "id", toJson: Project._checkIfIdIsSet) String id,
       String area,
       CauseType causeType,
       String? imageUrl,
@@ -292,7 +293,8 @@ class __$ProjectCopyWithImpl<$Res> extends _$ProjectCopyWithImpl<$Res>
 class _$_Project implements _Project {
   _$_Project(
       {required this.name,
-      required this.id,
+      @JsonKey(name: "id", toJson: Project._checkIfIdIsSet)
+          this.id = "placeholder",
       required this.area,
       required this.causeType,
       this.imageUrl,
@@ -309,7 +311,8 @@ class _$_Project implements _Project {
 
   @override
   final String name;
-  @override // TODO: prepare toJson without id set properly as in MoneyTransfer!
+  @override
+  @JsonKey(name: "id", toJson: Project._checkIfIdIsSet)
   final String id;
   @override
   final String area;
@@ -407,7 +410,7 @@ class _$_Project implements _Project {
 abstract class _Project implements Project {
   factory _Project(
       {required String name,
-      required String id,
+      @JsonKey(name: "id", toJson: Project._checkIfIdIsSet) String id,
       required String area,
       required CauseType causeType,
       String? imageUrl,
@@ -423,7 +426,8 @@ abstract class _Project implements Project {
 
   @override
   String get name => throw _privateConstructorUsedError;
-  @override // TODO: prepare toJson without id set properly as in MoneyTransfer!
+  @override
+  @JsonKey(name: "id", toJson: Project._checkIfIdIsSet)
   String get id => throw _privateConstructorUsedError;
   @override
   String get area => throw _privateConstructorUsedError;

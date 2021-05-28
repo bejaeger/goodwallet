@@ -71,13 +71,13 @@ class TransferFundsAmountViewModel extends FormViewModel {
       notifyListeners();
     } else {
       amount = num.parse(amountValue!);
-      if (type == TransferType.PrepaidFund)
+      if (type == TransferType.User2OwnPrepaidFund)
         await handleTopUpPayment();
-      else if (type == TransferType.Peer2PeerSent) {
+      else if (type == TransferType.User2UserSent) {
         await handleTransfer(type: type);
-      } else if (type == TransferType.Donation) {
+      } else if (type == TransferType.User2Project) {
         await handleTransfer(type: type);
-      } else if (type == TransferType.MoneyPoolContribution) {
+      } else if (type == TransferType.User2MoneyPool) {
         await handleTransfer(type: type);
       } else {
         _snackbarService!.showSnackbar(
@@ -102,7 +102,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       log.i("Amount = ${double.parse(amountValue!)}  > 1000");
       setCustomValidationMessage(
           "Are you sure you want to top up as much as ${formatAmount(double.parse(amountValue!), true)}");
-    } else if (type == TransferType.Donation &&
+    } else if (type == TransferType.User2Project &&
         scaleAmountForStripe(double.parse(amountValue!)) >
             userStats.currentBalance) {
       setCustomValidationMessage(
@@ -115,7 +115,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
   // Will replace the current view with the one corresponding to the
   // selected payment method
   Future changePaymentMethod() async {
-    if (type == TransferType.MoneyPoolContribution) {
+    if (type == TransferType.User2MoneyPool) {
       SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
           title: "Select Payment Method",
           description: "OR add new payment method +",
@@ -140,7 +140,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       }
     }
 
-    if (type == TransferType.Donation) {
+    if (type == TransferType.User2Project) {
       SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
           title: "Select Payment Method",
           description: "OR add new payment method +",
@@ -211,7 +211,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       }
       await _showAndAwaitSnackbar("Success! You are great :)");
 
-      if (type == TransferType.MoneyPoolContribution) {
+      if (type == TransferType.User2MoneyPool) {
         // navigate back to money pool
         navigateBack();
       } else {
@@ -284,7 +284,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
 
   Future _showPaymentMethodBottomSheet({TransferType? type}) async {
     String description = "OR add new payment method +";
-    if (type != null && type == TransferType.Donation) {
+    if (type != null && type == TransferType.User2Project) {
       description =
           "To keep growing and reach more people, the Good Wallet Foundation will take a default 5\% of your donation. You are free to choose a any other amount (NOT YET IMPLEMENTED). Thank you for your support!";
     }

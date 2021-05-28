@@ -93,10 +93,11 @@ class TransferFundsAmountView extends StatelessWidget
                         horizontalSpaceRegular,
 
                         // Recipients
-                        if (type == TransferType.Peer2PeerSent)
+                        if (type == TransferType.User2UserSent)
                           avatarWithUserName(context),
-                        if (type == TransferType.PrepaidFund) topUp(context),
-                        if (type == TransferType.Commitment)
+                        if (type == TransferType.User2OwnPrepaidFund)
+                          topUp(context),
+                        if (type == TransferType.User2OwnGoodWallet)
                           hashTagCommitForGood(context),
 
                         // TODO: make sure recipientInfo is not null!
@@ -160,8 +161,8 @@ class TransferFundsAmountView extends StatelessWidget
                               await model.showBottomSheetAndProcessPayment();
                             },
                           ),
-                    if (type == TransferType.Donation ||
-                        type == TransferType.MoneyPoolPayoutTransfer)
+                    if (type == TransferType.User2Project ||
+                        type == TransferType.MoneyPool2User)
                       TextButton(
                         onPressed: () async {
                           await model.changePaymentMethod();

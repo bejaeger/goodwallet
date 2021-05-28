@@ -87,6 +87,6 @@ class MoneyPoolsViewModel extends BaseModel {
     _navigationService!.navigateTo(Routes.transferFundsAmountView,
         arguments: TransferFundsAmountViewArguments(
             senderInfo: SenderInfo(moneySource: MoneySource.Bank),
-            type: TransferType.PrepaidFund));
+            type: TransferType.User2OwnPrepaidFund));
   }
 }

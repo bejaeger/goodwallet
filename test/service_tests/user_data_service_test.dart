@@ -74,24 +74,4 @@ void main() {
           user: anyNamed("user"), stats: anyNamed("stats")));
     });
   });
-
-  // group('isValidFirestoreQueryConfig -', () {
-  //   test('Should be true if simply asked for transfer type donation', () {
-  //     getAndRegisterFirestoreApi();
-  //     getAndRegisterFirebaseAuthenticationService();
-  //     final service = _getService(startListeningToAuthStateChanges: false);
-  //     final config = MoneyTransferQueryConfig(type: TransferType.Donation);
-  //     expect(service.isValidFirestoreQueryConfig(config: config), true);
-  //   });
-
-  //   test('Should return false if filter length is larger 1', () {
-  //     getAndRegisterFirestoreApi();
-  //     getAndRegisterFirebaseAuthenticationService();
-  //     final service = _getService(startListeningToAuthStateChanges: false);
-  //     final config = MoneyTransferQueryConfig(
-  //         type: TransferType.Donation,
-  //         isEqualToFilter: {"hi": "10", "ciao": "is"});
-  //     expect(service.isValidFirestoreQueryConfig(config: config), false);
-  //   });
-  // });
 }

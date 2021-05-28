@@ -9,8 +9,6 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
-import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
-import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/user_status.dart';
@@ -45,11 +43,6 @@ class UserService {
     _currentUser = user;
   }
 
-  // list of latest transactions and their subscriptions
-  Map<MoneyTransferQueryConfig, List<MoneyTransfer>> latestTransfers = {};
-  Map<MoneyTransferQueryConfig, StreamSubscription?> _transfersSubscriptions =
-      {};
-
   StreamSubscription? userStreamSubscription;
   // Argument implemented for testing purposes
   UserService({bool startListeningToAuthStateChanges = true}) {
@@ -68,8 +61,9 @@ class UserService {
   Future<void>? listenToAuthStateChanges() async {
     if (userStreamSubscription == null) {
       var completer = Completer<void>();
-      userStreamSubscription =
-          _firebaseAuthenticationService!.authStateChanges.listen((user) async {
+      userStreamSubscription = _firebaseAuthenticationService!.firebaseAuth
+          .authStateChanges()
+          .listen((user) async {
         await authStateChangesOnDataCallback(user);
         if (!completer.isCompleted) {
           completer.complete();
@@ -195,17 +189,15 @@ class UserService {
 
   // clear all data when user logs out!
   Future handleLogoutEvent() async {
+    // cancel user stream subscription
+    userStreamSubscription?.cancel();
+    userStreamSubscription = null;
     // clear wallet
     userStatsSubject.add(getEmptyUserStatistics());
     // set current user to null
     _currentUser = User.empty();
     // actually log out from firebase
     await _firebaseAuthenticationService!.logout();
-    // cancel all listeners and reset list
-    _transfersSubscriptions.forEach((key, value) {
-      value?.cancel();
-    });
-    _transfersSubscriptions.clear();
     // set auth state to signed out
     userStateSubject.add(UserStatus.SignedOut);
   }

@@ -33,7 +33,7 @@ class MoneyTransfer with _$MoneyTransfer {
     required dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
-    @Default(TransferType.Peer2Peer)
+    @Default(TransferType.User2User)
         TransferType type,
     @JsonKey(
       name: "transferId",
@@ -53,7 +53,7 @@ class MoneyTransfer with _$MoneyTransfer {
     required dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
-    @Default(TransferType.Donation)
+    @Default(TransferType.User2Project)
         TransferType type,
     @JsonKey(
       name: "transferId",
@@ -73,7 +73,7 @@ class MoneyTransfer with _$MoneyTransfer {
     required dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
-    @Default(TransferType.MoneyPoolContribution)
+    @Default(TransferType.User2MoneyPool)
         TransferType type,
     @JsonKey(
       name: "transferId",
@@ -96,7 +96,7 @@ class MoneyTransfer with _$MoneyTransfer {
     required dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
-    @Default(TransferType.MoneyPoolPayoutTransfer)
+    @Default(TransferType.MoneyPool2User)
         TransferType type,
     @JsonKey(
       name: "transferId",

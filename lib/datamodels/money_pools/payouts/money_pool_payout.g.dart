@@ -16,8 +16,6 @@ _$_MoneyPoolPayout _$_$_MoneyPoolPayoutFromJson(Map<String, dynamic> json) {
         .toList(),
     moneyPool: MoneyPool.fromJson(json['moneyPool'] as Map<String, dynamic>),
     createdAt: json['createdAt'],
-    type: _$enumDecodeNullable(_$TransferTypeEnumMap, json['type']) ??
-        TransferType.MoneyPoolPayout,
     status: _$enumDecodeNullable(_$TransferStatusEnumMap, json['status']) ??
         TransferStatus.Initialized,
     payoutId: json['payoutId'] as String,
@@ -32,7 +30,6 @@ Map<String, dynamic> _$_$_MoneyPoolPayoutToJson(_$_MoneyPoolPayout instance) =>
       'paidOutUsersIds': instance.paidOutUsersIds,
       'moneyPool': instance.moneyPool.toJson(),
       'createdAt': instance.createdAt,
-      'type': _$TransferTypeEnumMap[instance.type],
       'status': _$TransferStatusEnumMap[instance.status],
       'payoutId': MoneyPoolPayout._checkIftransferIdIsSet(instance.payoutId),
       'deleteMoneyPool': instance.deleteMoneyPool,
@@ -74,21 +71,6 @@ K? _$enumDecodeNullable<K, V>(
   }
   return _$enumDecode<K, V>(enumValues, source, unknownValue: unknownValue);
 }
-
-const _$TransferTypeEnumMap = {
-  TransferType.Peer2Peer: 'Peer2Peer',
-  TransferType.Peer2PeerSent: 'Peer2PeerSent',
-  TransferType.Peer2PeerReceived: 'Peer2PeerReceived',
-  TransferType.Donation: 'Donation',
-  TransferType.MoneyPoolPayoutTransfer: 'MoneyPoolPayoutTransfer',
-  TransferType.MoneyPoolPayout: 'MoneyPoolPayout',
-  TransferType.MoneyPoolContribution: 'MoneyPoolContribution',
-  TransferType.MoneyPoolContributionReceived: 'MoneyPoolContributionReceived',
-  TransferType.PrepaidFund: 'PrepaidFund',
-  TransferType.Commitment: 'Commitment',
-  TransferType.All: 'All',
-  TransferType.Invalid: 'Invalid',
-};
 
 const _$TransferStatusEnumMap = {
   TransferStatus.Initialized: 'Initialized',

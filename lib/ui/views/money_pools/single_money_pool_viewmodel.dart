@@ -13,7 +13,7 @@ import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
-import 'package:good_wallet/managers/transfers_manager.dart';
+import 'package:good_wallet/services/transfers_history/transfers_history_service.dart';
 import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
@@ -26,16 +26,19 @@ class SingleMoneyPoolViewModel extends BaseModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
   final DialogService? _dialogService = locator<DialogService>();
-  final TransfersManager? _transfersManager = locator<TransfersManager>();
+  final TransfersHistoryService? _transfersManager =
+      locator<TransfersHistoryService>();
 
   final log = getLogger("single_money_pool_viewmodel.dart");
 
+  // Get latest money pool payouts for that money pool
+  // Need to add listener in listenToData() function
   String _moneyPoolId = "";
   List<MoneyPoolPayout> get payouts =>
       _transfersManager!.getMoneyPoolPayouts(mpid: _moneyPoolId);
 
-  // get latest money pool contributions for send money bottom sheet view
-  // Need to add listeners otherwise this will be empty
+  // Get latest money pool contributions
+  // Need to add listener when model is created
   MoneyTransferQueryConfig _queryConfig =
       MoneyTransferQueryConfig(type: TransferType.Invalid);
   List<MoneyTransfer> get latestContributions =>
@@ -45,8 +48,8 @@ class SingleMoneyPoolViewModel extends BaseModel {
   SingleMoneyPoolViewModel({required this.moneyPool}) {
     _moneyPoolId = moneyPool.moneyPoolId;
     _queryConfig = MoneyTransferQueryConfig(
-      type: TransferType.MoneyPoolContributionReceived,
-      isEqualToFilter: {"moneyPoolInfo.moneyPoolId": _moneyPoolId},
+      type: TransferType.User2MoneyPool,
+      recipientId: _moneyPoolId,
     );
   }
 
@@ -66,7 +69,6 @@ class SingleMoneyPoolViewModel extends BaseModel {
             .showDialog(title: "Error", description: e.prettyDetails);
       }
     });
-    // ^ Could show dialog?
 
     setBusy(false);
   }
@@ -131,30 +133,9 @@ class SingleMoneyPoolViewModel extends BaseModel {
       Routes.transferFundsAmountView,
       arguments: TransferFundsAmountViewArguments(
           senderInfo: SenderInfo(moneySource: MoneySource.Bank),
-          type: TransferType.MoneyPoolContribution,
+          type: TransferType.User2MoneyPool,
           recipientInfo: recipientInfo),
     );
-  }
-
-  // Fetch and thus update money pool e.g. after contribution has been made
-  Future updateMoneyPool() async {
-    setBusy(true);
-    try {
-      this.moneyPool =
-          await _moneyPoolsService!.getMoneyPool(moneyPool.moneyPoolId);
-    } catch (e) {
-      if (e is FirestoreApiException) {
-        if (e.prettyDetails != null) {
-          await _dialogService!
-              .showDialog(title: "Error", description: e.prettyDetails);
-          navigateBack();
-          return;
-        }
-      } else {
-        rethrow;
-      }
-    }
-    setBusy(false);
   }
 
   Future showMoneyPoolPayoutDetailsDialog(MoneyPoolPayout data) async {

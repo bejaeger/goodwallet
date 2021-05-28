@@ -50,7 +50,8 @@ class TransfersHistoryView extends StatelessWidget {
                             style:
                                 getTransactionsCorrespondingToTypeHistoryEntryStyle(
                                     data: data,
-                                    type: model.inferTransactionType(data)),
+                                    type: data.type,
+                                    uid: model.currentUser.uid),
                             amount: data.transferDetails.amount,
                           );
                         },

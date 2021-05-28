@@ -12,19 +12,19 @@ import 'package:stacked_services/stacked_services.dart';
 
 import '../apis/firestore_api.dart';
 import '../apis/global_giving_api.dart';
-import '../managers/transfers_manager.dart';
 import '../services/money_pools/money_pools_service.dart';
 import '../services/payments/dummy_payment_service.dart';
 import '../services/payments/firestore_payment_data_service.dart';
 import '../services/payments/stripe_payment_service.dart';
 import '../services/projects/projects_service.dart';
 import '../services/qrcode/qrcode_service.dart';
+import '../services/transfers_history/transfers_history_service.dart';
 import '../services/user/user_service.dart';
 import '../ui/views/layout/navigation_bar_viewmodel.dart';
 import '../ui/views/money_pools/money_pools_viewmodel.dart';
 import '../ui/views/wallet/wallet_viewmodel.dart';
 
-final locator = StackedLocator.instance.locator;
+final locator = StackedLocator.instance;
 
 void setupLocator() {
   locator.registerLazySingleton(() => NavigationService());
@@ -44,5 +44,5 @@ void setupLocator() {
   locator.registerSingleton(FirestoreApi());
   locator.registerSingleton(DummyPaymentService());
   locator.registerSingleton(UserService());
-  locator.registerSingleton(TransfersManager());
+  locator.registerSingleton(TransfersHistoryService());
 }

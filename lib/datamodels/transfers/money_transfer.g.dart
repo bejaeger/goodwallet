@@ -14,7 +14,7 @@ _$Peer2PeerTransfer _$_$Peer2PeerTransferFromJson(Map<String, dynamic> json) {
     status: _$enumDecodeNullable(_$TransferStatusEnumMap, json['status']) ??
         TransferStatus.Initialized,
     type: _$enumDecodeNullable(_$TransferTypeEnumMap, json['type']) ??
-        TransferType.Peer2Peer,
+        TransferType.User2User,
     transferId: json['transferId'] as String,
   );
 }
@@ -73,17 +73,17 @@ const _$TransferStatusEnumMap = {
 };
 
 const _$TransferTypeEnumMap = {
-  TransferType.Peer2Peer: 'Peer2Peer',
-  TransferType.Peer2PeerSent: 'Peer2PeerSent',
-  TransferType.Peer2PeerReceived: 'Peer2PeerReceived',
-  TransferType.Donation: 'Donation',
-  TransferType.MoneyPoolPayoutTransfer: 'MoneyPoolPayoutTransfer',
-  TransferType.MoneyPoolPayout: 'MoneyPoolPayout',
-  TransferType.MoneyPoolContribution: 'MoneyPoolContribution',
-  TransferType.MoneyPoolContributionReceived: 'MoneyPoolContributionReceived',
-  TransferType.PrepaidFund: 'PrepaidFund',
-  TransferType.Commitment: 'Commitment',
-  TransferType.All: 'All',
+  TransferType.User2User: 'User2User',
+  TransferType.User2UserSent: 'User2UserSent',
+  TransferType.User2UserReceived: 'User2UserReceived',
+  TransferType.User2OwnPrepaidFund: 'User2OwnPrepaidFund',
+  TransferType.User2OwnGoodWallet: 'User2OwnGoodWallet',
+  TransferType.User2Project: 'User2Project',
+  TransferType.User2ProjectSent: 'User2ProjectSent',
+  TransferType.User2MoneyPool: 'User2MoneyPool',
+  TransferType.MoneyPool2User: 'MoneyPool2User',
+  TransferType.MoneyPool2Project: 'MoneyPool2Project',
+  TransferType.AllInvolvingUser: 'AllInvolvingUser',
   TransferType.Invalid: 'Invalid',
 };
 
@@ -97,7 +97,7 @@ _$Donation _$_$DonationFromJson(Map<String, dynamic> json) {
     status: _$enumDecodeNullable(_$TransferStatusEnumMap, json['status']) ??
         TransferStatus.Initialized,
     type: _$enumDecodeNullable(_$TransferTypeEnumMap, json['type']) ??
-        TransferType.Donation,
+        TransferType.User2Project,
     transferId: json['transferId'] as String,
   );
 }
@@ -123,7 +123,7 @@ _$MoneyPoolContribution _$_$MoneyPoolContributionFromJson(
     status: _$enumDecodeNullable(_$TransferStatusEnumMap, json['status']) ??
         TransferStatus.Initialized,
     type: _$enumDecodeNullable(_$TransferTypeEnumMap, json['type']) ??
-        TransferType.MoneyPoolContribution,
+        TransferType.User2MoneyPool,
     transferId: json['transferId'] as String,
   );
 }
@@ -151,7 +151,7 @@ _$MoneyPoolPayoutTransfer _$_$MoneyPoolPayoutTransferFromJson(
     status: _$enumDecodeNullable(_$TransferStatusEnumMap, json['status']) ??
         TransferStatus.Initialized,
     type: _$enumDecodeNullable(_$TransferTypeEnumMap, json['type']) ??
-        TransferType.MoneyPoolPayoutTransfer,
+        TransferType.MoneyPool2User,
     transferId: json['transferId'] as String,
   );
 }

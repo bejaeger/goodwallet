@@ -32,7 +32,7 @@ class SendMoneyBottomSheetViewModel extends BaseModel {
     _navigationService!.navigateTo(
       Routes.transferFundsAmountView,
       arguments: TransferFundsAmountViewArguments(
-        type: TransferType.Peer2PeerSent,
+        type: TransferType.User2UserSent,
         senderInfo: SenderInfo(moneySource: MoneySource.Bank),
         recipientInfo: userInfo,
       ),

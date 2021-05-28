@@ -36,7 +36,7 @@ class _$MoneyTransferTearOff {
       {required TransferDetails transferDetails,
       required dynamic createdAt,
       TransferStatus status = TransferStatus.Initialized,
-      TransferType type = TransferType.Peer2Peer,
+      TransferType type = TransferType.User2User,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId = "placeholder"}) {
     return Peer2PeerTransfer(
@@ -53,7 +53,7 @@ class _$MoneyTransferTearOff {
       required ConciseProjectInfo projectInfo,
       required dynamic createdAt,
       TransferStatus status = TransferStatus.Initialized,
-      TransferType type = TransferType.Donation,
+      TransferType type = TransferType.User2Project,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId = "placeholder"}) {
     return Donation(
@@ -71,7 +71,7 @@ class _$MoneyTransferTearOff {
       required ConciseMoneyPoolInfo moneyPoolInfo,
       required dynamic createdAt,
       TransferStatus status = TransferStatus.Initialized,
-      TransferType type = TransferType.MoneyPoolContribution,
+      TransferType type = TransferType.User2MoneyPool,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId = "placeholder"}) {
     return MoneyPoolContribution(
@@ -90,7 +90,7 @@ class _$MoneyTransferTearOff {
       required String payoutId,
       required dynamic createdAt,
       TransferStatus status = TransferStatus.Initialized,
-      TransferType type = TransferType.MoneyPoolPayoutTransfer,
+      TransferType type = TransferType.MoneyPool2User,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           String transferId = "placeholder"}) {
     return MoneyPoolPayoutTransfer(
@@ -363,7 +363,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
       {required this.transferDetails,
       required this.createdAt,
       this.status = TransferStatus.Initialized,
-      this.type = TransferType.Peer2Peer,
+      this.type = TransferType.User2User,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           this.transferId = "placeholder"})
       : super._();
@@ -378,7 +378,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
   @JsonKey(defaultValue: TransferStatus.Initialized)
   @override
   final TransferStatus status;
-  @JsonKey(defaultValue: TransferType.Peer2Peer)
+  @JsonKey(defaultValue: TransferType.User2User)
   @override
   final TransferType type;
   @override
@@ -659,7 +659,7 @@ class _$Donation extends Donation {
       required this.projectInfo,
       required this.createdAt,
       this.status = TransferStatus.Initialized,
-      this.type = TransferType.Donation,
+      this.type = TransferType.User2Project,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           this.transferId = "placeholder"})
       : super._();
@@ -676,7 +676,7 @@ class _$Donation extends Donation {
   @JsonKey(defaultValue: TransferStatus.Initialized)
   @override
   final TransferStatus status;
-  @JsonKey(defaultValue: TransferType.Donation)
+  @JsonKey(defaultValue: TransferType.User2Project)
   @override
   final TransferType type;
   @override
@@ -968,7 +968,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
       required this.moneyPoolInfo,
       required this.createdAt,
       this.status = TransferStatus.Initialized,
-      this.type = TransferType.MoneyPoolContribution,
+      this.type = TransferType.User2MoneyPool,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           this.transferId = "placeholder"})
       : super._();
@@ -985,7 +985,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
   @JsonKey(defaultValue: TransferStatus.Initialized)
   @override
   final TransferStatus status;
-  @JsonKey(defaultValue: TransferType.MoneyPoolContribution)
+  @JsonKey(defaultValue: TransferType.User2MoneyPool)
   @override
   final TransferType type;
   @override
@@ -1287,7 +1287,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
       required this.payoutId,
       required this.createdAt,
       this.status = TransferStatus.Initialized,
-      this.type = TransferType.MoneyPoolPayoutTransfer,
+      this.type = TransferType.MoneyPool2User,
       @JsonKey(name: "transferId", toJson: MoneyTransfer._checkIftransferIdIsSet)
           this.transferId = "placeholder"})
       : super._();
@@ -1307,7 +1307,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
   @JsonKey(defaultValue: TransferStatus.Initialized)
   @override
   final TransferStatus status;
-  @JsonKey(defaultValue: TransferType.MoneyPoolPayoutTransfer)
+  @JsonKey(defaultValue: TransferType.MoneyPool2User)
   @override
   final TransferType type;
   @override

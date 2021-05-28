@@ -69,7 +69,8 @@ MockFirebaseAuthenticationService getAndRegisterFirebaseAuthenticationService({
   //   yield user;
   // }
   // when(service.authStateChanges).thenAnswer((_) => userStream(currentUser));
-  when(service.authStateChanges).thenAnswer((_) => Stream.value(currentUser));
+  when(service.firebaseAuth.authStateChanges())
+      .thenAnswer((_) => Stream.value(currentUser));
   locator.registerSingleton<FirebaseAuthenticationService>(service);
   return service;
 }

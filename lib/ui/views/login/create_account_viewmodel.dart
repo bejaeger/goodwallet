@@ -26,7 +26,7 @@ class CreateAccountViewModel extends AuthenticationViewModel {
   @override
   Future<FirebaseAuthenticationResult> runAuthentication(
       AuthenticationMethod method) async {
-    if (method == AuthenticationMethod.email) {
+    if (method == AuthenticationMethod.Email) {
       FirebaseAuthenticationResult result;
       log.i("Creating account with e-mail");
       // use actual firebase auth here because stacked's version does

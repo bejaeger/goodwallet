@@ -28,7 +28,7 @@ _$_Project _$_$_ProjectFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$_$_ProjectToJson(_$_Project instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'id': instance.id,
+      'id': Project._checkIfIdIsSet(instance.id),
       'area': instance.area,
       'causeType': _$CauseTypeEnumMap[instance.causeType],
       'imageUrl': instance.imageUrl,

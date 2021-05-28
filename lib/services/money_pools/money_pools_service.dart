@@ -153,28 +153,6 @@ class MoneyPoolsService {
     await _firestoreApi.deleteMoneyPool(mpid);
   }
 
-  // TODO: Think about whether this should go into payment_service
-  // or transfers_manager
-  // adds payout data to firestore which will trigger a cloud function
-  // to update all the good wallets
-  // Additionally add money transfer document to payment collection
-  // mainly for "read" purposes!
-  Future submitMoneyPoolPayout(MoneyPoolPayout data) async {
-    try {
-      await _firestoreApi.createMoneyPoolPayout(payout: data);
-    } catch (e) {
-      log.e("Error when pushing data to firestore: ${e.toString()}");
-      rethrow;
-    }
-  }
-
-  // pause the listener
-  void cancelMoneyPoolPayoutListener({required String mpid}) {
-    log.v("Pause transfer data listener with config: '$mpid'");
-    _moneyPoolPayoutsStreamSubscriptions[mpid]?.cancel();
-    _moneyPoolPayoutsStreamSubscriptions[mpid] = null;
-  }
-
   void clearData() {
     moneyPools = [];
     moneyPoolsInvitedTo = [];
@@ -183,11 +161,6 @@ class MoneyPoolsService {
 
     _moneyPoolsInvitedToStreamSubscription?.cancel();
     _moneyPoolsInvitedToStreamSubscription = null;
-
-    _moneyPoolPayoutsStreamSubscriptions.forEach((key, value) {
-      value?.cancel();
-    });
-    _moneyPoolPayoutsStreamSubscriptions.clear();
 
     log.i("Cleared lists of money pools");
   }

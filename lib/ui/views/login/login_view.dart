@@ -26,7 +26,7 @@ class LoginView extends StatelessWidget with $LoginView {
           busy: model.isBusy,
           onCreateAccountTapped: () => model.navigateToCreateAccount(),
           onDummyLoginTapped: () => model.saveData(AuthenticationMethod.dummy),
-          onMainButtonTapped: () => model.saveData(AuthenticationMethod.email),
+          onMainButtonTapped: () => model.saveData(AuthenticationMethod.Email),
           validationMessage: model.validationMessage,
           title: 'Welcome to the \nGood Wallet',
           subtitle: 'The place that makes doing good simple',
