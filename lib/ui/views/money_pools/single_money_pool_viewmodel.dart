@@ -13,8 +13,8 @@ import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
+import 'package:good_wallet/services/transfers_history/transfers_history_service.dart';
 import 'package:good_wallet/services/money_pools/money_pools_service.dart';
-import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
@@ -22,40 +22,43 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 
 class SingleMoneyPoolViewModel extends BaseModel {
-  final MoneyPoolsService? _moneyPoolService = locator<MoneyPoolsService>();
+  final MoneyPoolsService? _moneyPoolsService = locator<MoneyPoolsService>();
   final NavigationService? _navigationService = locator<NavigationService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
   final DialogService? _dialogService = locator<DialogService>();
-  final UserDataService? _userDataService = locator<UserDataService>();
+  final TransfersHistoryService? _transfersManager =
+      locator<TransfersHistoryService>();
 
   final log = getLogger("single_money_pool_viewmodel.dart");
 
+  // Get latest money pool payouts for that money pool
+  // Need to add listener in listenToData() function
   String _moneyPoolId = "";
   List<MoneyPoolPayout> get payouts =>
-      _moneyPoolService!.getMoneyPoolPayouts(mpid: _moneyPoolId);
+      _transfersManager!.getMoneyPoolPayouts(mpid: _moneyPoolId);
 
-  // get latest money pool contributions for send money bottom sheet view
-  // Need to add listeners otherwise this will be empty
+  // Get latest money pool contributions
+  // Need to add listener when model is created
   MoneyTransferQueryConfig _queryConfig =
       MoneyTransferQueryConfig(type: TransferType.Invalid);
   List<MoneyTransfer> get latestContributions =>
-      _userDataService!.getTransfers(config: _queryConfig);
+      _transfersManager!.getTransfers(config: _queryConfig);
 
   MoneyPool moneyPool;
   SingleMoneyPoolViewModel({required this.moneyPool}) {
     _moneyPoolId = moneyPool.moneyPoolId;
     _queryConfig = MoneyTransferQueryConfig(
-      type: TransferType.MoneyPoolContributionReceived,
-      isEqualToFilter: {"moneyPoolInfo.moneyPoolId": _moneyPoolId},
+      type: TransferType.User2MoneyPool,
+      recipientId: _moneyPoolId,
     );
   }
 
   Future listenToData() async {
     setBusy(true);
-    await _userDataService!.addTransferDataListener(config: _queryConfig);
-    await _moneyPoolService!.addMoneyPoolPayoutListener(mpid: _moneyPoolId);
+    await _transfersManager!.addTransferDataListener(config: _queryConfig);
+    await _transfersManager!.addMoneyPoolPayoutListener(mpid: _moneyPoolId);
     // set up listener to this very money pool and update view when money pool changes
-    _moneyPoolService!.getMoneyPoolStream(mpid: _moneyPoolId).listen((event) {
+    _moneyPoolsService!.getMoneyPoolStream(mpid: _moneyPoolId).listen((event) {
       moneyPool = event;
       notifyListeners();
     }).onError((e) async {
@@ -66,14 +69,13 @@ class SingleMoneyPoolViewModel extends BaseModel {
             .showDialog(title: "Error", description: e.prettyDetails);
       }
     });
-    // ^ Could show dialog?
 
     setBusy(false);
   }
 
   Future deleteMoneyPool(String poolId) async {
     setBusy(true);
-    await _moneyPoolService!.deleteMoneyPool(poolId);
+    await _moneyPoolsService!.deleteMoneyPool(poolId);
     _navigationService!.clearStackAndShow(Routes.layoutTemplateViewMobile,
         arguments: LayoutTemplateViewMobileArguments(
             initialBottomNavBarIndex: BottomNavigatorIndex.RaiseMoney.index));
@@ -97,7 +99,7 @@ class SingleMoneyPoolViewModel extends BaseModel {
           messageToShow = "User participates already in money pool.";
         } else {
           // push to firestore
-          await _moneyPoolService!.addInvitedUserToMoneyPool(
+          await _moneyPoolsService!.addInvitedUserToMoneyPool(
               userInfo: userInfo, moneyPool: moneyPool);
 
           // Delay makes it look more user friendly
@@ -127,37 +129,13 @@ class SingleMoneyPoolViewModel extends BaseModel {
           name: moneyPool.name,
           moneyPoolId: moneyPool.moneyPoolId),
     );
-    var result = await _navigationService!.navigateTo(
+    await _navigationService!.navigateTo(
       Routes.transferFundsAmountView,
       arguments: TransferFundsAmountViewArguments(
           senderInfo: SenderInfo(moneySource: MoneySource.Bank),
-          type: TransferType.MoneyPoolContribution,
+          type: TransferType.User2MoneyPool,
           recipientInfo: recipientInfo),
     );
-    // if (result == "contributed") {
-    //   await updateMoneyPool();
-    // }
-  }
-
-  // Fetch and thus update money pool e.g. after contribution has been made
-  Future updateMoneyPool() async {
-    setBusy(true);
-    try {
-      this.moneyPool =
-          await _moneyPoolService!.getMoneyPool(moneyPool.moneyPoolId);
-    } catch (e) {
-      if (e is FirestoreApiException) {
-        if (e.prettyDetails != null) {
-          await _dialogService!
-              .showDialog(title: "Error", description: e.prettyDetails);
-          navigateBack();
-          return;
-        }
-      } else {
-        rethrow;
-      }
-    }
-    setBusy(false);
   }
 
   Future showMoneyPoolPayoutDetailsDialog(MoneyPoolPayout data) async {
@@ -181,19 +159,14 @@ class SingleMoneyPoolViewModel extends BaseModel {
   /// Navigations
   ///
   Future navigateToDisburseMoneyPoolView() async {
-    var result = await _navigationService!.navigateTo(
-        Routes.disburseMoneyPoolView,
+    await _navigationService!.navigateTo(Routes.disburseMoneyPoolView,
         arguments: DisburseMoneyPoolViewArguments(moneyPool: moneyPool));
-    // if (result == "paidOut") {
-    //   // could have a fancy animation here
-    //   await updateMoneyPool();
-    // }
   }
 
   @override
   void dispose() {
     super.dispose();
-    _moneyPoolService!.cancelMoneyPoolPayoutListener(mpid: _moneyPoolId);
-    _userDataService!.cancelTransferDataListener(config: _queryConfig);
+    _transfersManager!.cancelMoneyPoolPayoutListener(mpid: _moneyPoolId);
+    _transfersManager!.cancelTransferDataListener(config: _queryConfig);
   }
 }

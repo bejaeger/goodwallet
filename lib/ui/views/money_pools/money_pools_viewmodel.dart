@@ -13,21 +13,21 @@ import 'package:stacked_services/stacked_services.dart';
 
 class MoneyPoolsViewModel extends BaseModel {
   final NavigationService? _navigationService = locator<NavigationService>();
-  final MoneyPoolsService? _moneyPoolService = locator<MoneyPoolsService>();
+  final MoneyPoolsService? _moneyPoolsService = locator<MoneyPoolsService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
   final DialogService? _dialogService = locator<DialogService>();
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
 
-  List<MoneyPool> get moneyPools => _moneyPoolService!.moneyPools;
+  List<MoneyPool> get moneyPools => _moneyPoolsService!.moneyPools;
   List<MoneyPool> get moneyPoolsInvitedTo =>
-      _moneyPoolService!.moneyPoolsInvitedTo;
+      _moneyPoolsService!.moneyPoolsInvitedTo;
 
   final log = getLogger("money_pools_viewmodel.dart");
 
   // Starting money pool listener. Should only ever be called once!
   Future listenToMoneyPools() async {
     setBusy(true);
-    await _moneyPoolService!.listenToMoneyPools(uid: currentUser.uid);
+    await _moneyPoolsService!.listenToMoneyPools(uid: currentUser.uid);
     setBusy(false);
   }
 
@@ -56,7 +56,7 @@ class MoneyPoolsViewModel extends BaseModel {
       if (sheetResponse.confirmed) {
         setBusy(true);
         // accepted invitation
-        bool success = await _moneyPoolService!.acceptInvitation(
+        bool success = await _moneyPoolsService!.acceptInvitation(
             currentUser.uid, currentUser.fullName, moneyPoolsInvitedTo[index]);
         if (success is String)
           _snackbarService!.showSnackbar(
@@ -67,7 +67,7 @@ class MoneyPoolsViewModel extends BaseModel {
         setBusy(false);
       } else {
         // devlined invitation
-        await _moneyPoolService!
+        await _moneyPoolsService!
             .declineInvitation(currentUser.uid, moneyPoolsInvitedTo[index]);
         _snackbarService!.showSnackbar(message: "Declined invitation");
       }
@@ -87,6 +87,6 @@ class MoneyPoolsViewModel extends BaseModel {
     _navigationService!.navigateTo(Routes.transferFundsAmountView,
         arguments: TransferFundsAmountViewArguments(
             senderInfo: SenderInfo(moneySource: MoneySource.Bank),
-            type: TransferType.PrepaidFund));
+            type: TransferType.User2OwnPrepaidFund));
   }
 }

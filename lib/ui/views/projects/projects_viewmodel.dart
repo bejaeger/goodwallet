@@ -3,7 +3,7 @@ import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/causes/concise_info/concise_project_info.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/enums/causes_type.dart';
-import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
+import 'package:good_wallet/apis/global_giving_api.dart';
 import 'package:good_wallet/services/projects/projects_service.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
@@ -13,8 +13,7 @@ import 'package:stacked_services/stacked_services.dart';
 class ProjectsViewModel extends BaseModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final ProjectsService? _projectsService = locator<ProjectsService>();
-  final GlobalGivingAPIService? _globalGivingAPIservice =
-      locator<GlobalGivingAPIService>();
+  final GlobalGivingApi? _globalGivingAPIservice = locator<GlobalGivingApi>();
 
   List<Project> get projects => _projectsService!.projects;
   List<Project> get projectUniqueAreas =>

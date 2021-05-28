@@ -110,7 +110,7 @@ class FirestoreApi {
   Stream<List<MoneyTransfer>> getTransferDataStream(
       {required MoneyTransferQueryConfig config, required String uid}) {
     Query query;
-    if (config.type == TransferType.All) {
+    if (config.type == TransferType.AllInvolvingUser) {
       Query outgoing = _paymentsCollection
           .where("transferDetails.senderId", isEqualTo: uid)
           .orderBy("createdAt", descending: true);
@@ -119,85 +119,77 @@ class FirestoreApi {
           .orderBy("createdAt", descending: true);
       Stream<List<MoneyTransfer>> transfersStream =
           getCombinedMoneyTransfersStream(
-              outgoing: outgoing, incoming: incoming);
+              outgoing: outgoing,
+              incoming: incoming,
+              maxNumberReturns: config.maxNumberReturns);
       return transfersStream;
-    } else if (config.type == TransferType.Peer2PeerSent) {
-      query = _paymentsCollection
-          .where("transferDetails.senderId", isEqualTo: uid)
-          // document fields are the same so the type is Peer2Peer here
-          .where("type", isEqualTo: "Peer2Peer")
-          .orderBy("createdAt", descending: true);
-      // .where("createdAt",
-      // isGreaterThan: Timestamp.fromDate(DateTime(2021, 5, 8)));
-    } else if (config.type == TransferType.Peer2PeerReceived) {
-      query = _paymentsCollection
-          .where("transferDetails.recipientId", isEqualTo: uid)
-          // document fields are the same so the type is Peer2Peer here
-          .where("type", isEqualTo: "Peer2Peer")
-          .orderBy("createdAt", descending: true);
-    } else if (config.type == TransferType.Peer2Peer) {
-      Query querySent = _paymentsCollection
-          .where("transferDetails.senderId", isEqualTo: uid)
-          // document fields are the same so the type is Peer2Peer here
-          .where("type", isEqualTo: "Peer2Peer")
-          .orderBy("createdAt", descending: true);
-      Query queryReceived = _paymentsCollection
-          .where("transferDetails.recipientId", isEqualTo: uid)
-          // document fields are the same so the type is Peer2Peer here
-          .where("type", isEqualTo: "Peer2Peer")
-          .orderBy("createdAt", descending: true);
-      Stream<List<MoneyTransfer>>? stream = getCombinedMoneyTransfersStream(
-          outgoing: querySent,
-          incoming: queryReceived,
-          maxNumberReturns: config.maxNumberReturns);
-      return stream;
-    } else if (config.type == TransferType.Donation) {
-      query = _paymentsCollection
-          .where("transferDetails.senderId", isEqualTo: uid)
-          .where("type", isEqualTo: "Donation")
-          .orderBy("createdAt", descending: true);
-    } else if (config.type == TransferType.MoneyPoolPayout) {
-      // This is querying for the full payout documents holding
-      // all MoneyPoolPayoutTransfers. Look in moneyPoolPayouts collection
-      query = _moneyPoolPayoutsCollection
-          .where("paidOutUserIds", arrayContains: uid)
-          .orderBy("createdAt", descending: true);
-    } else if (config.type == TransferType.MoneyPoolPayoutTransfer) {
-      query = _paymentsCollection
-          .where("transferDetails.recipientId", isEqualTo: uid)
-          .where("type", isEqualTo: "MoneyPoolPayoutTransfer")
-          .orderBy("createdAt", descending: true);
-    } else if (config.type == TransferType.MoneyPoolContribution) {
-      if (config.isEqualToFilter == null) {
+    } else if (config.type == TransferType.User2User) {
+      if (config.senderId != null && config.recipientId == null) {
         query = _paymentsCollection
-            .where("transferDetails.senderId", isEqualTo: uid)
-            .where("type", isEqualTo: "MoneyPoolContribution")
+            .where("transferDetails.senderId", isEqualTo: config.senderId!)
+            // document fields are the same so the type is User2User here
+            .where("type", isEqualTo: "User2User")
+            .orderBy("createdAt", descending: true);
+      } else if (config.senderId == null && config.recipientId != null) {
+        query = _paymentsCollection
+            .where("transferDetails.recipientId", isEqualTo: config.recipientId)
+            // document fields are the same so the type is User2User here
+            .where("type", isEqualTo: "User2User")
             .orderBy("createdAt", descending: true);
       } else {
+        throw throwNotSupportedException(config);
+        // Example for checking timestamp
+        // .where("createdAt",
+        // isGreaterThan: Timestamp.fromDate(DateTime(2021, 5, 8)));
+      }
+    } else if (config.type == TransferType.User2Project) {
+      if (config.senderId != null) {
         query = _paymentsCollection
-            .where(config.isEqualToFilter!.keys.first,
-                isEqualTo: config.isEqualToFilter!.values.first)
-            .where("transferDetails.senderId", isEqualTo: uid)
-            .where("type", isEqualTo: "MoneyPoolContribution")
+            .where("transferDetails.senderId", isEqualTo: config.senderId)
+            .where("type", isEqualTo: "User2Project")
+            .orderBy("createdAt", descending: true);
+      } else {
+        throw throwNotSupportedException(config);
+      }
+    } else if (config.type == TransferType.MoneyPool2User) {
+      if (config.recipientId != null) {
+        query = _paymentsCollection
+            .where("transferDetails.recipientId", isEqualTo: config.recipientId)
+            .where("type", isEqualTo: "MoneyPool2User")
+            .orderBy("createdAt", descending: true);
+      } else {
+        throw throwNotSupportedException(config);
+      }
+    } else if (config.type == TransferType.User2MoneyPool) {
+      // transfers of particular user to all money pools
+      if (config.senderId != null) {
+        query = _paymentsCollection
+            .where("transferDetails.senderId", isEqualTo: config.senderId)
+            .where("type", isEqualTo: "User2MoneyPool")
             .orderBy("createdAt", descending: true);
       }
-      // All transactions into a specific money pool
-    } else if (config.type == TransferType.MoneyPoolContributionReceived) {
-      if (config.isEqualToFilter == null) {
-        throw FirestoreApiException(
-            message: "Tried to access not supported transfers",
-            devDetails:
-                "Please provide the isEqualToFilter argument for the MoneyTransferQueryConfig to specify which money pool you would like to fetch data for");
-      } else {
+      // all transfers to a particular money pool
+      else if (config.recipientId != null) {
         query = _paymentsCollection
-            .where(config.isEqualToFilter!.keys.first,
-                isEqualTo: config.isEqualToFilter!.values.first)
-            .where("type", isEqualTo: "MoneyPoolContribution")
+            .where("transferDetails.recipientId", isEqualTo: config.recipientId)
+            .where("type", isEqualTo: "User2MoneyPool")
             .orderBy("createdAt", descending: true);
+      }
+      // all transfers to a particular money pool
+      else if (config.recipientId != null) {
+        query = _paymentsCollection
+            .where("transferDetails.recipientId", isEqualTo: config.recipientId)
+            .where("type", isEqualTo: "User2MoneyPool")
+            .orderBy("createdAt", descending: true);
+      } else {
+        throw throwNotSupportedException(config);
       }
     } else {
       log.e("Could not find stream corresponding to provided config '$config'");
-      throw Exception("Exception occured. TODO: Add proper Exception here!");
+      throw FirestoreApiException(
+          message: "Could not find stream corresponding to config $config",
+          devDetails:
+              "You likely provided a type that is not referring to a MoneyTransfer. Maybe a MoneyPoolPayout document? Then use the 'getMoneyPoolPayoutsStream()' function please of the firestore_api.");
     }
 
     if (config.maxNumberReturns != null)
@@ -212,6 +204,15 @@ class FirestoreApi {
               .toList(),
         );
     return returnStream;
+  }
+
+  FirestoreApiException throwNotSupportedException(
+      MoneyTransferQueryConfig config) {
+    return FirestoreApiException(
+        message:
+            "You tried to access a type of history of transfers that is not supported",
+        devDetails:
+            "Depending on the transfer type you might have to define either 'senderId' or 'recipientId'. Your config: ${config.toJson()}");
   }
 
   // Combines streams of transfers and returns a list of money transfers
@@ -282,6 +283,7 @@ class FirestoreApi {
     }
   }
 
+  // -> Might become a cloud function?
   // This will add the money pool payout document and also
   // create single money transfer documents. This makes it easy
   // to bookkeep things

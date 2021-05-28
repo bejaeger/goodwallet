@@ -1,0 +1,204 @@
+// Intermediary between Firestore and Viewmodels
+
+// Functionalities
+// - initializing current User (id, e-mail, fullname, wallet balances)
+// - exposing currentUser
+// - exposing stream of statistics
+
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart' as firebase;
+import 'package:good_wallet/apis/firestore_api.dart';
+import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
+import 'package:good_wallet/enums/user_status.dart';
+import 'package:good_wallet/exceptions/user_service_exception.dart';
+import 'package:good_wallet/utils/logger.dart';
+import 'package:good_wallet/utils/string_utils.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
+
+class UserService {
+  final log = getLogger("user_service.dart");
+
+  final _firestoreApi = locator<FirestoreApi>();
+  final FirebaseAuthenticationService? _firebaseAuthenticationService =
+      locator<FirebaseAuthenticationService>();
+
+  // subject to keep track of initialization of user
+  BehaviorSubject<UserStatus> userStateSubject =
+      BehaviorSubject<UserStatus>.seeded(UserStatus.Unknown);
+  UserStatus? get userStatus => userStateSubject.value;
+
+  // subject to keep track and expose wallet
+  BehaviorSubject<UserStatistics> userStatsSubject =
+      BehaviorSubject<UserStatistics>.seeded(getEmptyUserStatistics());
+  UserStatistics? get userStats => userStatsSubject.value;
+
+  // current user with all our custom data attached to it
+  late User _currentUser;
+  // Get current user
+  User get currentUser => _currentUser;
+  void setCurrentUser(User user) {
+    _currentUser = user;
+  }
+
+  StreamSubscription? userStreamSubscription;
+  // Argument implemented for testing purposes
+  UserService({bool startListeningToAuthStateChanges = true}) {
+    if (startListeningToAuthStateChanges) {
+      listenToAuthStateChanges();
+    }
+  }
+
+  // Listen to auth state changes with option to await first results
+  // (the latter is useful for unit testing)
+  // This is useful in scenarios where we want to
+  // show certain content without the need to register for the user.
+  // This might not be of need for mobile but
+  // will become more useful thinking about PWAs especially
+  // on desktop.
+  Future<void>? listenToAuthStateChanges() async {
+    if (userStreamSubscription == null) {
+      var completer = Completer<void>();
+      userStreamSubscription = _firebaseAuthenticationService!.firebaseAuth
+          .authStateChanges()
+          .listen((user) async {
+        await authStateChangesOnDataCallback(user);
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      });
+      return completer.future;
+    } else {
+      log.w(
+          "Auth state changes already listened to, not adding another listener");
+    }
+  }
+
+  Future<void> authStateChangesOnDataCallback(firebase.User? user) async {
+    if (user != null) {
+      _changeUserStatus(UserStatus.SignedIn);
+      await initializeCurrentUser(user);
+    } else {
+      _changeUserStatus(UserStatus.SignedOut);
+    }
+    log.i("User status changed to ${userStateSubject.value}");
+  }
+
+  void _changeUserStatus(UserStatus status) {
+    userStateSubject.add(status);
+  }
+
+  //////////////////////////////////////////////////////////////////
+  //
+  // Function related to User setup
+
+  // syncing data from firestore to client
+  Future initializeCurrentUser(firebase.User user) async {
+    log.i("Initializing user data");
+
+    if (userStateSubject.value != UserStatus.Initialized) {
+      log.i("Populating current user");
+      try {
+        await _syncOrCreateUserAccount(user: user);
+        await listenToUserSummaryStats(uid: user.uid);
+        _changeUserStatus(UserStatus.Initialized);
+      } catch (e) {
+        // this should produce an error. listened to in start up logic
+        log.wtf(
+            "This should never happen and is likely due to an inconsistency in the backend: ${e.toString()}");
+        _changeUserStatus(UserStatus.SignedInNotInitialized);
+        throw UserServiceException(
+            message: "Initializing current user failed",
+            devDetails: e.toString());
+      }
+    } else {
+      log.w("User already initialized. ");
+    }
+  }
+
+  // populating current user
+  Future _syncOrCreateUserAccount({required firebase.User user}) async {
+    try {
+      final populatedUser = await _firestoreApi.getUser(uid: user.uid);
+      if (populatedUser != null) {
+        _currentUser = populatedUser;
+      } else {
+        // This means no user has been created yet in cloud firestore
+        // This happens for example when loggin in with third-party providers like
+        // google, facebook, ...
+        // We first have to create a user and then
+        log.i(
+            "Create user because this seems to be the first time a user is logging in with third-party authentification");
+        try {
+          final nowPopulatedUser = await createUser(
+            user: User(
+                uid: user.uid,
+                fullName: user.displayName ?? "",
+                email: user.email ?? ""),
+          );
+          _currentUser = nowPopulatedUser;
+        } catch (e) {
+          rethrow;
+        }
+      }
+    } catch (e) {
+      log.e("Error in _populateCurrentUser(): ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  // create user documents (user info, statistics) in firestore
+  Future<User> createUser({required User user}) async {
+    // create a new user profile on firestore
+    try {
+      List<String> keywords = getListOfKeywordsFromString(user.fullName);
+      User newUser = user.copyWith(searchKeywords: keywords);
+      UserStatistics stats = getEmptyUserStatistics();
+      await _firestoreApi.createUser(user: newUser, stats: stats);
+      return newUser;
+    } catch (e) {
+      log.e("Error in createUser(): ${e.toString()}");
+      throw UserServiceException(
+        message: "Creating user data failed with message",
+        devDetails: e.toString(),
+        prettyDetails:
+            "User data could not be created in our databank. Please try again later or contact support with error messaage: ${e.toString()}",
+      );
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////
+  ///
+  /// Functions related to user data
+
+  /// Setting up user stats listener
+  Future listenToUserSummaryStats({required String uid}) async {
+    try {
+      _firestoreApi
+          .getUserSummaryStatisticsStream(uid: uid)
+          .listen((stats) => userStatsSubject.add(stats));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  ///////////////////////////////////////////////////
+  // Clean up
+
+  // clear all data when user logs out!
+  Future handleLogoutEvent() async {
+    // cancel user stream subscription
+    userStreamSubscription?.cancel();
+    userStreamSubscription = null;
+    // clear wallet
+    userStatsSubject.add(getEmptyUserStatistics());
+    // set current user to null
+    _currentUser = User.empty();
+    // actually log out from firebase
+    await _firebaseAuthenticationService!.logout();
+    // set auth state to signed out
+    userStateSubject.add(UserStatus.SignedOut);
+  }
+}

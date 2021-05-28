@@ -44,7 +44,7 @@ class GiveBottomSheetViewModel extends BaseModel {
     _navigationService!.navigateTo(
       Routes.transferFundsAmountView,
       arguments: TransferFundsAmountViewArguments(
-        type: TransferType.Donation,
+        type: TransferType.User2Project,
         senderInfo: SenderInfo(moneySource: MoneySource.GoodWallet),
         recipientInfo: userInfo!,
       ),

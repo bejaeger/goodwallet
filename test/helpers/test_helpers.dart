@@ -5,7 +5,7 @@ import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/money_pools/money_pools_service.dart';
-import 'package:good_wallet/services/userdata/user_data_service.dart';
+import 'package:good_wallet/services/user/user_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:rxdart/subjects.dart';
@@ -16,7 +16,7 @@ import 'test_helpers.mocks.dart';
 
 @GenerateMocks([], customMocks: [
   // our services registered with get_it
-  MockSpec<UserDataService>(returnNullOnMissingStub: true),
+  MockSpec<UserService>(returnNullOnMissingStub: true),
   MockSpec<MoneyPoolsService>(returnNullOnMissingStub: true),
   MockSpec<FirestoreApi>(returnNullOnMissingStub: true),
 
@@ -25,17 +25,17 @@ import 'test_helpers.mocks.dart';
   MockSpec<SnackbarService>(returnNullOnMissingStub: true),
   MockSpec<FirebaseAuthenticationService>(returnNullOnMissingStub: true),
 ])
-MockUserDataService getAndRegisterUserDataService({
+MockUserService getAndRegisterUserDataService({
   UserStatus userStatus = UserStatus.SignedOut,
   User? currentUser,
 }) {
-  _removeRegistrationIfExists<UserDataService>();
-  final service = MockUserDataService();
+  _removeRegistrationIfExists<UserService>();
+  final service = MockUserService();
   when(service.userStateSubject)
       .thenAnswer((_) => BehaviorSubject<UserStatus>.seeded(userStatus));
   when(service.currentUser).thenReturn(currentUser ??
       User(uid: 'dummy_id', email: 'dummy_email', fullName: 'dummy_name'));
-  locator.registerSingleton<UserDataService>(service);
+  locator.registerSingleton<UserService>(service);
   return service;
 }
 
@@ -69,7 +69,8 @@ MockFirebaseAuthenticationService getAndRegisterFirebaseAuthenticationService({
   //   yield user;
   // }
   // when(service.authStateChanges).thenAnswer((_) => userStream(currentUser));
-  when(service.authStateChanges).thenAnswer((_) => Stream.value(currentUser));
+  when(service.firebaseAuth.authStateChanges())
+      .thenAnswer((_) => Stream.value(currentUser));
   locator.registerSingleton<FirebaseAuthenticationService>(service);
   return service;
 }
@@ -96,7 +97,7 @@ void registerServices() {
 }
 
 void unregisterServices() {
-  locator.unregister<UserDataService>();
+  locator.unregister<UserService>();
   locator.unregister<MoneyPoolsService>();
   locator.unregister<SnackbarService>();
   locator.unregister<NavigationService>();

@@ -58,7 +58,7 @@ class SingleProjectViewModel extends BaseModel {
     _navigationService!.navigateTo(Routes.transferFundsAmountView,
         arguments: TransferFundsAmountViewArguments(
             senderInfo: SenderInfo(moneySource: MoneySource.GoodWallet),
-            type: TransferType.Donation,
+            type: TransferType.User2Project,
             recipientInfo: recipientInfo));
   }
 

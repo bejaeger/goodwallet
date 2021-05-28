@@ -8,8 +8,8 @@ import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
+import 'package:good_wallet/services/transfers_history/transfers_history_service.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
-import 'package:good_wallet/services/userdata/user_data_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/transfer_base_model.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -18,39 +18,41 @@ class HomeViewModel extends TransferBaseViewModel {
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
   final NavigationService? _navigationService = locator<NavigationService>();
   final QRCodeService? _qrCodeService = locator<QRCodeService>();
-  final UserDataService? _userDataService = locator<UserDataService>();
+  final TransfersHistoryService? _transfersManager =
+      locator<TransfersHistoryService>();
   final DialogService? _dialogService = locator<DialogService>();
   final log = getLogger("home_viewmodel.dart");
 
   // get latest outgoing peer 2 peer transfers used in send money bottom sheet view
   // Need to add listeners otherwise this will be empty
-  MoneyTransferQueryConfig _queryConfigTransactionToPeers =
+  MoneyTransferQueryConfig _queryConfigTransfersToPeers =
       MoneyTransferQueryConfig(
-          type: TransferType.Peer2PeerSent, makeUniqueRecipient: true);
-  List<MoneyTransfer> get latestTransactionToPeers =>
-      _userDataService!.getTransfers(config: _queryConfigTransactionToPeers);
+          type: TransferType.User2UserSent, makeUniqueRecipient: true);
+  List<MoneyTransfer> get latestTransfersToPeers =>
+      _transfersManager!.getTransfers(config: _queryConfigTransfersToPeers);
 
   // get latest donations for give bottom sheet view
   // Need to add listeners otherwise this will be empty
   MoneyTransferQueryConfig _queryConfigDonations = MoneyTransferQueryConfig(
-      type: TransferType.Donation, makeUniqueRecipient: true);
+      type: TransferType.User2ProjectSent, makeUniqueRecipient: true);
   List<MoneyTransfer> get latestDonations =>
-      _userDataService!.getTransfers(config: _queryConfigDonations);
+      _transfersManager!.getTransfers(config: _queryConfigDonations);
 
   // get last three money transfers
   MoneyTransferQueryConfig _queryConfigLatestTransfers =
-      MoneyTransferQueryConfig(type: TransferType.All, maxNumberReturns: 3);
+      MoneyTransferQueryConfig(
+          type: TransferType.AllInvolvingUser, maxNumberReturns: 3);
   List<MoneyTransfer> get latestTransfers =>
-      _userDataService!.getTransfers(config: _queryConfigLatestTransfers);
+      _transfersManager!.getTransfers(config: _queryConfigLatestTransfers);
 
   // Listen to streams of latest donations and transactions to be displayed
   // instantly when pulling up bottom sheets
   Future listenToData() async {
     setBusy(true);
-    _userDataService!
-        .addTransferDataListener(config: _queryConfigTransactionToPeers);
-    _userDataService!.addTransferDataListener(config: _queryConfigDonations);
-    await _userDataService!
+    _transfersManager!
+        .addTransferDataListener(config: _queryConfigTransfersToPeers);
+    _transfersManager!.addTransferDataListener(config: _queryConfigDonations);
+    await _transfersManager!
         .addTransferDataListener(config: _queryConfigLatestTransfers);
     setBusy(false);
   }
@@ -98,7 +100,7 @@ class HomeViewModel extends TransferBaseViewModel {
     var sheetResponse = await _bottomSheetService!.showCustomSheet(
       variant: BottomSheetType.SendMoney,
       barrierDismissible: true,
-      customData: latestTransactionToPeers,
+      customData: latestTransfersToPeers,
     );
     if (sheetResponse != null) {
       log.i("Response data from bottom sheet: ${sheetResponse.responseData}");
@@ -174,7 +176,7 @@ class HomeViewModel extends TransferBaseViewModel {
     await _navigationService!.navigateTo(Routes.transferFundsAmountView,
         arguments: TransferFundsAmountViewArguments(
             senderInfo: SenderInfo(moneySource: MoneySource.Bank),
-            type: TransferType.Commitment));
+            type: TransferType.User2OwnGoodWallet));
   }
 
   Future navigateToFavoriteCharitiesView() async {
@@ -195,9 +197,9 @@ class HomeViewModel extends TransferBaseViewModel {
 
   @override
   void dispose() {
-    _userDataService!
-        .pauseTransferDataListener(config: _queryConfigTransactionToPeers);
-    _userDataService!.pauseTransferDataListener(config: _queryConfigDonations);
+    _transfersManager!
+        .pauseTransferDataListener(config: _queryConfigTransfersToPeers);
+    _transfersManager!.pauseTransferDataListener(config: _queryConfigDonations);
     super.dispose();
   }
 }

@@ -9,7 +9,7 @@ import 'package:good_wallet/utils/logger.dart';
 // For info on json parsing see
 // @see https://dart.dev/tutorials/web/fetch-data
 
-class GlobalGivingAPIService {
+class GlobalGivingApi {
   final log = getLogger("global_giving_api_service.dart");
 
   final _firestoreApi = locator<FirestoreApi>();

@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/enums/auth_mode.dart';
 import 'package:good_wallet/enums/authentication_method.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/authentication_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -23,7 +21,7 @@ class LoginViewModel extends AuthenticationViewModel {
   @override
   Future<FirebaseAuthenticationResult> runAuthentication(
       AuthenticationMethod method) {
-    if (method == AuthenticationMethod.email) {
+    if (method == AuthenticationMethod.Email) {
       log.i("Login with e-mail");
       return _firebaseAuthenticationService!
           .loginWithEmail(email: emailValue!, password: passwordValue!);
@@ -53,49 +51,6 @@ class LoginViewModel extends AuthenticationViewModel {
   bool isPwShown = false;
   setIsPwShown(bool show) {
     isPwShown = show;
-    notifyListeners();
-  }
-
-  // ---------------------------------------
-  // To be visited, mostly deprecated code follows
-
-  final GlobalKey<FormState> _formKey = GlobalKey();
-  GlobalKey<FormState> get formKey => _formKey;
-
-  final Map<String, String> _authData = {
-    'email': '',
-    'password': '',
-    'name': '',
-  };
-  Map<String, String> get authData => _authData;
-
-  void setName(String name) {
-    _authData["name"] = name;
-  }
-
-  void setPassword(String password) {
-    _authData["password"] = password;
-  }
-
-  void setEmail(String email) {
-    _authData["email"] = email;
-  }
-
-  AuthMode _authMode = AuthMode.Login;
-  AuthMode get authMode => _authMode;
-  setAuthMode(AuthMode authMode) {
-    _authMode = authMode;
-    notifyListeners();
-  }
-
-  bool _hasError = false;
-  bool get hasError => _hasError;
-  String _errorMessage = "";
-  String get errorMessage => _errorMessage;
-
-  void setErrorMessage(bool hasError, String error) {
-    _hasError = hasError;
-    _errorMessage = error;
     notifyListeners();
   }
 }

@@ -5,11 +5,11 @@ import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/shared/money_transfers/transfer_history_entry_style.dart';
 
-import 'package:good_wallet/utils/logger.dart';
-
 // Get style for entry in recent activities / transfer history view
 TransferHistoryEntryStyle getTransactionsCorrespondingToTypeHistoryEntryStyle(
-    {required MoneyTransfer data, required TransferType type}) {
+    {required MoneyTransfer data,
+    required TransferType type,
+    required String uid}) {
   return data.map(
     donation: (value) => TransferHistoryEntryStyle(
       color: ColorSettings.primaryColor,
@@ -18,12 +18,12 @@ TransferHistoryEntryStyle getTransactionsCorrespondingToTypeHistoryEntryStyle(
       icon: Icon(Icons.favorite, color: ColorSettings.whiteTextColor, size: 22),
     ),
     peer2peer: (value) => TransferHistoryEntryStyle(
-      color: type == TransferType.Peer2PeerSent
+      color: value.transferDetails.senderId == uid
           ? MyColors.paletteBlue
           : MyColors.paletteTurquoise,
       descriptor:
-          type == TransferType.Peer2PeerSent ? "Gifted to" : "Received from",
-      nameToDisplay: type == TransferType.Peer2PeerSent
+          value.transferDetails.senderId == uid ? "Gifted to" : "Received from",
+      nameToDisplay: value.transferDetails.senderId == uid
           ? value.transferDetails.recipientName
           : value.transferDetails.senderName,
       icon: Image.asset(ImageIconPaths.huggingPeople,

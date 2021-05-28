@@ -3,17 +3,15 @@ import 'dart:async';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
-import 'package:good_wallet/services/globalgiving/global_giving_api_service.dart';
-import 'package:good_wallet/services/userdata/user_data_service.dart';
+import 'package:good_wallet/apis/global_giving_api.dart';
+import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 
 class WalletViewModel extends BaseModel {
   final NavigationService? _navigationService = locator<NavigationService>();
-  final UserDataService? _userDataService = locator<UserDataService>();
-  final GlobalGivingAPIService? _ggApiService =
-      locator<GlobalGivingAPIService>();
+  final GlobalGivingApi? _ggApiService = locator<GlobalGivingApi>();
 
   final log = getLogger("wallet_viewmodel.dart");
 

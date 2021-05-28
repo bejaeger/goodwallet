@@ -25,7 +25,7 @@ class SearchViewModel extends BaseModel {
       _navigationService!.replaceWith(Routes.transferFundsAmountView,
           arguments: TransferFundsAmountViewArguments(
               senderInfo: SenderInfo(moneySource: MoneySource.Bank),
-              type: TransferType.Peer2PeerSent,
+              type: TransferType.User2UserSent,
               recipientInfo: RecipientInfo.user(
                   name: userInfoList[index].name,
                   id: userInfoList[index].uid)));

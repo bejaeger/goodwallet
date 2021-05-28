@@ -1,1 +1,1 @@
-enum AuthenticationMethod { email, google, facebook, apple, dummy }
+enum AuthenticationMethod { Email, google, facebook, apple, dummy }

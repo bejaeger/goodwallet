@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/causes/concise_info/concise_project_info.dart';
-import 'package:good_wallet/datamodels/money_pools/base/concise_money_pool_info.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
@@ -15,9 +13,9 @@ import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/exceptions/money_transfer_exception.dart';
-import 'package:good_wallet/exceptions/user_data_service_exception.dart';
+import 'package:good_wallet/exceptions/user_service_exception.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
-import 'package:good_wallet/services/userdata/user_data_service.dart';
+import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -38,14 +36,14 @@ class TransferFundsAmountViewModel extends FormViewModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
-  final UserDataService? _userDataService = locator<UserDataService>();
+  final UserService? _userService = locator<UserService>();
   final DialogService? _dialogService = locator<DialogService>();
-  User get currentUser => _userDataService!.currentUser;
+  User get currentUser => _userService!.currentUser;
   final DummyPaymentService _dummyPaymentService =
       locator<DummyPaymentService>();
   final log = getLogger("transfer_funds_amount_viewmodel.dart");
   StreamSubscription<UserStatistics>? _walletSubscription;
-  UserStatistics get userStats => _userDataService!.userStats!;
+  UserStatistics get userStats => _userService!.userStats!;
 
   final TransferType type;
   final RecipientInfo? recipientInfo;
@@ -73,13 +71,13 @@ class TransferFundsAmountViewModel extends FormViewModel {
       notifyListeners();
     } else {
       amount = num.parse(amountValue!);
-      if (type == TransferType.PrepaidFund)
+      if (type == TransferType.User2OwnPrepaidFund)
         await handleTopUpPayment();
-      else if (type == TransferType.Peer2PeerSent) {
+      else if (type == TransferType.User2UserSent) {
         await handleTransfer(type: type);
-      } else if (type == TransferType.Donation) {
+      } else if (type == TransferType.User2Project) {
         await handleTransfer(type: type);
-      } else if (type == TransferType.MoneyPoolContribution) {
+      } else if (type == TransferType.User2MoneyPool) {
         await handleTransfer(type: type);
       } else {
         _snackbarService!.showSnackbar(
@@ -104,7 +102,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       log.i("Amount = ${double.parse(amountValue!)}  > 1000");
       setCustomValidationMessage(
           "Are you sure you want to top up as much as ${formatAmount(double.parse(amountValue!), true)}");
-    } else if (type == TransferType.Donation &&
+    } else if (type == TransferType.User2Project &&
         scaleAmountForStripe(double.parse(amountValue!)) >
             userStats.currentBalance) {
       setCustomValidationMessage(
@@ -117,7 +115,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
   // Will replace the current view with the one corresponding to the
   // selected payment method
   Future changePaymentMethod() async {
-    if (type == TransferType.MoneyPoolContribution) {
+    if (type == TransferType.User2MoneyPool) {
       SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
           title: "Select Payment Method",
           description: "OR add new payment method +",
@@ -142,7 +140,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       }
     }
 
-    if (type == TransferType.Donation) {
+    if (type == TransferType.User2Project) {
       SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
           title: "Select Payment Method",
           description: "OR add new payment method +",
@@ -205,7 +203,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       } catch (e) {
         if (e is MoneyTransferException) {
           await _showFailureDialog(e.prettyDetails);
-        } else if (e is UserDataServiceException) {
+        } else if (e is UserServiceException) {
           await _showFailureDialog(e.prettyDetails);
         } else {
           rethrow;
@@ -213,7 +211,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       }
       await _showAndAwaitSnackbar("Success! You are great :)");
 
-      if (type == TransferType.MoneyPoolContribution) {
+      if (type == TransferType.User2MoneyPool) {
         // navigate back to money pool
         navigateBack();
       } else {
@@ -286,7 +284,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
 
   Future _showPaymentMethodBottomSheet({TransferType? type}) async {
     String description = "OR add new payment method +";
-    if (type != null && type == TransferType.Donation) {
+    if (type != null && type == TransferType.User2Project) {
       description =
           "To keep growing and reach more people, the Good Wallet Foundation will take a default 5\% of your donation. You are free to choose a any other amount (NOT YET IMPLEMENTED). Thank you for your support!";
     }

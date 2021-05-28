@@ -8,8 +8,10 @@ part 'money_transfer_query_config.g.dart';
 class MoneyTransferQueryConfig with _$MoneyTransferQueryConfig {
   const factory MoneyTransferQueryConfig({
     required TransferType type,
-    Map<String, String>?
-        isEqualToFilter, // e.g. {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
+    String? recipientId,
+    String? senderId,
+    // Map<String, String>?
+    //     isEqualToFilter, // e.g. {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
     int? maxNumberReturns,
     bool? makeUniqueRecipient,
   }) = _MoneyTransferQueryConfig;

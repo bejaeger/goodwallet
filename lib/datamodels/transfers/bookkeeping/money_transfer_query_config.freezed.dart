@@ -23,12 +23,14 @@ class _$MoneyTransferQueryConfigTearOff {
 
   _MoneyTransferQueryConfig call(
       {required TransferType type,
-      Map<String, String>? isEqualToFilter,
+      String? recipientId,
+      String? senderId,
       int? maxNumberReturns,
       bool? makeUniqueRecipient}) {
     return _MoneyTransferQueryConfig(
       type: type,
-      isEqualToFilter: isEqualToFilter,
+      recipientId: recipientId,
+      senderId: senderId,
       maxNumberReturns: maxNumberReturns,
       makeUniqueRecipient: makeUniqueRecipient,
     );
@@ -45,8 +47,10 @@ const $MoneyTransferQueryConfig = _$MoneyTransferQueryConfigTearOff();
 /// @nodoc
 mixin _$MoneyTransferQueryConfig {
   TransferType get type => throw _privateConstructorUsedError;
-  Map<String, String>? get isEqualToFilter =>
-      throw _privateConstructorUsedError; // e.g. {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
+  String? get recipientId => throw _privateConstructorUsedError;
+  String? get senderId =>
+      throw _privateConstructorUsedError; // Map<String, String>?
+//     isEqualToFilter, // e.g. {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
   int? get maxNumberReturns => throw _privateConstructorUsedError;
   bool? get makeUniqueRecipient => throw _privateConstructorUsedError;
 
@@ -63,7 +67,8 @@ abstract class $MoneyTransferQueryConfigCopyWith<$Res> {
       _$MoneyTransferQueryConfigCopyWithImpl<$Res>;
   $Res call(
       {TransferType type,
-      Map<String, String>? isEqualToFilter,
+      String? recipientId,
+      String? senderId,
       int? maxNumberReturns,
       bool? makeUniqueRecipient});
 }
@@ -80,7 +85,8 @@ class _$MoneyTransferQueryConfigCopyWithImpl<$Res>
   @override
   $Res call({
     Object? type = freezed,
-    Object? isEqualToFilter = freezed,
+    Object? recipientId = freezed,
+    Object? senderId = freezed,
     Object? maxNumberReturns = freezed,
     Object? makeUniqueRecipient = freezed,
   }) {
@@ -89,10 +95,14 @@ class _$MoneyTransferQueryConfigCopyWithImpl<$Res>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as TransferType,
-      isEqualToFilter: isEqualToFilter == freezed
-          ? _value.isEqualToFilter
-          : isEqualToFilter // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
+      recipientId: recipientId == freezed
+          ? _value.recipientId
+          : recipientId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      senderId: senderId == freezed
+          ? _value.senderId
+          : senderId // ignore: cast_nullable_to_non_nullable
+              as String?,
       maxNumberReturns: maxNumberReturns == freezed
           ? _value.maxNumberReturns
           : maxNumberReturns // ignore: cast_nullable_to_non_nullable
@@ -114,7 +124,8 @@ abstract class _$MoneyTransferQueryConfigCopyWith<$Res>
   @override
   $Res call(
       {TransferType type,
-      Map<String, String>? isEqualToFilter,
+      String? recipientId,
+      String? senderId,
       int? maxNumberReturns,
       bool? makeUniqueRecipient});
 }
@@ -134,7 +145,8 @@ class __$MoneyTransferQueryConfigCopyWithImpl<$Res>
   @override
   $Res call({
     Object? type = freezed,
-    Object? isEqualToFilter = freezed,
+    Object? recipientId = freezed,
+    Object? senderId = freezed,
     Object? maxNumberReturns = freezed,
     Object? makeUniqueRecipient = freezed,
   }) {
@@ -143,10 +155,14 @@ class __$MoneyTransferQueryConfigCopyWithImpl<$Res>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as TransferType,
-      isEqualToFilter: isEqualToFilter == freezed
-          ? _value.isEqualToFilter
-          : isEqualToFilter // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
+      recipientId: recipientId == freezed
+          ? _value.recipientId
+          : recipientId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      senderId: senderId == freezed
+          ? _value.senderId
+          : senderId // ignore: cast_nullable_to_non_nullable
+              as String?,
       maxNumberReturns: maxNumberReturns == freezed
           ? _value.maxNumberReturns
           : maxNumberReturns // ignore: cast_nullable_to_non_nullable
@@ -164,7 +180,8 @@ class __$MoneyTransferQueryConfigCopyWithImpl<$Res>
 class _$_MoneyTransferQueryConfig implements _MoneyTransferQueryConfig {
   const _$_MoneyTransferQueryConfig(
       {required this.type,
-      this.isEqualToFilter,
+      this.recipientId,
+      this.senderId,
       this.maxNumberReturns,
       this.makeUniqueRecipient});
 
@@ -174,15 +191,18 @@ class _$_MoneyTransferQueryConfig implements _MoneyTransferQueryConfig {
   @override
   final TransferType type;
   @override
-  final Map<String, String>? isEqualToFilter;
-  @override // e.g. {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
+  final String? recipientId;
+  @override
+  final String? senderId;
+  @override // Map<String, String>?
+//     isEqualToFilter, // e.g. {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
   final int? maxNumberReturns;
   @override
   final bool? makeUniqueRecipient;
 
   @override
   String toString() {
-    return 'MoneyTransferQueryConfig(type: $type, isEqualToFilter: $isEqualToFilter, maxNumberReturns: $maxNumberReturns, makeUniqueRecipient: $makeUniqueRecipient)';
+    return 'MoneyTransferQueryConfig(type: $type, recipientId: $recipientId, senderId: $senderId, maxNumberReturns: $maxNumberReturns, makeUniqueRecipient: $makeUniqueRecipient)';
   }
 
   @override
@@ -191,9 +211,12 @@ class _$_MoneyTransferQueryConfig implements _MoneyTransferQueryConfig {
         (other is _MoneyTransferQueryConfig &&
             (identical(other.type, type) ||
                 const DeepCollectionEquality().equals(other.type, type)) &&
-            (identical(other.isEqualToFilter, isEqualToFilter) ||
+            (identical(other.recipientId, recipientId) ||
                 const DeepCollectionEquality()
-                    .equals(other.isEqualToFilter, isEqualToFilter)) &&
+                    .equals(other.recipientId, recipientId)) &&
+            (identical(other.senderId, senderId) ||
+                const DeepCollectionEquality()
+                    .equals(other.senderId, senderId)) &&
             (identical(other.maxNumberReturns, maxNumberReturns) ||
                 const DeepCollectionEquality()
                     .equals(other.maxNumberReturns, maxNumberReturns)) &&
@@ -206,7 +229,8 @@ class _$_MoneyTransferQueryConfig implements _MoneyTransferQueryConfig {
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(type) ^
-      const DeepCollectionEquality().hash(isEqualToFilter) ^
+      const DeepCollectionEquality().hash(recipientId) ^
+      const DeepCollectionEquality().hash(senderId) ^
       const DeepCollectionEquality().hash(maxNumberReturns) ^
       const DeepCollectionEquality().hash(makeUniqueRecipient);
 
@@ -225,7 +249,8 @@ class _$_MoneyTransferQueryConfig implements _MoneyTransferQueryConfig {
 abstract class _MoneyTransferQueryConfig implements MoneyTransferQueryConfig {
   const factory _MoneyTransferQueryConfig(
       {required TransferType type,
-      Map<String, String>? isEqualToFilter,
+      String? recipientId,
+      String? senderId,
       int? maxNumberReturns,
       bool? makeUniqueRecipient}) = _$_MoneyTransferQueryConfig;
 
@@ -235,9 +260,11 @@ abstract class _MoneyTransferQueryConfig implements MoneyTransferQueryConfig {
   @override
   TransferType get type => throw _privateConstructorUsedError;
   @override
-  Map<String, String>? get isEqualToFilter =>
-      throw _privateConstructorUsedError;
-  @override // e.g. {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
+  String? get recipientId => throw _privateConstructorUsedError;
+  @override
+  String? get senderId => throw _privateConstructorUsedError;
+  @override // Map<String, String>?
+//     isEqualToFilter, // e.g. {"moneyPoolInfo.moneyPoolId": moneyPool.moneyPoolId},
   int? get maxNumberReturns => throw _privateConstructorUsedError;
   @override
   bool? get makeUniqueRecipient => throw _privateConstructorUsedError;

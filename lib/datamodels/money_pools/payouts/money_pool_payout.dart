@@ -27,8 +27,6 @@ class MoneyPoolPayout with _$MoneyPoolPayout {
     required List<String> paidOutUsersIds,
     required MoneyPool moneyPool,
     required dynamic createdAt,
-    @Default(TransferType.MoneyPoolPayout)
-        TransferType type,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
     @JsonKey(

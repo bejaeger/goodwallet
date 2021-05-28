@@ -5,16 +5,16 @@ import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/money_pools/money_pools_service.dart';
-import 'package:good_wallet/services/userdata/user_data_service.dart';
+import 'package:good_wallet/services/user/user_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 
 class StartUpLogicViewModel extends BaseViewModel {
-  final UserDataService? _userDataService = locator<UserDataService>();
+  final UserService? _userService = locator<UserService>();
   final NavigationService? _navigationService = locator<NavigationService>();
-  final MoneyPoolsService? _moneyPoolService = locator<MoneyPoolsService>();
-  User get currentUser => _userDataService!.currentUser;
+  final MoneyPoolsService? _moneyPoolsService = locator<MoneyPoolsService>();
+  User get currentUser => _userService!.currentUser;
 
   final log = getLogger("startup_logic_viewmodel.dart");
 
@@ -22,13 +22,13 @@ class StartUpLogicViewModel extends BaseViewModel {
   StreamSubscription? _userStateSubscription;
 
   void handleStartUpLogic() {
-    _userStateSubscription = _userDataService!.userStateSubject.listen(
+    _userStateSubscription = _userService!.userStateSubject.listen(
       (state) async {
         log.v("Listening to auth state change update: state = $state");
         userStatus = state;
         if (state == UserStatus.Initialized) {
           log.i("User already signed in, navigating to home view");
-          _moneyPoolService!.init(uid: currentUser.uid);
+          _moneyPoolsService!.init(uid: currentUser.uid);
           _navigationService!.replaceWith(
             Routes.layoutTemplateViewMobile,
           );
