@@ -80,85 +80,91 @@ function getUserSummaryStatisticsDocument(uid) {
 
 /* -------------- Money Transfers ------------------ */
 
-/* This needs to be changed to onUpdate after the entire stripe transaction has been dealt with! */
-exports.processMoneyTransfer = functions.firestore
-  .document('payments/{transferId}')
-  .onCreate(async (snap, context) => {
-    try {
-      // Add payment_method here and so to transaction model!
-      const { transferDetails, type } = snap.data();
+exports.processMoneyTransfer = functions.https.onCall(async (data, context) => {
+  try {
 
-      if (type === "User2User") { // peer 2 peer transfer
-        const recipientId = transferDetails["recipientId"];
-        const senderId = transferDetails["recipientId"];
-        const amount = transferDetails["amount"];
+    // Add payment_method here and so to transaction model!
+    const { transferDetails, type } = data;
 
-        const increment = admin.firestore.FieldValue.increment(amount);
-        const docRefRecipient = getUserSummaryStatisticsDocument(recipientId);
-        await docRefRecipient.update({
-          currentBalance: increment,
-          "moneyTransferStatistics.totalRaised": increment
-        });
-        const docRefSender = getUserSummaryStatisticsDocument(senderId);
-        await docRefSender.update({
-          "moneyTransferStatistics.totalSentToPeers": increment
-        });
-      }
+    let doc = await db.collection("transfers").doc();
+    data.createdAt = admin.firestore.FieldValue.serverTimestamp();
+    data.transferId = doc.id;
+    await doc.set(data);
 
-      if (type === "User2Project") { // Donation
+    if (type === "User2User") { // peer 2 peer transfer
+      const recipientId = transferDetails["recipientId"];
+      const senderId = transferDetails["senderId"];
+      const amount = transferDetails["amount"];
 
-        // TODO: Update causes balance
-        const senderId = transferDetails["senderId"];
-        const amount = transferDetails["amount"];
-        const sourceType = transferDetails["sourceType"];
+      const increment = admin.firestore.FieldValue.increment(amount);
+      const docRefRecipient = getUserSummaryStatisticsDocument(recipientId);
+      const docRefSender = getUserSummaryStatisticsDocument(senderId);
 
-        let valueToDeduct;
-        if (sourceType === "Bank") valueToDeduct = 0;
-        if (sourceType === "GoodWallet") valueToDeduct = -amount;
-        const deduct = admin.firestore.FieldValue.increment(valueToDeduct);
+      const batch = db.batch();
+      batch.update(docRefRecipient,{
+        currentBalance: increment,
+        "moneyTransferStatistics.totalRaised": increment
+      });
+      batch.update(docRefSender,{
+        "moneyTransferStatistics.totalSentToPeers": increment        
+      });
+      await batch.commit();
 
-        const add = admin.firestore.FieldValue.increment(amount);
-        const docRef = getUserSummaryStatisticsDocument(senderId);
-        await docRef.update({
-          currentBalance: deduct,
-          "donationStatistics.totalDonations": add
-        });
-      }
-
-      if (type === "User2MoneyPool") { // Donation
-
-        // TODO: Update causes balance
-        const senderId = transferDetails["senderId"];
-        const amount = transferDetails["amount"];
-        const { moneyPoolInfo } = snap.data();
-        const moneyPoolId = moneyPoolInfo["moneyPoolId"];
-
-        // update contributingUsers array
-        let snapshot = await db.collection("moneyPools").doc(moneyPoolId).get();
-        if (snapshot.exists) {
-          let userList = snapshot.data()['contributingUsers'];
-          let newContributingUsers = userList.map(element => {
-            if (element["uid"] === senderId) element["contribution"] = element["contribution"] + amount;
-            return element;
-          });
-          const increment = admin.firestore.FieldValue.increment(amount);
-          await db.collection("moneyPools").doc(moneyPoolId).update(
-            {
-              total: increment,
-              contributingUsers: newContributingUsers,
-            }
-          );
-        }
-
-      }
-      return;
-    } catch (error) {
-      await snap.ref.set({ error: userFacingMessage(error) }, { merge: true });
-      reportError(error.message, { transferId: context.params.transferId });
     }
-  }
-  );
 
+    if (type === "User2Project") { // Donation
+
+      // TODO: Update causes balance
+      const senderId = transferDetails["senderId"];
+      const amount = transferDetails["amount"];
+      const sourceType = transferDetails["sourceType"];
+
+      let valueToDeduct;
+      if (sourceType === "Bank") valueToDeduct = 0;
+      if (sourceType === "GoodWallet") valueToDeduct = -amount;
+      const deduct = admin.firestore.FieldValue.increment(valueToDeduct);
+
+      const add = admin.firestore.FieldValue.increment(amount);
+      const docRef = getUserSummaryStatisticsDocument(senderId);
+      await docRef.update({
+        currentBalance: deduct,
+        "donationStatistics.totalDonations": add
+      });
+    }
+
+    if (type === "User2MoneyPool") { // Donation
+
+      // TODO: Update causes balance
+      const senderId = transferDetails["senderId"];
+      const amount = transferDetails["amount"];
+      const { moneyPoolInfo } = data;
+      const moneyPoolId = moneyPoolInfo["moneyPoolId"];
+
+      // update contributingUsers array
+      let snapshot = await db.collection("moneyPools").doc(moneyPoolId).get();
+      if (snapshot.exists) {
+        let userList = snapshot.data()['contributingUsers'];
+        let newContributingUsers = userList.map(element => {
+          if (element["uid"] === senderId) element["contribution"] = element["contribution"] + amount;
+          return element;
+        });
+        const increment = admin.firestore.FieldValue.increment(amount);
+        await db.collection("moneyPools").doc(moneyPoolId).update(
+          {
+            total: increment,
+            contributingUsers: newContributingUsers,
+          }
+        );
+      }
+    }
+    
+    return returnData({transferId: doc.id});
+  } catch (error) {
+    reportError(error.message, { transferId: data.transferId });
+    return returnError("Something went wrong, error: ".concat(error.message));
+  }
+}
+);
 
 /* -------------- Money Pool Payout ------------------ */
 
@@ -197,7 +203,7 @@ exports.processMoneyPoolPayout = functions.firestore
       await batch.commit();
 
       // Save money pool payout document in firestore payments collection?
-      //db.collection("payments").add();
+      //db.collection("transfers").add();
 
       return;
     } catch (error) {
@@ -211,8 +217,30 @@ exports.processMoneyPoolPayout = functions.firestore
 
 /* ------------------ Helpers ------------------ */
 
+// Return objects
+function returnError(errorMessage) {
+  return {
+    data: null,
+    error: {
+      message: errorMessage
+    }
+  };
+}
 
-// [START reporterror]
+function returnData(data) {
+  return {
+    data: data,
+    error: null
+  };
+}
+
+function returnSuccess() {
+  return {
+    data: null,
+    error: null,
+  };
+}
+
 
 function reportError(err, context = {}) {
   /* Have simple error logging for now!*/

@@ -13,6 +13,10 @@ part 'money_transfer.g.dart';
 class MoneyTransfer with _$MoneyTransfer {
   const MoneyTransfer._(); // private constructor for implemented methods to work
 
+  // This function is deprecated for now since
+  // we create the document in a server function now.
+  // This means the document id will be added in this
+  // server function.
   static String _checkIftransferIdIsSet(String id) {
     if (id == "placeholder") {
       throw DataModelException(
@@ -30,14 +34,15 @@ class MoneyTransfer with _$MoneyTransfer {
   @JsonSerializable(explicitToJson: true)
   const factory MoneyTransfer.peer2peer({
     required TransferDetails transferDetails,
-    required dynamic createdAt,
+    @Default("")
+        dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
     @Default(TransferType.User2User)
         TransferType type,
     @JsonKey(
       name: "transferId",
-      toJson: MoneyTransfer._checkIftransferIdIsSet,
+      //toJson: MoneyTransfer._checkIftransferIdIsSet,
     )
     @Default("placeholder")
         String transferId,
@@ -50,14 +55,15 @@ class MoneyTransfer with _$MoneyTransfer {
   const factory MoneyTransfer.donation({
     required TransferDetails transferDetails,
     required ConciseProjectInfo projectInfo,
-    required dynamic createdAt,
+    @Default("")
+        dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
     @Default(TransferType.User2Project)
         TransferType type,
     @JsonKey(
       name: "transferId",
-      toJson: MoneyTransfer._checkIftransferIdIsSet,
+      //toJson: MoneyTransfer._checkIftransferIdIsSet,
     )
     @Default("placeholder")
         String transferId,
@@ -70,14 +76,15 @@ class MoneyTransfer with _$MoneyTransfer {
   const factory MoneyTransfer.moneyPoolContribution({
     required TransferDetails transferDetails,
     required ConciseMoneyPoolInfo moneyPoolInfo,
-    required dynamic createdAt,
+    @Default("")
+        dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
     @Default(TransferType.User2MoneyPool)
         TransferType type,
     @JsonKey(
       name: "transferId",
-      toJson: MoneyTransfer._checkIftransferIdIsSet,
+      //toJson: MoneyTransfer._checkIftransferIdIsSet,
     )
     @Default("placeholder")
         String transferId,
@@ -93,14 +100,15 @@ class MoneyTransfer with _$MoneyTransfer {
     // id of money pool payout that stores
     // entire info of money pool payout
     required String payoutId,
-    required dynamic createdAt,
+    @Default("")
+        dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
     @Default(TransferType.MoneyPool2User)
         TransferType type,
     @JsonKey(
       name: "transferId",
-      toJson: MoneyTransfer._checkIftransferIdIsSet,
+      //toJson: MoneyTransfer._checkIftransferIdIsSet,
     )
     @Default("placeholder")
         String transferId,

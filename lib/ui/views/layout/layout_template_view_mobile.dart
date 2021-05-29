@@ -5,6 +5,7 @@ import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_viewmodel.dart';
 import 'package:good_wallet/ui/views/money_pools/money_pools_view.dart';
+import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
 import 'package:good_wallet/ui/views/projects/projects_view.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:stacked/stacked.dart';
@@ -87,7 +88,8 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
       HomeViewMobile(showDialog: widget.showDialog),
       ProjectsView(),
       //CausesFilterViewMobile(initialIndex: widget.initialTabBarIndex),
-      MoneyPoolsView()
+      MoneyPoolsView(),
+      ProfileViewMobile(),
     ];
   }
 
@@ -138,6 +140,14 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
         title: ("Money Pools"),
         activeColorPrimary: ColorSettings.primaryColor,
         inactiveColorPrimary: ColorSettings.greyTextColor,
+      ),
+      PersistentBottomNavBarItem(
+        icon: Icon(
+          Icons.person,
+        ),
+        title: ("Profile"),
+        activeColorPrimary: ColorSettings.primaryColor,
+        inactiveColorPrimary: ColorSettings.greyTextColor!,
       ),
     ];
   }

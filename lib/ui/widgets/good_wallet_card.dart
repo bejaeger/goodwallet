@@ -47,7 +47,7 @@ class GoodWalletCard extends StatelessWidget {
       onTap: onCardTap,
       child: Card(
         clipBehavior: Clip.hardEdge,
-        elevation: 5.0,
+        elevation: 10.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),
@@ -81,8 +81,8 @@ class GoodWalletCard extends StatelessWidget {
                     colors: [
                       // Colors.white.withOpacity(0.2),
                       // Colors.white.withOpacity(0.9),
-                      MyColors.paletteBlue.withOpacity(0.8),
-                      MyColors.paletteBlue.withOpacity(0.8),
+                      MyColors.paletteBlue.withOpacity(0.0),
+                      MyColors.paletteBlue.withOpacity(0.0),
                     ],
                   ),
                 ),
@@ -108,7 +108,7 @@ class GoodWalletCard extends StatelessWidget {
                               children: [
                                 Text(
                                   "Your Balance",
-                                  style: textTheme(context).bodyText1!.copyWith(
+                                  style: textTheme(context).bodyText2!.copyWith(
                                         fontSize: 20,
                                       ),
                                 ),
@@ -116,7 +116,7 @@ class GoodWalletCard extends StatelessWidget {
                                 Text(
                                   formatAmount(currentBalance),
                                   maxLines: 1,
-                                  style: textTheme(context).headline1!.copyWith(
+                                  style: textTheme(context).headline2!.copyWith(
                                         fontSize: 32,
                                       ),
                                 ),
@@ -124,7 +124,7 @@ class GoodWalletCard extends StatelessWidget {
                                 Text(
                                   "To be donated",
                                   maxLines: 1,
-                                  style: textTheme(context).bodyText1!.copyWith(
+                                  style: textTheme(context).bodyText2!.copyWith(
                                         fontSize: 13,
                                       ),
                                 ),
@@ -328,7 +328,7 @@ class GoodWalletCard extends StatelessWidget {
           ),
           Text("QR code",
               style: textTheme(context)
-                  .bodyText1!
+                  .bodyText2!
                   .copyWith(fontWeight: FontWeight.bold, fontSize: 16))
         ],
       ),
@@ -340,14 +340,11 @@ class GoodWalletCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          label,
-          style: textTheme(context).bodyText1!,
-        ),
+        Text(label, style: textTheme(context).bodyText2!),
         Text(
           count,
           style: textTheme(context)
-              .bodyText1!
+              .bodyText2!
               .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
         ),
       ],

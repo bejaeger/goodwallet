@@ -14,7 +14,6 @@ import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_quer
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
-import 'package:good_wallet/exceptions/transfers_manager_exception.dart';
 import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/utils/logger.dart';
 
