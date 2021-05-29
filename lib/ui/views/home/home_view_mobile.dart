@@ -40,11 +40,11 @@ class HomeViewMobile extends StatelessWidget {
                 slivers: [
                   CustomSliverAppBarSmall(
                     title: "Home",
-                    onSecondRightIconPressed: model.navigateToProfileView,
-                    secondRightIcon: Icon(
-                      Icons.person,
-                      size: 28,
-                    ),
+                    // onSecondRightIconPressed: model.navigateToProfileView,
+                    // secondRightIcon: Icon(
+                    //   Icons.person,
+                    //   size: 28,
+                    // ),
                     onRightIconPressed: model.navigateToNotificationsView,
                     rightIcon: Icon(Icons.notifications_none_rounded, size: 28),
                   ),
@@ -111,58 +111,62 @@ class HomeViewMobile extends StatelessWidget {
                                   title: "Recent Activities",
                                   onTextButtonTap:
                                       model.navigateToTransfersHistoryView),
-                              // TODO: Make widget out of the following three!
-                              if (model.latestTransfers.length == 0)
+                              if (model.latestTransfers.length == 0) ...[
                                 Divider(
                                   color: Colors.grey[500],
                                   thickness: 0.5,
                                 ),
-                              if (model.latestTransfers.length == 0)
                                 ListTile(
                                     title: Text(
                                         "Make a new donation or send money")),
-                              if (model.latestTransfers.length == 0)
                                 Divider(
                                   color: Colors.grey[500],
                                   thickness: 0.5,
                                 ),
+                              ],
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal:
-                                        LayoutSettings.horizontalPadding),
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: ScrollPhysics(),
-                                  itemCount: model.latestTransfers.length > 3
-                                      ? 3
-                                      : model.latestTransfers.length,
-                                  itemBuilder: (context, index) {
-                                    var data = model.latestTransfers[index];
-                                    return TransferListTile(
-                                      onTap: () => model
-                                          .showMoneyTransferInfoDialog(data),
-                                      dense: true,
-                                      showBottomDivider: index < 3,
-                                      showTopDivider: index == 0,
-                                      transaction: data,
-                                      style:
-                                          getTransactionsCorrespondingToTypeHistoryEntryStyle(
-                                              data: data,
-                                              type: data.type,
-                                              uid: model.currentUser.uid),
-                                      amount: data.transferDetails.amount,
-                                    );
-                                  },
+                                        LayoutSettings.horizontalPadding + 5.0),
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: Colors.transparent,
+                                    border:
+                                        Border.all(color: Colors.grey[400]!),
+                                    borderRadius: BorderRadius.circular(16.0),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10.0, horizontal: 5.0),
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: ScrollPhysics(),
+                                      itemCount:
+                                          model.latestTransfers.length > 3
+                                              ? 3
+                                              : model.latestTransfers.length,
+                                      itemBuilder: (context, index) {
+                                        var data = model.latestTransfers[index];
+                                        return TransferListTile(
+                                          onTap: () =>
+                                              model.showMoneyTransferInfoDialog(
+                                                  data),
+                                          dense: true,
+                                          showBottomDivider: index < 2,
+                                          showTopDivider: false,
+                                          transaction: data,
+                                          style:
+                                              getTransactionsCorrespondingToTypeHistoryEntryStyle(
+                                                  data: data,
+                                                  type: data.type,
+                                                  uid: model.currentUser.uid),
+                                          amount: data.transferDetails.amount,
+                                        );
+                                      },
+                                    ),
+                                  ),
                                 ),
                               ),
-                              // FeaturedProjectsCarousel(model: model),
-                              // verticalSpaceMedium,
-                              // SectionHeader(
-                              //   title: "Stats",
-                              //   //onTextButtonTap: model.showNotImplementedSnackbar,
-                              // ),
-                              // verticalSpaceTiny,
-                              // StatisticsDisplay(model: model),
                               verticalSpaceRegular,
                               SectionHeader(
                                 title: "Featured apps",
@@ -170,14 +174,6 @@ class HomeViewMobile extends StatelessWidget {
                                     model.showNotImplementedSnackbar,
                               ),
                               FeaturedAppsCarousel(model: model),
-                              // verticalSpaceRegular,
-                              // SectionHeader(
-                              //     title: "Projects you supported",
-                              //     onTextButtonTap:
-                              //         model.showNotImplementedSnackbar),
-                              // FeaturedProjectsCarousel(model: model),
-                              // //FeaturedAppsCarousel(model: model),
-                              // verticalSpaceMedium,
                               verticalSpaceMassive,
                             ],
                           ),
@@ -201,21 +197,21 @@ class HomeViewMobile extends StatelessWidget {
             CallToActionButtonRound(
               text: "Send money",
               onPressed: model.showSendMoneyBottomSheet,
-              color: ColorSettings.primaryColorDark.withOpacity(0.8),
+              color: ColorSettings.primaryColorDark.withOpacity(0.7),
               icon:
                   Icon(Icons.send_rounded, color: ColorSettings.whiteTextColor),
             ),
             CallToActionButtonRound(
               text: "Commit money",
               onPressed: model.navigateToCommitMoneyView,
-              color: ColorSettings.primaryColorDark.withOpacity(0.8),
+              color: ColorSettings.primaryColorDark.withOpacity(0.7),
               icon: Image.asset(ImageIconPaths.agreeingHands,
                   color: ColorSettings.whiteTextColor),
             ),
             CallToActionButtonRound(
               text: "Donate",
               onPressed: model.showDonationBottomSheet,
-              color: ColorSettings.primaryColorDark.withOpacity(0.8),
+              color: ColorSettings.primaryColorDark.withOpacity(0.7),
               icon: Icon(Icons.favorite_rounded,
                   color: ColorSettings.whiteTextColor),
             ),

@@ -8,7 +8,7 @@ import 'package:good_wallet/enums/transfer_status.dart';
 
 class FirestorePaymentDataService {
   final CollectionReference _paymentsCollectionReference =
-      FirebaseFirestore.instance.collection("payments");
+      FirebaseFirestore.instance.collection("transfers");
 
   CollectionReference getPaymentIntentCollectionRef(var uid) {
     return FirebaseFirestore.instance

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/datamodels/money_pools/base/concise_money_pool_info.dart';
@@ -24,7 +25,7 @@ class FirestoreApi {
   final String userStatisticsCollectionKey = "statistics";
   final String userSummaryStatisticsDocumentKey = "summaryStats";
   final CollectionReference _paymentsCollection =
-      FirebaseFirestore.instance.collection('payments');
+      FirebaseFirestore.instance.collection('transfers');
   final CollectionReference _moneyPoolPayoutsCollection =
       FirebaseFirestore.instance.collection("moneyPoolPayouts");
   final CollectionReference _moneyPoolsCollection =
@@ -267,15 +268,29 @@ class FirestoreApi {
   // Push transfer document to firestore
   Future createMoneyTransfer({required MoneyTransfer moneyTransfer}) async {
     try {
-      final docRef = _paymentsCollection.doc();
-      final newTransfer = moneyTransfer.copyWith(transferId: docRef.id);
-      await docRef.set(newTransfer.toJson());
-      log.i(
-          "Added the following transfer document to ${docRef.path}: ${newTransfer.toJson()}");
+      HttpsCallable callable =
+          FirebaseFunctions.instance.httpsCallable('processMoneyTransfer');
+      final HttpsCallableResult<dynamic> result =
+          await callable(moneyTransfer.toJson());
+      if (result.data["error"] == null) {
+        log.i(
+            "Added the following transfer document to ${result.data["data"]["transferId"]}: ${moneyTransfer.toJson()}");
+      } else {
+        log.e(
+            "Error when creating money transfer: ${result.data["error"]["message"]}");
+        throw FirestoreApiException(
+            message:
+                "An error occured in the cloud function 'processMoneyTransferCallable'",
+            devDetails:
+                "Error message from cloud function: ${result.data["error"]["message"]}",
+            prettyDetails:
+                "An internal error occured on our side, please apologize and try again later.");
+      }
     } catch (e) {
       log.e("Couldn't process transfer: ${e.toString()}");
       throw FirestoreApiException(
-          message: "Something failed when pushing the data to Firestore",
+          message:
+              "Something failed when calling the https function processMoneyTransferCallable",
           devDetails:
               "This should not happen and is due to an error on the Firestore side or the datamodels that were being pushed!",
           prettyDetails:
@@ -283,7 +298,7 @@ class FirestoreApi {
     }
   }
 
-  // -> Might become a cloud function?
+  // -> TODO: handle it in a cloud function?
   // This will add the money pool payout document and also
   // create single money transfer documents. This makes it easy
   // to bookkeep things

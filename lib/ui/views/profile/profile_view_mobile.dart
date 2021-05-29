@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
-import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/profile/profile_viewmodel.dart';
-import 'package:good_wallet/ui/widgets/donation_dashboard_card.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
-import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 
 class ProfileViewMobile extends StatelessWidget {
@@ -193,7 +189,7 @@ class ProfileViewMobile extends StatelessWidget {
                   children: [
                     Stack(
                       children: <Widget>[
-                        _buildCoverImage(screenSize(context)),
+                        //_buildCoverImage(screenSize(context)),
                         Padding(
                           padding: const EdgeInsets.only(
                               top: 10.0, left: 20.0, right: 20.0),
@@ -226,7 +222,7 @@ class ProfileViewMobile extends StatelessWidget {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
-                            SizedBox(height: screenHeight(context) / 5),
+                            verticalSpaceLarge,
                             _buildProfileImage(),
                             _buildFullName(context),
                             _buildStatus(context),
@@ -236,20 +232,24 @@ class ProfileViewMobile extends StatelessWidget {
                         ),
                       ],
                     ),
-                    verticalSpaceMediumLarge,
+                    verticalSpaceRegular,
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: Column(
                         children: [
                           ProfileListItem(
-                            title: "Donations History",
+                            title: "Transfer History",
                             onPressed: model.navigateToDonationsHistoryView,
                           ),
                           verticalSpaceSmall,
                           ProfileListItem(
                             title: "Payment Methods",
-                            onPressed: model.navigateToDonationsHistoryView,
+                            onPressed: model.showNotImplementedSnackbar,
                           ),
+                          verticalSpaceSmall,
+                          ProfileListItem(
+                              title: "Set Giving Goals",
+                              onPressed: model.showNotImplementedSnackbar),
                           verticalSpaceSmall,
                           ProfileListItem(
                               title: "Invite Friends",

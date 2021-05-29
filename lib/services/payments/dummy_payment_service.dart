@@ -17,7 +17,7 @@ class DummyPaymentService {
 
   Future processTransfer({required MoneyTransfer moneyTransfer}) async {
     try {
-      _firestoreApi.createMoneyTransfer(moneyTransfer: moneyTransfer);
+      await _firestoreApi.createMoneyTransfer(moneyTransfer: moneyTransfer);
     } catch (e) {
       log.e("Couldn't process Dummy Transfer: ${e.toString()}");
       rethrow;

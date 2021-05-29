@@ -12,6 +12,7 @@ import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
+import 'package:good_wallet/exceptions/firestore_api_exception.dart';
 import 'package:good_wallet/exceptions/money_transfer_exception.dart';
 import 'package:good_wallet/exceptions/user_service_exception.dart';
 import 'package:good_wallet/services/payments/dummy_payment_service.dart';
@@ -183,7 +184,6 @@ class TransferFundsAmountViewModel extends FormViewModel {
   Future handleTransfer({required TransferType type}) async {
     SheetResponse? sheetResponse =
         await _showPaymentMethodBottomSheet(type: type);
-    setBusy(true);
     if (sheetResponse?.confirmed == false) {
       // Ask for another final confirmation
       SheetResponse? finalConfirmation =
@@ -196,20 +196,27 @@ class TransferFundsAmountViewModel extends FormViewModel {
       }
 
       // FOR now, implemented dummy payment processing here
+      setBusy(true);
       try {
         final data = prepareTransferData();
-        _dummyPaymentService.processTransfer(moneyTransfer: data);
+        await _dummyPaymentService.processTransfer(moneyTransfer: data);
         log.i("Processed transfer: $data");
       } catch (e) {
         if (e is MoneyTransferException) {
           await _showFailureDialog(e.prettyDetails);
         } else if (e is UserServiceException) {
           await _showFailureDialog(e.prettyDetails);
+        } else if (e is FirestoreApiException) {
+          await _showFailureDialog(e.prettyDetails);
         } else {
           rethrow;
         }
+        setBusy(false);
+        clearTillFirstAndShowHomeScreen();
+        return;
       }
       await _showAndAwaitSnackbar("Success! You are great :)");
+      setBusy(false);
 
       if (type == TransferType.User2MoneyPool) {
         // navigate back to money pool
@@ -221,7 +228,6 @@ class TransferFundsAmountViewModel extends FormViewModel {
     } else if (sheetResponse?.confirmed == true) {
       await _showAndAwaitSnackbar("Not supported at the moment, sorry!");
     }
-    setBusy(false);
   }
 
   // returning the money transfer object that will be pushed to firestore
@@ -244,16 +250,13 @@ class TransferFundsAmountViewModel extends FormViewModel {
         donation: (value) => MoneyTransfer.donation(
           transferDetails: transferDetails,
           projectInfo: value.projectInfo,
-          createdAt: FieldValue.serverTimestamp(),
         ),
         moneyPool: (value) => MoneyTransfer.moneyPoolContribution(
           transferDetails: transferDetails,
           moneyPoolInfo: value.moneyPoolInfo,
-          createdAt: FieldValue.serverTimestamp(),
         ),
         orElse: () => MoneyTransfer.peer2peer(
           transferDetails: transferDetails,
-          createdAt: FieldValue.serverTimestamp(),
         ),
       );
       return data;
@@ -296,10 +299,9 @@ class TransferFundsAmountViewModel extends FormViewModel {
   }
 
   Future _showFailureDialog(String? message) async {
-    return await _dialogService!.showConfirmationDialog(
-      title: 'Failure',
+    return await _dialogService!.showDialog(
+      title: 'Error',
       description: message,
-      confirmationTitle: 'Ok',
       dialogPlatform: DialogPlatform.Material,
     );
   }
