@@ -106,7 +106,7 @@ class HomeViewMobile extends StatelessWidget {
                               ),
                               //verticalSpaceTiny,
                               //_sendMoneyButton(context, model),
-                              verticalSpaceTiny,
+                              //verticalSpaceTiny,
                               SectionHeader(
                                   title: "Recent Activities",
                                   onTextButtonTap:

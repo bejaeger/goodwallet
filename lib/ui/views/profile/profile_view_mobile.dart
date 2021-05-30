@@ -3,6 +3,7 @@ import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/views/profile/profile_viewmodel.dart';
+import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -187,49 +188,16 @@ class ProfileViewMobile extends StatelessWidget {
               ? Center(child: CircularProgressIndicator())
               : ListView(
                   children: [
-                    Stack(
+                    CustomAppBarSmall(title: "Your Account"),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
-                        //_buildCoverImage(screenSize(context)),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 10.0, left: 20.0, right: 20.0),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              alignment: Alignment.centerLeft,
-                              icon: Icon(
-                                Icons.close,
-                                color: ColorSettings.greyTextColor,
-                                size: 28,
-                              ),
-                              onPressed: model.navigateBack,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 10.0, left: 20.0, right: 20.0),
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                              onPressed: model.showNotImplementedSnackbar,
-                              icon: Icon(Icons.settings,
-                                  color: ColorSettings.greyTextColor, size: 25),
-                            ),
-                          ),
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            verticalSpaceLarge,
-                            _buildProfileImage(),
-                            _buildFullName(context),
-                            _buildStatus(context),
-                            _buildWallet(context),
-                            _buildStatContainer(context),
-                          ],
-                        ),
+                        verticalSpaceRegular,
+                        _buildProfileImage(),
+                        _buildFullName(context),
+                        _buildStatus(context),
+                        _buildWallet(context),
+                        _buildStatContainer(context),
                       ],
                     ),
                     verticalSpaceRegular,
