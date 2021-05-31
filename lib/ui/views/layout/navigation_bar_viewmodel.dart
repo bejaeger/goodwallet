@@ -18,10 +18,6 @@ class NavigationBarViewModel extends BaseModel {
     await _navigationService!.navigateTo(Routes.walletView);
   }
 
-  Future navigateToSendMoneyView() async {
-    await _navigationService!.navigateTo(Routes.sendMoneyView);
-  }
-
   Future navigateToLoginScreen() async {
     //setShowNavigationBar(false);
     await _navigationService!.navigateTo(Routes.loginView);

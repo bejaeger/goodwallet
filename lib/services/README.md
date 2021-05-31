@@ -11,7 +11,4 @@ Interacts with Cloud Firestore to handle user data. Out of many other things it 
 ## GlobalGivingAPIService
 Interacts with the global giving api
 
-## Todo
-Clean-up `FirestorePaymentDataService` and `StripePaymentService`. These will be used to handle the payment procedure.
-Additionally a `DummyPaymentService` will be added for testing.
 

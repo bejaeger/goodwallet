@@ -13,7 +13,6 @@ import '../datamodels/causes/project.dart';
 import '../datamodels/money_pools/base/money_pool.dart';
 import '../datamodels/transfers/bookkeeping/recipient_info.dart';
 import '../datamodels/transfers/bookkeeping/sender_info.dart';
-import '../datamodels/user/public_user_info.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/search_type.dart';
 import '../enums/transfer_type.dart';
@@ -30,9 +29,6 @@ import '../ui/views/money_pools/create_money_pool_intro_view.dart';
 import '../ui/views/money_pools/disburse_money_pool_view.dart';
 import '../ui/views/money_pools/money_pools_view.dart';
 import '../ui/views/money_pools/single_money_pool_view.dart';
-import '../ui/views/payments/payment_cancel_view.dart';
-import '../ui/views/payments/payment_success_view.dart';
-import '../ui/views/payments/send_money_view.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
 import '../ui/views/projects/projects_for_area_view.dart';
 import '../ui/views/projects/projects_view.dart';
@@ -47,9 +43,6 @@ import '../ui/views/wallet/wallet_view.dart';
 class Routes {
   static const String welcomeView = '/welcome-view';
   static const String walletView = '/wallet-view';
-  static const String sendMoneyView = '/send-money-view';
-  static const String paymentSuccessView = '/payment-success-view';
-  static const String paymentCancelView = '/payment-cancel-view';
   static const String layoutTemplate = '/layout-template';
   static const String loginView = '/login-view';
   static const String singleMoneyPoolView = '/single-money-pool-view';
@@ -75,9 +68,6 @@ class Routes {
   static const all = <String>{
     welcomeView,
     walletView,
-    sendMoneyView,
-    paymentSuccessView,
-    paymentCancelView,
     layoutTemplate,
     loginView,
     singleMoneyPoolView,
@@ -108,9 +98,6 @@ class StackedRouter extends RouterBase {
   final _routes = <RouteDef>[
     RouteDef(Routes.welcomeView, page: WelcomeView),
     RouteDef(Routes.walletView, page: WalletView),
-    RouteDef(Routes.sendMoneyView, page: SendMoneyView),
-    RouteDef(Routes.paymentSuccessView, page: PaymentSuccessView),
-    RouteDef(Routes.paymentCancelView, page: PaymentCancelView),
     RouteDef(Routes.layoutTemplate, page: LayoutTemplate),
     RouteDef(Routes.loginView, page: LoginView),
     RouteDef(Routes.singleMoneyPoolView, page: SingleMoneyPoolView),
@@ -145,31 +132,6 @@ class StackedRouter extends RouterBase {
     WalletView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => WalletView(),
-        settings: data,
-      );
-    },
-    SendMoneyView: (data) {
-      var args = data.getArgs<SendMoneyViewArguments>(
-        orElse: () => SendMoneyViewArguments(),
-      );
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => SendMoneyView(
-          key: args.key,
-          userInfoMap: args.userInfoMap,
-          openSearchBarOnBuild: args.openSearchBarOnBuild,
-        ),
-        settings: data,
-      );
-    },
-    PaymentSuccessView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => PaymentSuccessView(),
-        settings: data,
-      );
-    },
-    PaymentCancelView: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => PaymentCancelView(),
         settings: data,
       );
     },
@@ -377,15 +339,6 @@ class StackedRouter extends RouterBase {
 /// ************************************************************************
 /// Arguments holder classes
 /// *************************************************************************
-
-/// SendMoneyView arguments holder class
-class SendMoneyViewArguments {
-  final Key? key;
-  final PublicUserInfo? userInfoMap;
-  final dynamic openSearchBarOnBuild;
-  SendMoneyViewArguments(
-      {this.key, this.userInfoMap, this.openSearchBarOnBuild = false});
-}
 
 /// LayoutTemplate arguments holder class
 class LayoutTemplateArguments {

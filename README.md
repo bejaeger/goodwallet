@@ -9,8 +9,9 @@ The following should give a rough outline about the current technical setup of T
     - To other users' Good Wallets or money pools
     - via credit card payment (gpay / apple pay for native mobile version, check feasibility for PWA) or Paypal
 - Option to **browse** charities and **donate** (money from TGW foundation to project)
+    - Keep up-to-date databank for different effective causes. Use [GlobalGivingAPI]([API doc](https://www.globalgiving.org/api/)) to fetch data and keep up-to-date in firestore
     - Donate from Good Wallet, money pool, or bank account directly (money from user to project, difficulties with tax deductions?) using GlobalGivingAPI
-    - Add user favourites
+    - User favourites option
     - Recurring donations
 - **Money pools**
     - Create money pool and invite other users to raise together

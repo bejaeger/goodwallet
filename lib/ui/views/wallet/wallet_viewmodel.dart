@@ -45,10 +45,6 @@ class WalletViewModel extends BaseModel {
     notifyListeners();
   }
 
-  Future navigateToSendMoneyView() async {
-    await _navigationService!.navigateTo(Routes.sendMoneyView);
-  }
-
   Future navigateToWelcomeView() async {
     await _navigationService!.navigateTo(Routes.welcomeView);
   }
