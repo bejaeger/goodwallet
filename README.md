@@ -16,10 +16,11 @@ The following should give a rough outline about the current technical setup of T
 - **Money pools**
     - Create money pool and invite other users to raise together
     - Disburse money pool to multiple users
-- **Statistics**
+- **Statistics and user data**
     - User donation statistics (history, area, ...)
     - User fundraising statistics (history, source, ...)
     - Project donation statistics (total donations from TGW users, user top picks, ...)
+    - Option to make profile page public of user with donations
 - **API**
     - API to allow other platforms to integrate TGW
     - Authentication via API
@@ -56,7 +57,7 @@ As app architecture and state management solution we use stacked by FilledStacke
     - exposes list of money pools
 
 ## How We Collaborate
-The following describes a few guidelines to follow when contributing to this project.
+The following describes a few guidelines that we would like to follow when contributing to this project.
 
 ### How To Get Started With Stacked
 - We use the stacked package by FilledStacks which provides a very clean solutions for state management and realizing an MVVM architecture in flutter [[stacked](https://pub.dev/packages/stacked)]
