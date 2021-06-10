@@ -11,9 +11,12 @@ import 'package:stacked_services/stacked_services.dart';
 import 'app/app.router.dart' as auto_router;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:url_strategy/url_strategy.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 
 void main() async {
   final log = getLogger("main.dart");
+  await DotEnv.load(fileName: ".env");
+
   try {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
