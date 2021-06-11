@@ -21,6 +21,7 @@ import 'package:good_wallet/ui/views/money_pools/disburse_money_pool_view.dart';
 import 'package:good_wallet/ui/views/money_pools/money_pools_view.dart';
 import 'package:good_wallet/ui/views/money_pools/money_pools_viewmodel.dart';
 import 'package:good_wallet/ui/views/money_pools/single_money_pool_view.dart';
+import 'package:good_wallet/ui/views/payments/payments_view.dart';
 import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
 import 'package:good_wallet/ui/views/projects/projects_for_area_view.dart';
 import 'package:good_wallet/ui/views/projects/projects_view.dart';
@@ -51,6 +52,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: HomeViewMobile),
     MaterialRoute(page: ProfileViewMobile),
     MaterialRoute(page: CreateAccountView),
+    MaterialRoute(page: PaymentView),
 
     MaterialRoute(page: SingleFeaturedAppView),
     MaterialRoute(page: MoneyPoolsView),

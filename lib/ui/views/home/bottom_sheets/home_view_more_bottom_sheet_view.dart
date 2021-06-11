@@ -30,6 +30,15 @@ class HomeViewMoreBottomSheetView extends StatelessWidget {
                   description: "Raise via the Good Wallet referral fund",
                   icon: Image.asset(ImageIconPaths.huggingPeople),
                 ),
+                //Harguilar
+                BottomSheetListEntry(
+                  completer: completer,
+                  responseData: model.navigateToStripeView,
+                  title: "Send Money With Stripe",
+                  description: "Raise Money For people in need",
+                  icon: Image.asset(ImageIconPaths.agreeingHands),
+                ),
+
                 BottomSheetListEntry(
                   completer: completer,
                   responseData: model.showNotImplementedSnackbar,

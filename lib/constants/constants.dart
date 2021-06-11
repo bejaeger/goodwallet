@@ -13,5 +13,5 @@ final CollectionReference moneyPoolsCollection =
     FirebaseFirestore.instance.collection('moneyPools');
 final CollectionReference projectsCollection =
     FirebaseFirestore.instance.collection('projects');
-
+final appName = 'The Good Dollars Marketplace'; 
 ////////////////////////////////////////////////////////
