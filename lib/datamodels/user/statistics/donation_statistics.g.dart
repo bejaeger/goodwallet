@@ -11,7 +11,11 @@ _$_DonationStatistics _$_$_DonationStatisticsFromJson(
   return _$_DonationStatistics(
     totalDonations: json['totalDonations'] as num,
     supportedProjects: (json['supportedProjects'] as List<dynamic>)
-        .map((e) => ConciseProjectInfo.fromJson(e as Map<String, dynamic>))
+        .map((e) =>
+            SupportedProjectStatistics.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    monthlyDonations: (json['monthlyDonations'] as List<dynamic>)
+        .map((e) => MonthlyDonation.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
 }
@@ -22,6 +26,8 @@ Map<String, dynamic> _$_$_DonationStatisticsToJson(
       'totalDonations': instance.totalDonations,
       'supportedProjects':
           instance.supportedProjects.map((e) => e.toJson()).toList(),
+      'monthlyDonations':
+          instance.monthlyDonations.map((e) => e.toJson()).toList(),
     };
 
 _$_EmptyDonationStatistics _$_$_EmptyDonationStatisticsFromJson(
@@ -29,7 +35,11 @@ _$_EmptyDonationStatistics _$_$_EmptyDonationStatisticsFromJson(
   return _$_EmptyDonationStatistics(
     totalDonations: json['totalDonations'] as num? ?? 0,
     supportedProjects: (json['supportedProjects'] as List<dynamic>?)
-        ?.map((e) => ConciseProjectInfo.fromJson(e as Map<String, dynamic>))
+        ?.map((e) =>
+            SupportedProjectStatistics.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    monthlyDonations: (json['monthlyDonations'] as List<dynamic>?)
+        ?.map((e) => MonthlyDonation.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
 }
@@ -40,4 +50,6 @@ Map<String, dynamic> _$_$_EmptyDonationStatisticsToJson(
       'totalDonations': instance.totalDonations,
       'supportedProjects':
           instance.supportedProjects?.map((e) => e.toJson()).toList(),
+      'monthlyDonations':
+          instance.monthlyDonations?.map((e) => e.toJson()).toList(),
     };

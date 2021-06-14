@@ -11,6 +11,7 @@ import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
+import 'package:good_wallet/datamodels/user/user_settings.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/exceptions/user_service_exception.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -61,9 +62,8 @@ class UserService {
   Future<void>? listenToAuthStateChanges() async {
     if (userStreamSubscription == null) {
       var completer = Completer<void>();
-      userStreamSubscription = _firebaseAuthenticationService!.firebaseAuth
-          .authStateChanges()
-          .listen((user) async {
+      userStreamSubscription =
+          _firebaseAuthenticationService!.authStateChanges.listen((user) async {
         await authStateChangesOnDataCallback(user);
         if (!completer.isCompleted) {
           completer.complete();
@@ -136,7 +136,8 @@ class UserService {
             user: User(
                 uid: user.uid,
                 fullName: user.displayName ?? "",
-                email: user.email ?? ""),
+                email: user.email ?? "",
+                userSettings: UserSettings()),
           );
           _currentUser = nowPopulatedUser;
         } catch (e) {

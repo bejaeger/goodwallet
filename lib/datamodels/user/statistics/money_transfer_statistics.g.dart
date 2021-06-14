@@ -11,6 +11,9 @@ _$_MoneyTransferStatistics _$_$_MoneyTransferStatisticsFromJson(
   return _$_MoneyTransferStatistics(
     totalSentToPeers: json['totalSentToPeers'] as num,
     totalRaised: json['totalRaised'] as num,
+    totalRaisedViaMoneyPool: json['totalRaisedViaMoneyPool'] as num,
+    totalRaisedViaPeer2Peer: json['totalRaisedViaPeer2Peer'] as num,
+    totalRaisedViaSubsidiaryApp: json['totalRaisedViaSubsidiaryApp'] as num,
   );
 }
 
@@ -19,6 +22,9 @@ Map<String, dynamic> _$_$_MoneyTransferStatisticsToJson(
     <String, dynamic>{
       'totalSentToPeers': instance.totalSentToPeers,
       'totalRaised': instance.totalRaised,
+      'totalRaisedViaMoneyPool': instance.totalRaisedViaMoneyPool,
+      'totalRaisedViaPeer2Peer': instance.totalRaisedViaPeer2Peer,
+      'totalRaisedViaSubsidiaryApp': instance.totalRaisedViaSubsidiaryApp,
     };
 
 _$_EmptyMoneyTransferStatistics _$_$_EmptyMoneyTransferStatisticsFromJson(

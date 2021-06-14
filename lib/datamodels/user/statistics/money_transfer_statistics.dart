@@ -8,6 +8,9 @@ class MoneyTransferStatistics with _$MoneyTransferStatistics {
   factory MoneyTransferStatistics({
     required num totalSentToPeers,
     required num totalRaised,
+    required num totalRaisedViaMoneyPool,
+    required num totalRaisedViaPeer2Peer,
+    required num totalRaisedViaSubsidiaryApp,
   }) = _MoneyTransferStatistics;
 
   const factory MoneyTransferStatistics.empty({

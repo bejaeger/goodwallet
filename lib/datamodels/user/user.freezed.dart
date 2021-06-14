@@ -32,12 +32,14 @@ class _$UserTearOff {
       {required String uid,
       required String fullName,
       required String email,
+      required UserSettings userSettings,
       @JsonKey(toJson: User._checkIfKeywordsAreSet)
           List<String>? searchKeywords}) {
     return _User(
       uid: uid,
       fullName: fullName,
       email: email,
+      userSettings: userSettings,
       searchKeywords: searchKeywords,
     );
   }
@@ -46,11 +48,13 @@ class _$UserTearOff {
       {String uid = "",
       String fullName = "",
       String email = "",
+      UserSettings? userSettings,
       List<String>? searchKeywords}) {
     return _EmptyUser(
       uid: uid,
       fullName: fullName,
       email: email,
+      userSettings: userSettings,
       searchKeywords: searchKeywords,
     );
   }
@@ -77,11 +81,12 @@ mixin _$User {
             String uid,
             String fullName,
             String email,
+            UserSettings userSettings,
             @JsonKey(toJson: User._checkIfKeywordsAreSet)
                 List<String>? searchKeywords)
         $default, {
     required TResult Function(String uid, String fullName, String email,
-            List<String>? searchKeywords)
+            UserSettings? userSettings, List<String>? searchKeywords)
         empty,
   }) =>
       throw _privateConstructorUsedError;
@@ -91,11 +96,12 @@ mixin _$User {
             String uid,
             String fullName,
             String email,
+            UserSettings userSettings,
             @JsonKey(toJson: User._checkIfKeywordsAreSet)
                 List<String>? searchKeywords)?
         $default, {
     TResult Function(String uid, String fullName, String email,
-            List<String>? searchKeywords)?
+            UserSettings? userSettings, List<String>? searchKeywords)?
         empty,
     required TResult orElse(),
   }) =>
@@ -175,8 +181,11 @@ abstract class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
       {String uid,
       String fullName,
       String email,
+      UserSettings userSettings,
       @JsonKey(toJson: User._checkIfKeywordsAreSet)
           List<String>? searchKeywords});
+
+  $UserSettingsCopyWith<$Res> get userSettings;
 }
 
 /// @nodoc
@@ -193,6 +202,7 @@ class __$UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
     Object? uid = freezed,
     Object? fullName = freezed,
     Object? email = freezed,
+    Object? userSettings = freezed,
     Object? searchKeywords = freezed,
   }) {
     return _then(_User(
@@ -208,11 +218,22 @@ class __$UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
+      userSettings: userSettings == freezed
+          ? _value.userSettings
+          : userSettings // ignore: cast_nullable_to_non_nullable
+              as UserSettings,
       searchKeywords: searchKeywords == freezed
           ? _value.searchKeywords
           : searchKeywords // ignore: cast_nullable_to_non_nullable
               as List<String>?,
     ));
+  }
+
+  @override
+  $UserSettingsCopyWith<$Res> get userSettings {
+    return $UserSettingsCopyWith<$Res>(_value.userSettings, (value) {
+      return _then(_value.copyWith(userSettings: value));
+    });
   }
 }
 
@@ -224,6 +245,7 @@ class _$_User implements _User {
       {required this.uid,
       required this.fullName,
       required this.email,
+      required this.userSettings,
       @JsonKey(toJson: User._checkIfKeywordsAreSet) this.searchKeywords});
 
   factory _$_User.fromJson(Map<String, dynamic> json) =>
@@ -236,12 +258,14 @@ class _$_User implements _User {
   @override
   final String email;
   @override
+  final UserSettings userSettings;
+  @override
   @JsonKey(toJson: User._checkIfKeywordsAreSet)
   final List<String>? searchKeywords;
 
   @override
   String toString() {
-    return 'User(uid: $uid, fullName: $fullName, email: $email, searchKeywords: $searchKeywords)';
+    return 'User(uid: $uid, fullName: $fullName, email: $email, userSettings: $userSettings, searchKeywords: $searchKeywords)';
   }
 
   @override
@@ -255,6 +279,9 @@ class _$_User implements _User {
                     .equals(other.fullName, fullName)) &&
             (identical(other.email, email) ||
                 const DeepCollectionEquality().equals(other.email, email)) &&
+            (identical(other.userSettings, userSettings) ||
+                const DeepCollectionEquality()
+                    .equals(other.userSettings, userSettings)) &&
             (identical(other.searchKeywords, searchKeywords) ||
                 const DeepCollectionEquality()
                     .equals(other.searchKeywords, searchKeywords)));
@@ -266,6 +293,7 @@ class _$_User implements _User {
       const DeepCollectionEquality().hash(uid) ^
       const DeepCollectionEquality().hash(fullName) ^
       const DeepCollectionEquality().hash(email) ^
+      const DeepCollectionEquality().hash(userSettings) ^
       const DeepCollectionEquality().hash(searchKeywords);
 
   @JsonKey(ignore: true)
@@ -280,14 +308,15 @@ class _$_User implements _User {
             String uid,
             String fullName,
             String email,
+            UserSettings userSettings,
             @JsonKey(toJson: User._checkIfKeywordsAreSet)
                 List<String>? searchKeywords)
         $default, {
     required TResult Function(String uid, String fullName, String email,
-            List<String>? searchKeywords)
+            UserSettings? userSettings, List<String>? searchKeywords)
         empty,
   }) {
-    return $default(uid, fullName, email, searchKeywords);
+    return $default(uid, fullName, email, userSettings, searchKeywords);
   }
 
   @override
@@ -297,16 +326,17 @@ class _$_User implements _User {
             String uid,
             String fullName,
             String email,
+            UserSettings userSettings,
             @JsonKey(toJson: User._checkIfKeywordsAreSet)
                 List<String>? searchKeywords)?
         $default, {
     TResult Function(String uid, String fullName, String email,
-            List<String>? searchKeywords)?
+            UserSettings? userSettings, List<String>? searchKeywords)?
         empty,
     required TResult orElse(),
   }) {
     if ($default != null) {
-      return $default(uid, fullName, email, searchKeywords);
+      return $default(uid, fullName, email, userSettings, searchKeywords);
     }
     return orElse();
   }
@@ -344,6 +374,7 @@ abstract class _User implements User {
       {required String uid,
       required String fullName,
       required String email,
+      required UserSettings userSettings,
       @JsonKey(toJson: User._checkIfKeywordsAreSet)
           List<String>? searchKeywords}) = _$_User;
 
@@ -355,6 +386,7 @@ abstract class _User implements User {
   String get fullName => throw _privateConstructorUsedError;
   @override
   String get email => throw _privateConstructorUsedError;
+  UserSettings get userSettings => throw _privateConstructorUsedError;
   @override
   @JsonKey(toJson: User._checkIfKeywordsAreSet)
   List<String>? get searchKeywords => throw _privateConstructorUsedError;
@@ -373,7 +405,10 @@ abstract class _$EmptyUserCopyWith<$Res> implements $UserCopyWith<$Res> {
       {String uid,
       String fullName,
       String email,
+      UserSettings? userSettings,
       List<String>? searchKeywords});
+
+  $UserSettingsCopyWith<$Res>? get userSettings;
 }
 
 /// @nodoc
@@ -390,6 +425,7 @@ class __$EmptyUserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
     Object? uid = freezed,
     Object? fullName = freezed,
     Object? email = freezed,
+    Object? userSettings = freezed,
     Object? searchKeywords = freezed,
   }) {
     return _then(_EmptyUser(
@@ -405,11 +441,26 @@ class __$EmptyUserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
+      userSettings: userSettings == freezed
+          ? _value.userSettings
+          : userSettings // ignore: cast_nullable_to_non_nullable
+              as UserSettings?,
       searchKeywords: searchKeywords == freezed
           ? _value.searchKeywords
           : searchKeywords // ignore: cast_nullable_to_non_nullable
               as List<String>?,
     ));
+  }
+
+  @override
+  $UserSettingsCopyWith<$Res>? get userSettings {
+    if (_value.userSettings == null) {
+      return null;
+    }
+
+    return $UserSettingsCopyWith<$Res>(_value.userSettings!, (value) {
+      return _then(_value.copyWith(userSettings: value));
+    });
   }
 }
 
@@ -420,6 +471,7 @@ class _$_EmptyUser implements _EmptyUser {
       {this.uid = "",
       this.fullName = "",
       this.email = "",
+      this.userSettings,
       this.searchKeywords});
 
   factory _$_EmptyUser.fromJson(Map<String, dynamic> json) =>
@@ -435,11 +487,13 @@ class _$_EmptyUser implements _EmptyUser {
   @override
   final String email;
   @override
+  final UserSettings? userSettings;
+  @override
   final List<String>? searchKeywords;
 
   @override
   String toString() {
-    return 'User.empty(uid: $uid, fullName: $fullName, email: $email, searchKeywords: $searchKeywords)';
+    return 'User.empty(uid: $uid, fullName: $fullName, email: $email, userSettings: $userSettings, searchKeywords: $searchKeywords)';
   }
 
   @override
@@ -453,6 +507,9 @@ class _$_EmptyUser implements _EmptyUser {
                     .equals(other.fullName, fullName)) &&
             (identical(other.email, email) ||
                 const DeepCollectionEquality().equals(other.email, email)) &&
+            (identical(other.userSettings, userSettings) ||
+                const DeepCollectionEquality()
+                    .equals(other.userSettings, userSettings)) &&
             (identical(other.searchKeywords, searchKeywords) ||
                 const DeepCollectionEquality()
                     .equals(other.searchKeywords, searchKeywords)));
@@ -464,6 +521,7 @@ class _$_EmptyUser implements _EmptyUser {
       const DeepCollectionEquality().hash(uid) ^
       const DeepCollectionEquality().hash(fullName) ^
       const DeepCollectionEquality().hash(email) ^
+      const DeepCollectionEquality().hash(userSettings) ^
       const DeepCollectionEquality().hash(searchKeywords);
 
   @JsonKey(ignore: true)
@@ -478,14 +536,15 @@ class _$_EmptyUser implements _EmptyUser {
             String uid,
             String fullName,
             String email,
+            UserSettings userSettings,
             @JsonKey(toJson: User._checkIfKeywordsAreSet)
                 List<String>? searchKeywords)
         $default, {
     required TResult Function(String uid, String fullName, String email,
-            List<String>? searchKeywords)
+            UserSettings? userSettings, List<String>? searchKeywords)
         empty,
   }) {
-    return empty(uid, fullName, email, searchKeywords);
+    return empty(uid, fullName, email, userSettings, searchKeywords);
   }
 
   @override
@@ -495,16 +554,17 @@ class _$_EmptyUser implements _EmptyUser {
             String uid,
             String fullName,
             String email,
+            UserSettings userSettings,
             @JsonKey(toJson: User._checkIfKeywordsAreSet)
                 List<String>? searchKeywords)?
         $default, {
     TResult Function(String uid, String fullName, String email,
-            List<String>? searchKeywords)?
+            UserSettings? userSettings, List<String>? searchKeywords)?
         empty,
     required TResult orElse(),
   }) {
     if (empty != null) {
-      return empty(uid, fullName, email, searchKeywords);
+      return empty(uid, fullName, email, userSettings, searchKeywords);
     }
     return orElse();
   }
@@ -542,6 +602,7 @@ abstract class _EmptyUser implements User {
       {String uid,
       String fullName,
       String email,
+      UserSettings? userSettings,
       List<String>? searchKeywords}) = _$_EmptyUser;
 
   factory _EmptyUser.fromJson(Map<String, dynamic> json) =
@@ -553,6 +614,7 @@ abstract class _EmptyUser implements User {
   String get fullName => throw _privateConstructorUsedError;
   @override
   String get email => throw _privateConstructorUsedError;
+  UserSettings? get userSettings => throw _privateConstructorUsedError;
   @override
   List<String>? get searchKeywords => throw _privateConstructorUsedError;
   @override

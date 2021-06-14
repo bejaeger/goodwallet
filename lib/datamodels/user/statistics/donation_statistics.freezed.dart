@@ -30,18 +30,23 @@ class _$DonationStatisticsTearOff {
 
   _DonationStatistics call(
       {required num totalDonations,
-      required List<ConciseProjectInfo> supportedProjects}) {
+      required List<SupportedProjectStatistics> supportedProjects,
+      required List<MonthlyDonation> monthlyDonations}) {
     return _DonationStatistics(
       totalDonations: totalDonations,
       supportedProjects: supportedProjects,
+      monthlyDonations: monthlyDonations,
     );
   }
 
   _EmptyDonationStatistics empty(
-      {num totalDonations = 0, List<ConciseProjectInfo>? supportedProjects}) {
+      {num totalDonations = 0,
+      List<SupportedProjectStatistics>? supportedProjects,
+      List<MonthlyDonation>? monthlyDonations}) {
     return _EmptyDonationStatistics(
       totalDonations: totalDonations,
       supportedProjects: supportedProjects,
+      monthlyDonations: monthlyDonations,
     );
   }
 
@@ -60,20 +65,28 @@ mixin _$DonationStatistics {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            num totalDonations, List<ConciseProjectInfo> supportedProjects)
+            num totalDonations,
+            List<SupportedProjectStatistics> supportedProjects,
+            List<MonthlyDonation> monthlyDonations)
         $default, {
     required TResult Function(
-            num totalDonations, List<ConciseProjectInfo>? supportedProjects)
+            num totalDonations,
+            List<SupportedProjectStatistics>? supportedProjects,
+            List<MonthlyDonation>? monthlyDonations)
         empty,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            num totalDonations, List<ConciseProjectInfo> supportedProjects)?
+            num totalDonations,
+            List<SupportedProjectStatistics> supportedProjects,
+            List<MonthlyDonation> monthlyDonations)?
         $default, {
     TResult Function(
-            num totalDonations, List<ConciseProjectInfo>? supportedProjects)?
+            num totalDonations,
+            List<SupportedProjectStatistics>? supportedProjects,
+            List<MonthlyDonation>? monthlyDonations)?
         empty,
     required TResult orElse(),
   }) =>
@@ -134,7 +147,10 @@ abstract class _$DonationStatisticsCopyWith<$Res>
           _DonationStatistics value, $Res Function(_DonationStatistics) then) =
       __$DonationStatisticsCopyWithImpl<$Res>;
   @override
-  $Res call({num totalDonations, List<ConciseProjectInfo> supportedProjects});
+  $Res call(
+      {num totalDonations,
+      List<SupportedProjectStatistics> supportedProjects,
+      List<MonthlyDonation> monthlyDonations});
 }
 
 /// @nodoc
@@ -152,6 +168,7 @@ class __$DonationStatisticsCopyWithImpl<$Res>
   $Res call({
     Object? totalDonations = freezed,
     Object? supportedProjects = freezed,
+    Object? monthlyDonations = freezed,
   }) {
     return _then(_DonationStatistics(
       totalDonations: totalDonations == freezed
@@ -161,7 +178,11 @@ class __$DonationStatisticsCopyWithImpl<$Res>
       supportedProjects: supportedProjects == freezed
           ? _value.supportedProjects
           : supportedProjects // ignore: cast_nullable_to_non_nullable
-              as List<ConciseProjectInfo>,
+              as List<SupportedProjectStatistics>,
+      monthlyDonations: monthlyDonations == freezed
+          ? _value.monthlyDonations
+          : monthlyDonations // ignore: cast_nullable_to_non_nullable
+              as List<MonthlyDonation>,
     ));
   }
 }
@@ -171,7 +192,9 @@ class __$DonationStatisticsCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$_DonationStatistics implements _DonationStatistics {
   _$_DonationStatistics(
-      {required this.totalDonations, required this.supportedProjects});
+      {required this.totalDonations,
+      required this.supportedProjects,
+      required this.monthlyDonations});
 
   factory _$_DonationStatistics.fromJson(Map<String, dynamic> json) =>
       _$_$_DonationStatisticsFromJson(json);
@@ -179,11 +202,13 @@ class _$_DonationStatistics implements _DonationStatistics {
   @override
   final num totalDonations;
   @override
-  final List<ConciseProjectInfo> supportedProjects;
+  final List<SupportedProjectStatistics> supportedProjects;
+  @override
+  final List<MonthlyDonation> monthlyDonations;
 
   @override
   String toString() {
-    return 'DonationStatistics(totalDonations: $totalDonations, supportedProjects: $supportedProjects)';
+    return 'DonationStatistics(totalDonations: $totalDonations, supportedProjects: $supportedProjects, monthlyDonations: $monthlyDonations)';
   }
 
   @override
@@ -195,14 +220,18 @@ class _$_DonationStatistics implements _DonationStatistics {
                     .equals(other.totalDonations, totalDonations)) &&
             (identical(other.supportedProjects, supportedProjects) ||
                 const DeepCollectionEquality()
-                    .equals(other.supportedProjects, supportedProjects)));
+                    .equals(other.supportedProjects, supportedProjects)) &&
+            (identical(other.monthlyDonations, monthlyDonations) ||
+                const DeepCollectionEquality()
+                    .equals(other.monthlyDonations, monthlyDonations)));
   }
 
   @override
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(totalDonations) ^
-      const DeepCollectionEquality().hash(supportedProjects);
+      const DeepCollectionEquality().hash(supportedProjects) ^
+      const DeepCollectionEquality().hash(monthlyDonations);
 
   @JsonKey(ignore: true)
   @override
@@ -213,28 +242,36 @@ class _$_DonationStatistics implements _DonationStatistics {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            num totalDonations, List<ConciseProjectInfo> supportedProjects)
+            num totalDonations,
+            List<SupportedProjectStatistics> supportedProjects,
+            List<MonthlyDonation> monthlyDonations)
         $default, {
     required TResult Function(
-            num totalDonations, List<ConciseProjectInfo>? supportedProjects)
+            num totalDonations,
+            List<SupportedProjectStatistics>? supportedProjects,
+            List<MonthlyDonation>? monthlyDonations)
         empty,
   }) {
-    return $default(totalDonations, supportedProjects);
+    return $default(totalDonations, supportedProjects, monthlyDonations);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            num totalDonations, List<ConciseProjectInfo> supportedProjects)?
+            num totalDonations,
+            List<SupportedProjectStatistics> supportedProjects,
+            List<MonthlyDonation> monthlyDonations)?
         $default, {
     TResult Function(
-            num totalDonations, List<ConciseProjectInfo>? supportedProjects)?
+            num totalDonations,
+            List<SupportedProjectStatistics>? supportedProjects,
+            List<MonthlyDonation>? monthlyDonations)?
         empty,
     required TResult orElse(),
   }) {
     if ($default != null) {
-      return $default(totalDonations, supportedProjects);
+      return $default(totalDonations, supportedProjects, monthlyDonations);
     }
     return orElse();
   }
@@ -269,16 +306,18 @@ class _$_DonationStatistics implements _DonationStatistics {
 
 abstract class _DonationStatistics implements DonationStatistics {
   factory _DonationStatistics(
-          {required num totalDonations,
-          required List<ConciseProjectInfo> supportedProjects}) =
-      _$_DonationStatistics;
+      {required num totalDonations,
+      required List<SupportedProjectStatistics> supportedProjects,
+      required List<MonthlyDonation> monthlyDonations}) = _$_DonationStatistics;
 
   factory _DonationStatistics.fromJson(Map<String, dynamic> json) =
       _$_DonationStatistics.fromJson;
 
   @override
   num get totalDonations => throw _privateConstructorUsedError;
-  List<ConciseProjectInfo> get supportedProjects =>
+  List<SupportedProjectStatistics> get supportedProjects =>
+      throw _privateConstructorUsedError;
+  List<MonthlyDonation> get monthlyDonations =>
       throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
@@ -293,7 +332,10 @@ abstract class _$EmptyDonationStatisticsCopyWith<$Res>
           $Res Function(_EmptyDonationStatistics) then) =
       __$EmptyDonationStatisticsCopyWithImpl<$Res>;
   @override
-  $Res call({num totalDonations, List<ConciseProjectInfo>? supportedProjects});
+  $Res call(
+      {num totalDonations,
+      List<SupportedProjectStatistics>? supportedProjects,
+      List<MonthlyDonation>? monthlyDonations});
 }
 
 /// @nodoc
@@ -312,6 +354,7 @@ class __$EmptyDonationStatisticsCopyWithImpl<$Res>
   $Res call({
     Object? totalDonations = freezed,
     Object? supportedProjects = freezed,
+    Object? monthlyDonations = freezed,
   }) {
     return _then(_EmptyDonationStatistics(
       totalDonations: totalDonations == freezed
@@ -321,7 +364,11 @@ class __$EmptyDonationStatisticsCopyWithImpl<$Res>
       supportedProjects: supportedProjects == freezed
           ? _value.supportedProjects
           : supportedProjects // ignore: cast_nullable_to_non_nullable
-              as List<ConciseProjectInfo>?,
+              as List<SupportedProjectStatistics>?,
+      monthlyDonations: monthlyDonations == freezed
+          ? _value.monthlyDonations
+          : monthlyDonations // ignore: cast_nullable_to_non_nullable
+              as List<MonthlyDonation>?,
     ));
   }
 }
@@ -331,7 +378,7 @@ class __$EmptyDonationStatisticsCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$_EmptyDonationStatistics implements _EmptyDonationStatistics {
   const _$_EmptyDonationStatistics(
-      {this.totalDonations = 0, this.supportedProjects});
+      {this.totalDonations = 0, this.supportedProjects, this.monthlyDonations});
 
   factory _$_EmptyDonationStatistics.fromJson(Map<String, dynamic> json) =>
       _$_$_EmptyDonationStatisticsFromJson(json);
@@ -340,11 +387,13 @@ class _$_EmptyDonationStatistics implements _EmptyDonationStatistics {
   @override
   final num totalDonations;
   @override
-  final List<ConciseProjectInfo>? supportedProjects;
+  final List<SupportedProjectStatistics>? supportedProjects;
+  @override
+  final List<MonthlyDonation>? monthlyDonations;
 
   @override
   String toString() {
-    return 'DonationStatistics.empty(totalDonations: $totalDonations, supportedProjects: $supportedProjects)';
+    return 'DonationStatistics.empty(totalDonations: $totalDonations, supportedProjects: $supportedProjects, monthlyDonations: $monthlyDonations)';
   }
 
   @override
@@ -356,14 +405,18 @@ class _$_EmptyDonationStatistics implements _EmptyDonationStatistics {
                     .equals(other.totalDonations, totalDonations)) &&
             (identical(other.supportedProjects, supportedProjects) ||
                 const DeepCollectionEquality()
-                    .equals(other.supportedProjects, supportedProjects)));
+                    .equals(other.supportedProjects, supportedProjects)) &&
+            (identical(other.monthlyDonations, monthlyDonations) ||
+                const DeepCollectionEquality()
+                    .equals(other.monthlyDonations, monthlyDonations)));
   }
 
   @override
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(totalDonations) ^
-      const DeepCollectionEquality().hash(supportedProjects);
+      const DeepCollectionEquality().hash(supportedProjects) ^
+      const DeepCollectionEquality().hash(monthlyDonations);
 
   @JsonKey(ignore: true)
   @override
@@ -375,28 +428,36 @@ class _$_EmptyDonationStatistics implements _EmptyDonationStatistics {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            num totalDonations, List<ConciseProjectInfo> supportedProjects)
+            num totalDonations,
+            List<SupportedProjectStatistics> supportedProjects,
+            List<MonthlyDonation> monthlyDonations)
         $default, {
     required TResult Function(
-            num totalDonations, List<ConciseProjectInfo>? supportedProjects)
+            num totalDonations,
+            List<SupportedProjectStatistics>? supportedProjects,
+            List<MonthlyDonation>? monthlyDonations)
         empty,
   }) {
-    return empty(totalDonations, supportedProjects);
+    return empty(totalDonations, supportedProjects, monthlyDonations);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            num totalDonations, List<ConciseProjectInfo> supportedProjects)?
+            num totalDonations,
+            List<SupportedProjectStatistics> supportedProjects,
+            List<MonthlyDonation> monthlyDonations)?
         $default, {
     TResult Function(
-            num totalDonations, List<ConciseProjectInfo>? supportedProjects)?
+            num totalDonations,
+            List<SupportedProjectStatistics>? supportedProjects,
+            List<MonthlyDonation>? monthlyDonations)?
         empty,
     required TResult orElse(),
   }) {
     if (empty != null) {
-      return empty(totalDonations, supportedProjects);
+      return empty(totalDonations, supportedProjects, monthlyDonations);
     }
     return orElse();
   }
@@ -431,15 +492,18 @@ class _$_EmptyDonationStatistics implements _EmptyDonationStatistics {
 
 abstract class _EmptyDonationStatistics implements DonationStatistics {
   const factory _EmptyDonationStatistics(
-          {num totalDonations, List<ConciseProjectInfo>? supportedProjects}) =
-      _$_EmptyDonationStatistics;
+      {num totalDonations,
+      List<SupportedProjectStatistics>? supportedProjects,
+      List<MonthlyDonation>? monthlyDonations}) = _$_EmptyDonationStatistics;
 
   factory _EmptyDonationStatistics.fromJson(Map<String, dynamic> json) =
       _$_EmptyDonationStatistics.fromJson;
 
   @override
   num get totalDonations => throw _privateConstructorUsedError;
-  List<ConciseProjectInfo>? get supportedProjects =>
+  List<SupportedProjectStatistics>? get supportedProjects =>
+      throw _privateConstructorUsedError;
+  List<MonthlyDonation>? get monthlyDonations =>
       throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)

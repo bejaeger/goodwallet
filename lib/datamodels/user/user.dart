@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:good_wallet/datamodels/user/user_settings.dart';
 import 'package:good_wallet/exceptions/datamodel_exception.dart';
 
 part 'user.freezed.dart';
@@ -22,6 +23,7 @@ class User with _$User {
     required String uid,
     required String fullName,
     required String email,
+    required UserSettings userSettings,
     @JsonKey(
       toJson: User._checkIfKeywordsAreSet,
     )
@@ -32,6 +34,7 @@ class User with _$User {
     @Default("") String uid,
     @Default("") String fullName,
     @Default("") String email,
+    UserSettings? userSettings,
     List<String>? searchKeywords,
   }) = _EmptyUser;
 
