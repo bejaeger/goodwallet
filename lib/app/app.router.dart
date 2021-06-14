@@ -30,6 +30,7 @@ import '../ui/views/money_pools/disburse_money_pool_view.dart';
 import '../ui/views/money_pools/money_pools_view.dart';
 import '../ui/views/money_pools/single_money_pool_view.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
+import '../ui/views/projects/favorite_projects_view.dart';
 import '../ui/views/projects/projects_for_area_view.dart';
 import '../ui/views/projects/projects_view.dart';
 import '../ui/views/projects/single_project_view_mobile.dart';
@@ -62,6 +63,7 @@ class Routes {
   static const String disburseMoneyPoolView = '/disburse-money-pool-view';
   static const String transfersHistoryView = '/transfers-history-view';
   static const String projectsView = '/projects-view';
+  static const String favoriteProjectsView = '/favorite-projects-view';
   static const String projectsForAreaView = '/projects-for-area-view';
   static const String singleProjectViewMobile = '/single-project-view-mobile';
   static const String inAppNotificationsView = '/in-app-notifications-view';
@@ -86,6 +88,7 @@ class Routes {
     disburseMoneyPoolView,
     transfersHistoryView,
     projectsView,
+    favoriteProjectsView,
     projectsForAreaView,
     singleProjectViewMobile,
     inAppNotificationsView,
@@ -116,6 +119,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.disburseMoneyPoolView, page: DisburseMoneyPoolView),
     RouteDef(Routes.transfersHistoryView, page: TransfersHistoryView),
     RouteDef(Routes.projectsView, page: ProjectsView),
+    RouteDef(Routes.favoriteProjectsView, page: FavoriteProjectsView),
     RouteDef(Routes.projectsForAreaView, page: ProjectsForAreaView),
     RouteDef(Routes.singleProjectViewMobile, page: SingleProjectViewMobile),
     RouteDef(Routes.inAppNotificationsView, page: InAppNotificationsView),
@@ -305,13 +309,23 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    FavoriteProjectsView: (data) {
+      var args = data.getArgs<FavoriteProjectsViewArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => FavoriteProjectsView(
+          key: args.key,
+          projects: args.projects,
+        ),
+        settings: data,
+      );
+    },
     ProjectsForAreaView: (data) {
       var args = data.getArgs<ProjectsForAreaViewArguments>(nullOk: false);
       return MaterialPageRoute<dynamic>(
         builder: (context) => ProjectsForAreaView(
           key: args.key,
           projects: args.projects,
-          area: args.area,
+          title: args.title,
         ),
         settings: data,
       );
@@ -443,13 +457,20 @@ class DisburseMoneyPoolViewArguments {
   DisburseMoneyPoolViewArguments({this.key, required this.moneyPool});
 }
 
+/// FavoriteProjectsView arguments holder class
+class FavoriteProjectsViewArguments {
+  final Key? key;
+  final List<Project> projects;
+  FavoriteProjectsViewArguments({this.key, required this.projects});
+}
+
 /// ProjectsForAreaView arguments holder class
 class ProjectsForAreaViewArguments {
   final Key? key;
   final List<Project> projects;
-  final String area;
+  final String title;
   ProjectsForAreaViewArguments(
-      {this.key, required this.projects, required this.area});
+      {this.key, required this.projects, required this.title});
 }
 
 /// SingleProjectViewMobile arguments holder class

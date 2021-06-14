@@ -11,6 +11,7 @@ import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_quer
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
+import 'package:good_wallet/datamodels/user/user_settings.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -563,6 +564,21 @@ class FirestoreApi {
       throw FirestoreApiException(
           message:
               "Unknown expection when adding project to projects collection",
+          devDetails: '$e');
+    }
+  }
+
+  // Functions handling project favorites
+  Future updateUserSettings(
+      {required String uid, required UserSettings settings}) async {
+    try {
+      await _usersCollection
+          .doc(uid)
+          .set(settings.toJson(), SetOptions(merge: true));
+    } catch (e) {
+      throw FirestoreApiException(
+          message:
+              "Unknown expection when updating user settings in users collection",
           devDetails: '$e');
     }
   }

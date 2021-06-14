@@ -185,6 +185,44 @@ class UserService {
     }
   }
 
+  bool isFavoriteProject({required String projectId}) {
+    List<String>? favIds = _currentUser.userSettings.favoriteProjectIds;
+    if (favIds == null) {
+      return false;
+    } else {
+      return favIds.contains(projectId);
+    }
+  }
+
+  Future addOrRemoveFavorite({required String projectId}) async {
+    UserSettings settings = _currentUser.userSettings;
+    late UserSettings newSettings;
+    List<String>? favIds = _currentUser.userSettings.favoriteProjectIds;
+    late bool add;
+    if (favIds == null) {
+      add = true;
+      newSettings = settings.copyWith(favoriteProjectIds: [projectId]);
+    } else {
+      if (favIds.contains(projectId)) {
+        add = false;
+        favIds.remove(projectId);
+        newSettings = settings.copyWith(favoriteProjectIds: favIds);
+      } else {
+        add = true;
+        favIds.add(projectId);
+        newSettings = settings.copyWith(favoriteProjectIds: favIds);
+      }
+    }
+    _currentUser = _currentUser.copyWith(userSettings: newSettings);
+    try {
+      _firestoreApi.updateUserSettings(
+          uid: _currentUser.uid, settings: newSettings);
+      return add;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   ///////////////////////////////////////////////////
   // Clean up
 
@@ -196,7 +234,7 @@ class UserService {
     // clear wallet
     userStatsSubject.add(getEmptyUserStatistics());
     // set current user to null
-    _currentUser = User.empty();
+    _currentUser = getEmptyUser();
     // actually log out from firebase
     await _firebaseAuthenticationService!.logout();
     // set auth state to signed out

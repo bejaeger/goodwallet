@@ -5,6 +5,7 @@ import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/enums/causes_type.dart';
 import 'package:good_wallet/apis/global_giving_api.dart';
 import 'package:good_wallet/services/projects/projects_service.dart';
+import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -18,12 +19,17 @@ class ProjectsViewModel extends BaseModel {
   List<Project> get projects => _projectsService!.projects;
   List<Project> get projectUniqueAreas =>
       _projectsService!.getProjectsUniqueArea();
-  List<Project> projectsForArea({required String area}) {
+  List<Project> getProjectsForArea({required String area}) {
     if (area == "Good Wallet Fund") {
       return getGoodWalletFundsInfo();
     } else {
       return _projectsService!.getProjectsForArea(area: area);
     }
+  }
+
+  List<Project> getFavoriteProjects() {
+    return _projectsService!.getProjectsWithIds(
+        projectIds: currentUser.userSettings.favoriteProjectIds);
   }
 
   final log = getLogger("projects_viewmodel.dart");
@@ -39,13 +45,15 @@ class ProjectsViewModel extends BaseModel {
   /// Navigations
   ///
   Future navigateToFavoritesView() async {
-    showNotImplementedSnackbar();
+    await _navigationService!.navigateTo(Routes.favoriteProjectsView,
+        arguments:
+            FavoriteProjectsViewArguments(projects: getFavoriteProjects()));
   }
 
   Future navigateToProjectForAreaView({required String area}) async {
     await _navigationService!.navigateTo(Routes.projectsForAreaView,
         arguments: ProjectsForAreaViewArguments(
-            projects: projectsForArea(area: area), area: area));
+            projects: getProjectsForArea(area: area), title: area));
   }
 
   Future navigateToSingleProjectScreen({required String projectName}) async {

@@ -10,15 +10,17 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 class GlobalGivingProjectCardMobile extends StatelessWidget {
   final Project project;
   final void Function()? onTap;
-  final void Function()? onTapFavorite;
+  final void Function()? onFavoriteTapped;
+  final bool isFavorite;
   final bool displayArea;
   final bool showDescription;
 
   GlobalGivingProjectCardMobile(
       {required this.project,
       this.onTap,
-      this.onTapFavorite,
+      this.onFavoriteTapped,
       this.displayArea = false,
+      this.isFavorite = false,
       this.showDescription = false});
   @override
   Widget build(BuildContext context) {
@@ -86,13 +88,17 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
                       size: 22, color: ColorSettings.whiteTextColor),
                 ),
               ),
-              if (onTapFavorite != null)
+              if (onFavoriteTapped != null)
                 Align(
                   alignment: Alignment.bottomRight,
                   child: IconButton(
-                    icon: Icon(Icons.favorite_border,
-                        size: 22, color: ColorSettings.whiteTextColor),
-                    onPressed: onTapFavorite,
+                    icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        size: 25,
+                        color: isFavorite
+                            ? ColorSettings.primaryColorDark
+                            : ColorSettings.whiteTextColor),
+                    onPressed: onFavoriteTapped,
                   ),
                 ),
               Align(
@@ -122,10 +128,10 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
 class GlobalGivingProjectCard extends StatelessWidget {
   final Project? project;
   final void Function()? onTap;
-  final void Function()? onTapFavorite;
+  final void Function()? onFavoriteTapped;
 
   GlobalGivingProjectCard(
-      {required this.project, this.onTap, this.onTapFavorite});
+      {required this.project, this.onTap, this.onFavoriteTapped});
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -171,7 +177,7 @@ class GlobalGivingProjectCard extends StatelessWidget {
               // ),
               IconButton(
                 icon: Icon(Icons.favorite, color: ColorSettings.primaryColor),
-                onPressed: onTapFavorite,
+                onPressed: onFavoriteTapped,
               ),
             ],
           ),

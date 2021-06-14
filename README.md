@@ -43,8 +43,9 @@ As app architecture and state management solution we use stacked by FilledStacke
 - cloud functions:
     - A good chunk of code needs to be implemented as cloud functions, mainly the part where money is transferred. 
 - user_service.dart: 
-    - Authentication
+    - authentication
     - exposes current user
+    - handles user settings like favorites
 - payment_service.dart:
     - connection to actual payment processor (e.g. stripe)
 - transfers_history_service.dart:

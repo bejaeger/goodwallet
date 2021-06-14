@@ -30,13 +30,19 @@ class User with _$User {
         List<String>? searchKeywords,
   }) = _User;
 
-  factory User.empty({
-    @Default("") String uid,
-    @Default("") String fullName,
-    @Default("") String email,
-    UserSettings? userSettings,
-    List<String>? searchKeywords,
-  }) = _EmptyUser;
-
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+}
+
+// Unfortunately json serializable only supports literals as default
+// We simply create a top-level function to get an empty a user statistics
+// model that is empty. This is used for creating the initial documents in firestore
+User getEmptyUser() {
+  return User(
+    uid: "",
+    fullName: "",
+    email: "",
+    userSettings: UserSettings(
+      favoriteProjectIds: [],
+    ),
+  );
 }

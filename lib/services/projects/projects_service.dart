@@ -17,6 +17,7 @@ class ProjectsService {
   StreamSubscription? _projectsStreamSubscription;
   List<Project> projects = [];
   List<Project> projectsUniqueArea = [];
+  List<Project> favoriteProjects = [];
 
   List<ConciseProjectInfo> goodWalletFunds = [];
 
@@ -48,6 +49,21 @@ class ProjectsService {
     });
     projectsUniqueArea = returnList;
     return returnList;
+  }
+
+  List<Project> getProjectsWithIds({required List<String>? projectIds}) {
+    if (projectIds == null) {
+      return [];
+    } else {
+      List<Project> returnList = [];
+      projects.forEach((element) {
+        if (projectIds.contains(element.id)) {
+          returnList.add(element);
+        }
+      });
+      favoriteProjects = returnList;
+      return returnList;
+    }
   }
 
   List<String> getAllAreas() {
