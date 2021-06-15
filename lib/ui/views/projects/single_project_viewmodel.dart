@@ -8,11 +8,12 @@ import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
 import 'package:good_wallet/services/projects/projects_service.dart';
-import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/projects_base_viewmodel.dart';
+import 'package:good_wallet/utils/string_utils.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 
-class SingleProjectViewModel extends BaseModel {
+class SingleProjectViewModel extends ProjectsBaseViewModel {
   final DialogService? _dialogService = locator<DialogService>();
   final NavigationService? _navigationService = locator<NavigationService>();
   final ProjectsService? _projectsService = locator<ProjectsService>();
@@ -20,9 +21,9 @@ class SingleProjectViewModel extends BaseModel {
   final log = getLogger("single_project_viewmodel.dart");
 
   String projectId;
-  Project? project;
-  SingleProjectViewModel({required this.project, required this.projectId});
+  SingleProjectViewModel({required this.projectId});
 
+  Project? project;
   Future initProject() async {
     setBusy(true);
     if (project == null) {

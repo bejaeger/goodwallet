@@ -1,17 +1,15 @@
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
-import 'package:good_wallet/datamodels/causes/concise_info/concise_project_info.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/enums/causes_type.dart';
 import 'package:good_wallet/apis/global_giving_api.dart';
 import 'package:good_wallet/services/projects/projects_service.dart';
-import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
-import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/projects_base_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class ProjectsViewModel extends BaseModel {
+class ProjectsViewModel extends ProjectsBaseViewModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final ProjectsService? _projectsService = locator<ProjectsService>();
   final GlobalGivingApi? _globalGivingAPIservice = locator<GlobalGivingApi>();
@@ -19,18 +17,6 @@ class ProjectsViewModel extends BaseModel {
   List<Project> get projects => _projectsService!.projects;
   List<Project> get projectUniqueAreas =>
       _projectsService!.getProjectsUniqueArea();
-  List<Project> getProjectsForArea({required String area}) {
-    if (area == "Good Wallet Fund") {
-      return getGoodWalletFundsInfo();
-    } else {
-      return _projectsService!.getProjectsForArea(area: area);
-    }
-  }
-
-  List<Project> getFavoriteProjects() {
-    return _projectsService!.getProjectsWithIds(
-        projectIds: currentUser.userSettings.favoriteProjectIds);
-  }
 
   final log = getLogger("projects_viewmodel.dart");
 
@@ -44,52 +30,13 @@ class ProjectsViewModel extends BaseModel {
   //////////////////////////////////////////////////
   /// Navigations
   ///
-  Future navigateToFavoritesView() async {
-    await _navigationService!.navigateTo(Routes.favoriteProjectsView,
-        arguments:
-            FavoriteProjectsViewArguments(projects: getFavoriteProjects()));
-  }
-
   Future navigateToProjectForAreaView({required String area}) async {
     await _navigationService!.navigateTo(Routes.projectsForAreaView,
-        arguments: ProjectsForAreaViewArguments(
-            projects: getProjectsForArea(area: area), title: area));
-  }
-
-  Future navigateToSingleProjectScreen({required String projectName}) async {
-    await _navigationService!.navigateTo(Routes.singleProjectViewMobile,
-        arguments: SingleProjectViewMobileArguments(
-            project: getProjectWithName(name: projectName),
-            projectId: getProjectWithName(name: projectName).id));
+        arguments: ProjectsForAreaViewArguments(area: area));
   }
 
   Project getProjectWithName({required String name}) {
     return projects.where((e) => e.name == name).first;
-  }
-
-  ///////////////////////////////////////////////////////
-  /// Temporary extras
-
-  /// good wallet funds
-  List<Project> getGoodWalletFundsInfo() {
-    return [
-      Project(
-          name: "Friend Referral Fund",
-          id: "DummyID",
-          area: "Good Wallet Fund",
-          causeType: CauseType.GoodWalletFund,
-          summary:
-              "This fund is used to raise money to be used when referring the Good Wallet to friends",
-          imageUrl: ImagePath.peopleHoldingHands),
-      Project(
-          name: "The Developer Fund",
-          id: "DummyID",
-          area: "Good Wallet Fund",
-          causeType: CauseType.GoodWalletFund,
-          summary:
-              "Support further developments of the Good Wallet to offer better services",
-          imageUrl: ImagePath.workNextToCreek),
-    ];
   }
 
   Future refresh() async {
@@ -100,5 +47,9 @@ class ProjectsViewModel extends BaseModel {
   void pushGlobalGivingProjectsToFirestore() {
     log.i("Adding project info to firestore");
     _globalGivingAPIservice!.getProjectsOfTheMonth(addToFirestore: true);
+  }
+
+  List<Project> getGoodWalletFundsInfo() {
+    return _projectsService!.getGoodWalletFundsInfo();
   }
 }

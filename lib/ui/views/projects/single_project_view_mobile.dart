@@ -15,16 +15,14 @@ import 'package:stacked/stacked.dart';
 
 class SingleProjectViewMobile extends StatelessWidget {
   final String projectId;
-  final Project? project;
   const SingleProjectViewMobile(
-      {Key? key, this.project, required this.projectId})
+      {Key? key, required this.projectId})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<SingleProjectViewModel>.reactive(
-      viewModelBuilder: () =>
-          SingleProjectViewModel(project: project, projectId: projectId),
+      viewModelBuilder: () => SingleProjectViewModel(projectId: projectId),
       onModelReady: (model) => model.initProject(),
       builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
         child: model.isBusy
@@ -37,9 +35,13 @@ class SingleProjectViewMobile extends StatelessWidget {
                     title: model.project!.name,
                     onTopLeftButtonPressed: model.navigateBack,
                     topRightWidget: IconButton(
-                      icon: Icon(Icons.favorite_border,
-                          size: 25, color: ColorSettings.whiteTextColor),
-                      onPressed: model.showNotImplementedSnackbar,
+                      icon: Icon(
+                        model.isFavoriteProject(projectId) ? Icons.favorite : Icons.favorite_border,
+                        size: 25,
+                        color: model.isFavoriteProject(projectId)
+                            ? ColorSettings.primaryColorDark
+                            : ColorSettings.whiteTextColor),
+                      onPressed: () => model.addOrRemoveFavorite(projectId),
                     ),
                   ),
                   Column(

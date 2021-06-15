@@ -215,8 +215,7 @@ class UserService {
     }
     _currentUser = _currentUser.copyWith(userSettings: newSettings);
     try {
-      _firestoreApi.updateUserSettings(
-          uid: _currentUser.uid, settings: newSettings);
+      _firestoreApi.updateUserData(user: _currentUser);
       return add;
     } catch (e) {
       rethrow;

@@ -11,7 +11,7 @@ class ListOfProjectsLayout extends StatelessWidget {
   final List<Project> projects;
   final bool isBusy;
   final void Function() showNotImplementedNotification;
-  final void Function(int index) onProjectTapped;
+  final void Function(String projectId) onProjectTapped;
   final void Function(String projectId) onFavoriteTapped;
   final bool Function(String projectId) isFavorite;
 
@@ -28,8 +28,7 @@ class ListOfProjectsLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return isBusy
-        ? SliverToBoxAdapter(
-            child: Center(child: LinearProgressIndicator()))
+        ? SliverToBoxAdapter(child: Center(child: LinearProgressIndicator()))
         : SliverList(
             delegate: SliverChildListDelegate(
               [
@@ -57,7 +56,7 @@ class ListOfProjectsLayout extends StatelessWidget {
                                 onTap: projects[index].causeType ==
                                         CauseType.GoodWalletFund
                                     ? showNotImplementedNotification
-                                    : () => onProjectTapped(index),
+                                    : () => onProjectTapped(projects[index].id),
                                 onFavoriteTapped: () =>
                                     onFavoriteTapped(project.id),
                                 isFavorite: isFavorite(project.id),

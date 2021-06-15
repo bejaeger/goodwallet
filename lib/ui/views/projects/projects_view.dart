@@ -121,9 +121,8 @@ class ProjectsTopPicksCarousel extends StatelessWidget {
               explanationAlignment: Alignment.bottomLeft,
               backgroundImage: NetworkImage(
                   "https://www.globalgiving.org/pfil/9790/pict_grid7.jpg"),
-              onTap: () => model.navigateToSingleProjectScreen(
-                  projectName:
-                      "Buy Back and Protect Forever Endangered Rainforest"),
+              onTap: () =>
+                  model.navigateToSingleProjectScreen("ya7gMFzeDsIgMKv64eDY"),
               //
             ),
             SizedBox(width: LayoutSettings.horizontalPadding),
@@ -133,8 +132,8 @@ class ProjectsTopPicksCarousel extends StatelessWidget {
               explanationAlignment: Alignment.bottomLeft,
               backgroundImage: NetworkImage(
                   "https://www.globalgiving.org/pfil/52192/pict_grid7.jpg"),
-              onTap: () => model.navigateToSingleProjectScreen(
-                  projectName: "India COVID-19 Relief Fund"),
+              onTap: () =>
+                  model.navigateToSingleProjectScreen("MW1mZUZvSbsyBHWi8ATS"),
               //
             ),
             SizedBox(width: LayoutSettings.horizontalPadding),
@@ -144,8 +143,8 @@ class ProjectsTopPicksCarousel extends StatelessWidget {
               explanationAlignment: Alignment.bottomLeft,
               backgroundImage: NetworkImage(
                   "https://www.globalgiving.org/pfil/898/pict_grid7.jpg"),
-              onTap: () => model.navigateToSingleProjectScreen(
-                  projectName: "High quality education for children in Uganda"),
+              onTap: () =>
+                  model.navigateToSingleProjectScreen("zbofLQZAkOZw60jMSK6o"),
               //
             ),
             SizedBox(width: LayoutSettings.horizontalPadding),

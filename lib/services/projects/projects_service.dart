@@ -6,6 +6,7 @@ import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/causes/concise_info/concise_project_info.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
+import 'package:good_wallet/enums/causes_type.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/utils/logger.dart';
 
@@ -73,10 +74,14 @@ class ProjectsService {
   }
 
   List<Project> getProjectsForArea({required String area}) {
-    List<Project> filteredProjects =
-        projects.where((element) => element.area == area).toList();
-    log.v("Found ${filteredProjects.length} projects with area $area");
-    return filteredProjects;
+    if (area == "Good Wallet Fund") {
+      return getGoodWalletFundsInfo();
+    } else {
+      List<Project> filteredProjects =
+          projects.where((element) => element.area == area).toList();
+      log.v("Found ${filteredProjects.length} projects with area $area");
+      return filteredProjects;
+    }
   }
 
   Future<Project> getProjectWithId({required String projectId}) async {
@@ -90,28 +95,28 @@ class ProjectsService {
     return project;
   }
 
-  Future loadGoodWalletFunds() async {
-    if (goodWalletFunds.isEmpty) {
-      goodWalletFunds = [
-        ConciseProjectInfo(
-          id: "DummyID",
+  ///////////////////////////////////////////////////////
+  /// Temporary extras
+
+  /// good wallet funds
+  List<Project> getGoodWalletFundsInfo() {
+    return [
+      Project(
           name: "Friend Referral Fund",
-          description:
-              "This fund is used to raise money when referring the Good Wallet to your peers",
-          imagePath: ImagePath.peopleHoldingHands,
-          area: "Good Wallet Fund",
-        ),
-        ConciseProjectInfo(
           id: "DummyID",
-          name: "The Developer Fund",
-          description:
-              "Support further developments of the Good Wallet to offer better services",
-          imagePath: ImagePath.workNextToCreek,
           area: "Good Wallet Fund",
-        ),
-      ];
-      log.i(
-          "Fetched good wallet fund list with length ${goodWalletFunds.length}");
-    }
+          causeType: CauseType.GoodWalletFund,
+          summary:
+              "This fund is used to raise money to be used when referring the Good Wallet to friends",
+          imageUrl: ImagePath.peopleHoldingHands),
+      Project(
+          name: "The Developer Fund",
+          id: "DummyID",
+          area: "Good Wallet Fund",
+          causeType: CauseType.GoodWalletFund,
+          summary:
+              "Support further developments of the Good Wallet to offer better services",
+          imageUrl: ImagePath.workNextToCreek),
+    ];
   }
 }

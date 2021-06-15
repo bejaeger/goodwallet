@@ -569,12 +569,11 @@ class FirestoreApi {
   }
 
   // Functions handling project favorites
-  Future updateUserSettings(
-      {required String uid, required UserSettings settings}) async {
+  Future updateUserData({required User user}) async {
     try {
       await _usersCollection
-          .doc(uid)
-          .set(settings.toJson(), SetOptions(merge: true));
+          .doc(user.uid)
+          .set(user.toJson(), SetOptions(merge: true));
     } catch (e) {
       throw FirestoreApiException(
           message:

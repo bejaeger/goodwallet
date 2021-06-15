@@ -9,7 +9,6 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
-import '../datamodels/causes/project.dart';
 import '../datamodels/money_pools/base/money_pool.dart';
 import '../datamodels/transfers/bookkeeping/recipient_info.dart';
 import '../datamodels/transfers/bookkeeping/sender_info.dart';
@@ -310,12 +309,8 @@ class StackedRouter extends RouterBase {
       );
     },
     FavoriteProjectsView: (data) {
-      var args = data.getArgs<FavoriteProjectsViewArguments>(nullOk: false);
       return MaterialPageRoute<dynamic>(
-        builder: (context) => FavoriteProjectsView(
-          key: args.key,
-          projects: args.projects,
-        ),
+        builder: (context) => const FavoriteProjectsView(),
         settings: data,
       );
     },
@@ -324,8 +319,7 @@ class StackedRouter extends RouterBase {
       return MaterialPageRoute<dynamic>(
         builder: (context) => ProjectsForAreaView(
           key: args.key,
-          projects: args.projects,
-          title: args.title,
+          area: args.area,
         ),
         settings: data,
       );
@@ -335,7 +329,6 @@ class StackedRouter extends RouterBase {
       return MaterialPageRoute<dynamic>(
         builder: (context) => SingleProjectViewMobile(
           key: args.key,
-          project: args.project,
           projectId: args.projectId,
         ),
         settings: data,
@@ -457,27 +450,16 @@ class DisburseMoneyPoolViewArguments {
   DisburseMoneyPoolViewArguments({this.key, required this.moneyPool});
 }
 
-/// FavoriteProjectsView arguments holder class
-class FavoriteProjectsViewArguments {
-  final Key? key;
-  final List<Project> projects;
-  FavoriteProjectsViewArguments({this.key, required this.projects});
-}
-
 /// ProjectsForAreaView arguments holder class
 class ProjectsForAreaViewArguments {
   final Key? key;
-  final List<Project> projects;
-  final String title;
-  ProjectsForAreaViewArguments(
-      {this.key, required this.projects, required this.title});
+  final String area;
+  ProjectsForAreaViewArguments({this.key, required this.area});
 }
 
 /// SingleProjectViewMobile arguments holder class
 class SingleProjectViewMobileArguments {
   final Key? key;
-  final Project? project;
   final String projectId;
-  SingleProjectViewMobileArguments(
-      {this.key, this.project, required this.projectId});
+  SingleProjectViewMobileArguments({this.key, required this.projectId});
 }
