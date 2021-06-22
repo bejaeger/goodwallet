@@ -94,7 +94,10 @@ class TransferFundsAmountView extends StatelessWidget
 
                         // Recipients
                         if (type == TransferType.User2UserSent)
-                          avatarWithUserName(context),
+                          avatarWithUserName(
+                              context,
+                              () => model.navigateToPublicProfileView(
+                                  recipientInfo!.id)),
                         if (type == TransferType.User2OwnPrepaidFund)
                           topUp(context),
                         if (type == TransferType.User2OwnGoodWallet)
@@ -221,23 +224,26 @@ class TransferFundsAmountView extends StatelessWidget
     );
   }
 
-  Widget avatarWithUserName(BuildContext context) {
-    return Column(
-      children: [
-        //Text("Gift money to", style: textTheme(context).headline4),
-        //verticalSpaceSmall,
-        CircleAvatar(
-          radius: 28,
-          backgroundColor: MyColors.paletteBlue,
-          child: Text(getInitialsFromName(recipientInfo!.name),
-              style: TextStyle(color: Colors.white, fontSize: 16)),
-        ),
-        verticalSpaceSmall,
-        Text(recipientInfo!.name,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: textTheme(context).headline6!.copyWith(fontSize: 15)),
-      ],
+  Widget avatarWithUserName(BuildContext context, void Function()? onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          //Text("Gift money to", style: textTheme(context).headline4),
+          //verticalSpaceSmall,
+          CircleAvatar(
+            radius: 28,
+            backgroundColor: MyColors.paletteBlue,
+            child: Text(getInitialsFromName(recipientInfo!.name),
+                style: TextStyle(color: Colors.white, fontSize: 16)),
+          ),
+          verticalSpaceSmall,
+          Text(recipientInfo!.name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: textTheme(context).headline6!.copyWith(fontSize: 15)),
+        ],
+      ),
     );
   }
 

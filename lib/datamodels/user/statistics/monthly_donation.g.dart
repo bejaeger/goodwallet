@@ -8,13 +8,13 @@ part of 'monthly_donation.dart';
 
 _$_MonthlyDonation _$_$_MonthlyDonationFromJson(Map<String, dynamic> json) {
   return _$_MonthlyDonation(
-    month: DateTime.parse(json['month'] as String),
+    month: json['month'] as num,
     totalDonations: json['totalDonations'] as num,
   );
 }
 
 Map<String, dynamic> _$_$_MonthlyDonationToJson(_$_MonthlyDonation instance) =>
     <String, dynamic>{
-      'month': instance.month.toIso8601String(),
+      'month': instance.month,
       'totalDonations': instance.totalDonations,
     };

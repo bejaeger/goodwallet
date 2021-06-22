@@ -29,12 +29,14 @@ import '../ui/views/money_pools/disburse_money_pool_view.dart';
 import '../ui/views/money_pools/money_pools_view.dart';
 import '../ui/views/money_pools/single_money_pool_view.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
+import '../ui/views/profile/public_profile/public_profile_view_mobile.dart';
 import '../ui/views/projects/favorite_projects_view.dart';
 import '../ui/views/projects/projects_for_area_view.dart';
 import '../ui/views/projects/projects_view.dart';
 import '../ui/views/projects/single_project_view_mobile.dart';
 import '../ui/views/qrcode/qrcode_view_mobile.dart';
 import '../ui/views/search_view/search_view.dart';
+import '../ui/views/settings/settings_view.dart';
 import '../ui/views/startup_logic/startup_logic_view.dart';
 import '../ui/views/transaction_history/transfers_history_view.dart';
 import '../ui/views/transfer_funds/transfer_funds_amount_view.dart';
@@ -66,6 +68,8 @@ class Routes {
   static const String projectsForAreaView = '/projects-for-area-view';
   static const String singleProjectViewMobile = '/single-project-view-mobile';
   static const String inAppNotificationsView = '/in-app-notifications-view';
+  static const String settingsView = '/settings-view';
+  static const String publicProfileViewMobile = '/public-profile-view-mobile';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -91,6 +95,8 @@ class Routes {
     projectsForAreaView,
     singleProjectViewMobile,
     inAppNotificationsView,
+    settingsView,
+    publicProfileViewMobile,
   };
 }
 
@@ -122,6 +128,8 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.projectsForAreaView, page: ProjectsForAreaView),
     RouteDef(Routes.singleProjectViewMobile, page: SingleProjectViewMobile),
     RouteDef(Routes.inAppNotificationsView, page: InAppNotificationsView),
+    RouteDef(Routes.settingsView, page: SettingsView),
+    RouteDef(Routes.publicProfileViewMobile, page: PublicProfileViewMobile),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -340,6 +348,22 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    SettingsView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const SettingsView(),
+        settings: data,
+      );
+    },
+    PublicProfileViewMobile: (data) {
+      var args = data.getArgs<PublicProfileViewMobileArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => PublicProfileViewMobile(
+          key: args.key,
+          uid: args.uid,
+        ),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -462,4 +486,11 @@ class SingleProjectViewMobileArguments {
   final Key? key;
   final String projectId;
   SingleProjectViewMobileArguments({this.key, required this.projectId});
+}
+
+/// PublicProfileViewMobile arguments holder class
+class PublicProfileViewMobileArguments {
+  final Key? key;
+  final String uid;
+  PublicProfileViewMobileArguments({this.key, required this.uid});
 }

@@ -16,6 +16,9 @@ class MoneyTransferStatistics with _$MoneyTransferStatistics {
   const factory MoneyTransferStatistics.empty({
     @Default(0) num totalSentToPeers,
     @Default(0) num totalRaised,
+    @Default(0) num totalRaisedViaMoneyPool,
+    @Default(0) num totalRaisedViaPeer2Peer,
+    @Default(0) num totalRaisedViaSubsidiaryApp,
   }) = _EmptyMoneyTransferStatistics;
 
   factory MoneyTransferStatistics.fromJson(Map<String, dynamic> json) =>

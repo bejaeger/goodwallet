@@ -32,6 +32,10 @@ class ProfileViewModel extends BaseModel {
     _navigationService!.navigateTo(Routes.transfersHistoryView);
   }
 
+  Future navigateToSettingsView() async {
+    _navigationService!.navigateTo(Routes.settingsView);
+  }
+
   Future navigateToTransactionsHistoryView() async {
     _navigationService!.navigateTo(Routes.transfersHistoryView);
   }

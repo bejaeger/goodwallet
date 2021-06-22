@@ -6,7 +6,7 @@ part 'monthly_donation.g.dart';
 @freezed
 class MonthlyDonation with _$MonthlyDonation {
   factory MonthlyDonation({
-    required DateTime month,
+    required num month,
     required num totalDonations,
   }) = _MonthlyDonation;
 

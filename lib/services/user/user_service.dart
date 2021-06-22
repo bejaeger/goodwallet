@@ -172,7 +172,7 @@ class UserService {
 
   ///////////////////////////////////////////////////////////////
   ///
-  /// Functions related to user data
+  /// Functions related to user data and settings
 
   /// Setting up user stats listener
   Future listenToUserSummaryStats({required String uid}) async {
@@ -213,13 +213,13 @@ class UserService {
         newSettings = settings.copyWith(favoriteProjectIds: favIds);
       }
     }
-    _currentUser = _currentUser.copyWith(userSettings: newSettings);
-    try {
-      _firestoreApi.updateUserData(user: _currentUser);
-      return add;
-    } catch (e) {
-      rethrow;
-    }
+    updateUserSettings(userSettings: newSettings);
+    return add;
+  }
+
+  Future updateUserSettings({required userSettings}) async {
+    _currentUser = _currentUser.copyWith(userSettings: userSettings);
+    _firestoreApi.updateUserData(user: _currentUser);
   }
 
   ///////////////////////////////////////////////////

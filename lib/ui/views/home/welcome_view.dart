@@ -3,6 +3,9 @@ import 'package:good_wallet/ui/views/home/welcome_viewmodel.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:stacked/stacked.dart';
 
+/////////////////////////////////////////////////
+// DEPRECATED
+
 class WelcomeView extends StatelessWidget {
   const WelcomeView({Key? key}) : super(key: key);
 

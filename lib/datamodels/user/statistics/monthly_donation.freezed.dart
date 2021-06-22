@@ -20,8 +20,7 @@ MonthlyDonation _$MonthlyDonationFromJson(Map<String, dynamic> json) {
 class _$MonthlyDonationTearOff {
   const _$MonthlyDonationTearOff();
 
-  _MonthlyDonation call(
-      {required DateTime month, required num totalDonations}) {
+  _MonthlyDonation call({required num month, required num totalDonations}) {
     return _MonthlyDonation(
       month: month,
       totalDonations: totalDonations,
@@ -38,7 +37,7 @@ const $MonthlyDonation = _$MonthlyDonationTearOff();
 
 /// @nodoc
 mixin _$MonthlyDonation {
-  DateTime get month => throw _privateConstructorUsedError;
+  num get month => throw _privateConstructorUsedError;
   num get totalDonations => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -52,7 +51,7 @@ abstract class $MonthlyDonationCopyWith<$Res> {
   factory $MonthlyDonationCopyWith(
           MonthlyDonation value, $Res Function(MonthlyDonation) then) =
       _$MonthlyDonationCopyWithImpl<$Res>;
-  $Res call({DateTime month, num totalDonations});
+  $Res call({num month, num totalDonations});
 }
 
 /// @nodoc
@@ -73,7 +72,7 @@ class _$MonthlyDonationCopyWithImpl<$Res>
       month: month == freezed
           ? _value.month
           : month // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as num,
       totalDonations: totalDonations == freezed
           ? _value.totalDonations
           : totalDonations // ignore: cast_nullable_to_non_nullable
@@ -89,7 +88,7 @@ abstract class _$MonthlyDonationCopyWith<$Res>
           _MonthlyDonation value, $Res Function(_MonthlyDonation) then) =
       __$MonthlyDonationCopyWithImpl<$Res>;
   @override
-  $Res call({DateTime month, num totalDonations});
+  $Res call({num month, num totalDonations});
 }
 
 /// @nodoc
@@ -112,7 +111,7 @@ class __$MonthlyDonationCopyWithImpl<$Res>
       month: month == freezed
           ? _value.month
           : month // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as num,
       totalDonations: totalDonations == freezed
           ? _value.totalDonations
           : totalDonations // ignore: cast_nullable_to_non_nullable
@@ -130,7 +129,7 @@ class _$_MonthlyDonation implements _MonthlyDonation {
       _$_$_MonthlyDonationFromJson(json);
 
   @override
-  final DateTime month;
+  final num month;
   @override
   final num totalDonations;
 
@@ -168,15 +167,14 @@ class _$_MonthlyDonation implements _MonthlyDonation {
 }
 
 abstract class _MonthlyDonation implements MonthlyDonation {
-  factory _MonthlyDonation(
-      {required DateTime month,
-      required num totalDonations}) = _$_MonthlyDonation;
+  factory _MonthlyDonation({required num month, required num totalDonations}) =
+      _$_MonthlyDonation;
 
   factory _MonthlyDonation.fromJson(Map<String, dynamic> json) =
       _$_MonthlyDonation.fromJson;
 
   @override
-  DateTime get month => throw _privateConstructorUsedError;
+  num get month => throw _privateConstructorUsedError;
   @override
   num get totalDonations => throw _privateConstructorUsedError;
   @override

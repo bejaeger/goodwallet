@@ -8,6 +8,9 @@ import 'package:good_wallet/ui/views/home/home_custom_app_bar_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
+/////////////////////////////////////////////////
+// DEPRECATED
+
 class HomeCustomAppBarView extends SliverPersistentHeaderDelegate {
   final double minExtent;
   final double maxExtent;

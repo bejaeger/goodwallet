@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
+import 'package:good_wallet/datamodels/user/user_settings.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/user/user_service.dart';
 import 'package:mockito/mockito.dart';
@@ -48,7 +49,10 @@ void main() {
           currentUser: mockFirebaseUser);
       getAndRegisterFirestoreApi(
           user: User(
-              uid: 'dummy_uid', email: 'dummy_email', fullName: 'dummy_name'));
+              uid: 'dummy_uid',
+              email: 'dummy_email',
+              fullName: 'dummy_name',
+              userSettings: UserSettings()));
       when(mockFirebaseUser.uid).thenReturn("UID");
       when(mockFirebaseUser.email).thenReturn("EMAIL");
       when(mockFirebaseUser.displayName).thenReturn("NAME");
@@ -57,8 +61,6 @@ void main() {
       expect(service.userStatus, UserStatus.Initialized);
     });
 
-    ///////////////////
-    // //// Not yet working because it says a non-mockito object is tested...what!?
     test(
         'When firebase user is not null but has no entry in the database should create User',
         () async {

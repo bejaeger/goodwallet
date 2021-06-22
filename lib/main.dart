@@ -4,6 +4,7 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/setup_bottom_sheet_ui.dart';
+import 'package:good_wallet/ui/shared/setup_dialog_ui.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:good_wallet/utils/unfocuser.dart';
 import 'package:logger/logger.dart';
@@ -20,6 +21,7 @@ void main() async {
     // will remove the leading # in the URL
     setHashUrlStrategy();
     setupLocator();
+    setupDialogUi();
     setupBottomSheetUi();
     Logger.level = Level.verbose;
     runApp(MyApp());

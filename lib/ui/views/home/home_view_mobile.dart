@@ -40,11 +40,11 @@ class HomeViewMobile extends StatelessWidget {
                 slivers: [
                   CustomSliverAppBarSmall(
                     title: "Home",
-                    // onSecondRightIconPressed: model.navigateToProfileView,
-                    // secondRightIcon: Icon(
-                    //   Icons.person,
-                    //   size: 28,
-                    // ),
+                    onSecondRightIconPressed: model.navigateToSearchViewMobile,
+                    secondRightIcon: Icon(
+                      Icons.search_rounded,
+                      size: 28,
+                    ),
                     onRightIconPressed: model.navigateToNotificationsView,
                     rightIcon: Icon(Icons.notifications_none_rounded, size: 28),
                   ),
@@ -73,7 +73,7 @@ class HomeViewMobile extends StatelessWidget {
                                       callToActionButtons(context, model),
                                       verticalSpaceSmall,
                                       GoodWalletCard(
-                                        onCardTap: model.navigateToQRCodeView,
+                                        onCardTap: model.showStatsDialog,
                                         onQRCodeTap: model.navigateToQRCodeView,
                                         // onHistoryButtonPressed: model
                                         //     .navigateToTransactionsHistoryView,
@@ -118,55 +118,60 @@ class HomeViewMobile extends StatelessWidget {
                                 ),
                                 ListTile(
                                     title: Text(
-                                        "Make a new donation or send money")),
+                                        "+ Make your first donation or send money")),
                                 Divider(
                                   color: Colors.grey[500],
                                   thickness: 0.5,
                                 ),
                               ],
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal:
-                                        LayoutSettings.horizontalPadding + 5.0),
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: Colors.transparent,
-                                    border:
-                                        Border.all(color: Colors.grey[400]!),
-                                    borderRadius: BorderRadius.circular(16.0),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10.0, horizontal: 5.0),
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: ScrollPhysics(),
-                                      itemCount:
-                                          model.latestTransfers.length > 3
-                                              ? 3
-                                              : model.latestTransfers.length,
-                                      itemBuilder: (context, index) {
-                                        var data = model.latestTransfers[index];
-                                        return TransferListTile(
-                                          onTap: () =>
-                                              model.showMoneyTransferInfoDialog(
-                                                  data),
-                                          dense: true,
-                                          showBottomDivider: index < 2,
-                                          showTopDivider: false,
-                                          transaction: data,
-                                          style:
-                                              getTransactionsCorrespondingToTypeHistoryEntryStyle(
-                                                  data: data,
-                                                  type: data.type,
-                                                  uid: model.currentUser.uid),
-                                          amount: data.transferDetails.amount,
-                                        );
-                                      },
+                              if (model.latestTransfers.length > 0)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal:
+                                          LayoutSettings.horizontalPadding +
+                                              5.0),
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      color: Colors.transparent,
+                                      border:
+                                          Border.all(color: Colors.grey[400]!),
+                                      borderRadius: BorderRadius.circular(16.0),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10.0, horizontal: 5.0),
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: ScrollPhysics(),
+                                        itemCount:
+                                            model.latestTransfers.length > 3
+                                                ? 3
+                                                : model.latestTransfers.length,
+                                        itemBuilder: (context, index) {
+                                          var data =
+                                              model.latestTransfers[index];
+                                          return TransferListTile(
+                                            onTap: () => model
+                                                .showMoneyTransferInfoDialog(
+                                                    data),
+                                            dense: true,
+                                            showBottomDivider: index < 2 &&
+                                                model.latestTransfers.length >
+                                                    2,
+                                            showTopDivider: false,
+                                            transaction: data,
+                                            style:
+                                                getTransactionsCorrespondingToTypeHistoryEntryStyle(
+                                                    data: data,
+                                                    type: data.type,
+                                                    uid: model.currentUser.uid),
+                                            amount: data.transferDetails.amount,
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
                               verticalSpaceRegular,
                               SectionHeader(
                                 title: "Featured apps",

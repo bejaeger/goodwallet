@@ -5,6 +5,7 @@ import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
+import 'package:good_wallet/enums/dialog_type.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
@@ -16,11 +17,11 @@ import 'package:good_wallet/utils/logger.dart';
 
 class HomeViewModel extends TransferBaseViewModel {
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
+  final DialogService? _dialogService = locator<DialogService>();
   final NavigationService? _navigationService = locator<NavigationService>();
   final QRCodeService? _qrCodeService = locator<QRCodeService>();
   final TransfersHistoryService? _transfersManager =
       locator<TransfersHistoryService>();
-  final DialogService? _dialogService = locator<DialogService>();
   final log = getLogger("home_viewmodel.dart");
 
   // get latest outgoing peer 2 peer transfers used in send money bottom sheet view
@@ -69,6 +70,17 @@ class HomeViewModel extends TransferBaseViewModel {
 
   String getQRCodeUserInfoString() {
     return _qrCodeService!.getEncodedUserInfo(currentUser);
+  }
+
+  ///////////////////////////////////////////////////
+  /// Dialogs
+  Future showStatsDialog() async {
+    await _dialogService!.showCustomDialog(
+      barrierDismissible: true,
+      variant: DialogType
+          .Stats, // Which builder you'd like to call that was assigned in the builders function above.
+      customData: userStats,
+    );
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -189,6 +201,10 @@ class HomeViewModel extends TransferBaseViewModel {
   void navigateToHomeWithAnimation() {
     _navigationService!.navigateTo(Routes.layoutTemplateViewMobile,
         arguments: LayoutTemplateViewMobileArguments(showDialog: true));
+  }
+
+  void navigateToSearchViewMobile() {
+    _navigationService!.navigateTo(Routes.searchView);
   }
 
   Future showDialog() async {

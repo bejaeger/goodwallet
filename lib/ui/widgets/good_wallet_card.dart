@@ -310,27 +310,36 @@ class GoodWalletCard extends StatelessWidget {
   GestureDetector displayQRCode(BuildContext context) {
     return GestureDetector(
       onTap: onQRCodeTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(4.0),
-            // decoration: BoxDecoration(
-            //     border: Border.all(color: ColorSettings.greyTextColor!)),
-            height: 70,
-            width: 70,
-            child: QrImage(
-              foregroundColor: ColorSettings.qrCodeOnWalletColor,
-              backgroundColor: ColorSettings.greyTextColor!,
-              padding: const EdgeInsets.all(1.0),
-              data: userInfo,
-            ),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.0),
+            color: MyColors.paletteGrey.withOpacity(0.1)),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(4.0),
+                // decoration: BoxDecoration(
+                //     border: Border.all(color: ColorSettings.greyTextColor!)),
+                height: 70,
+                width: 70,
+                child: QrImage(
+                  foregroundColor: ColorSettings.qrCodeOnWalletColor,
+                  backgroundColor: ColorSettings.greyTextColor!,
+                  padding: const EdgeInsets.all(1.0),
+                  data: userInfo,
+                ),
+              ),
+              Text("QR code",
+                  style: textTheme(context).bodyText2!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: ColorSettings.blackHeadlineColor))
+            ],
           ),
-          Text("QR code",
-              style: textTheme(context)
-                  .bodyText2!
-                  .copyWith(fontWeight: FontWeight.bold, fontSize: 16))
-        ],
+        ),
       ),
     );
   }
@@ -343,9 +352,10 @@ class GoodWalletCard extends StatelessWidget {
         Text(label, style: textTheme(context).bodyText2!),
         Text(
           count,
-          style: textTheme(context)
-              .bodyText2!
-              .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+          style: textTheme(context).bodyText2!.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: ColorSettings.blackHeadlineColor),
         ),
       ],
     );

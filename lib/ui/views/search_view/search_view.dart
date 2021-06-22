@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
-import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/search_view/search_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
@@ -98,7 +97,8 @@ class SearchView extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             onSelected: (int index) {
               if (index == 0) {
-                model.showNotImplementedSnackbar();
+                model
+                    .navigateToPublicProfileView(model.userInfoList[index].uid);
               } else if (index == 1) {
                 model.showNotImplementedSnackbar();
               }

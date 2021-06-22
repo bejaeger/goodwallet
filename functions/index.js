@@ -101,12 +101,13 @@ exports.processMoneyTransfer = functions.https.onCall(async (data, context) => {
       const docRefSender = getUserSummaryStatisticsDocument(senderId);
 
       const batch = db.batch();
-      batch.update(docRefRecipient,{
+      batch.update(docRefRecipient, {
         currentBalance: increment,
-        "moneyTransferStatistics.totalRaised": increment
+        "moneyTransferStatistics.totalRaised": increment,
+        "moneyTransferStatistics.totalRaisedViaPeer2Peer": increment
       });
-      batch.update(docRefSender,{
-        "moneyTransferStatistics.totalSentToPeers": increment        
+      batch.update(docRefSender, {
+        "moneyTransferStatistics.totalSentToPeers": increment
       });
       await batch.commit();
 
@@ -118,18 +119,14 @@ exports.processMoneyTransfer = functions.https.onCall(async (data, context) => {
       const senderId = transferDetails["senderId"];
       const amount = transferDetails["amount"];
       const sourceType = transferDetails["sourceType"];
+      const { projectInfo } = data;
 
       let valueToDeduct;
       if (sourceType === "Bank") valueToDeduct = 0;
       if (sourceType === "GoodWallet") valueToDeduct = -amount;
-      const deduct = admin.firestore.FieldValue.increment(valueToDeduct);
 
-      const add = admin.firestore.FieldValue.increment(amount);
-      const docRef = getUserSummaryStatisticsDocument(senderId);
-      await docRef.update({
-        currentBalance: deduct,
-        "donationStatistics.totalDonations": add
-      });
+      updateDonationStatistics(senderId, amount, valueToDeduct, projectInfo);
+
     }
 
     if (type === "User2MoneyPool") { // Donation
@@ -157,8 +154,8 @@ exports.processMoneyTransfer = functions.https.onCall(async (data, context) => {
         );
       }
     }
-    
-    return returnData({transferId: doc.id});
+
+    return returnData({ transferId: doc.id });
   } catch (error) {
     reportError(error.message, { transferId: data.transferId });
     return returnError("Something went wrong, error: ".concat(error.message));
@@ -188,7 +185,8 @@ exports.processMoneyPoolPayout = functions.firestore
         // update users good wallets
         batch.update(docRef, {
           currentBalance: increment,
-          "moneyTransferStatistics.totalRaised": increment
+          "moneyTransferStatistics.totalRaised": increment,
+          "moneyTransferStatistics.totalRaisedViaMoneyPool": increment
         });
       });
 
@@ -214,6 +212,86 @@ exports.processMoneyPoolPayout = functions.firestore
   }
   );
 
+
+/* ------------------ Update Statistics -------------*/
+
+// update summary statistics in model DonationStatistics
+async function updateDonationStatistics(uid, amountToAdd, amountToDeduct, projectInfo) {
+
+  var docRef = getUserSummaryStatisticsDocument(uid);
+  var doc = await docRef.get();
+  var docData = doc.data();
+
+  console.log('Fetched user statistics document: ', docData);
+
+  // update monthly donations
+  monthlyDonations = updateMonthlyDonations(docData["donationStatistics"]["monthlyDonations"], amountToAdd);
+  // update supported Projects
+  supportedProjects = updateSupportedProjects(docData["donationStatistics"]["supportedProjects"], amountToAdd, projectInfo);
+
+  // update doc Data
+  docData["donationStatistics"]["monthlyDonations"] = monthlyDonations;
+  docData["donationStatistics"]["supportedProjects"] = supportedProjects;
+
+  docData["currentBalance"] = docData["currentBalance"] + amountToDeduct;
+  docData["donationStatistics"]["totalDonations"] = docData["donationStatistics"]["totalDonations"] + amountToAdd;
+
+  console.log('Update user statistics document to: ', docData);
+  docRef.update(docData);
+}
+
+// update monthly donations array
+// Add monthly donation if in same month, otherwise add new element 
+// to array
+function updateMonthlyDonations(monthlyDonations, donation) {
+  var foundMonth = false;
+  var d = new Date();
+  monthlyDonations.forEach(function (item) {
+    var firestoreDate = new Date(parseInt(item.month));
+    if (firestoreDate.getFullYear() === d.getFullYear() && firestoreDate.getMonth() === d.getMonth()) {
+      console.log("Adding donation to month: ", d.getMonth());
+      foundMonth = true;
+      item["totalDonations"] = item["totalDonations"] + donation;
+    } else {
+      console.log("Add new entry to monty donations for monty: ", d.getMonth());
+    }
+  })
+  if (!foundMonth) {
+    monthlyDonations.push(
+      {
+        month: Date.now(), // (parsing the number of seconds that have elapsed since midnight on January 1, 1970, UTC)
+        totalDonations: donation
+      }
+    )
+  }
+  return monthlyDonations;
+}
+
+// update supported projects array
+// Add to total donation of supported proejct if project found 
+// (has already been donated to), otherwise add new element 
+// to array with donation information
+function updateSupportedProjects(supportedProjects, donation, projectInfo) {
+  foundProject = false;
+  supportedProjects.forEach(function (item) {
+    if (item["projectInfo"]["id"] === projectInfo["id"]) {
+      console.log("Adding donation to this project");
+      foundProject = true;
+      item["totalDonations"] = item["totalDonations"] + donation;
+    } else {
+      console.log("Add new entry to supported projects for project: ");
+    }
+  })
+  if (!foundProject) {
+    supportedProjects.push(
+      {
+        projectInfo: projectInfo,
+        totalDonations: donation
+      }
+    );
+  }
+  return supportedProjects;
+}
 
 /* ------------------ Helpers ------------------ */
 

@@ -198,7 +198,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       // FOR now, implemented dummy payment processing here
       setBusy(true);
       try {
-        final data = prepareTransferData();
+        final MoneyTransfer data = prepareTransferData();
         await _dummyPaymentService.processTransfer(moneyTransfer: data);
         log.i("Processed transfer: $data");
       } catch (e) {
@@ -356,6 +356,15 @@ class TransferFundsAmountViewModel extends FormViewModel {
   Future navigateToSingleProjectScreen({required String projectId}) async {
     await _navigationService!.navigateTo(Routes.singleProjectViewMobile,
         arguments: SingleProjectViewMobileArguments(projectId: projectId));
+  }
+
+  Future navigateToPublicProfileView(String uid) async {
+    bool result = await _navigationService!.navigateTo(
+        Routes.publicProfileViewMobile,
+        arguments: PublicProfileViewMobileArguments(uid: uid));
+    if (result == false) {
+      _snackbarService!.showSnackbar(message: "User could not be found");
+    }
   }
 
   ////////////////////////////////////////////////////////////////

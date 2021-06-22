@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
+import 'package:good_wallet/datamodels/user/user_settings.dart';
 import 'package:good_wallet/exceptions/qrcode_service_exception.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -11,8 +12,11 @@ void main() {
       test('Function that encodes user information as a string in json style',
           () {
         var service = QRCodeService();
-        var info = service.getEncodedUserInfo(
-            User(uid: "USERID", fullName: "USERNAME", email: "EMAIL"));
+        var info = service.getEncodedUserInfo(User(
+            uid: "USERID",
+            fullName: "USERNAME",
+            email: "EMAIL",
+            userSettings: UserSettings()));
         expect(info, "{\"uid\":\"USERID\",\"name\":\"USERNAME\"}");
       });
     });

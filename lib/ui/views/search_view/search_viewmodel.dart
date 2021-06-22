@@ -4,6 +4,8 @@ import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
+import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
@@ -17,7 +19,7 @@ class SearchViewModel extends BaseModel {
   final CollectionReference _usersCollectionReference =
       FirebaseFirestore.instance.collection("users");
   final NavigationService? _navigationService = locator<NavigationService>();
-
+  final SnackbarService? _snackbarService = locator<SnackbarService>();
   final log = getLogger("search_viewmodel.dart");
 
   void selectUser(int index, SearchType searchType) {
@@ -54,5 +56,14 @@ class SearchViewModel extends BaseModel {
   void navigateToScanQRCodeView() {
     _navigationService!.replaceWith(Routes.qRCodeViewMobile,
         arguments: QRCodeViewMobileArguments(initialIndex: 0));
+  }
+
+  Future navigateToPublicProfileView(String uid) async {
+    bool result = await _navigationService!.navigateTo(
+        Routes.publicProfileViewMobile,
+        arguments: PublicProfileViewMobileArguments(uid: uid));
+    if (result == false) {
+      _snackbarService!.showSnackbar(message: "User could not be found");
+    }
   }
 }

@@ -134,6 +134,21 @@ class MockUserService extends _i1.Mock implements _i11.UserService {
           Invocation.method(#listenToUserSummaryStats, [], {#uid: uid}),
           returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
   @override
+  bool isFavoriteProject({String? projectId}) => (super.noSuchMethod(
+      Invocation.method(#isFavoriteProject, [], {#projectId: projectId}),
+      returnValue: false) as bool);
+  @override
+  _i14.Future<dynamic> addOrRemoveFavorite({String? projectId}) =>
+      (super.noSuchMethod(
+          Invocation.method(#addOrRemoveFavorite, [], {#projectId: projectId}),
+          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+  @override
+  _i14.Future<dynamic> updateUserSettings({dynamic userSettings}) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #updateUserSettings, [], {#userSettings: userSettings}),
+          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+  @override
   _i14.Future<dynamic> handleLogoutEvent() =>
       (super.noSuchMethod(Invocation.method(#handleLogoutEvent, []),
           returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
@@ -393,6 +408,10 @@ class MockFirestoreApi extends _i1.Mock implements _i18.FirestoreApi {
       .noSuchMethod(Invocation.method(#createProject, [], {#project: project}),
           returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
   @override
+  _i14.Future<dynamic> updateUserData({_i4.User? user}) =>
+      (super.noSuchMethod(Invocation.method(#updateUserData, [], {#user: user}),
+          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+  @override
   _i8.CollectionReference getUserStatisticsCollection({String? uid}) =>
       (super.noSuchMethod(
           Invocation.method(#getUserStatisticsCollection, [], {#uid: uid}),
@@ -615,6 +634,10 @@ class MockFirebaseAuthenticationService extends _i1.Mock
   bool get hasUser =>
       (super.noSuchMethod(Invocation.getter(#hasUser), returnValue: false)
           as bool);
+  @override
+  _i14.Stream<_i9.User?> get authStateChanges =>
+      (super.noSuchMethod(Invocation.getter(#authStateChanges),
+          returnValue: Stream<_i9.User?>.empty()) as _i14.Stream<_i9.User?>);
   @override
   _i14.Future<_i10.FirebaseAuthenticationResult> signInWithGoogle() =>
       (super.noSuchMethod(Invocation.method(#signInWithGoogle, []),

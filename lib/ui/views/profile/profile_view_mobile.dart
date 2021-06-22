@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
@@ -9,8 +11,6 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class ProfileViewMobile extends StatelessWidget {
-  late dynamic _model;
-
   Widget _buildCoverImage(Size screenSize) {
     return Container(
       width: screenSize.width,
@@ -38,9 +38,9 @@ class ProfileViewMobile extends StatelessWidget {
     );
   }
 
-  Widget _buildFullName(BuildContext context) {
+  Widget _buildFullName(BuildContext context, User user) {
     return Text(
-      _model.currentUser.fullName,
+      user.fullName,
       style: textTheme(context).headline4,
     );
   }
@@ -51,9 +51,10 @@ class ProfileViewMobile extends StatelessWidget {
     );
   }
 
-  Widget _buildWallet(BuildContext context) {
+  Widget _buildWallet(BuildContext context, void Function()? onPressed,
+      UserStatistics userStats) {
     return GestureDetector(
-      onTap: _model.navigateToTransactionsHistoryView,
+      onTap: onPressed,
       child: Card(
         color: Colors.white,
         elevation: 2.0,
@@ -76,7 +77,7 @@ class ProfileViewMobile extends StatelessWidget {
                   //         .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
                   horizontalSpaceSmall,
                   Text(
-                    "\$ " + (_model.userStats.currentBalance / 100).toString(),
+                    "\$ " + (userStats.currentBalance / 100).toString(),
                     style: textTheme(context)
                         .bodyText2!
                         .copyWith(fontWeight: FontWeight.bold, fontSize: 18),
@@ -110,7 +111,7 @@ class ProfileViewMobile extends StatelessWidget {
     );
   }
 
-  Widget _buildStatContainer(BuildContext context) {
+  Widget _buildStatContainer(BuildContext context, UserStatistics userStats) {
     return Container(
       height: 60.0,
       margin: EdgeInsets.only(top: 8.0),
@@ -132,43 +133,18 @@ class ProfileViewMobile extends StatelessWidget {
           _buildStatItem(
               context,
               "Total donations",
-              formatAmount(_model.userStats.donationStatistics.totalDonations),
+              formatAmount(userStats.donationStatistics.totalDonations),
               ColorSettings.primaryColor),
           _buildStatItem(
               context,
               "Total raised",
-              formatAmount(
-                  _model.userStats.moneyTransferStatistics.totalRaised),
+              formatAmount(userStats.moneyTransferStatistics.totalRaised),
               ColorSettings.primaryColor),
           _buildStatItem(
               context,
               "Total gifted",
-              formatAmount(
-                  _model.userStats.moneyTransferStatistics.totalSentToPeers),
+              formatAmount(userStats.moneyTransferStatistics.totalSentToPeers),
               ColorSettings.primaryColor),
-
-          // Row(
-          //   mainAxisSize: MainAxisSize.min,
-          //   children: [
-          //     Icon(Icons.favorite, size: 30),
-          //     horizontalSpaceSmall,
-          //     _buildStatItem(context, "Total donations",
-          //         "\$ " + (_model.userWallet.donations / 100).toString()),
-          //   ],
-          // ),
-          // Row(
-          //   mainAxisSize: MainAxisSize.min,
-          //   children: [
-          //     Icon(Icons.send_rounded, size: 30),
-          //     horizontalSpaceSmall,
-          //     _buildStatItem(
-          //         context,
-          //         "Total gifted",
-          //         "\$ " +
-          //             (_model.userWallet.transferredToPeers / 100).toString()),
-          //     //_buildStatItem("", _scores),
-          //   ],
-          // ),
         ],
       ),
     );
@@ -182,7 +158,6 @@ class ProfileViewMobile extends StatelessWidget {
         return null;
       },
       builder: (context, model, child) {
-        _model = model;
         return ConstrainedWidthWithScaffoldLayout(
           child: !model.isUserSignedIn || model.isBusy
               ? Center(child: CircularProgressIndicator())
@@ -194,10 +169,13 @@ class ProfileViewMobile extends StatelessWidget {
                       children: <Widget>[
                         verticalSpaceRegular,
                         _buildProfileImage(),
-                        _buildFullName(context),
+                        _buildFullName(context, model.currentUser),
                         _buildStatus(context),
-                        _buildWallet(context),
-                        _buildStatContainer(context),
+                        _buildWallet(
+                            context,
+                            model.navigateToTransactionsHistoryView,
+                            model.userStats),
+                        _buildStatContainer(context, model.userStats),
                       ],
                     ),
                     verticalSpaceRegular,
@@ -210,6 +188,35 @@ class ProfileViewMobile extends StatelessWidget {
                             onPressed: model.navigateToDonationsHistoryView,
                           ),
                           verticalSpaceSmall,
+                          ProfileListItem(
+                            title: "Settings",
+                            onPressed: model.navigateToSettingsView,
+                          ),
+                          verticalSpaceMedium,
+                          spacedDivider,
+                          Center(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minWidth: screenWidthPercentage(context,
+                                    percentage: 0.6),
+                              ),
+                              child: ElevatedButton(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("Logout",
+                                      style: textTheme(context).headline5),
+                                ),
+                                onPressed: model.logout,
+                              ),
+                            ),
+                          ),
+                          verticalSpaceMedium,
+                          spacedDivider,
+                          SizedBox(
+                              width: screenWidth(context, percentage: 0.7),
+                              child: Text(
+                                  "The following is not yet implemented but shown to get a grasp of what we plan to do")),
+                          verticalSpaceMedium,
                           ProfileListItem(
                             title: "Payment Methods",
                             onPressed: model.showNotImplementedSnackbar,
@@ -230,24 +237,6 @@ class ProfileViewMobile extends StatelessWidget {
                           ProfileListItem(
                               title: "Achievements",
                               onPressed: model.showNotImplementedSnackbar),
-                          verticalSpaceMedium,
-                          spacedDivider,
-                          Center(
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minWidth: screenWidthPercentage(context,
-                                    percentage: 0.6),
-                              ),
-                              child: ElevatedButton(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("Logout",
-                                      style: textTheme(context).headline5),
-                                ),
-                                onPressed: model.logout,
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),

@@ -52,3 +52,5 @@ app.*.map.json
 playground.dart
 TypeScriptTut
 FirestoreTests
+
+lib/node_modules/

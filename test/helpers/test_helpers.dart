@@ -3,6 +3,7 @@ import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
+import 'package:good_wallet/datamodels/user/user_settings.dart';
 import 'package:good_wallet/enums/user_status.dart';
 import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/services/user/user_service.dart';
@@ -34,7 +35,11 @@ MockUserService getAndRegisterUserDataService({
   when(service.userStateSubject)
       .thenAnswer((_) => BehaviorSubject<UserStatus>.seeded(userStatus));
   when(service.currentUser).thenReturn(currentUser ??
-      User(uid: 'dummy_id', email: 'dummy_email', fullName: 'dummy_name'));
+      User(
+          uid: 'dummy_id',
+          email: 'dummy_email',
+          fullName: 'dummy_name',
+          userSettings: UserSettings()));
   locator.registerSingleton<UserService>(service);
   return service;
 }
@@ -65,12 +70,7 @@ MockFirebaseAuthenticationService getAndRegisterFirebaseAuthenticationService({
 }) {
   _removeRegistrationIfExists<FirebaseAuthenticationService>();
   final service = MockFirebaseAuthenticationService();
-  // Stream<firebase.User?> userStream(firebase.User? user) async* {
-  //   yield user;
-  // }
-  // when(service.authStateChanges).thenAnswer((_) => userStream(currentUser));
-  when(service.firebaseAuth.authStateChanges())
-      .thenAnswer((_) => Stream.value(currentUser));
+  when(service.authStateChanges).thenAnswer((_) => Stream.value(currentUser));
   locator.registerSingleton<FirebaseAuthenticationService>(service);
   return service;
 }

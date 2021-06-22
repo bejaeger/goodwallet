@@ -1,13 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
-import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/transfers/transfer_details.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/money_source.dart';

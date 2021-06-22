@@ -11,7 +11,6 @@ import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_quer
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
-import 'package:good_wallet/datamodels/user/user_settings.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -90,6 +89,21 @@ class FirestoreApi {
         message: 'Failed to get user',
         devDetails: '$error',
       );
+    }
+  }
+
+  ///////////////////////////////////////////////////////
+  // Fetch user statistics once
+  Future<UserStatistics> getUserSummaryStatistics({required String uid}) async {
+    try {
+      final docRef = await getUserSummaryStatisticsDocument(uid: uid).get();
+      final UserStatistics userStats = UserStatistics.fromJson(docRef.data()!);
+      return userStats;
+    } catch (e) {
+      throw FirestoreApiException(
+          message: "User statistics document could not be fetched!",
+          devDetails:
+              "Something failed when fetching the user summary statistics document for user with id '$uid'. This is likely due to some backwards-compatibility-breaking updates to the data models or firestore collection setup. Thrown error message was: $e");
     }
   }
 
