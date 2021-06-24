@@ -192,8 +192,6 @@ class StackedRouter extends RouterBase {
           key: args.key,
           initialBottomNavBarIndex: args.initialBottomNavBarIndex,
           initialTabBarIndex: args.initialTabBarIndex,
-
-          ///Harguilar Changed This
           //showDialog: args.showDialog!,
         ),
         settings: data,
@@ -225,8 +223,11 @@ class StackedRouter extends RouterBase {
       );
     },
     PaymentView: (data) {
+      var args = data.getArgs<PaymentViewArguments>(
+        orElse: () => PaymentViewArguments(),
+      );
       return MaterialPageRoute<dynamic>(
-        builder: (context) => PaymentView(),
+        builder: (context) => PaymentView(key: args.key),
         settings: data,
       );
     },
@@ -402,6 +403,12 @@ class HomeViewMobileArguments {
 class CreateAccountViewArguments {
   final Key? key;
   CreateAccountViewArguments({this.key});
+}
+
+/// PaymentView arguments holder class
+class PaymentViewArguments {
+  final Key? key;
+  PaymentViewArguments({this.key});
 }
 
 /// SingleFeaturedAppView arguments holder class

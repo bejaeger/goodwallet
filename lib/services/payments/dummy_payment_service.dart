@@ -24,6 +24,26 @@ class DummyPaymentService {
     }
   }
 
+  Future createsStripeUser({required String email}) async {
+    try {
+      await _firestoreApi.createStripeUser(email: email);
+    } catch (e) {
+      log.e("Couldn't process Dummy Transfer: ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  Future createStripePaymentIntent(
+      {required String amount, String? currency, var paymentMethod}) async {
+    try {
+      await _firestoreApi.createStripePaymentIntent(
+          amount: amount, currency: currency, paymentMethod: paymentMethod);
+    } catch (e) {
+      log.e("Couldn't process Dummy Transfer: ${e.toString()}");
+      rethrow;
+    }
+  }
+
   // adds payout data to firestore which will trigger a cloud function
   // to update all the good wallets
   // Additionally add money transfer document to payment collection

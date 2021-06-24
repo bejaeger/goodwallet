@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
@@ -22,6 +24,8 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_view.form.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 /////////////////////////////////////////////////////////////////
 ///
@@ -42,16 +46,22 @@ class TransferFundsAmountViewModel extends FormViewModel {
   User get currentUser => _userService!.currentUser;
   final DummyPaymentService _dummyPaymentService =
       locator<DummyPaymentService>();
+
   final log = getLogger("transfer_funds_amount_viewmodel.dart");
+
   StreamSubscription<UserStatistics>? _walletSubscription;
+
   UserStatistics get userStats => _userService!.userStats!;
 
   final TransferType type;
+
   final RecipientInfo? recipientInfo;
+
   final SenderInfo senderInfo;
+
   num? amount;
 
-  // TODO: Validate inputs here...if Donation, recipientInfo must not be null!
+  // TODO: Validate inputs here... if Donation, recipientInfo must not be null!
   TransferFundsAmountViewModel(
       {required this.type, this.recipientInfo, required this.senderInfo});
 
@@ -64,6 +74,87 @@ class TransferFundsAmountViewModel extends FormViewModel {
   String? customValidationMessage;
   void setCustomValidationMessage(String msg) {
     customValidationMessage = msg;
+  }
+
+  //User get currentUser => _userService.currentUser;
+
+  Map<String, dynamic>? _paymentSheetData;
+
+  Map<String, dynamic>? get getPaymentSheetData => _paymentSheetData;
+
+  Future<Map<String, dynamic>> _createTestPaymentSheet() async {
+    final http.Response response =
+        await http.post(Uri.parse('Cloud FUNCTION URL, $amountValue!'));
+    if (response.body != null) {
+      return json.decode(response.body);
+    } else {
+      _snackbarService!.showSnackbar(
+          title: "Error Message.",
+          message: 'Error code: ${_paymentSheetData!['error']}',
+          duration: Duration(seconds: 2));
+    }
+    return json.decode(response.body);
+  }
+
+  Future<void> initPaymentSheet() async {
+    try {
+      // 1. create payment intent on the server
+      _paymentSheetData = await _createTestPaymentSheet();
+
+      if (_paymentSheetData!['error'] != null) {
+        _snackbarService!.showSnackbar(
+            title: "Error Message.",
+            message: 'Error code: ${_paymentSheetData!['error']}',
+            duration: Duration(seconds: 2));
+
+        return;
+      }
+      // 2. initialize the payment sheet
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          applePay: true,
+          googlePay: true,
+          style: ThemeMode.dark,
+          testEnv: true,
+          merchantCountryCode: 'DE',
+          merchantDisplayName: currentUser.fullName,
+          customerId: _paymentSheetData!['customer'],
+          paymentIntentClientSecret: _paymentSheetData!['paymentIntent'],
+          customerEphemeralKeySecret: _paymentSheetData!['ephemeralKey'],
+        ),
+      );
+    } catch (e) {
+      _snackbarService!.showSnackbar(
+          title: "Error Message.",
+          message: "Error: $e",
+          duration: Duration(seconds: 2));
+    }
+  }
+
+  Future<void> displayPaymentSheet() async {
+    setBusy(true);
+    try {
+      // 3. display the payment sheet.
+      await Stripe.instance.presentPaymentSheet(
+          parameters: PresentPaymentSheetParameters(
+        clientSecret: _paymentSheetData!['paymentIntent'],
+        confirmPayment: true,
+      ));
+
+      _paymentSheetData = null;
+
+      _snackbarService!.showSnackbar(
+          title: "Payment Made Successfully.",
+          message: 'Payment succesfully completed',
+          duration: Duration(seconds: 2));
+    } catch (e) {
+      _snackbarService!.showSnackbar(
+          title: "Error Message.",
+          message: "Error: $e",
+          duration: Duration(seconds: 2));
+    }
+    setBusy(false);
+    notifyListeners();
   }
 
   Future showBottomSheetAndProcessPayment() async {
@@ -199,7 +290,9 @@ class TransferFundsAmountViewModel extends FormViewModel {
       setBusy(true);
       try {
         final data = prepareTransferData();
+
         await _dummyPaymentService.processTransfer(moneyTransfer: data);
+
         log.i("Processed transfer: $data");
       } catch (e) {
         if (e is MoneyTransferException) {
@@ -246,6 +339,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
         amount: scaleAmountForStripe(amount!),
         currency: 'cad',
       );
+
       MoneyTransfer data = actualRecipientId.maybeMap(
         donation: (value) => MoneyTransfer.donation(
           transferDetails: transferDetails,
