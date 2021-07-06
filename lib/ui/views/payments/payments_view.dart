@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/views/payments/payments_view.form.dart';
+import 'package:good_wallet/ui/widgets/buttons/loading_buttons.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -12,13 +14,63 @@ import 'payment_sheet_viewModel.dart';
 ])
 class PaymentView extends StatelessWidget with $PaymentView {
   PaymentView({Key? key}) : super(key: key);
-
+  int amountRcv = 0;
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<PaymentViewModel>.reactive(
+      /// onModelReady: (model) => model.initPayment(),
       builder: (context, model, child) => Scaffold(
         appBar: AppBar(),
-        body: Center(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: TextField(
+                decoration: InputDecoration(hintText: 'Email'),
+                onChanged: (value) {
+                  model.setEmail(email: value);
+                },
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: CardField(
+                onCardChanged: (card) {
+                  model.setCardFiel(card: card);
+                },
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: LoadingButton(
+                onPressed: model.getCardField?.complete == true
+                    ? model.handlePayPress
+                    : null,
+                text: 'Save',
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: LoadingButton(
+                onPressed: model.getSetupIntentResult != null
+                    ? model.handleOffSessionPayment
+                    : null,
+                text: 'Pay with saved card off-session',
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: LoadingButton(
+                onPressed: model.getRetrievedPaymentIntent != null
+                    ? model.handleRecoveryFlow
+                    : null,
+                text: 'Authenticate payment',
+              ),
+            ),
+          ],
+        ),
+        /*Center(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             SizedBox(
               width: 300,
@@ -54,54 +106,21 @@ class PaymentView extends StatelessWidget with $PaymentView {
               maxWidth: screenWidthPercentage(context, percentage: 0.6),
               title: "Send",
               onPressed: () async {
-                /// model.initPaymentSheet;
+                try {
+                  amountRcv = int.parse(amountController.text.toString());
 
-                model.sendAmount(amount: amountController.text.toString());
-                amountController.clear();
+                  /// model.initPaymentSheet;
+                  model.payNewCard(amount: '500', currency: 'USD');
+                  amountController.clear();
+                } catch (e) {
+                  print(e);
+                }
               },
             ),
-            /*
-              if (model != null)
-                Text(
-                  'Harguilar Tested This',
-                  // model.customValidationMessage!,
-                  style: TextStyle(
-                    color: Colors.red,
-                    //fontSize: kBodyTextSize,
-                  ),
-                ),
-              if (model.customValidationMessage != null) verticalSpaceTiny,
-              model.isBusy
-                  ? Center(child: CircularProgressIndicator())
-                  : CallToActionButtonRectangular(
-                      color: MyColors.paletteGreen.withOpacity(0.9),
-                      maxWidth: screenWidthPercentage(context, percentage: 0.6),
-                      title: "Send",
-                      onPressed: () async {
-                        /// model.initPaymentSheet;
-                        model.sendAmount();
-                      },
-                    ),
-              TextButton(
-                onPressed: model.sendAmount(),
-                //model.getPaymentSheetData != null
-                //? null
-                // : model.initPaymentSheet,
-                child: const Text('Init payment sheet'),
-              ),
-              const SizedBox(height: 24),
-              TextButton(
-                onPressed: model.getPaymentSheetData != null
-                    ? model.displayPaymentSheet
-                    : null,
-                child: const Text('Show payment sheet'),
-              ),
-            ],
-            */
           ]),
-        ),
+        ),*/
       ),
-      viewModelBuilder: () => PaymentViewModel(),
+      viewModelBuilder: () => PaymentViewModel(amount: amountRcv),
     );
   }
 }

@@ -29,6 +29,7 @@ import '../ui/views/money_pools/create_money_pool_intro_view.dart';
 import '../ui/views/money_pools/disburse_money_pool_view.dart';
 import '../ui/views/money_pools/money_pools_view.dart';
 import '../ui/views/money_pools/single_money_pool_view.dart';
+import '../ui/views/payments/payment_view_webhook.dart';
 import '../ui/views/payments/payments_view.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
 import '../ui/views/projects/projects_for_area_view.dart';
@@ -55,6 +56,7 @@ class Routes {
   static const String profileViewMobile = '/profile-view-mobile';
   static const String createAccountView = '/create-account-view';
   static const String paymentView = '/payment-view';
+  static const String paymentViewWebhook = '/payment-view-webhook';
   static const String singleFeaturedAppView = '/single-featured-app-view';
   static const String moneyPoolsView = '/money-pools-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
@@ -80,6 +82,7 @@ class Routes {
     profileViewMobile,
     createAccountView,
     paymentView,
+    paymentViewWebhook,
     singleFeaturedAppView,
     moneyPoolsView,
     qRCodeViewMobile,
@@ -111,6 +114,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.profileViewMobile, page: ProfileViewMobile),
     RouteDef(Routes.createAccountView, page: CreateAccountView),
     RouteDef(Routes.paymentView, page: PaymentView),
+    RouteDef(Routes.paymentViewWebhook, page: PaymentViewWebhook),
     RouteDef(Routes.singleFeaturedAppView, page: SingleFeaturedAppView),
     RouteDef(Routes.moneyPoolsView, page: MoneyPoolsView),
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
@@ -228,6 +232,12 @@ class StackedRouter extends RouterBase {
       );
       return MaterialPageRoute<dynamic>(
         builder: (context) => PaymentView(key: args.key),
+        settings: data,
+      );
+    },
+    PaymentViewWebhook: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => PaymentViewWebhook(),
         settings: data,
       );
     },

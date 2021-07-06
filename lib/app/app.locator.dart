@@ -15,6 +15,7 @@ import '../apis/firestore_api.dart';
 import '../apis/global_giving_api.dart';
 import '../services/money_pools/money_pools_service.dart';
 import '../services/payments/dummy_payment_service.dart';
+import '../services/payments/stripe_service.dart';
 import '../services/projects/projects_service.dart';
 import '../services/qrcode/qrcode_service.dart';
 import '../services/transfers_history/transfers_history_service.dart';
@@ -36,6 +37,7 @@ void setupLocator({String? environment, EnvironmentFilter? environmentFilter}) {
   locator.registerLazySingleton(() => SnackbarService());
   locator.registerLazySingleton(() => BottomSheetService());
   locator.registerLazySingleton(() => GlobalGivingApi());
+  locator.registerLazySingleton(() => StripeService());
   locator.registerLazySingleton(() => NavigationBarViewModel());
   locator.registerLazySingleton(() => MoneyPoolsService());
   locator.registerLazySingleton(() => FirebaseAuthenticationService());

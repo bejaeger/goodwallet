@@ -13,13 +13,14 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:url_strategy/url_strategy.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter_stripe/flutter_stripe.dart';
-
 import 'constants/constants.dart';
 
 void main() async {
   final log = getLogger("main.dart");
   await DotEnv.load(fileName: ".env");
-  Stripe.publishableKey = DotEnv.env['STRIPE_API_KEY']!;
+  // Stripe.publishableKey = DotEnv.env['STRIPE_API_KEY']!;
+  Stripe.publishableKey =
+      'pk_test_51HsIjGKMG1WPogVfkBOAiW59LeE9tjOleUdOAShJjTavXqj16ionV9t3pJrhzSML1UDEqQ0xqfNYKLxlqC3J9Jvq00Mm2DkWjz';
 
   try {
     WidgetsFlutterBinding.ensureInitialized();
@@ -62,7 +63,6 @@ class MyApp extends StatelessWidget {
 class MyThemeData {
   static ThemeData myTheme() {
     return ThemeData(
-      // TODO: Import google font
       fontFamily: 'Roboto',
       // colors form here https://material.io/resources/color/#!/?view.left=0&view.right=1&primary.color=941305
       primaryColor: Color(0xFF941305),
