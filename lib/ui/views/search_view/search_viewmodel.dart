@@ -4,22 +4,20 @@ import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
-import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
-import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
-import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/social_functions_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class SearchViewModel extends BaseModel {
+class SearchViewModel extends SocialFunctionsViewModel {
   List<PublicUserInfo> userInfoList = [];
+  final SnackbarService? _snackbarService = locator<SnackbarService>();
 
   final CollectionReference _usersCollectionReference =
       FirebaseFirestore.instance.collection("users");
   final NavigationService? _navigationService = locator<NavigationService>();
-  final SnackbarService? _snackbarService = locator<SnackbarService>();
   final log = getLogger("search_viewmodel.dart");
 
   void selectUser(int index, SearchType searchType) {
@@ -52,6 +50,9 @@ class SearchViewModel extends BaseModel {
     log.i("Queried users and found ${userInfoList.length} matches");
     notifyListeners();
   }
+
+  /////////////////////////////////////////////////
+  /// Navigation
 
   void navigateToScanQRCodeView() {
     _navigationService!.replaceWith(Routes.qRCodeViewMobile,

@@ -16,6 +16,7 @@ import '../enums/featured_app_type.dart';
 import '../enums/search_type.dart';
 import '../enums/transfer_type.dart';
 import '../ui/views/featured_applications/single_featured_app_view.dart';
+import '../ui/views/friends/friends_view.dart';
 import '../ui/views/home/home_view_mobile.dart';
 import '../ui/views/home/welcome_view.dart';
 import '../ui/views/in_app_notifications/in_app_notifications_view.dart';
@@ -70,6 +71,7 @@ class Routes {
   static const String inAppNotificationsView = '/in-app-notifications-view';
   static const String settingsView = '/settings-view';
   static const String publicProfileViewMobile = '/public-profile-view-mobile';
+  static const String friendsView = '/friends-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -97,6 +99,7 @@ class Routes {
     inAppNotificationsView,
     settingsView,
     publicProfileViewMobile,
+    friendsView,
   };
 }
 
@@ -130,6 +133,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.inAppNotificationsView, page: InAppNotificationsView),
     RouteDef(Routes.settingsView, page: SettingsView),
     RouteDef(Routes.publicProfileViewMobile, page: PublicProfileViewMobile),
+    RouteDef(Routes.friendsView, page: FriendsView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -361,6 +365,12 @@ class StackedRouter extends RouterBase {
           key: args.key,
           uid: args.uid,
         ),
+        settings: data,
+      );
+    },
+    FriendsView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const FriendsView(),
         settings: data,
       );
     },

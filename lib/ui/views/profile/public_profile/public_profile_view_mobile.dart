@@ -5,6 +5,7 @@ import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/views/profile/public_profile/public_profile_viewmodel.dart';
+import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
@@ -136,35 +137,51 @@ class PublicProfileViewMobile extends StatelessWidget {
                   children: [
                     CustomAppBarSmall(title: model.user!.fullName),
                     Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            verticalSpaceRegular,
+                            _buildProfileImage(),
+                            _buildFullName(context, model.user!),
+                            _buildStatus(context),
+                            if (model.otherUserStats != null)
+                              _buildStatContainer(
+                                  context, model.otherUserStats!),
+                            if (model.otherUserStats == null)
+                              _buildPrivateProfileDisclaimer(context),
+                          ],
+                        ),
                         verticalSpaceRegular,
-                        _buildProfileImage(),
-                        _buildFullName(context, model.user!),
-                        _buildStatus(context),
-                        if (model.otherUserStats != null)
-                          _buildStatContainer(context, model.otherUserStats!),
-                        if (model.otherUserStats == null)
-                          _buildPrivateProfileDisclaimer(context),
+                        CallToActionButtonRectangular(
+                            title: model.isFriend(uid) ? "Unfollow" : "Follow",
+                            onPressed: () => model.addOrRemoveFriend(uid),
+                            maxWidth: screenWidth(context, percentage: 0.5),
+                            minHeight: 20,
+                            maxHeight: 40,
+                            fontSize: 16,
+                            color: model.isFriend(uid)
+                                ? MyColors.paletteGrey
+                                : MyColors.paletteBlue),
+                        verticalSpaceRegular,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                          child: Column(
+                            children: [
+                              if (model.otherUserStats != null)
+                                PublicProfileListItem(
+                                  title: model.user!.fullName +
+                                      "'s Social Footprint",
+                                  onPressed: () => model.showStatsDialog(
+                                      model.user!, model.otherUserStats!),
+                                ),
+                              verticalSpaceSmall,
+                            ],
+                          ),
+                        ),
+                        verticalSpaceLarge,
                       ],
                     ),
-                    verticalSpaceRegular,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Column(
-                        children: [
-                          if (model.otherUserStats != null)
-                            PublicProfileListItem(
-                              title:
-                                  model.user!.fullName + "'s Social Footprint",
-                              onPressed: () => model.showStatsDialog(
-                                  model.user!, model.otherUserStats!),
-                            ),
-                          verticalSpaceSmall,
-                        ],
-                      ),
-                    ),
-                    verticalSpaceLarge,
                   ],
                 ),
         );

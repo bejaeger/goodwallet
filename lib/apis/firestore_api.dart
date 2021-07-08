@@ -108,7 +108,7 @@ class FirestoreApi {
   }
 
   ///////////////////////////////////////////////////////
-  // Get user data streams
+  // Get user statistics streams
   Stream<UserStatistics> getUserSummaryStatisticsStream({required String uid}) {
     return getUserSummaryStatisticsDocument(uid: uid).snapshots().map((event) {
       if (!event.exists || event.data() == null) {

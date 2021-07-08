@@ -7,6 +7,7 @@ import 'package:good_wallet/services/projects/projects_service.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/ui/views/featured_applications/single_featured_app_view.dart';
+import 'package:good_wallet/ui/views/friends/friends_view.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/home/welcome_view.dart';
 import 'package:good_wallet/ui/views/in_app_notifications/in_app_notifications_view.dart';
@@ -70,6 +71,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: InAppNotificationsView),
     MaterialRoute(page: SettingsView),
     MaterialRoute(page: PublicProfileViewMobile),
+    MaterialRoute(page: FriendsView),
   ],
   dependencies: [
     // Services

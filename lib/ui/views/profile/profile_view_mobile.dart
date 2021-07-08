@@ -192,6 +192,11 @@ class ProfileViewMobile extends StatelessWidget {
                             title: "Settings",
                             onPressed: model.navigateToSettingsView,
                           ),
+                          verticalSpaceSmall,
+                          ProfileListItem(
+                            title: "Friends",
+                            onPressed: model.navigateToFriendsView,
+                          ),
                           verticalSpaceMedium,
                           spacedDivider,
                           Center(

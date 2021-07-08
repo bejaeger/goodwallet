@@ -3,11 +3,11 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/dialog_type.dart';
-import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/social_functions_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 
-class PublicProfileViewModel extends BaseModel {
+class PublicProfileViewModel extends SocialFunctionsViewModel {
   final DialogService? _dialogService = locator<DialogService>();
   final FirestoreApi _firestoreApi = locator<FirestoreApi>();
   final NavigationService? _navigationService = locator<NavigationService>();

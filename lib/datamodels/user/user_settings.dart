@@ -7,6 +7,7 @@ part 'user_settings.g.dart';
 class UserSettings with _$UserSettings {
   factory UserSettings({
     List<String>? favoriteProjectIds,
+    List<String>? friendsIds,
     @Default(true) bool showEmail,
     @Default(true) bool showSummaryStatistics,
     @Default(false) bool showDetailedStatistics,

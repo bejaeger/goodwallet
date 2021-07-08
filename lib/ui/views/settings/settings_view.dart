@@ -3,7 +3,6 @@ import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/views/settings/settings_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
-import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 

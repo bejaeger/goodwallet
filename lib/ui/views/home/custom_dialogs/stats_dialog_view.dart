@@ -63,27 +63,32 @@ class StatsDialog extends StatelessWidget {
               Text(
                   "${formatAmount(userStats.donationStatistics.totalDonations)}"),
               verticalSpaceSmall,
-              Text("Monthly Streak", style: textTheme(context).headline6),
+              if (monthlyDonations != null && monthlyDonations.length > 0)
+                Text("Monthly Streak", style: textTheme(context).headline6),
               if (monthlyDonations != null)
                 ...monthlyDonations
                     .map((e) => Text(
                         "${getMonth(e.month as int)}: ${formatAmount(e.totalDonations)}"))
                     .toList(),
-              verticalSpaceSmall,
-              Text("Supported Problem Areas",
-                  style: textTheme(context).headline6),
+              if (monthlyDonations != null && monthlyDonations.length > 0)
+                verticalSpaceSmall,
+              if (supportedAreas.length > 0)
+                Text("Supported Problem Areas",
+                    style: textTheme(context).headline6),
               if (supportedAreas.length > 0)
                 ...supportedAreas.entries
                     .map((e) => Text("${e.key}: ${formatAmount(e.value)}"))
                     .toList(),
-              verticalSpaceSmall,
-              Text("Supported Projects", style: textTheme(context).headline6),
+              if (supportedAreas.length > 0) verticalSpaceSmall,
+              if (supportedProjects != null && supportedProjects.length > 0)
+                Text("Supported Projects", style: textTheme(context).headline6),
               if (supportedProjects != null)
                 ...supportedProjects
                     .map((e) => Text(
                         "${e.projectInfo.name}: ${formatAmount(e.totalDonations)}"))
                     .toList(),
-              verticalSpaceSmall,
+              if (supportedProjects != null && supportedProjects.length > 0)
+                verticalSpaceSmall,
               Text("Fundraising Activities",
                   style: textTheme(context).headline6),
               Text("Total Raised: ${formatAmount(transferStats.totalRaised)}"),

@@ -9,6 +9,8 @@ class CallToActionButtonRectangular extends StatelessWidget {
   final double? minWidth;
   final double? maxWidth;
   final double? minHeight;
+  final double? maxHeight;
+  final double? fontSize;
   final Color? color;
 
   const CallToActionButtonRectangular(
@@ -18,6 +20,8 @@ class CallToActionButtonRectangular extends StatelessWidget {
       this.minWidth,
       this.maxWidth,
       this.minHeight,
+      this.maxHeight,
+      this.fontSize,
       this.color})
       : super(key: key);
 
@@ -33,6 +37,7 @@ class CallToActionButtonRectangular extends StatelessWidget {
                 : screenWidthWithoutPadding(context)),
         maxWidth: maxWidth ?? screenWidthWithoutPadding(context),
         minHeight: minHeight ?? 45,
+        maxHeight: maxHeight ?? double.infinity,
       ),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -47,7 +52,7 @@ class CallToActionButtonRectangular extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: textTheme(context).headline5!.copyWith(
-                fontSize: 18,
+                fontSize: fontSize ?? 18,
                 color: onPressed != null
                     ? ColorSettings.whiteTextColor
                     : ColorSettings.lightGreyTextColor),

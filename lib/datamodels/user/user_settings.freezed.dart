@@ -22,11 +22,13 @@ class _$UserSettingsTearOff {
 
   _UserSettings call(
       {List<String>? favoriteProjectIds,
+      List<String>? friendsIds,
       bool showEmail = true,
       bool showSummaryStatistics = true,
       bool showDetailedStatistics = false}) {
     return _UserSettings(
       favoriteProjectIds: favoriteProjectIds,
+      friendsIds: friendsIds,
       showEmail: showEmail,
       showSummaryStatistics: showSummaryStatistics,
       showDetailedStatistics: showDetailedStatistics,
@@ -44,6 +46,7 @@ const $UserSettings = _$UserSettingsTearOff();
 /// @nodoc
 mixin _$UserSettings {
   List<String>? get favoriteProjectIds => throw _privateConstructorUsedError;
+  List<String>? get friendsIds => throw _privateConstructorUsedError;
   bool get showEmail => throw _privateConstructorUsedError;
   bool get showSummaryStatistics => throw _privateConstructorUsedError;
   bool get showDetailedStatistics => throw _privateConstructorUsedError;
@@ -61,6 +64,7 @@ abstract class $UserSettingsCopyWith<$Res> {
       _$UserSettingsCopyWithImpl<$Res>;
   $Res call(
       {List<String>? favoriteProjectIds,
+      List<String>? friendsIds,
       bool showEmail,
       bool showSummaryStatistics,
       bool showDetailedStatistics});
@@ -77,6 +81,7 @@ class _$UserSettingsCopyWithImpl<$Res> implements $UserSettingsCopyWith<$Res> {
   @override
   $Res call({
     Object? favoriteProjectIds = freezed,
+    Object? friendsIds = freezed,
     Object? showEmail = freezed,
     Object? showSummaryStatistics = freezed,
     Object? showDetailedStatistics = freezed,
@@ -85,6 +90,10 @@ class _$UserSettingsCopyWithImpl<$Res> implements $UserSettingsCopyWith<$Res> {
       favoriteProjectIds: favoriteProjectIds == freezed
           ? _value.favoriteProjectIds
           : favoriteProjectIds // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      friendsIds: friendsIds == freezed
+          ? _value.friendsIds
+          : friendsIds // ignore: cast_nullable_to_non_nullable
               as List<String>?,
       showEmail: showEmail == freezed
           ? _value.showEmail
@@ -111,6 +120,7 @@ abstract class _$UserSettingsCopyWith<$Res>
   @override
   $Res call(
       {List<String>? favoriteProjectIds,
+      List<String>? friendsIds,
       bool showEmail,
       bool showSummaryStatistics,
       bool showDetailedStatistics});
@@ -129,6 +139,7 @@ class __$UserSettingsCopyWithImpl<$Res> extends _$UserSettingsCopyWithImpl<$Res>
   @override
   $Res call({
     Object? favoriteProjectIds = freezed,
+    Object? friendsIds = freezed,
     Object? showEmail = freezed,
     Object? showSummaryStatistics = freezed,
     Object? showDetailedStatistics = freezed,
@@ -137,6 +148,10 @@ class __$UserSettingsCopyWithImpl<$Res> extends _$UserSettingsCopyWithImpl<$Res>
       favoriteProjectIds: favoriteProjectIds == freezed
           ? _value.favoriteProjectIds
           : favoriteProjectIds // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      friendsIds: friendsIds == freezed
+          ? _value.friendsIds
+          : friendsIds // ignore: cast_nullable_to_non_nullable
               as List<String>?,
       showEmail: showEmail == freezed
           ? _value.showEmail
@@ -159,6 +174,7 @@ class __$UserSettingsCopyWithImpl<$Res> extends _$UserSettingsCopyWithImpl<$Res>
 class _$_UserSettings implements _UserSettings {
   _$_UserSettings(
       {this.favoriteProjectIds,
+      this.friendsIds,
       this.showEmail = true,
       this.showSummaryStatistics = true,
       this.showDetailedStatistics = false});
@@ -168,6 +184,8 @@ class _$_UserSettings implements _UserSettings {
 
   @override
   final List<String>? favoriteProjectIds;
+  @override
+  final List<String>? friendsIds;
   @JsonKey(defaultValue: true)
   @override
   final bool showEmail;
@@ -180,7 +198,7 @@ class _$_UserSettings implements _UserSettings {
 
   @override
   String toString() {
-    return 'UserSettings(favoriteProjectIds: $favoriteProjectIds, showEmail: $showEmail, showSummaryStatistics: $showSummaryStatistics, showDetailedStatistics: $showDetailedStatistics)';
+    return 'UserSettings(favoriteProjectIds: $favoriteProjectIds, friendsIds: $friendsIds, showEmail: $showEmail, showSummaryStatistics: $showSummaryStatistics, showDetailedStatistics: $showDetailedStatistics)';
   }
 
   @override
@@ -190,6 +208,9 @@ class _$_UserSettings implements _UserSettings {
             (identical(other.favoriteProjectIds, favoriteProjectIds) ||
                 const DeepCollectionEquality()
                     .equals(other.favoriteProjectIds, favoriteProjectIds)) &&
+            (identical(other.friendsIds, friendsIds) ||
+                const DeepCollectionEquality()
+                    .equals(other.friendsIds, friendsIds)) &&
             (identical(other.showEmail, showEmail) ||
                 const DeepCollectionEquality()
                     .equals(other.showEmail, showEmail)) &&
@@ -205,6 +226,7 @@ class _$_UserSettings implements _UserSettings {
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(favoriteProjectIds) ^
+      const DeepCollectionEquality().hash(friendsIds) ^
       const DeepCollectionEquality().hash(showEmail) ^
       const DeepCollectionEquality().hash(showSummaryStatistics) ^
       const DeepCollectionEquality().hash(showDetailedStatistics);
@@ -223,6 +245,7 @@ class _$_UserSettings implements _UserSettings {
 abstract class _UserSettings implements UserSettings {
   factory _UserSettings(
       {List<String>? favoriteProjectIds,
+      List<String>? friendsIds,
       bool showEmail,
       bool showSummaryStatistics,
       bool showDetailedStatistics}) = _$_UserSettings;
@@ -232,6 +255,8 @@ abstract class _UserSettings implements UserSettings {
 
   @override
   List<String>? get favoriteProjectIds => throw _privateConstructorUsedError;
+  @override
+  List<String>? get friendsIds => throw _privateConstructorUsedError;
   @override
   bool get showEmail => throw _privateConstructorUsedError;
   @override

@@ -11,6 +11,9 @@ _$_UserSettings _$_$_UserSettingsFromJson(Map<String, dynamic> json) {
     favoriteProjectIds: (json['favoriteProjectIds'] as List<dynamic>?)
         ?.map((e) => e as String)
         .toList(),
+    friendsIds: (json['friendsIds'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
     showEmail: json['showEmail'] as bool? ?? true,
     showSummaryStatistics: json['showSummaryStatistics'] as bool? ?? true,
     showDetailedStatistics: json['showDetailedStatistics'] as bool? ?? false,
@@ -20,6 +23,7 @@ _$_UserSettings _$_$_UserSettingsFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$_$_UserSettingsToJson(_$_UserSettings instance) =>
     <String, dynamic>{
       'favoriteProjectIds': instance.favoriteProjectIds,
+      'friendsIds': instance.friendsIds,
       'showEmail': instance.showEmail,
       'showSummaryStatistics': instance.showSummaryStatistics,
       'showDetailedStatistics': instance.showDetailedStatistics,

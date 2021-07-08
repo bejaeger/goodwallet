@@ -67,6 +67,7 @@ class SearchView extends StatelessWidget {
   }
 
   Widget userListTile(SearchViewModel model, int index) {
+    final user = model.userInfoList[index];
     return GestureDetector(
       onTap: () => model.selectUser(index, searchType),
       child: Card(
@@ -74,19 +75,19 @@ class SearchView extends StatelessWidget {
           leading: CircleAvatar(
             radius: 20,
             backgroundColor: MyColors.paletteBlue,
-            child: Text(getInitialsFromName(model.userInfoList[index].name),
+            child: Text(getInitialsFromName(user.name),
                 style: TextStyle(color: Colors.white, fontSize: 14)),
           ),
           title: Text(
-            model.userInfoList[index].name,
+            user.name,
             style: TextStyle(
               fontSize: 16.0,
               color: Colors.black,
             ),
           ),
-          subtitle: model.userInfoList[index].email != null
+          subtitle: user.email != null
               ? Text(
-                  model.userInfoList[index].email!.toLowerCase(),
+                  user.email!.toLowerCase(),
                   style: TextStyle(
                     fontSize: 14.0,
                     color: Colors.grey,
@@ -97,10 +98,9 @@ class SearchView extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             onSelected: (int index) {
               if (index == 0) {
-                model
-                    .navigateToPublicProfileView(model.userInfoList[index].uid);
+                model.navigateToPublicProfileView(user.uid);
               } else if (index == 1) {
-                model.showNotImplementedSnackbar();
+                model.addOrRemoveFriend(user.uid);
               }
             },
             icon: Icon(
@@ -114,7 +114,9 @@ class SearchView extends StatelessWidget {
               ),
               PopupMenuItem(
                 value: 1,
-                child: Text("Add as friend"),
+                child: model.isFriend(user.uid)
+                    ? Text("Remove friend")
+                    : Text("Add friend"),
               ),
             ],
           ),

@@ -185,6 +185,15 @@ class UserService {
     }
   }
 
+  Future updateUserSettings({required userSettings}) async {
+    _currentUser = _currentUser.copyWith(userSettings: userSettings);
+    _firestoreApi.updateUserData(user: _currentUser);
+  }
+
+  ///////////////////////////////////////////////////////////////
+  ///
+  /// Functions related to user favorites and friends
+
   bool isFavoriteProject({required String projectId}) {
     List<String>? favIds = _currentUser.userSettings.favoriteProjectIds;
     if (favIds == null) {
@@ -217,9 +226,52 @@ class UserService {
     return add;
   }
 
-  Future updateUserSettings({required userSettings}) async {
-    _currentUser = _currentUser.copyWith(userSettings: userSettings);
-    _firestoreApi.updateUserData(user: _currentUser);
+  bool isFriend({required String uid}) {
+    List<String>? friendsIds = _currentUser.userSettings.friendsIds;
+    if (friendsIds == null) {
+      return false;
+    } else {
+      return friendsIds.contains(uid);
+    }
+  }
+
+  Future addOrRemoveFriend({required String uid}) async {
+    UserSettings settings = _currentUser.userSettings;
+    late UserSettings newSettings;
+    List<String>? friendsIds = _currentUser.userSettings.friendsIds;
+    late bool add;
+    if (friendsIds == null) {
+      add = true;
+      newSettings = settings.copyWith(friendsIds: [uid]);
+    } else {
+      if (friendsIds.contains(uid)) {
+        add = false;
+        friendsIds.remove(uid);
+        newSettings = settings.copyWith(friendsIds: friendsIds);
+      } else {
+        add = true;
+        friendsIds.add(uid);
+        newSettings = settings.copyWith(friendsIds: friendsIds);
+      }
+    }
+    updateUserSettings(userSettings: newSettings);
+    return add;
+  }
+
+  // TODO: make this a stream of users that is listened to in the  viewmodel!
+  Future<List<User>> fetchFriends() async {
+    List<String>? friendsIds = _currentUser.userSettings.friendsIds;
+    List<User> friends = [];
+    if (friendsIds != null) {
+      for (var id in friendsIds) {
+        log.i("getting user data with id $id");
+        User? tmpUser = await _firestoreApi.getUser(uid: id);
+        if (tmpUser != null) {
+          friends.add(tmpUser);
+        }
+      }
+    }
+    return friends;
   }
 
   ///////////////////////////////////////////////////

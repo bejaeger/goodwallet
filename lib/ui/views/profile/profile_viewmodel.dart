@@ -24,6 +24,9 @@ class ProfileViewModel extends BaseModel {
     setBusy(false);
   }
 
+  //////////////////////////////////////
+  /// Navigation
+
   Future navigateToLoginView() async {
     _navigationService!.replaceWith(Routes.loginView);
   }
@@ -34,6 +37,10 @@ class ProfileViewModel extends BaseModel {
 
   Future navigateToSettingsView() async {
     _navigationService!.navigateTo(Routes.settingsView);
+  }
+
+  Future navigateToFriendsView() async {
+    _navigationService!.navigateTo(Routes.friendsView);
   }
 
   Future navigateToTransactionsHistoryView() async {
