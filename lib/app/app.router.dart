@@ -211,7 +211,7 @@ class StackedRouter extends RouterBase {
           key: args.key,
           initialBottomNavBarIndex: args.initialBottomNavBarIndex,
           initialTabBarIndex: args.initialTabBarIndex,
-          //showDialog: args.showDialog!,
+          showDialog: args.showDialog,
         ),
         settings: data,
       );
@@ -273,7 +273,7 @@ class StackedRouter extends RouterBase {
       return MaterialPageRoute<dynamic>(
         builder: (context) => MoneyPoolsView(
           key: args.key,
-          forceReload: args.forceReload!,
+          forceReload: args.forceReload,
         ),
         settings: data,
       );
@@ -285,7 +285,7 @@ class StackedRouter extends RouterBase {
       return MaterialPageRoute<dynamic>(
         builder: (context) => QRCodeViewMobile(
           key: args.key,
-          initialIndex: args.initialIndex!,
+          initialIndex: args.initialIndex,
         ),
         settings: data,
       );
@@ -303,7 +303,7 @@ class StackedRouter extends RouterBase {
       return MaterialPageRoute<dynamic>(
         builder: (context) => SearchView(
           key: args.key,
-          searchType: args.searchType!,
+          searchType: args.searchType,
         ),
         settings: data,
       );
@@ -435,12 +435,12 @@ class LayoutTemplateViewMobileArguments {
   final Key? key;
   final int? initialBottomNavBarIndex;
   final int? initialTabBarIndex;
-  final bool? showDialog;
+  final bool showDialog;
   LayoutTemplateViewMobileArguments(
       {this.key,
       this.initialBottomNavBarIndex,
-      this.initialTabBarIndex,
-      this.showDialog});
+      this.initialTabBarIndex = 0,
+      this.showDialog = false});
 }
 
 /// HomeViewMobile arguments holder class
@@ -472,22 +472,23 @@ class SingleFeaturedAppViewArguments {
 /// MoneyPoolsView arguments holder class
 class MoneyPoolsViewArguments {
   final Key? key;
-  final bool? forceReload;
-  MoneyPoolsViewArguments({this.key, this.forceReload});
+  final bool forceReload;
+  MoneyPoolsViewArguments({this.key, this.forceReload = false});
 }
 
 /// QRCodeViewMobile arguments holder class
 class QRCodeViewMobileArguments {
   final Key? key;
-  final int? initialIndex;
-  QRCodeViewMobileArguments({this.key, this.initialIndex});
+  final int initialIndex;
+  QRCodeViewMobileArguments({this.key, this.initialIndex = 0});
 }
 
 /// SearchView arguments holder class
 class SearchViewArguments {
   final Key? key;
-  final SearchType? searchType;
-  SearchViewArguments({this.key, this.searchType});
+  final SearchType searchType;
+  SearchViewArguments(
+      {this.key, this.searchType = SearchType.UserToTransferTo});
 }
 
 /// TransferFundsAmountView arguments holder class

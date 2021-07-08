@@ -539,7 +539,7 @@ class FirestoreApi {
   // Functions handling project favorites
   Future updateUserData({required User user}) async {
     try {
-      await _usersCollection
+      await usersCollection
           .doc(user.uid)
           .set(user.toJson(), SetOptions(merge: true));
     } catch (e) {

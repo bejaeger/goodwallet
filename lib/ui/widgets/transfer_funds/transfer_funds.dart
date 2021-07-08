@@ -42,24 +42,27 @@ Widget prepaidFundIcon(BuildContext context) {
   );
 }
 
-Widget avatarWithUserName(BuildContext context,
+Widget avatarWithUserName(BuildContext context, void Function()? onTap,
     {required String recipientName}) {
-  return Column(
-    children: [
-      //Text("Gift money to", style: textTheme(context).headline4),
-      //verticalSpaceSmall,
-      CircleAvatar(
-        radius: 28,
-        backgroundColor: MyColors.paletteBlue,
-        child: Text(getInitialsFromName(recipientName),
-            style: TextStyle(color: Colors.white, fontSize: 16)),
-      ),
-      verticalSpaceSmall,
-      Text(recipientName,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: textTheme(context).headline6!.copyWith(fontSize: 15)),
-    ],
+  return GestureDetector(
+    onTap: onTap,
+    child: Column(
+      children: [
+        //Text("Gift money to", style: textTheme(context).headline4),
+        //verticalSpaceSmall,
+        CircleAvatar(
+          radius: 28,
+          backgroundColor: MyColors.paletteBlue,
+          child: Text(getInitialsFromName(recipientName),
+              style: TextStyle(color: Colors.white, fontSize: 16)),
+        ),
+        verticalSpaceSmall,
+        Text(recipientName,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: textTheme(context).headline6!.copyWith(fontSize: 15)),
+      ],
+    ),
   );
 }
 
