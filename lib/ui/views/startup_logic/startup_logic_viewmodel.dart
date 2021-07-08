@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
@@ -20,7 +20,7 @@ class StartUpLogicViewModel extends BaseViewModel {
 
   UserStatus? userStatus;
   StreamSubscription? _userStateSubscription;
-
+  //Stripe.publishableKey = accountKey;
   void handleStartUpLogic() {
     _userStateSubscription = _userService!.userStateSubject.listen(
       (state) async {

@@ -18,6 +18,7 @@ const stripe = new Stripe(functions.config().stripe.secret, {
  */
 exports.createStripeCustomer = functions.auth.user().onCreate(async (user) => {
   const customer = await stripe.customers.create({ email: user.email });
+  
   const intent = await stripe.setupIntents.create({
     customer: customer.id,
   });

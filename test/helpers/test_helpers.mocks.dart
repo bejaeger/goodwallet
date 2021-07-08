@@ -285,14 +285,6 @@ class MockFirestoreApi extends _i1.Mock implements _i18.FirestoreApi {
       (super.noSuchMethod(Invocation.getter(#log), returnValue: _FakeLogger())
           as _i2.Logger);
   @override
-  String get userStatisticsCollectionKey =>
-      (super.noSuchMethod(Invocation.getter(#userStatisticsCollectionKey),
-          returnValue: '') as String);
-  @override
-  String get userSummaryStatisticsDocumentKey =>
-      (super.noSuchMethod(Invocation.getter(#userSummaryStatisticsDocumentKey),
-          returnValue: '') as String);
-  @override
   _i14.Future<void> createUser({_i4.User? user, _i6.UserStatistics? stats}) =>
       (super.noSuchMethod(
           Invocation.method(#createUser, [], {#user: user, #stats: stats}),
@@ -357,13 +349,6 @@ class MockFirestoreApi extends _i1.Mock implements _i18.FirestoreApi {
               }),
               returnValue: Stream<List<_i19.MoneyTransfer>>.empty())
           as _i14.Stream<List<_i19.MoneyTransfer>>);
-  @override
-  _i14.Future<dynamic> createMoneyTransfer(
-          {_i19.MoneyTransfer? moneyTransfer}) =>
-      (super.noSuchMethod(
-          Invocation.method(
-              #createMoneyTransfer, [], {#moneyTransfer: moneyTransfer}),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
   @override
   _i14.Future<dynamic> createMoneyPoolPayout({_i16.MoneyPoolPayout? payout}) =>
       (super.noSuchMethod(
