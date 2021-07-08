@@ -4,12 +4,12 @@
 
 import 'dart:async' as _i14;
 
-import 'package:cloud_firestore/cloud_firestore.dart' as _i8;
-import 'package:firebase_auth/firebase_auth.dart' as _i9;
+import 'package:cloud_firestore/cloud_firestore.dart' as _i9;
+import 'package:firebase_auth/firebase_auth.dart' as _i10;
 import 'package:flutter/src/widgets/framework.dart' as _i22;
 import 'package:flutter/src/widgets/navigator.dart' as _i23;
 import 'package:good_wallet/apis/firestore_api.dart' as _i18;
-import 'package:good_wallet/datamodels/causes/project.dart' as _i7;
+import 'package:good_wallet/datamodels/causes/project.dart' as _i8;
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart' as _i5;
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart'
     as _i16;
@@ -18,18 +18,18 @@ import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_quer
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart' as _i19;
 import 'package:good_wallet/datamodels/user/public_user_info.dart' as _i17;
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart'
-    as _i13;
+    as _i6;
 import 'package:good_wallet/datamodels/user/user.dart' as _i4;
-import 'package:good_wallet/enums/user_status.dart' as _i12;
-import 'package:good_wallet/exceptions/firestore_api_exception.dart' as _i6;
+import 'package:good_wallet/enums/user_status.dart' as _i13;
+import 'package:good_wallet/exceptions/firestore_api_exception.dart' as _i7;
 import 'package:good_wallet/services/money_pools/money_pools_service.dart'
     as _i15;
-import 'package:good_wallet/services/user/user_service.dart' as _i11;
+import 'package:good_wallet/services/user/user_service.dart' as _i12;
 import 'package:logger/src/logger.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:rxdart/src/subjects/behavior_subject.dart' as _i3;
 import 'package:stacked_firebase_auth/src/firebase_authentication_service.dart'
-    as _i10;
+    as _i11;
 import 'package:stacked_services/src/navigation_service.dart' as _i21;
 import 'package:stacked_services/src/snackbar/snackbar_config.dart' as _i25;
 import 'package:stacked_services/src/snackbar/snackbar_service.dart' as _i24;
@@ -50,49 +50,51 @@ class _FakeUser extends _i1.Fake implements _i4.User {}
 
 class _FakeMoneyPool extends _i1.Fake implements _i5.MoneyPool {}
 
-class _FakeFirestoreApiException extends _i1.Fake
-    implements _i6.FirestoreApiException {}
+class _FakeUserStatistics extends _i1.Fake implements _i6.UserStatistics {}
 
-class _FakeProject extends _i1.Fake implements _i7.Project {}
+class _FakeFirestoreApiException extends _i1.Fake
+    implements _i7.FirestoreApiException {}
+
+class _FakeProject extends _i1.Fake implements _i8.Project {}
 
 class _FakeCollectionReference extends _i1.Fake
-    implements _i8.CollectionReference {}
+    implements _i9.CollectionReference {}
 
-class _FakeDocumentReference extends _i1.Fake implements _i8.DocumentReference {
+class _FakeDocumentReference extends _i1.Fake implements _i9.DocumentReference {
 }
 
-class _FakeFirebaseAuth extends _i1.Fake implements _i9.FirebaseAuth {}
+class _FakeFirebaseAuth extends _i1.Fake implements _i10.FirebaseAuth {}
 
 class _FakeFirebaseAuthenticationResult extends _i1.Fake
-    implements _i10.FirebaseAuthenticationResult {}
+    implements _i11.FirebaseAuthenticationResult {}
 
 /// A class which mocks [UserService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserService extends _i1.Mock implements _i11.UserService {
+class MockUserService extends _i1.Mock implements _i12.UserService {
   @override
   _i2.Logger get log =>
       (super.noSuchMethod(Invocation.getter(#log), returnValue: _FakeLogger())
           as _i2.Logger);
   @override
-  _i3.BehaviorSubject<_i12.UserStatus> get userStateSubject =>
+  _i3.BehaviorSubject<_i13.UserStatus> get userStateSubject =>
       (super.noSuchMethod(Invocation.getter(#userStateSubject),
-              returnValue: _FakeBehaviorSubject<_i12.UserStatus>())
-          as _i3.BehaviorSubject<_i12.UserStatus>);
+              returnValue: _FakeBehaviorSubject<_i13.UserStatus>())
+          as _i3.BehaviorSubject<_i13.UserStatus>);
   @override
   set userStateSubject(
-          _i3.BehaviorSubject<_i12.UserStatus>? _userStateSubject) =>
+          _i3.BehaviorSubject<_i13.UserStatus>? _userStateSubject) =>
       super.noSuchMethod(
           Invocation.setter(#userStateSubject, _userStateSubject),
           returnValueForMissingStub: null);
   @override
-  _i3.BehaviorSubject<_i13.UserStatistics> get userStatsSubject =>
+  _i3.BehaviorSubject<_i6.UserStatistics> get userStatsSubject =>
       (super.noSuchMethod(Invocation.getter(#userStatsSubject),
-              returnValue: _FakeBehaviorSubject<_i13.UserStatistics>())
-          as _i3.BehaviorSubject<_i13.UserStatistics>);
+              returnValue: _FakeBehaviorSubject<_i6.UserStatistics>())
+          as _i3.BehaviorSubject<_i6.UserStatistics>);
   @override
   set userStatsSubject(
-          _i3.BehaviorSubject<_i13.UserStatistics>? _userStatsSubject) =>
+          _i3.BehaviorSubject<_i6.UserStatistics>? _userStatsSubject) =>
       super.noSuchMethod(
           Invocation.setter(#userStatsSubject, _userStatsSubject),
           returnValueForMissingStub: null);
@@ -115,12 +117,12 @@ class MockUserService extends _i1.Mock implements _i11.UserService {
       (super.noSuchMethod(Invocation.method(#listenToAuthStateChanges, []),
           returnValueForMissingStub: Future.value()) as _i14.Future<void>?);
   @override
-  _i14.Future<void> authStateChangesOnDataCallback(_i9.User? user) => (super
+  _i14.Future<void> authStateChangesOnDataCallback(_i10.User? user) => (super
       .noSuchMethod(Invocation.method(#authStateChangesOnDataCallback, [user]),
           returnValue: Future<void>.value(null),
           returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
-  _i14.Future<dynamic> initializeCurrentUser(_i9.User? user) =>
+  _i14.Future<dynamic> initializeCurrentUser(_i10.User? user) =>
       (super.noSuchMethod(Invocation.method(#initializeCurrentUser, [user]),
           returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
   @override
@@ -134,6 +136,12 @@ class MockUserService extends _i1.Mock implements _i11.UserService {
           Invocation.method(#listenToUserSummaryStats, [], {#uid: uid}),
           returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
   @override
+  _i14.Future<dynamic> updateUserSettings({dynamic userSettings}) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #updateUserSettings, [], {#userSettings: userSettings}),
+          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+  @override
   bool isFavoriteProject({String? projectId}) => (super.noSuchMethod(
       Invocation.method(#isFavoriteProject, [], {#projectId: projectId}),
       returnValue: false) as bool);
@@ -143,11 +151,18 @@ class MockUserService extends _i1.Mock implements _i11.UserService {
           Invocation.method(#addOrRemoveFavorite, [], {#projectId: projectId}),
           returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
   @override
-  _i14.Future<dynamic> updateUserSettings({dynamic userSettings}) =>
-      (super.noSuchMethod(
-          Invocation.method(
-              #updateUserSettings, [], {#userSettings: userSettings}),
-          returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+  bool isFriend({String? uid}) =>
+      (super.noSuchMethod(Invocation.method(#isFriend, [], {#uid: uid}),
+          returnValue: false) as bool);
+  @override
+  _i14.Future<dynamic> addOrRemoveFriend({String? uid}) => (super.noSuchMethod(
+      Invocation.method(#addOrRemoveFriend, [], {#uid: uid}),
+      returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
+  @override
+  _i14.Future<List<_i4.User>> fetchFriends() =>
+      (super.noSuchMethod(Invocation.method(#fetchFriends, []),
+              returnValue: Future<List<_i4.User>>.value(<_i4.User>[]))
+          as _i14.Future<List<_i4.User>>);
   @override
   _i14.Future<dynamic> handleLogoutEvent() =>
       (super.noSuchMethod(Invocation.method(#handleLogoutEvent, []),
@@ -278,7 +293,7 @@ class MockFirestoreApi extends _i1.Mock implements _i18.FirestoreApi {
       (super.noSuchMethod(Invocation.getter(#userSummaryStatisticsDocumentKey),
           returnValue: '') as String);
   @override
-  _i14.Future<void> createUser({_i4.User? user, _i13.UserStatistics? stats}) =>
+  _i14.Future<void> createUser({_i4.User? user, _i6.UserStatistics? stats}) =>
       (super.noSuchMethod(
           Invocation.method(#createUser, [], {#user: user, #stats: stats}),
           returnValue: Future<void>.value(null),
@@ -290,7 +305,7 @@ class MockFirestoreApi extends _i1.Mock implements _i18.FirestoreApi {
           returnValueForMissingStub: Future.value()) as _i14.Future<void>);
   @override
   _i14.Future<void> createUserStatistics(
-          {String? uid, _i13.UserStatistics? stats}) =>
+          {String? uid, _i6.UserStatistics? stats}) =>
       (super.noSuchMethod(
           Invocation.method(
               #createUserStatistics, [], {#uid: uid, #stats: stats}),
@@ -302,13 +317,20 @@ class MockFirestoreApi extends _i1.Mock implements _i18.FirestoreApi {
               returnValue: Future<_i4.User?>.value(_FakeUser()))
           as _i14.Future<_i4.User?>);
   @override
-  _i14.Stream<_i13.UserStatistics> getUserSummaryStatisticsStream(
+  _i14.Future<_i6.UserStatistics> getUserSummaryStatistics({String? uid}) =>
+      (super.noSuchMethod(
+              Invocation.method(#getUserSummaryStatistics, [], {#uid: uid}),
+              returnValue:
+                  Future<_i6.UserStatistics>.value(_FakeUserStatistics()))
+          as _i14.Future<_i6.UserStatistics>);
+  @override
+  _i14.Stream<_i6.UserStatistics> getUserSummaryStatisticsStream(
           {String? uid}) =>
       (super.noSuchMethod(
           Invocation.method(#getUserSummaryStatisticsStream, [], {#uid: uid}),
           returnValue:
-              Stream<_i13.UserStatistics>.empty()) as _i14
-          .Stream<_i13.UserStatistics>);
+              Stream<_i6.UserStatistics>.empty()) as _i14
+          .Stream<_i6.UserStatistics>);
   @override
   _i14.Stream<List<_i19.MoneyTransfer>> getTransferDataStream(
           {_i20.MoneyTransferQueryConfig? config, String? uid}) =>
@@ -318,15 +340,15 @@ class MockFirestoreApi extends _i1.Mock implements _i18.FirestoreApi {
               returnValue: Stream<List<_i19.MoneyTransfer>>.empty())
           as _i14.Stream<List<_i19.MoneyTransfer>>);
   @override
-  _i6.FirestoreApiException throwNotSupportedException(
+  _i7.FirestoreApiException throwNotSupportedException(
           _i20.MoneyTransferQueryConfig? config) =>
       (super.noSuchMethod(
               Invocation.method(#throwNotSupportedException, [config]),
               returnValue: _FakeFirestoreApiException())
-          as _i6.FirestoreApiException);
+          as _i7.FirestoreApiException);
   @override
   _i14.Stream<List<_i19.MoneyTransfer>> getCombinedMoneyTransfersStream(
-          {_i8.Query? outgoing, _i8.Query? incoming, int? maxNumberReturns}) =>
+          {_i9.Query? outgoing, _i9.Query? incoming, int? maxNumberReturns}) =>
       (super.noSuchMethod(
               Invocation.method(#getCombinedMoneyTransfersStream, [], {
                 #outgoing: outgoing,
@@ -394,17 +416,17 @@ class MockFirestoreApi extends _i1.Mock implements _i18.FirestoreApi {
       (super.noSuchMethod(Invocation.method(#deleteMoneyPool, [moneyPoolId]),
           returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
   @override
-  _i14.Future<_i7.Project> getProjectWithId({String? id}) =>
+  _i14.Future<_i8.Project> getProjectWithId({String? id}) =>
       (super.noSuchMethod(Invocation.method(#getProjectWithId, [], {#id: id}),
-              returnValue: Future<_i7.Project>.value(_FakeProject()))
-          as _i14.Future<_i7.Project>);
+              returnValue: Future<_i8.Project>.value(_FakeProject()))
+          as _i14.Future<_i8.Project>);
   @override
-  _i14.Stream<List<_i7.Project>> getProjectsStream({String? uid}) => (super
+  _i14.Stream<List<_i8.Project>> getProjectsStream({String? uid}) => (super
           .noSuchMethod(Invocation.method(#getProjectsStream, [], {#uid: uid}),
-              returnValue: Stream<List<_i7.Project>>.empty())
-      as _i14.Stream<List<_i7.Project>>);
+              returnValue: Stream<List<_i8.Project>>.empty())
+      as _i14.Stream<List<_i8.Project>>);
   @override
-  _i14.Future<dynamic> createProject({_i7.Project? project}) => (super
+  _i14.Future<dynamic> createProject({_i8.Project? project}) => (super
       .noSuchMethod(Invocation.method(#createProject, [], {#project: project}),
           returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
   @override
@@ -412,15 +434,15 @@ class MockFirestoreApi extends _i1.Mock implements _i18.FirestoreApi {
       (super.noSuchMethod(Invocation.method(#updateUserData, [], {#user: user}),
           returnValue: Future<dynamic>.value(null)) as _i14.Future<dynamic>);
   @override
-  _i8.CollectionReference getUserStatisticsCollection({String? uid}) =>
+  _i9.CollectionReference getUserStatisticsCollection({String? uid}) =>
       (super.noSuchMethod(
           Invocation.method(#getUserStatisticsCollection, [], {#uid: uid}),
-          returnValue: _FakeCollectionReference()) as _i8.CollectionReference);
+          returnValue: _FakeCollectionReference()) as _i9.CollectionReference);
   @override
-  _i8.DocumentReference getUserSummaryStatisticsDocument({String? uid}) =>
+  _i9.DocumentReference getUserSummaryStatisticsDocument({String? uid}) =>
       (super.noSuchMethod(
           Invocation.method(#getUserSummaryStatisticsDocument, [], {#uid: uid}),
-          returnValue: _FakeDocumentReference()) as _i8.DocumentReference);
+          returnValue: _FakeDocumentReference()) as _i9.DocumentReference);
 }
 
 /// A class which mocks [NavigationService].
@@ -625,58 +647,58 @@ class MockSnackbarService extends _i1.Mock implements _i24.SnackbarService {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockFirebaseAuthenticationService extends _i1.Mock
-    implements _i10.FirebaseAuthenticationService {
+    implements _i11.FirebaseAuthenticationService {
   @override
-  _i9.FirebaseAuth get firebaseAuth =>
+  _i10.FirebaseAuth get firebaseAuth =>
       (super.noSuchMethod(Invocation.getter(#firebaseAuth),
-          returnValue: _FakeFirebaseAuth()) as _i9.FirebaseAuth);
+          returnValue: _FakeFirebaseAuth()) as _i10.FirebaseAuth);
   @override
   bool get hasUser =>
       (super.noSuchMethod(Invocation.getter(#hasUser), returnValue: false)
           as bool);
   @override
-  _i14.Stream<_i9.User?> get authStateChanges =>
+  _i14.Stream<_i10.User?> get authStateChanges =>
       (super.noSuchMethod(Invocation.getter(#authStateChanges),
-          returnValue: Stream<_i9.User?>.empty()) as _i14.Stream<_i9.User?>);
+          returnValue: Stream<_i10.User?>.empty()) as _i14.Stream<_i10.User?>);
   @override
-  _i14.Future<_i10.FirebaseAuthenticationResult> signInWithGoogle() =>
+  _i14.Future<_i11.FirebaseAuthenticationResult> signInWithGoogle() =>
       (super.noSuchMethod(Invocation.method(#signInWithGoogle, []),
-              returnValue: Future<_i10.FirebaseAuthenticationResult>.value(
+              returnValue: Future<_i11.FirebaseAuthenticationResult>.value(
                   _FakeFirebaseAuthenticationResult()))
-          as _i14.Future<_i10.FirebaseAuthenticationResult>);
+          as _i14.Future<_i11.FirebaseAuthenticationResult>);
   @override
   _i14.Future<bool> isAppleSignInAvailable() =>
       (super.noSuchMethod(Invocation.method(#isAppleSignInAvailable, []),
           returnValue: Future<bool>.value(false)) as _i14.Future<bool>);
   @override
-  _i14.Future<_i10.FirebaseAuthenticationResult> signInWithApple(
+  _i14.Future<_i11.FirebaseAuthenticationResult> signInWithApple(
           {String? appleRedirectUri, String? appleClientId}) =>
       (super.noSuchMethod(
               Invocation.method(#signInWithApple, [], {
                 #appleRedirectUri: appleRedirectUri,
                 #appleClientId: appleClientId
               }),
-              returnValue: Future<_i10.FirebaseAuthenticationResult>.value(
+              returnValue: Future<_i11.FirebaseAuthenticationResult>.value(
                   _FakeFirebaseAuthenticationResult()))
-          as _i14.Future<_i10.FirebaseAuthenticationResult>);
+          as _i14.Future<_i11.FirebaseAuthenticationResult>);
   @override
-  _i14.Future<_i10.FirebaseAuthenticationResult> loginWithEmail(
+  _i14.Future<_i11.FirebaseAuthenticationResult> loginWithEmail(
           {String? email, String? password}) =>
       (super.noSuchMethod(
               Invocation.method(
                   #loginWithEmail, [], {#email: email, #password: password}),
-              returnValue: Future<_i10.FirebaseAuthenticationResult>.value(
+              returnValue: Future<_i11.FirebaseAuthenticationResult>.value(
                   _FakeFirebaseAuthenticationResult()))
-          as _i14.Future<_i10.FirebaseAuthenticationResult>);
+          as _i14.Future<_i11.FirebaseAuthenticationResult>);
   @override
-  _i14.Future<_i10.FirebaseAuthenticationResult> createAccountWithEmail(
+  _i14.Future<_i11.FirebaseAuthenticationResult> createAccountWithEmail(
           {String? email, String? password}) =>
       (super.noSuchMethod(
               Invocation.method(#createAccountWithEmail, [],
                   {#email: email, #password: password}),
-              returnValue: Future<_i10.FirebaseAuthenticationResult>.value(
+              returnValue: Future<_i11.FirebaseAuthenticationResult>.value(
                   _FakeFirebaseAuthenticationResult()))
-          as _i14.Future<_i10.FirebaseAuthenticationResult>);
+          as _i14.Future<_i11.FirebaseAuthenticationResult>);
   @override
   _i14.Future<dynamic> logout() =>
       (super.noSuchMethod(Invocation.method(#logout, []),
