@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
-import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -277,22 +276,29 @@ class GoodWalletCard extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 //displayQRCode(context),
-                                _buildStatItem(
-                                  context,
-                                  "Total donations",
-                                  formatAmount(totalDonations),
+                                Expanded(
+                                  child: _buildStatItem(
+                                    context,
+                                    "Total donations",
+                                    formatAmount(totalDonations),
+                                  ),
                                 ),
                                 horizontalSpaceRegular,
-                                _buildStatItem(
-                                  context,
-                                  "Total raised",
-                                  formatAmount(totalRaised),
+                                Expanded(
+                                  child: _buildStatItem(
+                                    context,
+                                    "Total raised",
+                                    formatAmount(totalRaised),
+                                  ),
                                 ),
                                 horizontalSpaceRegular,
-                                _buildStatItem(
-                                  context,
-                                  "Total gifted",
-                                  formatAmount(totalGifted),
+
+                                Expanded(
+                                  child: _buildStatItem(
+                                    context,
+                                    "Total gifted",
+                                    formatAmount(totalGifted),
+                                  ),
                                 ),
                               ],
                             ),

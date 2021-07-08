@@ -29,6 +29,8 @@ import '../ui/views/money_pools/create_money_pool_intro_view.dart';
 import '../ui/views/money_pools/disburse_money_pool_view.dart';
 import '../ui/views/money_pools/money_pools_view.dart';
 import '../ui/views/money_pools/single_money_pool_view.dart';
+import '../ui/views/payments/payment_view_webhook.dart';
+import '../ui/views/payments/payments_view.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
 import '../ui/views/profile/public_profile/public_profile_view_mobile.dart';
 import '../ui/views/projects/favorite_projects_view.dart';
@@ -56,6 +58,8 @@ class Routes {
   static const String homeViewMobile = '/home-view-mobile';
   static const String profileViewMobile = '/profile-view-mobile';
   static const String createAccountView = '/create-account-view';
+  static const String paymentView = '/payment-view';
+  static const String paymentViewWebhook = '/payment-view-webhook';
   static const String singleFeaturedAppView = '/single-featured-app-view';
   static const String moneyPoolsView = '/money-pools-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
@@ -84,6 +88,8 @@ class Routes {
     homeViewMobile,
     profileViewMobile,
     createAccountView,
+    paymentView,
+    paymentViewWebhook,
     singleFeaturedAppView,
     moneyPoolsView,
     qRCodeViewMobile,
@@ -118,6 +124,8 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.homeViewMobile, page: HomeViewMobile),
     RouteDef(Routes.profileViewMobile, page: ProfileViewMobile),
     RouteDef(Routes.createAccountView, page: CreateAccountView),
+    RouteDef(Routes.paymentView, page: PaymentView),
+    RouteDef(Routes.paymentViewWebhook, page: PaymentViewWebhook),
     RouteDef(Routes.singleFeaturedAppView, page: SingleFeaturedAppView),
     RouteDef(Routes.moneyPoolsView, page: MoneyPoolsView),
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
@@ -203,7 +211,7 @@ class StackedRouter extends RouterBase {
           key: args.key,
           initialBottomNavBarIndex: args.initialBottomNavBarIndex,
           initialTabBarIndex: args.initialTabBarIndex,
-          showDialog: args.showDialog,
+          //showDialog: args.showDialog!,
         ),
         settings: data,
       );
@@ -233,6 +241,21 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    PaymentView: (data) {
+      var args = data.getArgs<PaymentViewArguments>(
+        orElse: () => PaymentViewArguments(),
+      );
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => PaymentView(key: args.key),
+        settings: data,
+      );
+    },
+    PaymentViewWebhook: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => PaymentViewWebhook(),
+        settings: data,
+      );
+    },
     SingleFeaturedAppView: (data) {
       var args = data.getArgs<SingleFeaturedAppViewArguments>(nullOk: false);
       return MaterialPageRoute<dynamic>(
@@ -250,7 +273,7 @@ class StackedRouter extends RouterBase {
       return MaterialPageRoute<dynamic>(
         builder: (context) => MoneyPoolsView(
           key: args.key,
-          forceReload: args.forceReload,
+          forceReload: args.forceReload!,
         ),
         settings: data,
       );
@@ -262,7 +285,7 @@ class StackedRouter extends RouterBase {
       return MaterialPageRoute<dynamic>(
         builder: (context) => QRCodeViewMobile(
           key: args.key,
-          initialIndex: args.initialIndex,
+          initialIndex: args.initialIndex!,
         ),
         settings: data,
       );
@@ -280,7 +303,7 @@ class StackedRouter extends RouterBase {
       return MaterialPageRoute<dynamic>(
         builder: (context) => SearchView(
           key: args.key,
-          searchType: args.searchType,
+          searchType: args.searchType!,
         ),
         settings: data,
       );
@@ -412,12 +435,12 @@ class LayoutTemplateViewMobileArguments {
   final Key? key;
   final int? initialBottomNavBarIndex;
   final int? initialTabBarIndex;
-  final bool showDialog;
+  final bool? showDialog;
   LayoutTemplateViewMobileArguments(
       {this.key,
       this.initialBottomNavBarIndex,
-      this.initialTabBarIndex = 0,
-      this.showDialog = false});
+      this.initialTabBarIndex,
+      this.showDialog});
 }
 
 /// HomeViewMobile arguments holder class
@@ -433,6 +456,12 @@ class CreateAccountViewArguments {
   CreateAccountViewArguments({this.key});
 }
 
+/// PaymentView arguments holder class
+class PaymentViewArguments {
+  final Key? key;
+  PaymentViewArguments({this.key});
+}
+
 /// SingleFeaturedAppView arguments holder class
 class SingleFeaturedAppViewArguments {
   final Key? key;
@@ -443,23 +472,22 @@ class SingleFeaturedAppViewArguments {
 /// MoneyPoolsView arguments holder class
 class MoneyPoolsViewArguments {
   final Key? key;
-  final bool forceReload;
-  MoneyPoolsViewArguments({this.key, this.forceReload = false});
+  final bool? forceReload;
+  MoneyPoolsViewArguments({this.key, this.forceReload});
 }
 
 /// QRCodeViewMobile arguments holder class
 class QRCodeViewMobileArguments {
   final Key? key;
-  final int initialIndex;
-  QRCodeViewMobileArguments({this.key, this.initialIndex = 0});
+  final int? initialIndex;
+  QRCodeViewMobileArguments({this.key, this.initialIndex});
 }
 
 /// SearchView arguments holder class
 class SearchViewArguments {
   final Key? key;
-  final SearchType searchType;
-  SearchViewArguments(
-      {this.key, this.searchType = SearchType.UserToTransferTo});
+  final SearchType? searchType;
+  SearchViewArguments({this.key, this.searchType});
 }
 
 /// TransferFundsAmountView arguments holder class

@@ -1,10 +1,15 @@
 import 'dart:async';
 
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/user_status.dart';
+import 'package:good_wallet/exceptions/firestore_api_exception.dart';
+import 'package:good_wallet/exceptions/money_transfer_exception.dart';
 import 'package:good_wallet/services/user/user_service.dart';
+import 'package:good_wallet/ui/views/payments/payment_view_webhook.dart';
+import 'package:good_wallet/ui/views/payments/payments_view.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -52,6 +57,20 @@ class BaseModel extends BaseViewModel {
         title: "Not yet implemented.",
         message: "I know... it's sad",
         duration: Duration(seconds: 2));
+  }
+
+  void navigateToStripeView() {
+    try {
+      _navigationService!.navigateTo(
+        Routes.paymentView,
+      );
+    } catch (error) {
+      throw MoneyTransferException(
+        message: 'Failed to create new user',
+        devDetails: '$error',
+      );
+    }
+    //_navigationService!.navigateTo(Routes.paymentView);
   }
 
   void navigateBack() {
