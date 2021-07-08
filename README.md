@@ -2,7 +2,7 @@
 The Good Wallet (TGW) is a novel altruistic payment system, where people can transfer money into a fund that is committed to donations. We want to empower individuals and communities to more easily engage in philanthropic activities and create a positive impact.
 
 # Technical Planning
-The following should give a rough outline about the current technical setup of TGW.
+The following should give a rough outline about the current technical setup of TGW. We use a separate repository for the server-side backend code where we use google cloud functions, [GoodWalletCF](https://github.com/harguilar/GoodWalletCF). 
 
 ## Features
 - **Transfer money** (Money from bank to TGW)
