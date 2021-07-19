@@ -60,7 +60,7 @@ class SearchViewModel extends SocialFunctionsViewModel {
   }
 
   Future navigateToPublicProfileView(String uid) async {
-    bool result = await _navigationService!.navigateTo(
+    final result = await _navigationService!.navigateTo(
         Routes.publicProfileViewMobile,
         arguments: PublicProfileViewMobileArguments(uid: uid));
     if (result == false) {

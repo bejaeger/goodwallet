@@ -12,6 +12,9 @@ _$_GlobalStatistics _$_$_GlobalStatisticsFromJson(Map<String, dynamic> json) {
         .map((e) =>
             SupportedProjectStatistics.fromJson(e as Map<String, dynamic>))
         .toList(),
+    projectTopPicksIds: (json['projectTopPicksIds'] as List<dynamic>)
+        .map((e) => e as String)
+        .toList(),
   );
 }
 
@@ -20,4 +23,5 @@ Map<String, dynamic> _$_$_GlobalStatisticsToJson(
     <String, dynamic>{
       'supportedProjects':
           instance.supportedProjects.map((e) => e.toJson()).toList(),
+      'projectTopPicksIds': instance.projectTopPicksIds,
     };

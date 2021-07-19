@@ -58,7 +58,7 @@ class GoodWalletCard extends StatelessWidget {
           //       color: ColorSettings.primaryColor.withOpacity(0.8), width: 2),
           // ),
           width: screenWidthWithoutPadding(context) - 8.0,
-          height: 220,
+          height: 235,
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -319,7 +319,7 @@ class GoodWalletCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.0),
-            color: MyColors.paletteGrey.withOpacity(0.1)),
+            color: MyColors.paletteGrey.withOpacity(0.07)),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

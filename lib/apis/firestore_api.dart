@@ -8,6 +8,7 @@ import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/datamodels/money_pools/base/concise_money_pool_info.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
+import 'package:good_wallet/datamodels/statistics/global_statistics.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
@@ -83,9 +84,19 @@ class FirestoreApi {
   Future<UserStatistics> getUserSummaryStatistics({required String uid}) async {
     try {
       final docRef = await getUserSummaryStatisticsDocument(uid: uid).get();
-      final UserStatistics userStats = UserStatistics.fromJson(docRef.data()!);
-      return userStats;
+      if (docRef.data() == null) {
+        log.e("Data of document could not be found!");
+        throw FirestoreApiException(
+          message: "User statistics document has no data.",
+        );
+      } else {
+        final UserStatistics userStats =
+            UserStatistics.fromJson(docRef.data()!);
+        return userStats;
+      }
     } catch (e) {
+      log.e(
+          "Error when trying to read document! Are your data models up-to-date?");
       throw FirestoreApiException(
           message: "User statistics document could not be fetched!",
           devDetails:
@@ -105,6 +116,36 @@ class FirestoreApi {
       }
       return UserStatistics.fromJson(event.data()!);
     });
+  }
+
+  //////////////////////////////////////////////////////
+  // Get global statistics once
+  Future<GlobalStatistics> getGlobalStatistics() async {
+    var docRef = await globalStatsCollection.doc("summaryStats").get();
+    if (!docRef.exists) {
+      log.v("Global stats do not exist");
+      throw FirestoreApiException(
+        message: 'Failed to get global stats',
+        devDetails: "No global stats document has been created yet!",
+      );
+    }
+    if (docRef.data() == null) {
+      log.wtf(
+          "Global stats document could be found but it does not have any data! Something is seriously wrong");
+      throw FirestoreApiException(
+        message: 'Failed to get global stats',
+        devDetails:
+            "User data document could be found but it does not have any data! Something is seriously wrong",
+      );
+    }
+    try {
+      return GlobalStatistics.fromJson(docRef.data()!);
+    } catch (error) {
+      throw FirestoreApiException(
+        message: 'Failed to json de-serialize global stats',
+        devDetails: '$error',
+      );
+    }
   }
 
   ///////////////////////////////////////////////////////

@@ -67,6 +67,11 @@ class ProjectsService {
     }
   }
 
+  Future<List<Project>> getProjectTopPicks() async {
+    final globalStats = await _firestoreApi.getGlobalStatistics();
+    return getProjectsWithIds(projectIds: globalStats.projectTopPicksIds);
+  }
+
   List<String> getAllAreas() {
     List<String> uniqueThemes = projects.map((e) => e.area).toList();
     uniqueThemes = uniqueThemes.toSet().toList();

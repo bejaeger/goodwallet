@@ -17,7 +17,7 @@ class ProjectsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProjectsViewModel>.reactive(
       viewModelBuilder: () => ProjectsViewModel(),
-      onModelReady: (model) => model.listenToProjects(),
+      onModelReady: (model) async => await model.listenToData(),
       builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
         child: RefreshIndicator(
           onRefresh: () async => await model.refresh(),
@@ -50,7 +50,10 @@ class ProjectsView extends StatelessWidget {
                             children: [
                               SectionHeader(title: "User Top Picks"),
                               verticalSpaceSmall,
-                              ProjectsTopPicksCarousel(model: model),
+                              ProjectsTopPicksCarousel(
+                                  projects: model.projectTopPicks,
+                                  onPressed:
+                                      model.navigateToSingleProjectScreen),
                               verticalSpaceRegular,
                               SectionHeader(title: "All Areas"),
                               verticalSpaceSmall,
@@ -104,51 +107,38 @@ class ProjectsView extends StatelessWidget {
 }
 
 class ProjectsTopPicksCarousel extends StatelessWidget {
-  final dynamic model;
+  final List<Project>? projects;
+  final void Function(String) onPressed;
 
-  const ProjectsTopPicksCarousel({Key? key, this.model}) : super(key: key);
+  const ProjectsTopPicksCarousel(
+      {Key? key, required this.projects, required this.onPressed})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        height: 220,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: [
-            SizedBox(width: LayoutSettings.horizontalPadding),
-            CarouselCard(
-              title: "Rainforest Rescue",
-              explanation: "Buy Back and Protect Forever Endangered Rainforest",
-              explanationAlignment: Alignment.bottomLeft,
-              backgroundImage: NetworkImage(
-                  "https://www.globalgiving.org/pfil/9790/pict_grid7.jpg"),
-              onTap: () =>
-                  model.navigateToSingleProjectScreen("ya7gMFzeDsIgMKv64eDY"),
-              //
+    return projects == null
+        ? SizedBox(height: 0)
+        : SizedBox(
+            height: 220,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: projects!.length,
+              itemBuilder: (context, index) {
+                final project = projects![index];
+                return Padding(
+                  padding: const EdgeInsets.only(
+                      left: LayoutSettings.horizontalPadding),
+                  child: CarouselCard(
+                    title: project.organization?.name ?? project.name,
+                    explanation: project.name,
+                    explanationAlignment: Alignment.bottomLeft,
+                    backgroundImage: project.imageUrl != null
+                        ? NetworkImage(project.imageUrl!)
+                        : null,
+                    onTap: () => onPressed(project.id),
+                  ),
+                );
+              },
             ),
-            SizedBox(width: LayoutSettings.horizontalPadding),
-            CarouselCard(
-              title: "India COVID-19 Relief Fund",
-              explanation: "GlobalGiving's relief fund for India",
-              explanationAlignment: Alignment.bottomLeft,
-              backgroundImage: NetworkImage(
-                  "https://www.globalgiving.org/pfil/52192/pict_grid7.jpg"),
-              onTap: () =>
-                  model.navigateToSingleProjectScreen("MW1mZUZvSbsyBHWi8ATS"),
-              //
-            ),
-            SizedBox(width: LayoutSettings.horizontalPadding),
-            CarouselCard(
-              title: "The Nyaka AIDS Orphans Project",
-              explanation: "High quality education for children in Uganda",
-              explanationAlignment: Alignment.bottomLeft,
-              backgroundImage: NetworkImage(
-                  "https://www.globalgiving.org/pfil/898/pict_grid7.jpg"),
-              onTap: () =>
-                  model.navigateToSingleProjectScreen("zbofLQZAkOZw60jMSK6o"),
-              //
-            ),
-            SizedBox(width: LayoutSettings.horizontalPadding),
-          ],
-        ));
+          );
   }
 }

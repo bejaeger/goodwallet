@@ -83,7 +83,6 @@ class SingleMoneyPoolViewModel extends BaseModel {
   }
 
   void showSearchViewAndInviteUser() async {
-    setBusy(true);
     String? messageToShow;
     dynamic userInfo = await _navigationService!.navigateTo(Routes.searchView,
         arguments:
@@ -116,7 +115,6 @@ class SingleMoneyPoolViewModel extends BaseModel {
     if (messageToShow != null) {
       _snackbarService!.showSnackbar(title: messageToShow, message: "");
     }
-    setBusy(false);
     notifyListeners();
   }
 
