@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:good_wallet/app/app.locator.dart';
@@ -16,6 +20,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'constants/constants.dart';
 
+const bool USE_EMULATOR = false;
+
 void main() async {
   final log = getLogger("main.dart");
   await DotEnv.load(fileName: ".env");
@@ -24,6 +30,9 @@ void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
+    if (USE_EMULATOR) {
+      await _connectToFirebaseEmulator();
+    }
     // will remove the leading # in the URL
     setHashUrlStrategy();
     setupLocator();
@@ -34,6 +43,18 @@ void main() async {
   } catch (e) {
     print("ERROR: App main function failed with error: ${e.toString()}");
   }
+}
+
+Future _connectToFirebaseEmulator() async {
+  final localHostString = Platform.isAndroid ? '10.0.2.2' : 'localhost';
+  //final localHostString = "192.168.178.46";
+  FirebaseFirestore.instance.settings = Settings(
+    host: '$localHostString:8080',
+    sslEnabled: false,
+    persistenceEnabled: false,
+  );
+
+  await FirebaseAuth.instance.useEmulator('http://$localHostString:9099');
 }
 
 class MyApp extends StatelessWidget {

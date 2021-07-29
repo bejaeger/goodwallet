@@ -17,22 +17,16 @@ class ProjectsViewModel extends ProjectsBaseViewModel {
   List<Project> get projects => _projectsService!.projects;
   List<Project> get projectUniqueAreas =>
       _projectsService!.getProjectsUniqueArea();
+  List<Project>? projectTopPicks;
 
   final log = getLogger("projects_viewmodel.dart");
 
   // Starting money pool listener. Should only ever be called once!
-  Future listenToProjects() async {
+  Future listenToData() async {
     setBusy(true);
     await _projectsService!.listenToProjects(uid: currentUser.uid);
+    projectTopPicks = await _projectsService!.getProjectTopPicks();
     setBusy(false);
-  }
-
-  //////////////////////////////////////////////////
-  /// Navigations
-  ///
-  Future navigateToProjectForAreaView({required String area}) async {
-    await _navigationService!.navigateTo(Routes.projectsForAreaView,
-        arguments: ProjectsForAreaViewArguments(area: area));
   }
 
   Project getProjectWithName({required String name}) {
@@ -40,7 +34,7 @@ class ProjectsViewModel extends ProjectsBaseViewModel {
   }
 
   Future refresh() async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 500));
     notifyListeners();
   }
 
@@ -51,5 +45,13 @@ class ProjectsViewModel extends ProjectsBaseViewModel {
 
   List<Project> getGoodWalletFundsInfo() {
     return _projectsService!.getGoodWalletFundsInfo();
+  }
+
+  //////////////////////////////////////////////////
+  /// Navigations
+  ///
+  Future navigateToProjectForAreaView({required String area}) async {
+    await _navigationService!.navigateTo(Routes.projectsForAreaView,
+        arguments: ProjectsForAreaViewArguments(area: area));
   }
 }
