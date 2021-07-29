@@ -4,7 +4,7 @@
         android:label="good_wallet"
         android:icon="@mipmap/ic_launcher">
         <activity
-            android:name=".MainActivity"
+            android:name="io.flutter.embedding.android.FlutterFragmentActivity"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

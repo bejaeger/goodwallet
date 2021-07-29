@@ -62,8 +62,9 @@ class UserService {
   Future<void>? listenToAuthStateChanges() async {
     if (userStreamSubscription == null) {
       var completer = Completer<void>();
-      userStreamSubscription =
-          _firebaseAuthenticationService!.authStateChanges.listen((user) async {
+      userStreamSubscription = _firebaseAuthenticationService!.firebaseAuth
+          .authStateChanges()
+          .listen((user) async {
         await authStateChangesOnDataCallback(user);
         if (!completer.isCompleted) {
           completer.complete();

@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+//import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
@@ -25,6 +25,7 @@ import 'package:good_wallet/utils/logger.dart';
 import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_view.form.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:stripe_platform_interface/stripe_platform_interface.dart';
 
 /////////////////////////////////////////////////////////////////
 ///
@@ -45,6 +46,8 @@ class TransferFundsAmountViewModel extends FormViewModel {
   User get currentUser => _userService!.currentUser;
   final DummyPaymentService _dummyPaymentService =
       locator<DummyPaymentService>();
+  SetupIntent? _setupIntentResult;
+  PaymentIntent? _retrievedPaymentIntent;
 
   final log = getLogger("transfer_funds_amount_viewmodel.dart");
 
@@ -57,6 +60,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
   final RecipientInfo? recipientInfo;
 
   final SenderInfo senderInfo;
+  //final _snackbarService = locator<SnackbarService>();
 
   num? amount;
 
@@ -77,84 +81,143 @@ class TransferFundsAmountViewModel extends FormViewModel {
 
   //User get currentUser => _userService.currentUser;
 
-  Map<String, dynamic>? _paymentSheetData;
+  Map<String, dynamic>? _paymentIntentData;
+  //For Transfer Money Via Stripe Harguilar
+  String text = 'Click the button to start the payment';
+  double totalCost = 10.0;
+  double tip = 1.0;
+  double tax = 0.0;
+  double taxPercent = 0.2;
+  //int amount = 0;
+  bool showSpinner = false;
+  String url =
+      'https://us-central1-gooddollarsmarketplace.cloudfunctions.net/user-onStripeCreatePI';
+  static Map<String, String> headers = {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  };
+// Harguilar Ended
 
-  Map<String, dynamic>? get getPaymentSheetData => _paymentSheetData;
+  Map<String, dynamic>? paymentIntentData;
 
-  Future<Map<String, dynamic>> _createTestPaymentSheet() async {
-    final http.Response response =
-        await http.post(Uri.parse('Cloud FUNCTION URL, $amountValue!'));
-    if (response.body != null) {
-      return json.decode(response.body);
-    } else {
-      _snackbarService!.showSnackbar(
-          title: "Error Message.",
-          message: 'Error code: ${_paymentSheetData!['error']}',
-          duration: Duration(seconds: 2));
-    }
-    return json.decode(response.body);
-  }
-
-  Future<void> initPaymentSheet() async {
+  //Harguilar Added New Payment
+  Future<void> createStripePayment() async {
+    setBusy(true);
     try {
-      // 1. create payment intent on the server
-      _paymentSheetData = await _createTestPaymentSheet();
+      final urlUri = Uri.parse(url);
+      // Map<String, dynamic> body = {'amount': amount, 'currency': 'usd'};
+      // final http.Response resp = await http.post('$urlUri?');
+      final response = await http.get(
+        urlUri,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+      paymentIntentData = json.decode(response.body);
 
-      if (_paymentSheetData!['error'] != null) {
-        _snackbarService!.showSnackbar(
-            title: "Error Message.",
-            message: 'Error code: ${_paymentSheetData!['error']}',
-            duration: Duration(seconds: 2));
+      print('Harguilar Payment Intent: ' + paymentIntentData!.toString());
 
-        return;
-      }
       // 2. initialize the payment sheet
       await Stripe.instance.initPaymentSheet(
-        paymentSheetParameters: SetupPaymentSheetParameters(
-          applePay: true,
-          googlePay: true,
-          style: ThemeMode.dark,
-          testEnv: true,
-          merchantCountryCode: 'DE',
-          merchantDisplayName: currentUser.fullName,
-          customerId: _paymentSheetData!['customer'],
-          paymentIntentClientSecret: _paymentSheetData!['paymentIntent'],
-          customerEphemeralKeySecret: _paymentSheetData!['ephemeralKey'],
-        ),
-      );
+          paymentSheetParameters: SetupPaymentSheetParameters(
+              paymentIntentClientSecret: paymentIntentData!['paymentIntent'],
+              applePay: true,
+              merchantCountryCode: 'CAD',
+              //customerId: ,
+              googlePay: true,
+              style: ThemeMode.dark,
+              merchantDisplayName:
+                  _userService!.currentUser.fullName.toString()));
     } catch (e) {
-      _snackbarService!.showSnackbar(
-          title: "Error Message.",
-          message: "Error: $e",
-          duration: Duration(seconds: 2));
+      print(e.toString());
     }
+    setBusy(false);
+
+    notifyListeners();
+    displayPaymentSheet();
   }
 
   Future<void> displayPaymentSheet() async {
     setBusy(true);
     try {
-      // 3. display the payment sheet.
       await Stripe.instance.presentPaymentSheet(
           parameters: PresentPaymentSheetParameters(
-        clientSecret: _paymentSheetData!['paymentIntent'],
-        confirmPayment: true,
-      ));
+              clientSecret: paymentIntentData!['paymentIntent'],
+              confirmPayment: true));
 
-      _paymentSheetData = null;
+      _handleRetrievePaymentIntent(
+          clientSecret: paymentIntentData!['paymentIntent']);
 
+      ///
+      // 2. Gather customer billing information (ex. email)
+      final billingDetails = BillingDetails(
+        email: _userService!.currentUser.email.toString(),
+        phone: '+48888000888',
+        address: Address(
+          city: 'Angola',
+          country: 'US',
+          line1: '1459  Circle Drive',
+          line2: '',
+          state: 'Texas',
+          postalCode: '77063',
+        ),
+      ); // mo mocked data for tests
+
+      // 3. Confirm payment with card details
+      // The rest will be done automatically using webhooks
+      // ignore: unused_local_variable
+      final paymentIntent = await Stripe.instance.confirmSetupIntent(
+        paymentIntentData!['paymentIntent'],
+        PaymentMethodParams.card(
+          billingDetails: billingDetails,
+/*         setupFutureUsage:
+            _saveCard == true ? PaymentIntentsFutureUsage.OffSession : null, */
+        ),
+      );
+
+      paymentIntentData = null;
       _snackbarService!.showSnackbar(
-          title: "Payment Made Successfully.",
-          message: 'Payment succesfully completed',
+          title: 'Payment Made Succesfully !',
+          message: 'Sucessfull Payment',
           duration: Duration(seconds: 2));
     } catch (e) {
-      _snackbarService!.showSnackbar(
-          title: "Error Message.",
-          message: "Error: $e",
-          duration: Duration(seconds: 2));
+      print(e.toString());
     }
     setBusy(false);
     notifyListeners();
   }
+
+  Future<void> _handleRetrievePaymentIntent({String? clientSecret}) async {
+    setBusy(true);
+    final paymentIntent =
+        await Stripe.instance.retrievePaymentIntent(clientSecret!);
+    /*final errorCode = paymentIntent.lastPaymentError?.code;
+
+    var failureReason = 'Payment failed, try again.'; // Default to a generic error message
+    if (paymentIntent?.lastPaymentError?.type == 'Card') {
+      failureReason = paymentIntent.lastPaymentError.message;
+    }*/
+    final errorCode = false;
+
+    if (errorCode) {
+      _snackbarService!.showSnackbar(
+          title: 'Payment Made Succesfully !',
+          message: 'Sucessfull Payment',
+          duration: Duration(seconds: 2));
+      //setPaymentError(errorCode);
+    }
+
+    final paymentMethodId = paymentIntent.paymentMethodId == null
+        ? _setupIntentResult?.paymentMethodId
+        : paymentIntent.paymentMethodId;
+
+    _retrievedPaymentIntent =
+        paymentIntent.copyWith(paymentMethodId: paymentMethodId);
+
+    setBusy(false);
+    notifyListeners();
+  }
+
+  //Harguilar Ended New Payment
 
   Future showBottomSheetAndProcessPayment() async {
     if (!isValidData()) {
@@ -163,16 +226,21 @@ class TransferFundsAmountViewModel extends FormViewModel {
     } else {
       amount = num.parse(amountValue!);
       if (type == TransferType.User2OwnPrepaidFund)
-        await handleTopUpPayment();
+        // await handleTopUpPayment();
+        await createStripePayment();
       else if (type == TransferType.User2UserSent) {
-        await handleTransfer(type: type);
+        await createStripePayment();
+        // await handleTransfer(type: type);
       } else if (type == TransferType.User2Project) {
-        await handleTransfer(type: type);
+        await createStripePayment();
+        //await handleTransfer(type: type);
       } else if (type == TransferType.User2MoneyPool) {
-        await handleTransfer(type: type);
+        await createStripePayment();
+        //await handleTransfer(type: type);
       } else {
-        _snackbarService!.showSnackbar(
-            title: "Not yet implemented.", message: "I know... it's sad");
+        await createStripePayment();
+/*         _snackbarService!.showSnackbar(
+            title: "Not yet implemented.", message: "I know... it's sad"); */
       }
     }
   }
@@ -257,6 +325,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
     }
   }
 
+  //Finished Added
   // TODO: TO BE Deprecated
   // include in handleTransfer
   Future handleTopUpPayment() async {
