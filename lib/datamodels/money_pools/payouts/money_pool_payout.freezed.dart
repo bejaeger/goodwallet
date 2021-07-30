@@ -24,10 +24,9 @@ class _$MoneyPoolPayoutTearOff {
       {required List<TransferDetails> transfersDetails,
       required List<String> paidOutUsersIds,
       required MoneyPool moneyPool,
-      required dynamic createdAt,
+      dynamic createdAt = "",
       TransferStatus status = TransferStatus.Initialized,
-      @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
-          String payoutId = "placeholder",
+      @JsonKey(name: "payoutId") String payoutId = "placeholder",
       bool deleteMoneyPool = true}) {
     return _MoneyPoolPayout(
       transfersDetails: transfersDetails,
@@ -56,7 +55,7 @@ mixin _$MoneyPoolPayout {
   MoneyPool get moneyPool => throw _privateConstructorUsedError;
   dynamic get createdAt => throw _privateConstructorUsedError;
   TransferStatus get status => throw _privateConstructorUsedError;
-  @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
+  @JsonKey(name: "payoutId")
   String get payoutId => throw _privateConstructorUsedError;
   bool get deleteMoneyPool => throw _privateConstructorUsedError;
 
@@ -77,8 +76,7 @@ abstract class $MoneyPoolPayoutCopyWith<$Res> {
       MoneyPool moneyPool,
       dynamic createdAt,
       TransferStatus status,
-      @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
-          String payoutId,
+      @JsonKey(name: "payoutId") String payoutId,
       bool deleteMoneyPool});
 
   $MoneyPoolCopyWith<$Res> get moneyPool;
@@ -156,8 +154,7 @@ abstract class _$MoneyPoolPayoutCopyWith<$Res>
       MoneyPool moneyPool,
       dynamic createdAt,
       TransferStatus status,
-      @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
-          String payoutId,
+      @JsonKey(name: "payoutId") String payoutId,
       bool deleteMoneyPool});
 
   @override
@@ -226,10 +223,9 @@ class _$_MoneyPoolPayout implements _MoneyPoolPayout {
       {required this.transfersDetails,
       required this.paidOutUsersIds,
       required this.moneyPool,
-      required this.createdAt,
+      this.createdAt = "",
       this.status = TransferStatus.Initialized,
-      @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
-          this.payoutId = "placeholder",
+      @JsonKey(name: "payoutId") this.payoutId = "placeholder",
       this.deleteMoneyPool = true});
 
   factory _$_MoneyPoolPayout.fromJson(Map<String, dynamic> json) =>
@@ -241,13 +237,14 @@ class _$_MoneyPoolPayout implements _MoneyPoolPayout {
   final List<String> paidOutUsersIds;
   @override
   final MoneyPool moneyPool;
+  @JsonKey(defaultValue: "")
   @override
   final dynamic createdAt;
   @JsonKey(defaultValue: TransferStatus.Initialized)
   @override
   final TransferStatus status;
   @override
-  @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
+  @JsonKey(name: "payoutId")
   final String payoutId;
   @JsonKey(defaultValue: true)
   @override
@@ -311,10 +308,9 @@ abstract class _MoneyPoolPayout implements MoneyPoolPayout {
       {required List<TransferDetails> transfersDetails,
       required List<String> paidOutUsersIds,
       required MoneyPool moneyPool,
-      required dynamic createdAt,
+      dynamic createdAt,
       TransferStatus status,
-      @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
-          String payoutId,
+      @JsonKey(name: "payoutId") String payoutId,
       bool deleteMoneyPool}) = _$_MoneyPoolPayout;
 
   factory _MoneyPoolPayout.fromJson(Map<String, dynamic> json) =
@@ -332,7 +328,7 @@ abstract class _MoneyPoolPayout implements MoneyPoolPayout {
   @override
   TransferStatus get status => throw _privateConstructorUsedError;
   @override
-  @JsonKey(name: "payoutId", toJson: MoneyPoolPayout._checkIftransferIdIsSet)
+  @JsonKey(name: "payoutId")
   String get payoutId => throw _privateConstructorUsedError;
   @override
   bool get deleteMoneyPool => throw _privateConstructorUsedError;

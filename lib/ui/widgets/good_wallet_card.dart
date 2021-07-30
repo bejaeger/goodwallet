@@ -22,6 +22,11 @@ class GoodWalletCard extends StatelessWidget {
   final num totalGifted;
   final String userInfo;
   final bool showGoodometer;
+  final double margins;
+  final String title;
+  final bool showQRCode;
+  final double titleWidthPercentage;
+  final bool highlightTotalDonations;
 
   const GoodWalletCard(
       {Key? key,
@@ -37,7 +42,12 @@ class GoodWalletCard extends StatelessWidget {
       this.onFavoriteCharitiesPressed,
       this.onHistoryButtonPressed,
       this.onCommitButtonPressed,
-      this.onDonateButtonPressed})
+      this.onDonateButtonPressed,
+      this.margins = 4.0,
+      this.title = "Your Balance",
+      this.showQRCode = true,
+      this.titleWidthPercentage = 0.28,
+      this.highlightTotalDonations = false})
       : super(key: key);
 
   @override
@@ -45,6 +55,7 @@ class GoodWalletCard extends StatelessWidget {
     return GestureDetector(
       onTap: onCardTap,
       child: Card(
+        margin: EdgeInsets.all(margins),
         clipBehavior: Clip.hardEdge,
         elevation: 10.0,
         shape: RoundedRectangleBorder(
@@ -98,30 +109,34 @@ class GoodWalletCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width:
-                              screenWidthPercentage(context, percentage: 0.28),
+                          width: screenWidthPercentage(context,
+                              percentage: titleWidthPercentage),
                           child: FittedBox(
                             fit: BoxFit.none,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Your Balance",
+                                  title,
                                   style: textTheme(context).bodyText2!.copyWith(
                                         fontSize: 20,
                                       ),
                                 ),
+                                if (highlightTotalDonations) verticalSpaceSmall,
                                 //verticalSpaceTiny,
                                 Text(
-                                  formatAmount(currentBalance),
+                                  formatAmount(highlightTotalDonations
+                                      ? totalDonations
+                                      : currentBalance),
                                   maxLines: 1,
                                   style: textTheme(context).headline2!.copyWith(
                                         fontSize: 32,
                                       ),
                                 ),
-                                //verticalSpaceTiny,
                                 Text(
-                                  "To be donated",
+                                  highlightTotalDonations
+                                      ? "Total Donations"
+                                      : "To be donated",
                                   maxLines: 1,
                                   style: textTheme(context).bodyText2!.copyWith(
                                         fontSize: 13,
@@ -139,10 +154,11 @@ class GoodWalletCard extends StatelessWidget {
                             //     textColor: ColorSettings.whiteTextColor),
                             // horizontalSpaceSmall,
                             //
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: displayQRCode(context),
-                            ),
+                            if (showQRCode)
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: displayQRCode(context),
+                              ),
                             if (onDonateButtonPressed != null)
                               CallToActionIcon(
                                 text: "Give",
@@ -279,8 +295,12 @@ class GoodWalletCard extends StatelessWidget {
                                 Expanded(
                                   child: _buildStatItem(
                                     context,
-                                    "Total donations",
-                                    formatAmount(totalDonations),
+                                    highlightTotalDonations
+                                        ? "Current balance"
+                                        : "Total donations",
+                                    formatAmount(highlightTotalDonations
+                                        ? currentBalance
+                                        : totalDonations),
                                   ),
                                 ),
                                 horizontalSpaceRegular,

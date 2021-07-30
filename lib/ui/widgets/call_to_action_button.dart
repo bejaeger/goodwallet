@@ -12,6 +12,7 @@ class CallToActionButtonRectangular extends StatelessWidget {
   final double? maxHeight;
   final double? fontSize;
   final Color? color;
+  final bool isOutlineButton;
 
   const CallToActionButtonRectangular(
       {Key? key,
@@ -22,7 +23,8 @@ class CallToActionButtonRectangular extends StatelessWidget {
       this.minHeight,
       this.maxHeight,
       this.fontSize,
-      this.color})
+      this.color,
+      this.isOutlineButton = false})
       : super(key: key);
 
   @override
@@ -43,19 +45,29 @@ class CallToActionButtonRectangular extends StatelessWidget {
         style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.all(0.0),
             elevation: 0.0,
-            primary: colorActual),
+            primary:
+                isOutlineButton ? ColorSettings.backgroundColor : colorActual,
+            shape: isOutlineButton
+                ? RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(color: colorActual))
+                : null),
         child: Padding(
           padding: const EdgeInsets.only(
               top: 12.0, bottom: 12.0, left: 20.0, right: 20.0),
-          child: Text(
-            title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: textTheme(context).headline5!.copyWith(
-                fontSize: fontSize ?? 18,
-                color: onPressed != null
-                    ? ColorSettings.whiteTextColor
-                    : ColorSettings.lightGreyTextColor),
+          child: FittedBox(
+            child: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: textTheme(context).headline5!.copyWith(
+                  fontSize: fontSize ?? 18,
+                  color: onPressed != null
+                      ? isOutlineButton
+                          ? ColorSettings.greyTextColor
+                          : ColorSettings.whiteTextColor
+                      : ColorSettings.lightGreyTextColor),
+            ),
           ),
         ),
         onPressed: onPressed,
@@ -154,7 +166,7 @@ class CallToActionButtonRound extends StatelessWidget {
               textAlign: TextAlign.center,
               style: textTheme(context).bodyText2!.copyWith(
                   letterSpacing: 0,
-                  fontSize: 12,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                   color: ColorSettings.blackTextColor),
             ),
@@ -259,6 +271,54 @@ class CallToActionIcon extends StatelessWidget {
               padding: const EdgeInsets.all(0.0),
               icon: icon!,
               onPressed: onPressed,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Round call to action button with text below round button
+class AddFriendCTARound extends StatelessWidget {
+  final void Function() onPressed;
+  final Color? color;
+
+  const AddFriendCTARound({Key? key, required this.onPressed, this.color})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 80,
+      child: GestureDetector(
+        onTap: onPressed,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              radius: 32,
+              backgroundColor: ColorSettings.primaryColor,
+              child: CircleAvatar(
+                radius: 30,
+                backgroundColor: ColorSettings.backgroundColor,
+                child: Text("+",
+                    style: textTheme(context).headline5!.copyWith(
+                        fontSize: 28, color: ColorSettings.primaryColor)),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Text(
+                "Add Friend",
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme(context).bodyText2!.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: ColorSettings.blackHeadlineColor),
+              ),
             ),
           ],
         ),

@@ -24,7 +24,9 @@ class SendMoneyBottomSheetView extends StatelessWidget {
       viewModelBuilder: () =>
           SendMoneyBottomSheetViewModel(latestTransactions: request.customData),
       builder: (context, model, child) => BottomSheetLayout(
-        title: "Send Money",
+        description:
+            "Give the gift of giving: Your sent funds become charitable-only",
+        title: "Gift Good Dollars",
         widgetBeforeButtons: request.customData != null
             ? request.customData.length > 0
                 ? Container(

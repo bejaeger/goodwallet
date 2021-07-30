@@ -362,11 +362,6 @@ class MockFirestoreApi extends _i1.Mock implements _i19.FirestoreApi {
               returnValue: Stream<List<_i20.MoneyTransfer>>.empty())
           as _i15.Stream<List<_i20.MoneyTransfer>>);
   @override
-  _i15.Future<dynamic> createMoneyPoolPayout({_i17.MoneyPoolPayout? payout}) =>
-      (super.noSuchMethod(
-          Invocation.method(#createMoneyPoolPayout, [], {#payout: payout}),
-          returnValue: Future<dynamic>.value(null)) as _i15.Future<dynamic>);
-  @override
   _i15.Stream<List<_i5.MoneyPool>> getMoneyPoolsInvitedToStream(
           {String? uid}) =>
       (super.noSuchMethod(

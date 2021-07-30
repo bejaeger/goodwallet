@@ -7,6 +7,7 @@ import 'package:good_wallet/services/payments/dummy_payment_service.dart';
 import 'package:good_wallet/services/projects/projects_service.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/user/user_service.dart';
+import 'package:good_wallet/ui/views/explore_view/explore_view.dart';
 import 'package:good_wallet/ui/views/featured_applications/single_featured_app_view.dart';
 import 'package:good_wallet/ui/views/friends/friends_view.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
@@ -32,7 +33,6 @@ import 'package:good_wallet/ui/views/projects/projects_for_area_view.dart';
 import 'package:good_wallet/ui/views/projects/projects_view.dart';
 import 'package:good_wallet/ui/views/projects/single_project_view_mobile.dart';
 import 'package:good_wallet/ui/views/qrcode/qrcode_view_mobile.dart';
-import 'package:good_wallet/ui/views/search_view/search_view.dart';
 import 'package:good_wallet/ui/views/settings/settings_view.dart';
 import 'package:good_wallet/ui/views/startup_logic/startup_logic_view.dart';
 import 'package:good_wallet/ui/views/transaction_history/transfers_history_view.dart';
@@ -64,7 +64,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: MoneyPoolsView),
     MaterialRoute(page: QRCodeViewMobile),
     MaterialRoute(page: StartUpLogicView, initial: true),
-    MaterialRoute(page: SearchView),
+    MaterialRoute(page: ExploreView),
     MaterialRoute(page: TransferFundsAmountView),
     MaterialRoute(page: DisburseMoneyPoolView),
     MaterialRoute(page: TransfersHistoryView),

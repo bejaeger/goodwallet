@@ -47,7 +47,7 @@ void main() async {
 
 Future _connectToFirebaseEmulator() async {
   final localHostString = Platform.isAndroid ? '10.0.2.2' : 'localhost';
-  //final localHostString = "192.168.178.46";
+  //final localHostString = "192.168.1.69";
   FirebaseFirestore.instance.settings = Settings(
     host: '$localHostString:8080',
     sslEnabled: false,

@@ -4,10 +4,13 @@ import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
+import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/profile/public_profile/public_profile_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
+import 'package:good_wallet/ui/widgets/good_wallet_card.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
+import 'package:good_wallet/utils/string_utils.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
@@ -28,17 +31,23 @@ class PublicProfileViewMobile extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileImage() {
+  Widget _buildProfileImage(String name) {
     return Center(
       child: Container(
-        width: 130.0,
-        height: 130.0,
+        width: 90.0,
+        height: 90.0,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(90.0),
-          child: Image.network(
-            ImagePath.profilePicURL,
-            fit: BoxFit.cover,
+          child: CircleAvatar(
+            radius: 24,
+            backgroundColor: MyColors.paletteBlue,
+            child: Text(getInitialsFromName(name),
+                style: TextStyle(color: Colors.white, fontSize: 26)),
           ),
+          //  Image.network(
+          //   ImagePath.profilePicURL,
+          //   fit: BoxFit.cover,
+          // ),
         ),
       ),
     );
@@ -131,50 +140,114 @@ class PublicProfileViewMobile extends StatelessWidget {
       onModelReady: (model) => model.fetchUserData(uid),
       builder: (context, model, child) {
         return ConstrainedWidthWithScaffoldLayout(
-          child: model.isBusy
-              ? Center(child: CircularProgressIndicator())
-              : ListView(
-                  children: [
-                    CustomAppBarSmall(title: model.user!.fullName),
-                    Column(
+          child: ListView(
+            children: [
+              CustomAppBarSmall(
+                title: "",
+                forceElevated: false,
+              ),
+              model.isBusy
+                  ? Center(child: CircularProgressIndicator())
+                  : Column(
                       children: [
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
-                            verticalSpaceRegular,
-                            _buildProfileImage(),
-                            _buildFullName(context, model.user!),
-                            _buildStatus(context),
-                            if (model.otherUserStats != null)
-                              _buildStatContainer(
-                                  context, model.otherUserStats!),
-                            if (model.otherUserStats == null)
-                              _buildPrivateProfileDisclaimer(context),
+                            verticalSpaceSmall,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                    width: LayoutSettings.horizontalPadding),
+                                _buildProfileImage(model.user!.fullName),
+                                horizontalSpaceMedium,
+                                Flexible(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _buildFullName(context, model.user!),
+                                      _buildStatus(context),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            // if (model.otherUserStats != null)
+                            //   _buildStatContainer(
+                            //       context, model.otherUserStats!),
                           ],
                         ),
                         verticalSpaceRegular,
-                        CallToActionButtonRectangular(
-                            title: model.isFriend(uid) ? "Unfollow" : "Follow",
-                            onPressed: () => model.addOrRemoveFriend(uid),
-                            maxWidth: screenWidth(context, percentage: 0.5),
-                            minHeight: 20,
-                            maxHeight: 40,
-                            fontSize: 16,
-                            color: model.isFriend(uid)
-                                ? MyColors.paletteGrey
-                                : MyColors.paletteBlue),
-                        verticalSpaceRegular,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(width: LayoutSettings.horizontalPadding),
+                            Flexible(
+                              flex: 5,
+                              child: CallToActionButtonRectangular(
+                                  isOutlineButton: true,
+                                  title: model.isFriend(uid)
+                                      ? "Remove Friend"
+                                      : "Add Friend",
+                                  onPressed: () => model.addOrRemoveFriend(uid),
+                                  maxWidth:
+                                      screenWidth(context, percentage: 0.3),
+                                  minHeight: 20,
+                                  maxHeight: 40,
+                                  fontSize: 16,
+                                  color: model.isFriend(uid)
+                                      ? MyColors.paletteGrey
+                                      : MyColors.paletteBlue),
+                            ),
+                            Spacer(flex: 1),
+                            Flexible(
+                              flex: 5,
+                              child: CallToActionButtonRectangular(
+                                  title: "Send Money",
+                                  onPressed: () =>
+                                      model.navigateToTransferViewWithUser(
+                                          model.user!),
+                                  maxWidth:
+                                      screenWidth(context, percentage: 0.3),
+                                  minHeight: 20,
+                                  maxHeight: 40,
+                                  fontSize: 16,
+                                  color: MyColors.paletteBlue),
+                            ),
+                          ],
+                        ),
+                        verticalSpaceMedium,
+                        if (model.otherUserStats == null)
+                          _buildPrivateProfileDisclaimer(context),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 25.0),
                           child: Column(
                             children: [
                               if (model.otherUserStats != null)
-                                PublicProfileListItem(
-                                  title: model.user!.fullName +
-                                      "'s Social Footprint",
-                                  onPressed: () => model.showStatsDialog(
-                                      model.user!, model.otherUserStats!),
-                                ),
+                                GoodWalletCard(
+                                    onCardTap: () => model.showStatsDialog(
+                                        model.user!, model.otherUserStats!),
+                                    currentBalance:
+                                        model.otherUserStats!.currentBalance,
+                                    totalDonations: model.otherUserStats!
+                                        .donationStatistics.totalDonations,
+                                    totalRaised: model.otherUserStats!
+                                        .moneyTransferStatistics.totalRaised,
+                                    totalGifted: model
+                                        .otherUserStats!
+                                        .moneyTransferStatistics
+                                        .totalSentToPeers,
+                                    userInfo: model
+                                        .getQRCodeUserInfoString(model.user!),
+                                    onQRCodeTap: () => null,
+                                    margins: 0.0,
+                                    showQRCode: false,
+                                    titleWidthPercentage: 0.6,
+                                    highlightTotalDonations: true,
+                                    title: model.user!.fullName +
+                                        "'s Impact Card"),
                               verticalSpaceSmall,
                             ],
                           ),
@@ -182,36 +255,10 @@ class PublicProfileViewMobile extends StatelessWidget {
                         verticalSpaceLarge,
                       ],
                     ),
-                  ],
-                ),
+            ],
+          ),
         );
       },
-    );
-  }
-}
-
-class PublicProfileListItem extends StatelessWidget {
-  final void Function()? onPressed;
-  final String? title;
-  const PublicProfileListItem({Key? key, this.onPressed, this.title})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Card(
-        elevation: 10,
-        // decoration: BoxDecoration(
-        //   border: Border.all(width: 0.5),
-        //   borderRadius: BorderRadius.circular(10.0),
-        // ),
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Text(title!,
-              style: textTheme(context).headline6!.copyWith(fontSize: 20)),
-        ),
-      ),
     );
   }
 }

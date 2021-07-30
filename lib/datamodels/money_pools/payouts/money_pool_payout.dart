@@ -26,12 +26,13 @@ class MoneyPoolPayout with _$MoneyPoolPayout {
     required List<TransferDetails> transfersDetails,
     required List<String> paidOutUsersIds,
     required MoneyPool moneyPool,
-    required dynamic createdAt,
+    @Default("")
+        dynamic createdAt,
     @Default(TransferStatus.Initialized)
         TransferStatus status,
     @JsonKey(
       name: "payoutId",
-      toJson: MoneyPoolPayout._checkIftransferIdIsSet,
+      //toJson: MoneyPoolPayout._checkIftransferIdIsSet,
     )
     @Default("placeholder")
         String payoutId,

@@ -86,7 +86,8 @@ class TransferFundsAmountView extends StatelessWidget
                               context, model.userStats.currentBalance),
                         // Arrow
                         horizontalSpaceRegular,
-                        Icon(Icons.arrow_forward_rounded, size: 40),
+                        Icon(Icons.arrow_forward_rounded,
+                            size: 40, color: ColorSettings.primaryColor),
                         horizontalSpaceRegular,
 
                         // Recipients

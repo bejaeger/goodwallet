@@ -17,7 +17,7 @@ class HorizontalCentralButton extends StatelessWidget {
       this.color,
       this.minWidth,
       this.maxWidth,
-      this.minHeight = 45.0})
+      this.minHeight = 35.0})
       : super(key: key);
   @override
   Widget build(BuildContext context) {

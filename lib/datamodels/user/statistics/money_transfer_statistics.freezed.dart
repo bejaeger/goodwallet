@@ -31,12 +31,14 @@ class _$MoneyTransferStatisticsTearOff {
 
   _MoneyTransferStatistics call(
       {required num totalSentToPeers,
+      num totalSentToMoneyPools = 0,
       required num totalRaised,
       required num totalRaisedViaMoneyPool,
       required num totalRaisedViaPeer2Peer,
       required num totalRaisedViaSubsidiaryApp}) {
     return _MoneyTransferStatistics(
       totalSentToPeers: totalSentToPeers,
+      totalSentToMoneyPools: totalSentToMoneyPools,
       totalRaised: totalRaised,
       totalRaisedViaMoneyPool: totalRaisedViaMoneyPool,
       totalRaisedViaPeer2Peer: totalRaisedViaPeer2Peer,
@@ -46,12 +48,14 @@ class _$MoneyTransferStatisticsTearOff {
 
   _EmptyMoneyTransferStatistics empty(
       {num totalSentToPeers = 0,
+      num totalSentToMoneyPools = 0,
       num totalRaised = 0,
       num totalRaisedViaMoneyPool = 0,
       num totalRaisedViaPeer2Peer = 0,
       num totalRaisedViaSubsidiaryApp = 0}) {
     return _EmptyMoneyTransferStatistics(
       totalSentToPeers: totalSentToPeers,
+      totalSentToMoneyPools: totalSentToMoneyPools,
       totalRaised: totalRaised,
       totalRaisedViaMoneyPool: totalRaisedViaMoneyPool,
       totalRaisedViaPeer2Peer: totalRaisedViaPeer2Peer,
@@ -70,6 +74,7 @@ const $MoneyTransferStatistics = _$MoneyTransferStatisticsTearOff();
 /// @nodoc
 mixin _$MoneyTransferStatistics {
   num get totalSentToPeers => throw _privateConstructorUsedError;
+  num get totalSentToMoneyPools => throw _privateConstructorUsedError;
   num get totalRaised => throw _privateConstructorUsedError;
   num get totalRaisedViaMoneyPool => throw _privateConstructorUsedError;
   num get totalRaisedViaPeer2Peer => throw _privateConstructorUsedError;
@@ -79,6 +84,7 @@ mixin _$MoneyTransferStatistics {
   TResult when<TResult extends Object?>(
     TResult Function(
             num totalSentToPeers,
+            num totalSentToMoneyPools,
             num totalRaised,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
@@ -86,6 +92,7 @@ mixin _$MoneyTransferStatistics {
         $default, {
     required TResult Function(
             num totalSentToPeers,
+            num totalSentToMoneyPools,
             num totalRaised,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
@@ -97,6 +104,7 @@ mixin _$MoneyTransferStatistics {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
             num totalSentToPeers,
+            num totalSentToMoneyPools,
             num totalRaised,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
@@ -104,6 +112,7 @@ mixin _$MoneyTransferStatistics {
         $default, {
     TResult Function(
             num totalSentToPeers,
+            num totalSentToMoneyPools,
             num totalRaised,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
@@ -138,6 +147,7 @@ abstract class $MoneyTransferStatisticsCopyWith<$Res> {
       _$MoneyTransferStatisticsCopyWithImpl<$Res>;
   $Res call(
       {num totalSentToPeers,
+      num totalSentToMoneyPools,
       num totalRaised,
       num totalRaisedViaMoneyPool,
       num totalRaisedViaPeer2Peer,
@@ -156,6 +166,7 @@ class _$MoneyTransferStatisticsCopyWithImpl<$Res>
   @override
   $Res call({
     Object? totalSentToPeers = freezed,
+    Object? totalSentToMoneyPools = freezed,
     Object? totalRaised = freezed,
     Object? totalRaisedViaMoneyPool = freezed,
     Object? totalRaisedViaPeer2Peer = freezed,
@@ -165,6 +176,10 @@ class _$MoneyTransferStatisticsCopyWithImpl<$Res>
       totalSentToPeers: totalSentToPeers == freezed
           ? _value.totalSentToPeers
           : totalSentToPeers // ignore: cast_nullable_to_non_nullable
+              as num,
+      totalSentToMoneyPools: totalSentToMoneyPools == freezed
+          ? _value.totalSentToMoneyPools
+          : totalSentToMoneyPools // ignore: cast_nullable_to_non_nullable
               as num,
       totalRaised: totalRaised == freezed
           ? _value.totalRaised
@@ -195,6 +210,7 @@ abstract class _$MoneyTransferStatisticsCopyWith<$Res>
   @override
   $Res call(
       {num totalSentToPeers,
+      num totalSentToMoneyPools,
       num totalRaised,
       num totalRaisedViaMoneyPool,
       num totalRaisedViaPeer2Peer,
@@ -216,6 +232,7 @@ class __$MoneyTransferStatisticsCopyWithImpl<$Res>
   @override
   $Res call({
     Object? totalSentToPeers = freezed,
+    Object? totalSentToMoneyPools = freezed,
     Object? totalRaised = freezed,
     Object? totalRaisedViaMoneyPool = freezed,
     Object? totalRaisedViaPeer2Peer = freezed,
@@ -225,6 +242,10 @@ class __$MoneyTransferStatisticsCopyWithImpl<$Res>
       totalSentToPeers: totalSentToPeers == freezed
           ? _value.totalSentToPeers
           : totalSentToPeers // ignore: cast_nullable_to_non_nullable
+              as num,
+      totalSentToMoneyPools: totalSentToMoneyPools == freezed
+          ? _value.totalSentToMoneyPools
+          : totalSentToMoneyPools // ignore: cast_nullable_to_non_nullable
               as num,
       totalRaised: totalRaised == freezed
           ? _value.totalRaised
@@ -251,6 +272,7 @@ class __$MoneyTransferStatisticsCopyWithImpl<$Res>
 class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
   _$_MoneyTransferStatistics(
       {required this.totalSentToPeers,
+      this.totalSentToMoneyPools = 0,
       required this.totalRaised,
       required this.totalRaisedViaMoneyPool,
       required this.totalRaisedViaPeer2Peer,
@@ -261,6 +283,9 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
 
   @override
   final num totalSentToPeers;
+  @JsonKey(defaultValue: 0)
+  @override
+  final num totalSentToMoneyPools;
   @override
   final num totalRaised;
   @override
@@ -272,7 +297,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
 
   @override
   String toString() {
-    return 'MoneyTransferStatistics(totalSentToPeers: $totalSentToPeers, totalRaised: $totalRaised, totalRaisedViaMoneyPool: $totalRaisedViaMoneyPool, totalRaisedViaPeer2Peer: $totalRaisedViaPeer2Peer, totalRaisedViaSubsidiaryApp: $totalRaisedViaSubsidiaryApp)';
+    return 'MoneyTransferStatistics(totalSentToPeers: $totalSentToPeers, totalSentToMoneyPools: $totalSentToMoneyPools, totalRaised: $totalRaised, totalRaisedViaMoneyPool: $totalRaisedViaMoneyPool, totalRaisedViaPeer2Peer: $totalRaisedViaPeer2Peer, totalRaisedViaSubsidiaryApp: $totalRaisedViaSubsidiaryApp)';
   }
 
   @override
@@ -282,6 +307,9 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
             (identical(other.totalSentToPeers, totalSentToPeers) ||
                 const DeepCollectionEquality()
                     .equals(other.totalSentToPeers, totalSentToPeers)) &&
+            (identical(other.totalSentToMoneyPools, totalSentToMoneyPools) ||
+                const DeepCollectionEquality().equals(
+                    other.totalSentToMoneyPools, totalSentToMoneyPools)) &&
             (identical(other.totalRaised, totalRaised) ||
                 const DeepCollectionEquality()
                     .equals(other.totalRaised, totalRaised)) &&
@@ -304,6 +332,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(totalSentToPeers) ^
+      const DeepCollectionEquality().hash(totalSentToMoneyPools) ^
       const DeepCollectionEquality().hash(totalRaised) ^
       const DeepCollectionEquality().hash(totalRaisedViaMoneyPool) ^
       const DeepCollectionEquality().hash(totalRaisedViaPeer2Peer) ^
@@ -320,6 +349,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
   TResult when<TResult extends Object?>(
     TResult Function(
             num totalSentToPeers,
+            num totalSentToMoneyPools,
             num totalRaised,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
@@ -327,14 +357,20 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
         $default, {
     required TResult Function(
             num totalSentToPeers,
+            num totalSentToMoneyPools,
             num totalRaised,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)
         empty,
   }) {
-    return $default(totalSentToPeers, totalRaised, totalRaisedViaMoneyPool,
-        totalRaisedViaPeer2Peer, totalRaisedViaSubsidiaryApp);
+    return $default(
+        totalSentToPeers,
+        totalSentToMoneyPools,
+        totalRaised,
+        totalRaisedViaMoneyPool,
+        totalRaisedViaPeer2Peer,
+        totalRaisedViaSubsidiaryApp);
   }
 
   @override
@@ -342,6 +378,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
             num totalSentToPeers,
+            num totalSentToMoneyPools,
             num totalRaised,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
@@ -349,6 +386,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
         $default, {
     TResult Function(
             num totalSentToPeers,
+            num totalSentToMoneyPools,
             num totalRaised,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
@@ -357,8 +395,13 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
     required TResult orElse(),
   }) {
     if ($default != null) {
-      return $default(totalSentToPeers, totalRaised, totalRaisedViaMoneyPool,
-          totalRaisedViaPeer2Peer, totalRaisedViaSubsidiaryApp);
+      return $default(
+          totalSentToPeers,
+          totalSentToMoneyPools,
+          totalRaised,
+          totalRaisedViaMoneyPool,
+          totalRaisedViaPeer2Peer,
+          totalRaisedViaSubsidiaryApp);
     }
     return orElse();
   }
@@ -395,6 +438,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
 abstract class _MoneyTransferStatistics implements MoneyTransferStatistics {
   factory _MoneyTransferStatistics(
       {required num totalSentToPeers,
+      num totalSentToMoneyPools,
       required num totalRaised,
       required num totalRaisedViaMoneyPool,
       required num totalRaisedViaPeer2Peer,
@@ -405,6 +449,8 @@ abstract class _MoneyTransferStatistics implements MoneyTransferStatistics {
 
   @override
   num get totalSentToPeers => throw _privateConstructorUsedError;
+  @override
+  num get totalSentToMoneyPools => throw _privateConstructorUsedError;
   @override
   num get totalRaised => throw _privateConstructorUsedError;
   @override
@@ -429,6 +475,7 @@ abstract class _$EmptyMoneyTransferStatisticsCopyWith<$Res>
   @override
   $Res call(
       {num totalSentToPeers,
+      num totalSentToMoneyPools,
       num totalRaised,
       num totalRaisedViaMoneyPool,
       num totalRaisedViaPeer2Peer,
@@ -451,6 +498,7 @@ class __$EmptyMoneyTransferStatisticsCopyWithImpl<$Res>
   @override
   $Res call({
     Object? totalSentToPeers = freezed,
+    Object? totalSentToMoneyPools = freezed,
     Object? totalRaised = freezed,
     Object? totalRaisedViaMoneyPool = freezed,
     Object? totalRaisedViaPeer2Peer = freezed,
@@ -460,6 +508,10 @@ class __$EmptyMoneyTransferStatisticsCopyWithImpl<$Res>
       totalSentToPeers: totalSentToPeers == freezed
           ? _value.totalSentToPeers
           : totalSentToPeers // ignore: cast_nullable_to_non_nullable
+              as num,
+      totalSentToMoneyPools: totalSentToMoneyPools == freezed
+          ? _value.totalSentToMoneyPools
+          : totalSentToMoneyPools // ignore: cast_nullable_to_non_nullable
               as num,
       totalRaised: totalRaised == freezed
           ? _value.totalRaised
@@ -486,6 +538,7 @@ class __$EmptyMoneyTransferStatisticsCopyWithImpl<$Res>
 class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
   const _$_EmptyMoneyTransferStatistics(
       {this.totalSentToPeers = 0,
+      this.totalSentToMoneyPools = 0,
       this.totalRaised = 0,
       this.totalRaisedViaMoneyPool = 0,
       this.totalRaisedViaPeer2Peer = 0,
@@ -497,6 +550,9 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
   @JsonKey(defaultValue: 0)
   @override
   final num totalSentToPeers;
+  @JsonKey(defaultValue: 0)
+  @override
+  final num totalSentToMoneyPools;
   @JsonKey(defaultValue: 0)
   @override
   final num totalRaised;
@@ -512,7 +568,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
 
   @override
   String toString() {
-    return 'MoneyTransferStatistics.empty(totalSentToPeers: $totalSentToPeers, totalRaised: $totalRaised, totalRaisedViaMoneyPool: $totalRaisedViaMoneyPool, totalRaisedViaPeer2Peer: $totalRaisedViaPeer2Peer, totalRaisedViaSubsidiaryApp: $totalRaisedViaSubsidiaryApp)';
+    return 'MoneyTransferStatistics.empty(totalSentToPeers: $totalSentToPeers, totalSentToMoneyPools: $totalSentToMoneyPools, totalRaised: $totalRaised, totalRaisedViaMoneyPool: $totalRaisedViaMoneyPool, totalRaisedViaPeer2Peer: $totalRaisedViaPeer2Peer, totalRaisedViaSubsidiaryApp: $totalRaisedViaSubsidiaryApp)';
   }
 
   @override
@@ -522,6 +578,9 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
             (identical(other.totalSentToPeers, totalSentToPeers) ||
                 const DeepCollectionEquality()
                     .equals(other.totalSentToPeers, totalSentToPeers)) &&
+            (identical(other.totalSentToMoneyPools, totalSentToMoneyPools) ||
+                const DeepCollectionEquality().equals(
+                    other.totalSentToMoneyPools, totalSentToMoneyPools)) &&
             (identical(other.totalRaised, totalRaised) ||
                 const DeepCollectionEquality()
                     .equals(other.totalRaised, totalRaised)) &&
@@ -544,6 +603,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(totalSentToPeers) ^
+      const DeepCollectionEquality().hash(totalSentToMoneyPools) ^
       const DeepCollectionEquality().hash(totalRaised) ^
       const DeepCollectionEquality().hash(totalRaisedViaMoneyPool) ^
       const DeepCollectionEquality().hash(totalRaisedViaPeer2Peer) ^
@@ -560,6 +620,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
   TResult when<TResult extends Object?>(
     TResult Function(
             num totalSentToPeers,
+            num totalSentToMoneyPools,
             num totalRaised,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
@@ -567,14 +628,20 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
         $default, {
     required TResult Function(
             num totalSentToPeers,
+            num totalSentToMoneyPools,
             num totalRaised,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)
         empty,
   }) {
-    return empty(totalSentToPeers, totalRaised, totalRaisedViaMoneyPool,
-        totalRaisedViaPeer2Peer, totalRaisedViaSubsidiaryApp);
+    return empty(
+        totalSentToPeers,
+        totalSentToMoneyPools,
+        totalRaised,
+        totalRaisedViaMoneyPool,
+        totalRaisedViaPeer2Peer,
+        totalRaisedViaSubsidiaryApp);
   }
 
   @override
@@ -582,6 +649,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
             num totalSentToPeers,
+            num totalSentToMoneyPools,
             num totalRaised,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
@@ -589,6 +657,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
         $default, {
     TResult Function(
             num totalSentToPeers,
+            num totalSentToMoneyPools,
             num totalRaised,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
@@ -597,8 +666,13 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
     required TResult orElse(),
   }) {
     if (empty != null) {
-      return empty(totalSentToPeers, totalRaised, totalRaisedViaMoneyPool,
-          totalRaisedViaPeer2Peer, totalRaisedViaSubsidiaryApp);
+      return empty(
+          totalSentToPeers,
+          totalSentToMoneyPools,
+          totalRaised,
+          totalRaisedViaMoneyPool,
+          totalRaisedViaPeer2Peer,
+          totalRaisedViaSubsidiaryApp);
     }
     return orElse();
   }
@@ -636,6 +710,7 @@ abstract class _EmptyMoneyTransferStatistics
     implements MoneyTransferStatistics {
   const factory _EmptyMoneyTransferStatistics(
       {num totalSentToPeers,
+      num totalSentToMoneyPools,
       num totalRaised,
       num totalRaisedViaMoneyPool,
       num totalRaisedViaPeer2Peer,
@@ -646,6 +721,8 @@ abstract class _EmptyMoneyTransferStatistics
 
   @override
   num get totalSentToPeers => throw _privateConstructorUsedError;
+  @override
+  num get totalSentToMoneyPools => throw _privateConstructorUsedError;
   @override
   num get totalRaised => throw _privateConstructorUsedError;
   @override

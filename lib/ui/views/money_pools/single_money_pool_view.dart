@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
-import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
@@ -32,14 +31,14 @@ class SingleMoneyPoolView extends StatelessWidget {
             AlternativeScreenHeaderImage(
               // TODO: Add picture if it's added by the user!
               backgroundWidget: Container(
-                color: MyColors.paletteGreen2.withOpacity(0.7),
+                color: MyColors.paletteGrey.withOpacity(0.7),
               ),
               opacityOfBlackGradient: 0.4,
               imageHeight: 200,
               title: model.moneyPool.name,
               onTopLeftButtonPressed: model.navigateBack,
-              topLeftWidget: Icon(Icons.close_rounded,
-                  size: 28, color: ColorSettings.whiteTextColor),
+              topLeftWidget: Icon(Icons.arrow_back,
+                  size: 26, color: ColorSettings.whiteTextColor),
               topRightWidget: PopupMenuButton(
                 icon: Icon(
                   Icons.menu,
@@ -105,7 +104,13 @@ class SingleMoneyPoolView extends StatelessWidget {
             ),
             // verticalSpaceMedium,
             model.isBusy
-                ? Center(child: LinearProgressIndicator())
+                ? Center(
+                    child: Column(
+                    children: [
+                      verticalSpaceMedium,
+                      CircularProgressIndicator(),
+                    ],
+                  ))
                 : Column(children: [
                     SectionHeader(
                       title: "Members",
@@ -256,3 +261,105 @@ class SingleMoneyPoolView extends StatelessWidget {
     );
   }
 }
+
+/*
+class MoneyPoolSliverAppBar extends StatelessWidget {
+  final String title;
+  final double? titleSize;
+  final void Function()? onRightIconPressed;
+  final void Function()? onTopLeftButtonPressed;
+  final void Function()? onSecondRightIconPressed;
+  final Widget? rightIcon;
+  final Widget? secondRightIcon;
+  final bool pinned;
+  final PreferredSize? bottom;
+
+  const MoneyPoolSliverAppBar(
+      {Key? key,
+      required this.title,
+      this.titleSize,
+      this.onRightIconPressed,
+      this.rightIcon,
+      this.pinned = true,
+      this.bottom,
+      this.onSecondRightIconPressed,
+      this.secondRightIcon,
+      this.onTopLeftButtonPressed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      flexibleSpace: FlexibleSpaceBar(
+        titlePadding: EdgeInsets.only(
+            left: LayoutSettings.horizontalPadding,
+            right: 80,
+            bottom: 10,
+            top: 10),
+        title: Text(
+          title,
+          style: textTheme(context)
+              .headline3!
+              .copyWith(fontSize: 25, color: ColorSettings.blackHeadlineColor),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                padding: EdgeInsets.zero,
+                alignment: Alignment.centerLeft,
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: ColorSettings.whiteTextColor,
+                  size: 25,
+                ),
+                onPressed: onTopLeftButtonPressed,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (onRightIconPressed != null)
+                    GestureDetector(
+                      onTap: onRightIconPressed,
+                      child: rightIcon ??
+                          Icon(
+                            Icons.person,
+                            color: ColorSettings.pageTitleColor,
+                            size: 25,
+                          ),
+                    ),
+                  if (onSecondRightIconPressed != null) SizedBox(width: 22.0),
+                  if (onSecondRightIconPressed != null)
+                    GestureDetector(
+                      onTap: onSecondRightIconPressed,
+                      child: secondRightIcon ??
+                          Icon(
+                            Icons.person,
+                            color: ColorSettings.pageTitleColor,
+                            size: 25,
+                          ),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+      titleSpacing: 20,
+      expandedHeight: LayoutSettings.minAppBarHeight * 1.7,
+      collapsedHeight: LayoutSettings.minAppBarHeight,
+      backgroundColor: ColorSettings.backgroundColor,
+      elevation: 2.0,
+      toolbarHeight: LayoutSettings.minAppBarHeight,
+      pinned: pinned,
+      bottom: bottom,
+    );
+  }
+}
+
+*/

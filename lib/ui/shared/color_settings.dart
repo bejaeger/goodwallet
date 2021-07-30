@@ -12,6 +12,11 @@ class ColorSettings extends MyColors {
   static Color? blackTextColor = MyColors.darkGrey;
   static Color blackHeadlineColor = MyColors.black87;
   static Color qrCodeOnWalletColor = MyColors.almostWhite;
+
+  static Color? backgroundColor = Colors.grey[50];
+  static Color? textFieldBackgroundDark = Color(0xFF262626);
+  static Color? textFieldBackground = Colors.grey[200];
+  static Color? pageTitleColor = blackHeadlineColor;
 }
 
 class MyColors {

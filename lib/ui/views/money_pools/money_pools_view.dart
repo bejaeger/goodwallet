@@ -1,5 +1,6 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
@@ -11,6 +12,7 @@ import 'package:good_wallet/ui/widgets/money_pool_preview.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -22,7 +24,7 @@ class MoneyPoolsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<MoneyPoolsViewModel>.reactive(
       viewModelBuilder: () => MoneyPoolsViewModel(),
-      onModelReady: (model) => model.listenToMoneyPools(),
+      onModelReady: (model) => model.listenToAndFetchData(),
       builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
         child: RefreshIndicator(
           onRefresh: () async => await model.refresh(),
@@ -31,65 +33,159 @@ class MoneyPoolsView extends StatelessWidget {
             physics: AlwaysScrollableScrollPhysics(),
             slivers: [
               CustomSliverAppBarSmall(
-                title: "Money Pools",
-                onRightIconPressed: model.navigateToCreateMoneyPoolView,
-                rightIcon: Icon(Icons.add_box_outlined, size: 28),
-                onSecondRightIconPressed: model.showInformationDialog,
-                secondRightIcon: Icon(Icons.help_outline, size: 28),
+                forceElevated: false,
+                title: "Your Community",
+                onSecondRightIconPressed: model.navigateToProfileView,
+                secondRightIcon: Icon(
+                  Icons.person,
+                  color: ColorSettings.pageTitleColor,
+                  size: 28,
+                ),
+                onRightIconPressed: model.showInformationDialog,
+                rightIcon: Icon(Icons.help_outline,
+                    color: ColorSettings.pageTitleColor, size: 28),
               ),
               model.isBusy
                   ? SliverToBoxAdapter(
-                      child: Center(child: LinearProgressIndicator()))
+                      child: Center(
+                          child: Column(
+                      children: [
+                        verticalSpaceMedium,
+                        CircularProgressIndicator(),
+                      ],
+                    )))
                   : SliverList(
                       delegate: SliverChildListDelegate(
                         [
+                          verticalSpaceSmall,
+                          SectionHeader(
+                            title: "Your Friends",
+                            textButtonText: "See all",
+                            onTextButtonTap: model.navigateToFriendsView,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: LayoutSettings.horizontalPadding),
+                            child: Container(
+                              height: 100,
+                              width: screenWidth(context) * 0.8,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemCount: min(model.friends.length + 1, 10),
+                                itemBuilder: (context, index) {
+                                  if (index >= min(model.friends.length, 9)) {
+                                    return Row(
+                                      children: [
+                                        horizontalSpaceSmall,
+                                        AddFriendCTARound(
+                                            onPressed: model
+                                                .navigateToFindFriendsView),
+                                      ],
+                                    );
+                                  } else {
+                                    return Row(
+                                      children: [
+                                        horizontalSpaceSmall,
+                                        CallToActionButtonRoundInitials(
+                                            color: MyColors.paletteBlue
+                                                .withOpacity(0.9),
+                                            onPressed: () => model
+                                                .navigateToPublicProfileView(
+                                                    model.friends[index].uid),
+                                            name:
+                                                model.friends[index].fullName),
+                                      ],
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          verticalSpaceRegular,
+                          SectionHeader(
+                            title: "Your Community's Impact",
+                          ),
+                          verticalSpaceRegular,
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: LayoutSettings.horizontalPadding),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                LinearPercentIndicator(
+                                  width: screenWidth(context, percentage: 0.7),
+                                  lineHeight: 25.0,
+                                  animation: true,
+                                  animationDuration: 1000,
+                                  // leading: Padding(
+                                  //   padding: const EdgeInsets.only(right: 8.0),
+                                  //   child: Text("\$0"),
+                                  // ),
+                                  trailing: Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text("\$1000"),
+                                  ),
+                                  percent: 0.7,
+                                  center: Text("\$700",
+                                      style: textTheme(context)
+                                          .bodyText1!
+                                          .copyWith(
+                                              color: MyColors.almostWhite)),
+                                  linearStrokeCap: LinearStrokeCap.roundAll,
+                                  progressColor:
+                                      MyColors.paletteGreen.withOpacity(0.7),
+                                ),
+                                Text(
+                                    "Total donations of all your friends combined!"),
+                              ],
+                            ),
+                          ),
                           verticalSpaceMedium,
+                          SectionHeader(
+                            title: "Your Impact Pools",
+                            textButtonText: "Create new",
+                            onTextButtonTap:
+                                model.navigateToCreateMoneyPoolView,
+                          ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              MoneyPoolAvailableFundCard(
-                                currentFunds: 0.0,
-                                onTopUpPressed:
-                                    model.navigateToTransferFundAmountView,
-                              ),
+                              // MoneyPoolAvailableFundCard(
+                              //   currentFunds: 0.0,
+                              //   onTopUpPressed:
+                              //       model.navigateToTransferFundAmountView,
+                              // ),
                               if (model.moneyPoolsInvitedTo.length > 0)
                                 verticalSpaceRegular,
                               if (model.moneyPoolsInvitedTo.length > 0)
                                 showInviteNotification(context, model),
-                              verticalSpaceRegular,
-                              SectionHeader(title: "Your money pools"),
-                              verticalSpaceSmall,
+                              // verticalSpaceSmall,
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal:
                                         LayoutSettings.horizontalPadding),
-                                child: GridView.builder(
-                                  physics: ScrollPhysics(),
-                                  shrinkWrap: true,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    childAspectRatio: 1,
-                                    crossAxisSpacing: 20,
-                                    mainAxisSpacing: 20,
-                                    crossAxisCount: 2,
-                                  ),
-                                  itemCount: model.moneyPools.length + 1,
-                                  itemBuilder: (context, index) {
-                                    var showCreateNew =
-                                        index == model.moneyPools.length
-                                            ? true
-                                            : false;
-                                    return MoneyPoolPreview(
-                                      moneyPool: showCreateNew
-                                          ? null
-                                          : model.moneyPools[index],
-                                      onTap: (MoneyPool pool) => model
-                                          .navigateToSingleMoneyPoolView(pool),
-                                      onCreateMoneyPoolTapped:
-                                          model.navigateToCreateMoneyPoolView,
-                                    );
-                                  },
-                                ),
+                                child: ListView.builder(
+                                    physics: ScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: model.moneyPools.length,
+                                    itemBuilder: (context, index) => Column(
+                                          children: [
+                                            SizedBox(
+                                              height: 160,
+                                              child: MoneyPoolPreview(
+                                                moneyPool:
+                                                    model.moneyPools[index],
+                                                onTap: (MoneyPool pool) => model
+                                                    .navigateToSingleMoneyPoolView(
+                                                        pool),
+                                                onCreateMoneyPoolTapped: model
+                                                    .navigateToCreateMoneyPoolView,
+                                              ),
+                                            ),
+                                            verticalSpaceSmall
+                                          ],
+                                        )),
                               ),
                             ],
                           ),

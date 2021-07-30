@@ -61,7 +61,7 @@ class HomeViewModel extends TransferBaseViewModel {
   Future fetchData() async {
     // Dummy so far...could consider changing the balance!
     // so far we listen to the wallet with a stream
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: 200));
     notifyListeners();
   }
 
@@ -203,8 +203,8 @@ class HomeViewModel extends TransferBaseViewModel {
         arguments: LayoutTemplateViewMobileArguments(showDialog: true));
   }
 
-  void navigateToSearchViewMobile() {
-    _navigationService!.navigateTo(Routes.searchView);
+  void navigateToProfileViewMobile() {
+    _navigationService!.navigateTo(Routes.profileViewMobile);
   }
 
   Future showDialog() async {

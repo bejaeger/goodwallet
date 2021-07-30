@@ -15,6 +15,7 @@ import '../datamodels/transfers/bookkeeping/sender_info.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/search_type.dart';
 import '../enums/transfer_type.dart';
+import '../ui/views/explore_view/explore_view.dart';
 import '../ui/views/featured_applications/single_featured_app_view.dart';
 import '../ui/views/friends/friends_view.dart';
 import '../ui/views/home/home_view_mobile.dart';
@@ -38,7 +39,6 @@ import '../ui/views/projects/projects_for_area_view.dart';
 import '../ui/views/projects/projects_view.dart';
 import '../ui/views/projects/single_project_view_mobile.dart';
 import '../ui/views/qrcode/qrcode_view_mobile.dart';
-import '../ui/views/search_view/search_view.dart';
 import '../ui/views/settings/settings_view.dart';
 import '../ui/views/startup_logic/startup_logic_view.dart';
 import '../ui/views/transaction_history/transfers_history_view.dart';
@@ -64,7 +64,7 @@ class Routes {
   static const String moneyPoolsView = '/money-pools-view';
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String startUpLogicView = '/';
-  static const String searchView = '/search-view';
+  static const String exploreView = '/explore-view';
   static const String transferFundsAmountView = '/transfer-funds-amount-view';
   static const String disburseMoneyPoolView = '/disburse-money-pool-view';
   static const String transfersHistoryView = '/transfers-history-view';
@@ -94,7 +94,7 @@ class Routes {
     moneyPoolsView,
     qRCodeViewMobile,
     startUpLogicView,
-    searchView,
+    exploreView,
     transferFundsAmountView,
     disburseMoneyPoolView,
     transfersHistoryView,
@@ -130,7 +130,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.moneyPoolsView, page: MoneyPoolsView),
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
     RouteDef(Routes.startUpLogicView, page: StartUpLogicView),
-    RouteDef(Routes.searchView, page: SearchView),
+    RouteDef(Routes.exploreView, page: ExploreView),
     RouteDef(Routes.transferFundsAmountView, page: TransferFundsAmountView),
     RouteDef(Routes.disburseMoneyPoolView, page: DisburseMoneyPoolView),
     RouteDef(Routes.transfersHistoryView, page: TransfersHistoryView),
@@ -296,14 +296,15 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
-    SearchView: (data) {
-      var args = data.getArgs<SearchViewArguments>(
-        orElse: () => SearchViewArguments(),
+    ExploreView: (data) {
+      var args = data.getArgs<ExploreViewArguments>(
+        orElse: () => ExploreViewArguments(),
       );
       return MaterialPageRoute<dynamic>(
-        builder: (context) => SearchView(
+        builder: (context) => ExploreView(
           key: args.key,
           searchType: args.searchType,
+          autofocus: args.autofocus,
         ),
         settings: data,
       );
@@ -483,12 +484,13 @@ class QRCodeViewMobileArguments {
   QRCodeViewMobileArguments({this.key, this.initialIndex = 0});
 }
 
-/// SearchView arguments holder class
-class SearchViewArguments {
+/// ExploreView arguments holder class
+class ExploreViewArguments {
   final Key? key;
   final SearchType searchType;
-  SearchViewArguments(
-      {this.key, this.searchType = SearchType.UserToTransferTo});
+  final bool autofocus;
+  ExploreViewArguments(
+      {this.key, this.searchType = SearchType.Explore, this.autofocus = false});
 }
 
 /// TransferFundsAmountView arguments holder class

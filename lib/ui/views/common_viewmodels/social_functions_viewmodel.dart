@@ -1,17 +1,34 @@
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
+import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
+import 'package:good_wallet/enums/money_source.dart';
+import 'package:good_wallet/enums/search_type.dart';
+import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/services/user/user_service.dart';
-import 'package:stacked/stacked.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 
-class SocialFunctionsViewModel extends BaseViewModel {
+class SocialFunctionsViewModel extends BaseModel {
   final UserService? _userService = locator<UserService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
+  final NavigationService? _navigationService = locator<NavigationService>();
 
   final log = getLogger("social_functions_viewmodel.dart");
 
+  List<User> friends = [];
+
   bool isFriend(String uid) {
     return _userService!.isFriend(uid: uid);
+  }
+
+  Future fetchFriends() async {
+    setBusy(true);
+    friends = await _userService!.fetchFriends();
+    log.i("Found ${friends.length} friends!");
+    setBusy(false);
   }
 
   Future addOrRemoveFriend(String uid) async {
@@ -33,5 +50,32 @@ class SocialFunctionsViewModel extends BaseViewModel {
       log.wtf("Could not add or remove friend due to error $e");
       rethrow;
     }
+  }
+
+  /////////////////////////////////////////////////
+  // Navigations
+
+  Future navigateToPublicProfileView(String uid) async {
+    final result = await _navigationService!.navigateTo(
+        Routes.publicProfileViewMobile,
+        arguments: PublicProfileViewMobileArguments(uid: uid));
+    if (result == false) {
+      _snackbarService!.showSnackbar(message: "User could not be found");
+    }
+  }
+
+  Future navigateToTransferViewWithUser(User user) async {
+    _navigationService!.navigateTo(Routes.transferFundsAmountView,
+        arguments: TransferFundsAmountViewArguments(
+            senderInfo: SenderInfo(moneySource: MoneySource.Bank),
+            type: TransferType.User2UserSent,
+            recipientInfo:
+                RecipientInfo.user(name: user.fullName, id: user.uid)));
+  }
+
+  void navigateToFindFriendsView() {
+    _navigationService!.navigateTo(Routes.exploreView,
+        arguments: ExploreViewArguments(
+            searchType: SearchType.FindFriends, autofocus: true));
   }
 }

@@ -7,9 +7,11 @@ part 'global_statistics.g.dart';
 @freezed
 class GlobalStatistics with _$GlobalStatistics {
   @JsonSerializable(explicitToJson: true)
-  factory GlobalStatistics(
-      {required List<SupportedProjectStatistics> supportedProjects,
-      required List<String> projectTopPicksIds}) = _GlobalStatistics;
+  factory GlobalStatistics({
+    required num totalDonations,
+    required List<SupportedProjectStatistics> supportedProjects,
+    required List<String> projectTopPicksIds,
+  }) = _GlobalStatistics;
 
   factory GlobalStatistics.fromJson(Map<String, dynamic> json) =>
       _$GlobalStatisticsFromJson(json);

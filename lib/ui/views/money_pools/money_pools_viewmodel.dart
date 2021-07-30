@@ -7,11 +7,11 @@ import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/services/money_pools/money_pools_service.dart';
-import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/social_functions_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class MoneyPoolsViewModel extends BaseModel {
+class MoneyPoolsViewModel extends SocialFunctionsViewModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final MoneyPoolsService? _moneyPoolsService = locator<MoneyPoolsService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
@@ -24,21 +24,26 @@ class MoneyPoolsViewModel extends BaseModel {
 
   final log = getLogger("money_pools_viewmodel.dart");
 
-  // Starting money pool listener. Should only ever be called once!
-  Future listenToMoneyPools() async {
+  Future listenToAndFetchData() async {
     setBusy(true);
-    await _moneyPoolsService!.listenToMoneyPools(uid: currentUser.uid);
+    await listenToMoneyPools();
+    await fetchFriends();
     setBusy(false);
   }
 
+  // Starting money pool listener. Should only ever be called once!
+  Future listenToMoneyPools() async {
+    await _moneyPoolsService!.listenToMoneyPools(uid: currentUser.uid);
+  }
+
   Future refresh() async {
-    await Future.delayed(Duration(seconds: 1));
+    await fetchFriends();
     notifyListeners();
   }
 
   Future showInformationDialog() async {
     await _dialogService!.showDialog(
-      title: "Money pools",
+      title: "Impact Pools",
       description: DescriptionText.moneyPoolDescription,
     );
   }
@@ -88,5 +93,13 @@ class MoneyPoolsViewModel extends BaseModel {
         arguments: TransferFundsAmountViewArguments(
             senderInfo: SenderInfo(moneySource: MoneySource.Bank),
             type: TransferType.User2OwnPrepaidFund));
+  }
+
+  void navigateToProfileView() {
+    _navigationService!.navigateTo(Routes.profileViewMobile);
+  }
+
+  Future navigateToFriendsView() async {
+    _navigationService!.navigateTo(Routes.friendsView);
   }
 }

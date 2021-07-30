@@ -7,6 +7,7 @@ import 'package:stacked_services/stacked_services.dart';
 
 class BottomSheetLayout extends StatelessWidget {
   final String? title;
+  final String? description;
   final List<BottomSheetListEntry>? buttons;
   final Widget? widgetBeforeButtons;
   final Widget? widgetAfterButtons;
@@ -17,6 +18,7 @@ class BottomSheetLayout extends StatelessWidget {
     this.buttons,
     this.widgetBeforeButtons,
     this.widgetAfterButtons,
+    this.description,
   }) : super(key: key);
 
   @override
@@ -55,6 +57,15 @@ class BottomSheetLayout extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: ColorSettings.blackTextColor,
                       ),
+                    ),
+                  if (description != null)
+                    SizedBox(
+                      width: screenWidth(context, percentage: 0.7),
+                      child: Text(description!,
+                          textAlign: TextAlign.center,
+                          style: textTheme(context).bodyText1!.copyWith(
+                              color: ColorSettings.lightGreyTextColor!
+                                  .withOpacity(0.8))),
                     ),
                   verticalSpaceRegular,
                   if (widgetBeforeButtons != null) widgetBeforeButtons!,

@@ -30,7 +30,8 @@ class SectionHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: textTheme(context).headline6),
+          Text(title,
+              style: textTheme(context).headline6!.copyWith(fontSize: 18)),
           if (onTextButtonTap != null)
             TextButton(
               onPressed: onTextButtonTap,
@@ -38,7 +39,7 @@ class SectionHeader extends StatelessWidget {
                 textButtonText,
                 style: textTheme(context)
                     .headline6!
-                    .copyWith(color: ColorSettings.primaryColor, fontSize: 16),
+                    .copyWith(color: ColorSettings.primaryColor, fontSize: 15),
               ),
             ),
           if (trailingIcon != null) trailingIcon!,

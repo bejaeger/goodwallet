@@ -4,6 +4,8 @@ import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
+import 'package:good_wallet/ui/shared/layout_settings.dart';
+import 'package:good_wallet/ui/shared/style_settings.dart';
 import 'package:good_wallet/ui/views/profile/profile_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
@@ -161,91 +163,118 @@ class ProfileViewMobile extends StatelessWidget {
         return ConstrainedWidthWithScaffoldLayout(
           child: !model.isUserSignedIn || model.isBusy
               ? Center(child: CircularProgressIndicator())
-              : ListView(
-                  children: [
-                    CustomAppBarSmall(title: "Your Account"),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        verticalSpaceRegular,
-                        _buildProfileImage(),
-                        _buildFullName(context, model.currentUser),
-                        _buildStatus(context),
-                        _buildWallet(
-                            context,
-                            model.navigateToTransactionsHistoryView,
-                            model.userStats),
-                        _buildStatContainer(context, model.userStats),
-                      ],
+              : CustomScrollView(
+                  key: PageStorageKey('storage-key'),
+                  physics: ScrollPhysics(),
+                  slivers: [
+                    CustomSliverAppBarSmall(
+                      title: "Account",
                     ),
-                    verticalSpaceRegular,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Column(
-                        children: [
-                          ProfileListItem(
-                            title: "Transfer History",
-                            onPressed: model.navigateToDonationsHistoryView,
+                    SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              verticalSpaceRegular,
+                              _buildProfileImage(),
+                              _buildFullName(context, model.currentUser),
+                              _buildStatus(context),
+                              // _buildWallet(
+                              //     context,
+                              //     model.navigateToTransactionsHistoryView,
+                              //     model.userStats),
+                              //_buildStatContainer(context, model.userStats),
+                            ],
                           ),
-                          verticalSpaceSmall,
-                          ProfileListItem(
-                            title: "Settings",
-                            onPressed: model.navigateToSettingsView,
-                          ),
-                          verticalSpaceSmall,
-                          ProfileListItem(
-                            title: "Friends",
-                            onPressed: model.navigateToFriendsView,
-                          ),
-                          verticalSpaceMedium,
-                          spacedDivider,
-                          Center(
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minWidth: screenWidthPercentage(context,
-                                    percentage: 0.6),
-                              ),
-                              child: ElevatedButton(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("Logout",
-                                      style: textTheme(context).headline5),
+                          verticalSpaceRegular,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: LayoutSettings.horizontalPadding),
+                            child: Column(
+                              children: [
+                                ProfileListItem(
+                                  title: "Transfer History",
+                                  onPressed:
+                                      model.navigateToDonationsHistoryView,
                                 ),
-                                onPressed: model.logout,
-                              ),
+                                verticalSpaceSmall,
+                                ProfileListItem(
+                                  title: "Settings",
+                                  onPressed: model.navigateToSettingsView,
+                                ),
+                                verticalSpaceSmall,
+                                ProfileListItem(
+                                  title: "Friends",
+                                  onPressed: model.navigateToFriendsView,
+                                ),
+                                verticalSpaceMedium,
+                                spacedDivider,
+                                Center(
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      minWidth: screenWidthPercentage(context,
+                                          percentage: 0.6),
+                                    ),
+                                    child: ElevatedButton(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text("Logout",
+                                            style:
+                                                textTheme(context).headline5),
+                                      ),
+                                      onPressed: model.logout,
+                                    ),
+                                  ),
+                                ),
+                                verticalSpaceMedium,
+                                spacedDivider,
+                                SizedBox(
+                                    width:
+                                        screenWidth(context, percentage: 0.7),
+                                    child: Text(
+                                        "The following is not yet implemented but shown to get a grasp of what we plan to do")),
+                                verticalSpaceMedium,
+                                ProfileListItem(
+                                  title: "Payment Methods",
+                                  onPressed: model.showNotImplementedSnackbar,
+                                ),
+                                ProfileListItem(
+                                  title: "Prepaid Fund",
+                                  onPressed: model.navigateToFriendsView,
+                                ),
+                                verticalSpaceSmall,
+                                ProfileListItem(
+                                    title: "Set Giving Goals",
+                                    onPressed:
+                                        model.showNotImplementedSnackbar),
+                                verticalSpaceSmall,
+                                ProfileListItem(
+                                    title: "Achievements",
+                                    onPressed:
+                                        model.showNotImplementedSnackbar),
+                                spacedDivider,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text("from"),
+                                    verticalSpaceTiny,
+                                    Text("THE GOOD WALLET FOUNDATION",
+                                        style: textTheme(context)
+                                            .bodyText1!
+                                            .copyWith(
+                                                color: ColorSettings
+                                                    .blackHeadlineColor,
+                                                fontWeight: FontWeight.w500)),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          verticalSpaceMedium,
-                          spacedDivider,
-                          SizedBox(
-                              width: screenWidth(context, percentage: 0.7),
-                              child: Text(
-                                  "The following is not yet implemented but shown to get a grasp of what we plan to do")),
-                          verticalSpaceMedium,
-                          ProfileListItem(
-                            title: "Payment Methods",
-                            onPressed: model.showNotImplementedSnackbar,
-                          ),
-                          verticalSpaceSmall,
-                          ProfileListItem(
-                              title: "Set Giving Goals",
-                              onPressed: model.showNotImplementedSnackbar),
-                          verticalSpaceSmall,
-                          ProfileListItem(
-                              title: "Invite Friends",
-                              onPressed: model.showNotImplementedSnackbar),
-                          verticalSpaceSmall,
-                          ProfileListItem(
-                              title: "Contacts",
-                              onPressed: model.showNotImplementedSnackbar),
-                          verticalSpaceSmall,
-                          ProfileListItem(
-                              title: "Achievements",
-                              onPressed: model.showNotImplementedSnackbar),
+                          verticalSpaceLarge,
                         ],
                       ),
                     ),
-                    verticalSpaceLarge,
                   ],
                 ),
         );
@@ -263,14 +292,14 @@ class ProfileListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(width: 0.5),
-        borderRadius: BorderRadius.circular(10.0),
-      ),
+      // decoration: BoxDecoration(
+      //   border: Border.all(width: 0.5),
+      //   borderRadius: BorderRadius.circular(10.0),
+      // ),
       child: ListTile(
         title: Text(title!,
-            style: textTheme(context).headline6!.copyWith(fontSize: 20)),
-        trailing: Icon(Icons.arrow_forward_ios),
+            style: textTheme(context).headline6!.copyWith(fontSize: 18)),
+        trailing: Icon(Icons.arrow_forward_ios, size: 18),
         onTap: onPressed as void Function()?,
       ),
     );

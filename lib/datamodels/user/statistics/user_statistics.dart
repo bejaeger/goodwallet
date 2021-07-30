@@ -26,12 +26,7 @@ UserStatistics getEmptyUserStatistics() {
   return UserStatistics(
       currentBalance: 0,
       prepaidFundBalance: 0,
-      moneyTransferStatistics: MoneyTransferStatistics(
-          totalRaised: 0,
-          totalSentToPeers: 0,
-          totalRaisedViaMoneyPool: 0,
-          totalRaisedViaPeer2Peer: 0,
-          totalRaisedViaSubsidiaryApp: 0),
+      moneyTransferStatistics: MoneyTransferStatistics.empty(),
       donationStatistics: DonationStatistics(
           supportedProjects: [], totalDonations: 0, monthlyDonations: []));
 }

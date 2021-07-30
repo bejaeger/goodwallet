@@ -25,9 +25,9 @@ class HomeViewMoreBottomSheetView extends StatelessWidget {
               buttons: [
                 BottomSheetListEntry(
                   completer: completer,
-                  responseData: model.showNotImplementedSnackbar,
-                  title: "Invite friends",
-                  description: "Raise via the Good Wallet referral fund",
+                  responseData: model.navigateToExploreView,
+                  title: "Find friends",
+                  description: "Raise and give together",
                   icon: Image.asset(ImageIconPaths.huggingPeople),
                 ),
                 //Harguilar

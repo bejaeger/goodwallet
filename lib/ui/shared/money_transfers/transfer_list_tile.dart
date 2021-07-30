@@ -41,7 +41,7 @@ class TransferListTile extends StatelessWidget {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             leading: CircleAvatar(
-                backgroundColor: style.color.withOpacity(0.9),
+                backgroundColor: style.color.withOpacity(0.8),
                 child: style.icon),
             // FlutterLogo(),
             title: Column(

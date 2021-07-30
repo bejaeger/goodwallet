@@ -23,22 +23,22 @@ class MoneyPoolPreview extends StatelessWidget {
         onTap: () => onTap(moneyPool!),
         child: Card(
           margin: const EdgeInsets.all(0.0),
-          elevation: 4.0,
-          color: ColorSettings.primaryColor.withOpacity(0.8),
+          elevation: 5.0,
+          color: MyColors.paletteBlue.withOpacity(0.8),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-          child: Stack(
-            children: [
-              verticalSpaceSmall,
-              Align(
-                alignment: Alignment.topLeft,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Stack(
+              children: [
+                verticalSpaceSmall,
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
                         moneyPool!.name,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -46,29 +46,42 @@ class MoneyPoolPreview extends StatelessWidget {
                             .headline5!
                             .copyWith(fontSize: 18),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 40.0),
-                      child: Divider(
-                        thickness: 2,
-                        color: ColorSettings.greyTextColor,
-                      ),
-                    ),
-                  ],
+                      // Padding(
+                      //   padding: const EdgeInsets.only(left: 10.0, right: 40.0),
+                      //   child: Divider(
+                      //     thickness: 2,
+                      //     color: ColorSettings.greyTextColor,
+                      //   ),
+                      // ),
+                    ],
+                  ),
                 ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(formatAmount(moneyPool!.total),
-                        style: textTheme(context).headline3),
-                    Text("Collected", style: textTheme(context).bodyText1),
-                  ],
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(formatAmount(moneyPool!.total),
+                          style: textTheme(context).headline3),
+                      Text("Collected", style: textTheme(context).bodyText1),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Icon(Icons.arrow_forward_ios,
+                      color: ColorSettings.whiteTextColor, size: 20),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text(
+                      moneyPool!.contributingUserIds.length == 1
+                          ? "${moneyPool!.contributingUserIds.length} member"
+                          : "${moneyPool!.contributingUserIds.length} members",
+                      style: textTheme(context).bodyText1),
+                ),
+              ],
+            ),
           ),
         ),
       );

@@ -38,15 +38,18 @@ class HomeViewMobile extends StatelessWidget {
                 key: PageStorageKey('storage-key'),
                 physics: ScrollPhysics(),
                 slivers: [
-                  CustomSliverAppBarSmall(
-                    title: "Home",
-                    onSecondRightIconPressed: model.navigateToSearchViewMobile,
+                  CustomSliverAppBar(
+                    titleSize: 25,
+                    title: "Hi " + model.currentUser.fullName,
+                    onSecondRightIconPressed: model.navigateToProfileViewMobile,
                     secondRightIcon: Icon(
-                      Icons.search_rounded,
+                      Icons.person,
+                      color: ColorSettings.pageTitleColor,
                       size: 28,
                     ),
                     onRightIconPressed: model.navigateToNotificationsView,
-                    rightIcon: Icon(Icons.notifications_none_rounded, size: 28),
+                    rightIcon: Icon(Icons.notifications_none_rounded,
+                        color: ColorSettings.pageTitleColor, size: 28),
                   ),
                   model.isBusy
                       ? SliverToBoxAdapter(
@@ -66,9 +69,9 @@ class HomeViewMobile extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      verticalSpaceRegular,
-                                      Text("Hi " + model.currentUser.fullName,
-                                          style: textTheme(context).headline4),
+                                      //verticalSpaceSmall,
+                                      // Text("Hi " + model.currentUser.fullName,
+                                      //     style: textTheme(context).headline4),
                                       verticalSpaceRegular,
                                       callToActionButtons(context, model),
                                       verticalSpaceSmall,
@@ -200,14 +203,14 @@ class HomeViewMobile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             CallToActionButtonRound(
-              text: "Send money",
+              text: "Gift",
               onPressed: model.showSendMoneyBottomSheet,
               color: ColorSettings.primaryColorDark.withOpacity(0.7),
               icon:
                   Icon(Icons.send_rounded, color: ColorSettings.whiteTextColor),
             ),
             CallToActionButtonRound(
-              text: "Commit money",
+              text: "Commit",
               onPressed: model.navigateToCommitMoneyView,
               color: ColorSettings.primaryColorDark.withOpacity(0.7),
               icon: Image.asset(ImageIconPaths.agreeingHands,

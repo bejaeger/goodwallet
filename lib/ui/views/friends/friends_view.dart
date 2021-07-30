@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
+import 'package:good_wallet/ui/shared/style_settings.dart';
 import 'package:good_wallet/ui/views/friends/friends_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/ui/widgets/user_list_tile.dart';
@@ -19,7 +20,7 @@ class FriendsView extends StatelessWidget {
           onRefresh: () async => await model.fetchFriends(),
           child: ListView(
             children: [
-              CustomAppBarSmall(title: "Friends"),
+              CustomAppBarSmall(title: "Your Friends"),
               verticalSpaceRegular,
               model.isBusy
                   ? Center(child: CircularProgressIndicator())

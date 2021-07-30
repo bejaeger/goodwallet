@@ -7,6 +7,7 @@ part 'money_transfer_statistics.g.dart';
 class MoneyTransferStatistics with _$MoneyTransferStatistics {
   factory MoneyTransferStatistics({
     required num totalSentToPeers,
+    @Default(0) num totalSentToMoneyPools,
     required num totalRaised,
     required num totalRaisedViaMoneyPool,
     required num totalRaisedViaPeer2Peer,
@@ -15,6 +16,7 @@ class MoneyTransferStatistics with _$MoneyTransferStatistics {
 
   const factory MoneyTransferStatistics.empty({
     @Default(0) num totalSentToPeers,
+    @Default(0) num totalSentToMoneyPools,
     @Default(0) num totalRaised,
     @Default(0) num totalRaisedViaMoneyPool,
     @Default(0) num totalRaisedViaPeer2Peer,

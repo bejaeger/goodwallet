@@ -23,7 +23,7 @@ class QRCodeViewModel extends BaseModel {
   }
 
   Future navigateToSearchViewMobile() async {
-    await _navigationService!.replaceWith(Routes.searchView);
+    await _navigationService!.navigateTo(Routes.exploreView);
   }
 
   Future analyzeScanResult({required Barcode result}) async {

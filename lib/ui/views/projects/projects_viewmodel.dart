@@ -54,4 +54,8 @@ class ProjectsViewModel extends ProjectsBaseViewModel {
     await _navigationService!.navigateTo(Routes.projectsForAreaView,
         arguments: ProjectsForAreaViewArguments(area: area));
   }
+
+  void navigateToProfileView() {
+    _navigationService!.navigateTo(Routes.profileViewMobile);
+  }
 }

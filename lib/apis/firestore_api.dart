@@ -90,6 +90,7 @@ class FirestoreApi {
           message: "User statistics document has no data.",
         );
       } else {
+        log.i("Readaing document: ${docRef.data()}");
         final UserStatistics userStats =
             UserStatistics.fromJson(docRef.data()!);
         return userStats;
@@ -238,15 +239,34 @@ class FirestoreApi {
     if (config.maxNumberReturns != null)
       query = query.limit(config.maxNumberReturns!);
 
-    // convert Stream<QuerySnapshot> to Stream<List<MoneyTransfer>>
-    Stream<List<MoneyTransfer>> returnStream = query.snapshots().map(
-          (event) => event.docs
-              .map(
-                (doc) => MoneyTransfer.fromJson(doc.data()),
-              )
-              .toList(),
-        );
-    return returnStream;
+    log.i(
+        "In getTransferDataStream: converting snapshot to list of money transfers");
+
+    try {
+      // convert Stream<QuerySnapshot> to Stream<List<MoneyTransfer>>
+      Stream<List<MoneyTransfer>> returnStream = query
+          .snapshots()
+          .map(
+            (event) => event.docs.map(
+              (doc) {
+                log.v("Data to read into MoneyTransfer document ${doc.data()}");
+                return MoneyTransfer.fromJson(doc.data());
+              },
+            ).toList(),
+          )
+          .onErrorReturnWith((error) {
+        throw FirestoreApiException(
+            message: "Failed to read money transfer documents into dart model",
+            devDetails:
+                "Are you sure your documents in the backend are valid? Are you running with an emulator? Check the logs for concrete data that could not be read into the MoneyTransfer document. The error message was: $error");
+      });
+      return returnStream;
+    } catch (e) {
+      throw FirestoreApiException(
+          message: "Failed to read money transfer documents into dart model",
+          devDetails:
+              "Are you sure your documents in the backend are valid? Are you running with an emulator? Check the logs for concrete data that could not be read into the MoneyTransfer document");
+    }
   }
 
   FirestoreApiException throwNotSupportedException(
@@ -304,60 +324,6 @@ class FirestoreApi {
       transactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       return transactions;
     });
-  }
-
-  ///////////////////////////////////////////////////////
-
-  // -> TODO: handle it in a cloud function?
-  // This will add the money pool payout document and also
-  // create single money transfer documents. This makes it easy
-  // to bookkeep things
-  Future createMoneyPoolPayout({required MoneyPoolPayout payout}) async {
-    try {
-      // make this a batch commit
-      final batch = FirebaseFirestore.instance.batch();
-
-      // add money pool payout to batch
-      final docRef = moneyPoolPayoutsCollection.doc();
-      final newPayout = payout.copyWith(payoutId: docRef.id);
-      batch.set(docRef, newPayout.toJson());
-
-      // Construct single money transfer documents
-      // Push each money pool payout transfer to payments collection
-      List<MoneyTransfer> moneyTransfers = [];
-      newPayout.transfersDetails.forEach((element) {
-        moneyTransfers.add(
-          MoneyTransfer.moneyPoolPayoutTransfer(
-              transferDetails: element,
-              moneyPoolInfo: ConciseMoneyPoolInfo(
-                  moneyPoolId: newPayout.moneyPool.moneyPoolId,
-                  name: newPayout.moneyPool.name,
-                  total: newPayout.moneyPool.total),
-              payoutId: docRef.id,
-              createdAt: FieldValue.serverTimestamp()),
-        );
-      });
-
-      // add each single money transfer to batch
-      moneyTransfers.forEach((element) {
-        DocumentReference newDocRef = paymentsCollection.doc();
-        var newElement = element.copyWith(transferId: newDocRef.id);
-        batch.set(newDocRef, newElement.toJson());
-      });
-
-      await batch.commit();
-
-      log.i(
-          "Added the following money pool payout document to ${docRef.path}: ${newPayout.toJson()}");
-    } catch (e) {
-      log.e("Couldn't process money pool payout: ${e.toString()}");
-      throw FirestoreApiException(
-          message: "Something failed when pushing the data to Firestore",
-          devDetails:
-              "This should not happen and is due to an error on the Firestore side or the datamodels that were being pushed!",
-          prettyDetails:
-              "An internal error occured on our side, please apologize and try again later.");
-    }
   }
 
   //////////////////////////////////////////////////////////

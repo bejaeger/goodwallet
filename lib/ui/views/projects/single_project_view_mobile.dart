@@ -15,8 +15,7 @@ import 'package:stacked/stacked.dart';
 
 class SingleProjectViewMobile extends StatelessWidget {
   final String projectId;
-  const SingleProjectViewMobile(
-      {Key? key, required this.projectId})
+  const SingleProjectViewMobile({Key? key, required this.projectId})
       : super(key: key);
 
   @override
@@ -36,11 +35,13 @@ class SingleProjectViewMobile extends StatelessWidget {
                     onTopLeftButtonPressed: model.navigateBack,
                     topRightWidget: IconButton(
                       icon: Icon(
-                        model.isFavoriteProject(projectId) ? Icons.favorite : Icons.favorite_border,
-                        size: 25,
-                        color: model.isFavoriteProject(projectId)
-                            ? ColorSettings.primaryColorDark
-                            : ColorSettings.whiteTextColor),
+                          model.isFavoriteProject(projectId)
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          size: 25,
+                          color: model.isFavoriteProject(projectId)
+                              ? ColorSettings.primaryColorDark
+                              : ColorSettings.whiteTextColor),
                       onPressed: () => model.addOrRemoveFavorite(projectId),
                     ),
                   ),
@@ -56,7 +57,7 @@ class SingleProjectViewMobile extends StatelessWidget {
                             CallToActionButtonRectangular(
                                 maxWidth: screenWidthPercentage(context,
                                     percentage: 0.45),
-                                color: ColorSettings.primaryColorLight,
+                                color: ColorSettings.primaryColor,
                                 title: "Donate",
                                 onPressed: () =>
                                     model.navigateToTransferFundAmountView(

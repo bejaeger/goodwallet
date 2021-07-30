@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
+import 'package:good_wallet/ui/shared/style_settings.dart';
 import 'package:good_wallet/ui/views/in_app_notifications/in_app_notifications_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';

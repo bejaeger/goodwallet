@@ -21,9 +21,11 @@ class _$GlobalStatisticsTearOff {
   const _$GlobalStatisticsTearOff();
 
   _GlobalStatistics call(
-      {required List<SupportedProjectStatistics> supportedProjects,
+      {required num totalDonations,
+      required List<SupportedProjectStatistics> supportedProjects,
       required List<String> projectTopPicksIds}) {
     return _GlobalStatistics(
+      totalDonations: totalDonations,
       supportedProjects: supportedProjects,
       projectTopPicksIds: projectTopPicksIds,
     );
@@ -39,6 +41,7 @@ const $GlobalStatistics = _$GlobalStatisticsTearOff();
 
 /// @nodoc
 mixin _$GlobalStatistics {
+  num get totalDonations => throw _privateConstructorUsedError;
   List<SupportedProjectStatistics> get supportedProjects =>
       throw _privateConstructorUsedError;
   List<String> get projectTopPicksIds => throw _privateConstructorUsedError;
@@ -55,7 +58,8 @@ abstract class $GlobalStatisticsCopyWith<$Res> {
           GlobalStatistics value, $Res Function(GlobalStatistics) then) =
       _$GlobalStatisticsCopyWithImpl<$Res>;
   $Res call(
-      {List<SupportedProjectStatistics> supportedProjects,
+      {num totalDonations,
+      List<SupportedProjectStatistics> supportedProjects,
       List<String> projectTopPicksIds});
 }
 
@@ -70,10 +74,15 @@ class _$GlobalStatisticsCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? totalDonations = freezed,
     Object? supportedProjects = freezed,
     Object? projectTopPicksIds = freezed,
   }) {
     return _then(_value.copyWith(
+      totalDonations: totalDonations == freezed
+          ? _value.totalDonations
+          : totalDonations // ignore: cast_nullable_to_non_nullable
+              as num,
       supportedProjects: supportedProjects == freezed
           ? _value.supportedProjects
           : supportedProjects // ignore: cast_nullable_to_non_nullable
@@ -94,7 +103,8 @@ abstract class _$GlobalStatisticsCopyWith<$Res>
       __$GlobalStatisticsCopyWithImpl<$Res>;
   @override
   $Res call(
-      {List<SupportedProjectStatistics> supportedProjects,
+      {num totalDonations,
+      List<SupportedProjectStatistics> supportedProjects,
       List<String> projectTopPicksIds});
 }
 
@@ -111,10 +121,15 @@ class __$GlobalStatisticsCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? totalDonations = freezed,
     Object? supportedProjects = freezed,
     Object? projectTopPicksIds = freezed,
   }) {
     return _then(_GlobalStatistics(
+      totalDonations: totalDonations == freezed
+          ? _value.totalDonations
+          : totalDonations // ignore: cast_nullable_to_non_nullable
+              as num,
       supportedProjects: supportedProjects == freezed
           ? _value.supportedProjects
           : supportedProjects // ignore: cast_nullable_to_non_nullable
@@ -132,11 +147,15 @@ class __$GlobalStatisticsCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$_GlobalStatistics implements _GlobalStatistics {
   _$_GlobalStatistics(
-      {required this.supportedProjects, required this.projectTopPicksIds});
+      {required this.totalDonations,
+      required this.supportedProjects,
+      required this.projectTopPicksIds});
 
   factory _$_GlobalStatistics.fromJson(Map<String, dynamic> json) =>
       _$_$_GlobalStatisticsFromJson(json);
 
+  @override
+  final num totalDonations;
   @override
   final List<SupportedProjectStatistics> supportedProjects;
   @override
@@ -144,13 +163,16 @@ class _$_GlobalStatistics implements _GlobalStatistics {
 
   @override
   String toString() {
-    return 'GlobalStatistics(supportedProjects: $supportedProjects, projectTopPicksIds: $projectTopPicksIds)';
+    return 'GlobalStatistics(totalDonations: $totalDonations, supportedProjects: $supportedProjects, projectTopPicksIds: $projectTopPicksIds)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _GlobalStatistics &&
+            (identical(other.totalDonations, totalDonations) ||
+                const DeepCollectionEquality()
+                    .equals(other.totalDonations, totalDonations)) &&
             (identical(other.supportedProjects, supportedProjects) ||
                 const DeepCollectionEquality()
                     .equals(other.supportedProjects, supportedProjects)) &&
@@ -162,6 +184,7 @@ class _$_GlobalStatistics implements _GlobalStatistics {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(totalDonations) ^
       const DeepCollectionEquality().hash(supportedProjects) ^
       const DeepCollectionEquality().hash(projectTopPicksIds);
 
@@ -178,12 +201,15 @@ class _$_GlobalStatistics implements _GlobalStatistics {
 
 abstract class _GlobalStatistics implements GlobalStatistics {
   factory _GlobalStatistics(
-      {required List<SupportedProjectStatistics> supportedProjects,
+      {required num totalDonations,
+      required List<SupportedProjectStatistics> supportedProjects,
       required List<String> projectTopPicksIds}) = _$_GlobalStatistics;
 
   factory _GlobalStatistics.fromJson(Map<String, dynamic> json) =
       _$_GlobalStatistics.fromJson;
 
+  @override
+  num get totalDonations => throw _privateConstructorUsedError;
   @override
   List<SupportedProjectStatistics> get supportedProjects =>
       throw _privateConstructorUsedError;

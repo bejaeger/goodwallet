@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
+import 'package:good_wallet/ui/shared/style_settings.dart';
+import 'package:good_wallet/ui/views/explore_view/explore_view.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_viewmodel.dart';
 import 'package:good_wallet/ui/views/money_pools/money_pools_view.dart';
-import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
 import 'package:good_wallet/ui/views/projects/projects_view.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:stacked/stacked.dart';
@@ -58,7 +59,20 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
                 hideNavigationBarWhenKeyboardShows:
                     true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
                 decoration: NavBarDecoration(
-                  borderRadius: BorderRadius.circular(16.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: ColorSettings.greyTextColor!,
+                      blurRadius: 12.0, // soften the shadow
+                      spreadRadius: 3, //extend the shadow
+                      offset: Offset(
+                        0, // Move to right 10  horizontally
+                        15.0, // Move to bottom 10 Vertically
+                      ),
+                    )
+                  ],
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(16.0),
+                      topLeft: Radius.circular(16.0)),
                   colorBehindNavBar: Colors.white,
                 ),
                 popAllScreensOnTapOfSelectedTab: true,
@@ -89,7 +103,7 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
       ProjectsView(),
       //CausesFilterViewMobile(initialIndex: widget.initialTabBarIndex),
       MoneyPoolsView(),
-      ProfileViewMobile(),
+      ExploreView(),
     ];
   }
 
@@ -97,7 +111,9 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
     return [
       PersistentBottomNavBarItem(
         icon: Icon(Icons.home_rounded),
-        title: ("Home"),
+
+        //title: ("Home"),
+        iconSize: Style.bottomNavigationBarIconSize,
         activeColorPrimary: ColorSettings.primaryColor,
         inactiveColorPrimary: ColorSettings.greyTextColor,
       ),
@@ -105,11 +121,14 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
         icon: Icon(
           Icons.favorite,
         ),
-        title: ("Projects"),
+        iconSize: Style.bottomNavigationBarIconSize,
+        //title: ("Projects"),
         activeColorPrimary: ColorSettings.primaryColor,
         inactiveColorPrimary: ColorSettings.greyTextColor!,
       ),
       PersistentBottomNavBarItem(
+        iconSize: Style.bottomNavigationBarIconSize,
+
         icon: Stack(
           children: <Widget>[
             Center(
@@ -137,15 +156,17 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
               ),
           ],
         ),
-        title: ("Money Pools"),
+        //title: ("Money Pools"),
         activeColorPrimary: ColorSettings.primaryColor,
         inactiveColorPrimary: ColorSettings.greyTextColor,
       ),
       PersistentBottomNavBarItem(
+        iconSize: Style.bottomNavigationBarIconSize,
+
         icon: Icon(
-          Icons.person,
+          Icons.search_rounded,
         ),
-        title: ("Profile"),
+        //title: ("Profile"),
         activeColorPrimary: ColorSettings.primaryColor,
         inactiveColorPrimary: ColorSettings.greyTextColor!,
       ),

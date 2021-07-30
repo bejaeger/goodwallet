@@ -6,7 +6,7 @@ import 'package:good_wallet/utils/string_utils.dart';
 
 class UserListTile extends StatelessWidget {
   final String name;
-  final String email;
+  final String? email;
   final String uid;
   final void Function()? onTilePressed;
   final List<PopupMenuItem<Map<String, dynamic>>>? popUpMenuEntries;
@@ -27,6 +27,9 @@ class UserListTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTilePressed,
       child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
         child: ListTile(
           leading: CircleAvatar(
             radius: 20,
@@ -43,7 +46,7 @@ class UserListTile extends StatelessWidget {
           ),
           subtitle: email != null
               ? Text(
-                  email.toLowerCase(),
+                  email!.toLowerCase(),
                   style: TextStyle(
                     fontSize: 14.0,
                     color: Colors.grey,

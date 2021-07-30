@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
+import 'package:good_wallet/ui/shared/style_settings.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 
@@ -20,7 +21,7 @@ class TabBarLayout extends StatefulWidget {
     required this.title,
     required this.tabs,
     required this.views,
-    this.titleSize = 22,
+    this.titleSize = Style.pageHeaderSize,
     this.initialIndex = 0,
     this.titleTrailingWidget,
   }) : super(key: key); //
@@ -53,8 +54,8 @@ class _TabBarLayoutState extends State<TabBarLayout>
       // Note: Maybe here we can use a NestedScrollView to achieve
       // nice effects with sliver?
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
+          verticalSpaceTiny,
           CustomAppBarSmall(
             height: LayoutSettings.minAppBarHeight +
                 LayoutSettings.tabBarPreferredHeight,
@@ -68,10 +69,14 @@ class _TabBarLayoutState extends State<TabBarLayout>
                 child: TabBar(
                   controller: _tabController,
                   tabs: widget.tabs,
-                  labelPadding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                  labelStyle: textTheme(context)
-                      .bodyText1!
-                      .copyWith(fontSize: 13, fontWeight: FontWeight.w600),
+                  labelPadding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  indicatorColor: Colors.grey,
+                  labelColor: Colors.black,
+                  unselectedLabelColor: Colors.grey,
+                  labelStyle: textTheme(context).bodyText2!.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
               ),
             ),

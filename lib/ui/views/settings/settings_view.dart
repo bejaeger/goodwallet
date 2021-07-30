@@ -18,7 +18,10 @@ class SettingsView extends StatelessWidget {
             ? Center(child: CircularProgressIndicator())
             : ListView(
                 children: [
-                  CustomAppBarSmall(title: "Settings"),
+                  CustomAppBarSmall(
+                    title: "Settings",
+                    elevation: 0.0,
+                  ),
                   verticalSpaceRegular,
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),

@@ -4,6 +4,7 @@ import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart
 import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/enums/money_source.dart';
+import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -17,7 +18,9 @@ class SendMoneyBottomSheetViewModel extends BaseModel {
   final log = getLogger("send_money_bottom_sheet_viewmodel.dart");
 
   void navigateToSearchViewMobile() {
-    _navigationService!.navigateTo(Routes.searchView);
+    _navigationService!.navigateTo(Routes.exploreView,
+        arguments: ExploreViewArguments(
+            searchType: SearchType.UserToTransferTo, autofocus: true));
   }
 
   void navigateToScanQRCodeView() {

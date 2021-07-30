@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/projects/projects_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/carousel_card.dart';
 import 'package:good_wallet/ui/widgets/causes/global_giving_project_card.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
+import 'package:good_wallet/ui/widgets/search_text_field.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -26,37 +28,52 @@ class ProjectsView extends StatelessWidget {
             physics: AlwaysScrollableScrollPhysics(),
             slivers: [
               CustomSliverAppBarSmall(
+                forceElevated: false,
                 title: "Social Projects",
                 onRightIconPressed: model.navigateToFavoritesView,
-                rightIcon: Icon(Icons.favorite_border_rounded, size: 28),
+                rightIcon: Icon(Icons.favorite_border_rounded,
+                    color: ColorSettings.pageTitleColor, size: 28),
                 // Temporarily allow DAN to push new projects to firebase
-                onSecondRightIconPressed: model.showNotImplementedSnackbar,
-                secondRightIcon: Icon(Icons.search_rounded, size: 28),
+                onSecondRightIconPressed: model.navigateToProfileView,
+                secondRightIcon: Icon(
+                  Icons.person,
+                  color: ColorSettings.pageTitleColor,
+                  size: 28,
+                ),
                 // onSecondRightIconPressed:
                 //     model.currentUser.uid == "ptWSWNPX4xRyVsb6jwjPfff5C2B3"
                 //         ? model.pushGlobalGivingProjectsToFirestore
                 //         : null,
                 // secondRightIcon: Icon(Icons.plus_one, size: 28),
               ),
+              SliverToBoxAdapter(
+                child: GreySearchTextField(hintText: "Search Projects"),
+              ),
               model.isBusy
                   ? SliverToBoxAdapter(
-                      child: Center(child: LinearProgressIndicator()))
+                      child: Center(
+                          child: Column(
+                      children: [
+                        verticalSpaceSmall,
+                        CircularProgressIndicator(),
+                      ],
+                    )))
                   : SliverList(
                       delegate: SliverChildListDelegate(
                         [
-                          verticalSpaceMedium,
+                          verticalSpaceSmall,
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SectionHeader(title: "User Top Picks"),
-                              verticalSpaceSmall,
+                              verticalSpaceTiny,
                               ProjectsTopPicksCarousel(
                                   projects: model.projectTopPicks,
                                   onPressed:
                                       model.navigateToSingleProjectScreen),
                               verticalSpaceRegular,
                               SectionHeader(title: "All Areas"),
-                              verticalSpaceSmall,
+                              verticalSpaceTiny,
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal:

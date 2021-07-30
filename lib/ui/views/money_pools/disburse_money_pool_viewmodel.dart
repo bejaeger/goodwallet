@@ -23,6 +23,7 @@ class DisburseMoneyPoolViewModel extends BaseModel {
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
   final MoneyPoolsService? _moneyPoolsService = locator<MoneyPoolsService>();
   final NavigationService? _navigationService = locator<NavigationService>();
+  final SnackbarService? _snackbarService = locator<SnackbarService>();
   final DummyPaymentService? _dummyPaymentService =
       locator<DummyPaymentService>();
   // Available balance
@@ -117,7 +118,6 @@ class DisburseMoneyPoolViewModel extends BaseModel {
         transfersDetails: allDetails,
         moneyPool: moneyPool,
         paidOutUsersIds: paidOutIds,
-        createdAt: firestore.FieldValue.serverTimestamp(),
         deleteMoneyPool: getSummedPayoutAmount() == moneyPool.total,
       );
       return data;
@@ -134,8 +134,8 @@ class DisburseMoneyPoolViewModel extends BaseModel {
   // 2. show bottom sheet and ask for confirmation
   // 3. then construct money pool payout object
   // 4. Ask user to close or keep money pool and navigate accordingly
-  // 5. push to firestore
-  // 6. cloud function takes care of the payouts
+  // 5. call server function that processes payout
+  // 6. show success notification
   Future submitMoneyPoolPayout() async {
     // 1
     if (!isValidPayoutData()) {
@@ -167,7 +167,13 @@ class DisburseMoneyPoolViewModel extends BaseModel {
         // 4 & 5
         // TODO: This could also provide a return value to be sure things have been dealt with
         setBusy(true);
-        await _dummyPaymentService!.submitMoneyPoolPayout(newData);
+        bool success =
+            await _dummyPaymentService!.submitMoneyPoolPayout(newData);
+        if (success) {
+          _snackbarService!.showSnackbar(
+              duration: Duration(seconds: 2), title: "Success!", message: "");
+          await Future.delayed(Duration(seconds: 2));
+        }
         setBusy(false);
 
         if (newData.deleteMoneyPool == false) {
@@ -186,8 +192,8 @@ class DisburseMoneyPoolViewModel extends BaseModel {
         }
       } catch (e) {
         log.e("Could not handle money pool payout, error: ${e.toString()}");
-        await _showErrorBottomSheet();
         setBusy(false);
+        await _showErrorBottomSheet();
       }
     }
   }

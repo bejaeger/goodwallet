@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:good_wallet/constants/constants.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as p;
 
 class StripeService {
   final log = getLogger('StripeService');
@@ -224,21 +226,28 @@ class StripeService {
   // Push transfer document to firestore
   Future createMoneyTransfer({required MoneyTransfer moneyTransfer}) async {
     try {
-      HttpsCallable callable =
-          FirebaseFunctions.instance.httpsCallable('processMoneyTransfer');
-      final HttpsCallableResult<dynamic> result =
-          await callable(moneyTransfer.toJson());
-      if (result.data["error"] == null) {
+      log.i("Calling restful server function bookkeepMoneyTransfer");
+
+      Uri url = Uri.http(AUTHORITY,
+          p.join(URIPATHPREPEND, "transfers-api/bookkeepmoneytransfer"));
+      http.Response? response = await http.post(url,
+          body: json.encode(moneyTransfer.toJson()),
+          headers: {"Accept": "application/json"});
+      log.i("posted http request");
+      dynamic result = json.decode(response.body);
+      log.i("decoded json response");
+
+      if (result["error"] == null) {
         log.i(
-            "Added the following transfer document to ${result.data["data"]["transferId"]}: ${moneyTransfer.toJson()}");
+            "Added the following transfer document to ${result["data"]["transferId"]}: ${moneyTransfer.toJson()}");
       } else {
         log.e(
-            "Error when creating money transfer: ${result.data["error"]["message"]}");
+            "Error when creating money transfer: ${result["error"]["message"]}");
         throw FirestoreApiException(
             message:
-                "An error occured in the cloud function 'processMoneyTransferCallable'",
+                "An error occured in the cloud function 'bookkeepMoneyTransfer'",
             devDetails:
-                "Error message from cloud function: ${result.data["error"]["message"]}",
+                "Error message from cloud function: ${result["error"]["message"]}",
             prettyDetails:
                 "An internal error occured on our side, please apologize and try again later.");
       }
@@ -246,7 +255,7 @@ class StripeService {
       log.e("Couldn't process transfer: ${e.toString()}");
       throw FirestoreApiException(
           message:
-              "Something failed when calling the https function processMoneyTransferCallable",
+              "Something failed when calling the https function bookkeepMoneyTransfer",
           devDetails:
               "This should not happen and is due to an error on the Firestore side or the datamodels that were being pushed!",
           prettyDetails:

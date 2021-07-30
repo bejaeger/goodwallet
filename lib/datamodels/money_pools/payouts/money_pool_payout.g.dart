@@ -15,7 +15,7 @@ _$_MoneyPoolPayout _$_$_MoneyPoolPayoutFromJson(Map<String, dynamic> json) {
         .map((e) => e as String)
         .toList(),
     moneyPool: MoneyPool.fromJson(json['moneyPool'] as Map<String, dynamic>),
-    createdAt: json['createdAt'],
+    createdAt: json['createdAt'] ?? '',
     status: _$enumDecodeNullable(_$TransferStatusEnumMap, json['status']) ??
         TransferStatus.Initialized,
     payoutId: json['payoutId'] as String,
@@ -31,7 +31,7 @@ Map<String, dynamic> _$_$_MoneyPoolPayoutToJson(_$_MoneyPoolPayout instance) =>
       'moneyPool': instance.moneyPool.toJson(),
       'createdAt': instance.createdAt,
       'status': _$TransferStatusEnumMap[instance.status],
-      'payoutId': MoneyPoolPayout._checkIftransferIdIsSet(instance.payoutId),
+      'payoutId': instance.payoutId,
       'deleteMoneyPool': instance.deleteMoneyPool,
     };
 
