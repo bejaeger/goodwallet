@@ -34,7 +34,7 @@ pubspec.lock
 /build/
 
 # Web related
-lib/generated_plugin_registrant.dart
+frontend/lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
@@ -54,4 +54,5 @@ playground.dart
 TypeScriptTut
 FirestoreTests
 
-lib/node_modules/
+frontend/backend/node_modules/
+frontend/build

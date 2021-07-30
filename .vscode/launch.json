@@ -1,39 +1,40 @@
 {
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Flutter Web (port 7000)",
-      "request": "launch",
-      "type": "dart",
-      "args": [
-        "--web-port",
-        "7000",
-        "--device-id",
-        "chrome",
-      ],
-      "flutterMode": "debug",
-    },
-    { 
-      "name": "Flutter Mobile",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "debug",
-    },    
-    {
-      "name": "Flutter Emulator",
-      "request": "launch",
-      "type": "dart",
-      "args": [
-        "--device-id",
-        "emulator-5554",
-      ],
-      "flutterMode": "debug",
-    },    
-    {
-      "name": "Run all tests",
-      "request": "launch",
-      "type": "dart",
-      "program": "./test/",
-    }
-  ]
-}
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Flutter Web (port 7000)",
+        "request": "launch",
+        "type": "dart",
+        "args": [
+          "--web-port",
+          "7000",
+          "--device-id",
+          "chrome",
+        ],
+        "flutterMode": "debug",
+      },
+      { 
+        "name": "Flutter Mobile",
+        "program": "frontend/lib/main.dart",
+        "request": "launch",
+        "type": "dart",
+        "flutterMode": "debug",
+      },    
+      {
+        "name": "Flutter Emulator",
+        "request": "launch",
+        "type": "dart",
+        "args": [
+          "--device-id",
+          "emulator-5554",
+        ],
+        "flutterMode": "debug",
+      },    
+      {
+        "name": "Run all tests",
+        "request": "launch",
+        "type": "dart",
+        "program": "./test/",
+      }
+    ]
+  }
