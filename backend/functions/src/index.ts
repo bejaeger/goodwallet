@@ -11,7 +11,9 @@ if (process.env.FUNCTIONS_EMULATOR) {
   console.log('We are running emulators locally.');
 
   const populator = new FakeDataPopulator(db);
-  populator.generateFakeData();
+  populator.generateFakeData().catch(() => 
+    console.log('Could not generate fake data')
+  );
 }
   
 exports = new FunctionParser(__dirname, exports).exports;

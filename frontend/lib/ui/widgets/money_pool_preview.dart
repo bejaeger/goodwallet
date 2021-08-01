@@ -60,6 +60,7 @@ class MoneyPoolPreview extends StatelessWidget {
                   alignment: Alignment.bottomLeft,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(formatAmount(moneyPool!.total),
                           style: textTheme(context).headline3),

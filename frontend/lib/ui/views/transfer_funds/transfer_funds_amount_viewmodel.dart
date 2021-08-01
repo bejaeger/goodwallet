@@ -229,8 +229,8 @@ class TransferFundsAmountViewModel extends FormViewModel {
         // await handleTopUpPayment();
         await createStripePayment();
       else if (type == TransferType.User2UserSent) {
-        await createStripePayment();
-        // await handleTransfer(type: type);
+        //await createStripePayment();
+        await handleTransfer(type: type);
       } else if (type == TransferType.User2Project) {
         await createStripePayment();
         //await handleTransfer(type: type);

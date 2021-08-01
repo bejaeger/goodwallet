@@ -3,8 +3,6 @@
 
 export class ResponseHandler {
 
-    constructor() { }
-
     // Return objects
     static returnError(errorMessage: string) {
         return {

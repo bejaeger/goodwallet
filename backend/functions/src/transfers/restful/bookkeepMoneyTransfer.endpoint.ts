@@ -87,7 +87,8 @@ export default new Post(async (request: Request, response: Response) => {
             const recipientId = transferDetails["recipientId"];
             const senderId = transferDetails["senderId"];
             const amount = transferDetails["amount"];
-            gwBookkeeper.updateStatsOnUser2UserTransfer(batch, recipientId, senderId, amount);
+            gwBookkeeper.updateStatsOnUser2UserTransfer(batch, recipientId, senderId, amount)
+            .catch(() => log("Error: Could not add updates of user to user transfer documents to batch commit)"));
 
             // await all async calls
             await batch.commit();
