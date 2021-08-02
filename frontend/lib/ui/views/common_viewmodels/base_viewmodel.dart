@@ -59,20 +59,6 @@ class BaseModel extends BaseViewModel {
         duration: Duration(seconds: 2));
   }
 
-  void navigateToStripeView() {
-    try {
-      _navigationService!.navigateTo(
-        Routes.paymentView,
-      );
-    } catch (error) {
-      throw MoneyTransferException(
-        message: 'Failed to create new user',
-        devDetails: '$error',
-      );
-    }
-    //_navigationService!.navigateTo(Routes.paymentView);
-  }
-
   void navigateBack() {
     _navigationService!.back();
   }

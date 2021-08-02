@@ -84,8 +84,8 @@ class SingleMoneyPoolViewModel extends BaseModel {
 
   void showSearchViewAndInviteUser() async {
     String? messageToShow;
-    dynamic userInfo = await _navigationService!.navigateTo(Routes.exploreView,
-        arguments: ExploreViewArguments(
+    dynamic userInfo = await _navigationService!.navigateTo(Routes.searchView,
+        arguments: SearchViewArguments(
             searchType: SearchType.UserToInviteToMP, autofocus: true));
     if (userInfo is PublicUserInfo) {
       log.i(

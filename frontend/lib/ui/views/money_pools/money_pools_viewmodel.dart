@@ -27,7 +27,7 @@ class MoneyPoolsViewModel extends SocialFunctionsViewModel {
   Future listenToAndFetchData() async {
     setBusy(true);
     await listenToMoneyPools();
-    await fetchFriends();
+    await listenToFriends();
     setBusy(false);
   }
 
@@ -37,7 +37,7 @@ class MoneyPoolsViewModel extends SocialFunctionsViewModel {
   }
 
   Future refresh() async {
-    await fetchFriends();
+    await listenToFriends();
     notifyListeners();
   }
 
@@ -96,10 +96,7 @@ class MoneyPoolsViewModel extends SocialFunctionsViewModel {
   }
 
   void navigateToProfileView() {
-    _navigationService!.navigateTo(Routes.profileViewMobile);
-  }
-
-  Future navigateToFriendsView() async {
-    _navigationService!.navigateTo(Routes.friendsView);
+    _navigationService!.navigateTo(Routes.publicProfileViewMobile,
+        arguments: PublicProfileViewMobileArguments(uid: currentUser.uid));
   }
 }

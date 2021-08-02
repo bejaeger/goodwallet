@@ -7,28 +7,31 @@ import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/services/user/user_service.dart';
-import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/transfer_base_model.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 
-class SocialFunctionsViewModel extends BaseModel {
+class SocialFunctionsViewModel extends TransferBaseViewModel {
   final UserService? _userService = locator<UserService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
   final NavigationService? _navigationService = locator<NavigationService>();
 
   final log = getLogger("social_functions_viewmodel.dart");
 
-  List<User> friends = [];
+  List<User> get friends => _userService!.friends;
 
   bool isFriend(String uid) {
     return _userService!.isFriend(uid: uid);
   }
 
-  Future fetchFriends() async {
-    setBusy(true);
-    friends = await _userService!.fetchFriends();
-    log.i("Found ${friends.length} friends!");
-    setBusy(false);
+  Future listenToFriends({List<User>? friendsPreloaded}) async {
+    if (friendsPreloaded != null) {
+      return;
+    } else {
+      setBusy(true);
+      await _userService!.listenToFriends();
+      setBusy(false);
+    }
   }
 
   Future addOrRemoveFriend(String uid) async {
@@ -74,8 +77,13 @@ class SocialFunctionsViewModel extends BaseModel {
   }
 
   void navigateToFindFriendsView() {
-    _navigationService!.navigateTo(Routes.exploreView,
-        arguments: ExploreViewArguments(
+    _navigationService!.navigateTo(Routes.searchView,
+        arguments: SearchViewArguments(
             searchType: SearchType.FindFriends, autofocus: true));
+  }
+
+  Future navigateToFriendsView({List<User>? friends}) async {
+    _navigationService!.navigateTo(Routes.friendsView,
+        arguments: FriendsViewArguments(friends: friends));
   }
 }

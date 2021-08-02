@@ -7,6 +7,7 @@ import 'package:good_wallet/ui/views/explore_view/explore_view.dart';
 import 'package:good_wallet/ui/views/home/home_view_mobile.dart';
 import 'package:good_wallet/ui/views/layout/layout_template_viewmodel.dart';
 import 'package:good_wallet/ui/views/money_pools/money_pools_view.dart';
+import 'package:good_wallet/ui/views/profile/public_profile/public_profile_view_mobile.dart';
 import 'package:good_wallet/ui/views/projects/projects_view.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:stacked/stacked.dart';
@@ -48,7 +49,7 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
               child: PersistentTabView(
                 context,
                 controller: _controller,
-                screens: _buildScreens(),
+                screens: _buildScreens(model),
                 items: _navBarsItems(model),
                 confineInSafeArea: true,
                 backgroundColor: Colors.white, // Default is Colors.white.
@@ -97,13 +98,14 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
         });
   }
 
-  List<Widget> _buildScreens() {
+  List<Widget> _buildScreens(dynamic model) {
     return [
       HomeViewMobile(showDialog: widget.showDialog),
       ProjectsView(),
       //CausesFilterViewMobile(initialIndex: widget.initialTabBarIndex),
-      MoneyPoolsView(),
+      //MoneyPoolsView(),
       ExploreView(),
+      PublicProfileViewMobile(uid: model.currentUser.uid),
     ];
   }
 
@@ -126,45 +128,56 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
         activeColorPrimary: ColorSettings.primaryColor,
         inactiveColorPrimary: ColorSettings.greyTextColor!,
       ),
-      PersistentBottomNavBarItem(
-        iconSize: Style.bottomNavigationBarIconSize,
+      // PersistentBottomNavBarItem(
+      //   iconSize: Style.bottomNavigationBarIconSize,
 
-        icon: Stack(
-          children: <Widget>[
-            Center(
-              child: Icon(Icons.people),
-            ),
-            if (model.numberInvitedMoneyPoolsSubject > 0)
-              Stack(
-                children: [
-                  Align(
-                    alignment: Alignment(0.25, 0.5),
-                    child: Icon(Icons.circle,
-                        size: 15, color: ColorSettings.primaryColorLight),
-                  ),
-                  Align(
-                    alignment: Alignment(0.24, 0.0),
-                    child: Text(
-                      model.numberInvitedMoneyPoolsSubject.toString(),
-                      style: TextStyle(
-                          fontSize: 8,
-                          fontWeight: FontWeight.bold,
-                          color: ColorSettings.whiteTextColor),
-                    ),
-                  ),
-                ],
-              ),
-          ],
-        ),
-        //title: ("Money Pools"),
-        activeColorPrimary: ColorSettings.primaryColor,
-        inactiveColorPrimary: ColorSettings.greyTextColor,
-      ),
+      //   icon: Stack(
+      //     children: <Widget>[
+      //       Center(
+      //         child: Icon(Icons.people),
+      //       ),
+      //       if (model.numberInvitedMoneyPoolsSubject > 0)
+      //         Stack(
+      //           children: [
+      //             Align(
+      //               alignment: Alignment(0.25, 0.5),
+      //               child: Icon(Icons.circle,
+      //                   size: 15, color: ColorSettings.primaryColorLight),
+      //             ),
+      //             Align(
+      //               alignment: Alignment(0.24, 0.0),
+      //               child: Text(
+      //                 model.numberInvitedMoneyPoolsSubject.toString(),
+      //                 style: TextStyle(
+      //                     fontSize: 8,
+      //                     fontWeight: FontWeight.bold,
+      //                     color: ColorSettings.whiteTextColor),
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //     ],
+      //   ),
+      //   //title: ("Money Pools"),
+      //   activeColorPrimary: ColorSettings.primaryColor,
+      //   inactiveColorPrimary: ColorSettings.greyTextColor,
+      // ),
+
       PersistentBottomNavBarItem(
         iconSize: Style.bottomNavigationBarIconSize,
 
         icon: Icon(
           Icons.search_rounded,
+        ),
+        //title: ("Profile"),
+        activeColorPrimary: ColorSettings.primaryColor,
+        inactiveColorPrimary: ColorSettings.greyTextColor!,
+      ),
+
+      PersistentBottomNavBarItem(
+        iconSize: Style.bottomNavigationBarIconSize,
+        icon: Icon(
+          Icons.person,
         ),
         //title: ("Profile"),
         activeColorPrimary: ColorSettings.primaryColor,

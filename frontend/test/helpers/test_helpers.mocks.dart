@@ -100,6 +100,13 @@ class MockUserService extends _i1.Mock implements _i13.UserService {
           Invocation.setter(#userStatsSubject, _userStatsSubject),
           returnValueForMissingStub: null);
   @override
+  List<_i4.User> get friends => (super.noSuchMethod(Invocation.getter(#friends),
+      returnValue: <_i4.User>[]) as List<_i4.User>);
+  @override
+  set friends(List<_i4.User>? _friends) =>
+      super.noSuchMethod(Invocation.setter(#friends, _friends),
+          returnValueForMissingStub: null);
+  @override
   set userStreamSubscription(
           _i15.StreamSubscription<dynamic>? _userStreamSubscription) =>
       super.noSuchMethod(
@@ -162,10 +169,13 @@ class MockUserService extends _i1.Mock implements _i13.UserService {
       Invocation.method(#addOrRemoveFriend, [], {#uid: uid}),
       returnValue: Future<dynamic>.value()) as _i15.Future<dynamic>);
   @override
-  _i15.Future<List<_i4.User>> fetchFriends() =>
-      (super.noSuchMethod(Invocation.method(#fetchFriends, []),
-              returnValue: Future<List<_i4.User>>.value(<_i4.User>[]))
-          as _i15.Future<List<_i4.User>>);
+  _i15.Future<dynamic> listenToFriends() =>
+      (super.noSuchMethod(Invocation.method(#listenToFriends, []),
+          returnValue: Future<dynamic>.value()) as _i15.Future<dynamic>);
+  @override
+  _i15.Future<dynamic> updateFriends() =>
+      (super.noSuchMethod(Invocation.method(#updateFriends, []),
+          returnValue: Future<dynamic>.value()) as _i15.Future<dynamic>);
   @override
   _i15.Future<dynamic> handleLogoutEvent() =>
       (super.noSuchMethod(Invocation.method(#handleLogoutEvent, []),
@@ -328,6 +338,14 @@ class MockFirestoreApi extends _i1.Mock implements _i19.FirestoreApi {
               Stream<_i6.UserStatistics>.empty()) as _i15
           .Stream<_i6.UserStatistics>);
   @override
+  _i15.Future<dynamic> updateUserData({_i4.User? user}) =>
+      (super.noSuchMethod(Invocation.method(#updateUserData, [], {#user: user}),
+          returnValue: Future<dynamic>.value()) as _i15.Future<dynamic>);
+  @override
+  _i15.Stream<_i4.User> getUserStream({String? uid}) =>
+      (super.noSuchMethod(Invocation.method(#getUserStream, [], {#uid: uid}),
+          returnValue: Stream<_i4.User>.empty()) as _i15.Stream<_i4.User>);
+  @override
   _i15.Future<_i7.GlobalStatistics> getGlobalStatistics() =>
       (super.noSuchMethod(Invocation.method(#getGlobalStatistics, []),
               returnValue:
@@ -420,10 +438,6 @@ class MockFirestoreApi extends _i1.Mock implements _i19.FirestoreApi {
   @override
   _i15.Future<dynamic> createProject({_i9.Project? project}) => (super
       .noSuchMethod(Invocation.method(#createProject, [], {#project: project}),
-          returnValue: Future<dynamic>.value()) as _i15.Future<dynamic>);
-  @override
-  _i15.Future<dynamic> updateUserData({_i4.User? user}) =>
-      (super.noSuchMethod(Invocation.method(#updateUserData, [], {#user: user}),
           returnValue: Future<dynamic>.value()) as _i15.Future<dynamic>);
   @override
   _i10.CollectionReference getUserStatisticsCollection({String? uid}) =>

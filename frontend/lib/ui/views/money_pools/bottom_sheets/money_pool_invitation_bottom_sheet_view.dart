@@ -34,7 +34,7 @@ class MoneyPoolInvitationBottomSheetView extends StatelessWidget {
                 Text("Name: ",
                     style:
                         textTheme(context).headline6!.copyWith(fontSize: 18)),
-                Text(request.customData.name,
+                Text(request.data.name,
                     style:
                         textTheme(context).bodyText2!.copyWith(fontSize: 18)),
               ],
@@ -46,20 +46,20 @@ class MoneyPoolInvitationBottomSheetView extends StatelessWidget {
                 Text("Admin: ",
                     style:
                         textTheme(context).headline6!.copyWith(fontSize: 18)),
-                Text(request.customData.adminName,
+                Text(request.data.adminName,
                     style:
                         textTheme(context).bodyText2!.copyWith(fontSize: 18)),
               ],
             ),
-            if (request.customData.description != null) verticalSpaceTiny,
-            if (request.customData.description != null)
+            if (request.data.description != null) verticalSpaceTiny,
+            if (request.data.description != null)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text("Description: ",
                       style:
                           textTheme(context).headline6!.copyWith(fontSize: 18)),
-                  Text(request.customData.description!,
+                  Text(request.data.description!,
                       style:
                           textTheme(context).bodyText2!.copyWith(fontSize: 18)),
                 ],

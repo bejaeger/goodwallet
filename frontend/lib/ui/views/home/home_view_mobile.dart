@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_icon_paths.dart';
@@ -11,7 +15,10 @@ import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/ui/widgets/carousel_card.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/ui/widgets/good_wallet_card.dart';
+import 'package:good_wallet/ui/widgets/money_pool_preview.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
+import 'package:good_wallet/ui/widgets/stats_card.dart';
+import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
@@ -32,6 +39,26 @@ class HomeViewMobile extends StatelessWidget {
         },
         builder: (context, model, child) {
           return Scaffold(
+            floatingActionButton: Container(
+              height: 70,
+              width: 70,
+              child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: FloatingActionButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(90),
+                      side: BorderSide(
+                          width: 2, color: ColorSettings.primaryColor)),
+                  elevation: 15,
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.favorite,
+                      size: 28,
+                      color: ColorSettings.primaryColor.withOpacity(1)),
+                  onPressed: model.showSendMoneyBottomSheet,
+                ),
+              ),
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
             body: RefreshIndicator(
               onRefresh: () async => await model.fetchData(),
               child: CustomScrollView(
@@ -60,56 +87,160 @@ class HomeViewMobile extends StatelessWidget {
                       : SliverList(
                           delegate: SliverChildListDelegate(
                             [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                      width: LayoutSettings.horizontalPadding),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      //verticalSpaceSmall,
-                                      // Text("Hi " + model.currentUser.fullName,
-                                      //     style: textTheme(context).headline4),
-                                      verticalSpaceRegular,
-                                      callToActionButtons(context, model),
-                                      verticalSpaceSmall,
-                                      GoodWalletCard(
-                                        onCardTap: model.showStatsDialog,
-                                        onQRCodeTap: model.navigateToQRCodeView,
-                                        // onHistoryButtonPressed: model
-                                        //     .navigateToTransactionsHistoryView,
-                                        // onDonateButtonPressed:
-                                        //     model.showDonationBottomSheet,
-                                        // onCommitButtonPressed:
-                                        //     model.navigateToCommitMoneyView,
-                                        currentBalance:
-                                            model.userStats.currentBalance,
-                                        totalDonations: model.userStats
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal:
+                                        LayoutSettings.horizontalPadding),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: StatsCard(
+                                          statistic:
+                                              model.userStats.currentBalance,
+                                          subtitle: "Your Balance",
+                                          buttonText: "Add Funds",
+                                          onPressed: model
+                                              .showHomeViewMoreBottomSheet),
+                                    ),
+                                    horizontalSpaceRegular,
+                                    Expanded(
+                                      child: StatsCard(
+                                        statistic: model.userStats
                                             .donationStatistics.totalDonations,
-                                        totalRaised: model
-                                            .userStats
-                                            .moneyTransferStatistics
-                                            .totalRaised,
-                                        totalGifted: model
-                                            .userStats
-                                            .moneyTransferStatistics
-                                            .totalSentToPeers,
-                                        userInfo:
-                                            model.getQRCodeUserInfoString(),
-                                        showGoodometer: false,
+                                        subtitle: "Total Donations",
+                                        onPressed:
+                                            model.showDonationBottomSheet,
                                       ),
-                                      verticalSpaceRegular,
-                                    ],
-                                  ),
-                                  SizedBox(
-                                      width: LayoutSettings.horizontalPadding),
-                                ],
+                                    ),
+                                  ],
+                                ),
                               ),
+
+                              verticalSpaceSmall,
+                              SectionHeader(
+                                title: "Your Friends",
+                                textButtonText: "See all",
+                                onTextButtonTap: model.navigateToFriendsView,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal:
+                                        LayoutSettings.horizontalPadding),
+                                child: Container(
+                                  height: 100,
+                                  width: screenWidth(context) * 0.8,
+                                  child: FriendsList(
+                                      friends: model.friends,
+                                      onPressed:
+                                          model.navigateToPublicProfileView,
+                                      onAddFriendPressed:
+                                          model.navigateToFindFriendsView),
+                                ),
+                              ),
+                              // _sendMoneyButton(context, model),
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.start,
+                              //   children: [
+                              //     SizedBox(
+                              //         width: LayoutSettings.horizontalPadding),
+                              //     Column(
+                              //       crossAxisAlignment:
+                              //           CrossAxisAlignment.start,
+                              //       children: [
+                              //         //verticalSpaceSmall,
+                              //         // Text("Hi " + model.currentUser.fullName,
+                              //         //     style: textTheme(context).headline4),
+                              //         verticalSpaceRegular,
+                              //         callToActionButtons(context, model),
+                              //         verticalSpaceRegular,
+                              //       ],
+                              //     ),
+                              //     SizedBox(
+                              //         width: LayoutSettings.horizontalPadding),
+                              //   ],
+                              // ),
                               //verticalSpaceTiny,
                               //_sendMoneyButton(context, model),
                               //verticalSpaceTiny,
+                              SectionHeader(
+                                title: "Your Impact Pools",
+                                textButtonText: "See all",
+                                onTextButtonTap:
+                                    model.showNotImplementedSnackbar,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // MoneyPoolAvailableFundCard(
+                                  //   currentFunds: 0.0,
+                                  //   onTopUpPressed:
+                                  //       model.navigateToTransferFundAmountView,
+                                  // ),
+                                  if (model.moneyPoolsInvitedTo.length > 0)
+                                    showInviteNotification(context, model),
+                                  if (model.moneyPoolsInvitedTo.length > 0)
+                                    verticalSpaceSmall,
+                                  Container(
+                                    height: 150,
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        physics: ScrollPhysics(),
+                                        itemCount: model.moneyPools.length + 1,
+                                        itemBuilder: (context, index) {
+                                          double width =
+                                              (screenWidthWithoutPadding(
+                                                              context) -
+                                                          25) /
+                                                      2 -
+                                                  20;
+                                          if (index == 0) {
+                                            return Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                horizontalSpaceMedium,
+                                                MoneyPoolPreview(
+                                                  height: 140,
+                                                  width: width,
+                                                  squaredLayout: true,
+                                                  moneyPool: null,
+                                                  onTap: (MoneyPool pool) => model
+                                                      .navigateToSingleMoneyPoolView(
+                                                          pool),
+                                                  onCreateMoneyPoolTapped: model
+                                                      .navigateToCreateMoneyPoolView,
+                                                ),
+                                                horizontalSpaceMedium,
+                                              ],
+                                            );
+                                          } else {
+                                            int indexReal = index - 1;
+                                            return Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                MoneyPoolPreview(
+                                                  height: 140,
+                                                  width: width,
+                                                  moneyPool: model
+                                                      .moneyPools[indexReal],
+                                                  squaredLayout: true,
+                                                  onTap: (MoneyPool pool) => model
+                                                      .navigateToSingleMoneyPoolView(
+                                                          pool),
+                                                  onCreateMoneyPoolTapped: model
+                                                      .navigateToCreateMoneyPoolView,
+                                                ),
+                                                horizontalSpaceMedium,
+                                              ],
+                                            );
+                                          }
+                                        }),
+                                  ),
+                                ],
+                              ),
+
                               SectionHeader(
                                   title: "Recent Activities",
                                   onTextButtonTap:
@@ -175,13 +306,6 @@ class HomeViewMobile extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                              verticalSpaceRegular,
-                              SectionHeader(
-                                title: "Featured apps",
-                                onTextButtonTap:
-                                    model.showNotImplementedSnackbar,
-                              ),
-                              FeaturedAppsCarousel(model: model),
                               verticalSpaceMassive,
                             ],
                           ),
@@ -252,13 +376,13 @@ class HomeViewMobile extends StatelessWidget {
         constraints: BoxConstraints(
           minWidth: screenWidthWithoutPadding(context),
           maxWidth: screenWidthWithoutPadding(context),
-          minHeight: 45,
+          minHeight: 35,
         ),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(0.0),
               elevation: 0.0,
-              primary: ColorSettings.primaryColorLight.withOpacity(0.9)),
+              primary: ColorSettings.primaryColor.withOpacity(0.8)),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.0),
@@ -270,9 +394,9 @@ class HomeViewMobile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Send Money",
+                    "Gift Money",
                     style: textTheme(context).headline5!.copyWith(
-                        fontSize: 18, color: ColorSettings.whiteTextColor),
+                        fontSize: 16, color: ColorSettings.whiteTextColor),
                   ),
                   Icon(Icons.send_rounded, color: ColorSettings.whiteTextColor)
                 ],
@@ -305,6 +429,81 @@ class HomeViewMobile extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget showInviteNotification(BuildContext context, dynamic model) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: ScrollPhysics(),
+      itemCount: model.moneyPoolsInvitedTo.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () async => await model.showInvitationBottomSheet(index),
+          child: Padding(
+            padding: const EdgeInsets.only(
+                left: LayoutSettings.horizontalPadding,
+                right: LayoutSettings.horizontalPadding),
+            child: Stack(
+              children: [
+                Center(
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    color: MyColors.paletteBlue.withOpacity(0.8),
+                    elevation: 4.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width:
+                                screenWidthPercentage(context, percentage: 0.7),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("You've been invited!",
+                                    style: textTheme(context)
+                                        .headline1!
+                                        .copyWith(fontSize: 18)),
+                                verticalSpaceTiny,
+                                Text(
+                                    "${model.moneyPoolsInvitedTo[index].adminName} invited you to join '${model.moneyPoolsInvitedTo[index].name}'",
+                                    style: textTheme(context)
+                                        .headline1!
+                                        .copyWith(fontSize: 15)),
+                              ],
+                            ),
+                          ),
+                          Icon(Icons.arrow_forward_ios,
+                              color: ColorSettings.whiteTextColor, size: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Stack(children: [
+                    Icon(Icons.circle,
+                        size: 22, color: ColorSettings.primaryColor),
+                    Text(
+                      "  1",
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: ColorSettings.whiteTextColor),
+                    ),
+                  ]),
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -346,81 +545,45 @@ class StatisticsDisplay extends StatelessWidget {
   }
 }
 
-class FeaturedProjectsCarousel extends StatelessWidget {
-  final dynamic model;
+class FriendsList extends StatelessWidget {
+  final List<User> friends;
+  final void Function(String) onPressed;
+  final void Function() onAddFriendPressed;
 
-  const FeaturedProjectsCarousel({Key? key, this.model}) : super(key: key);
+  const FriendsList({
+    Key? key,
+    required this.friends,
+    required this.onPressed,
+    required this.onAddFriendPressed,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        height: 200,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: [
-            SizedBox(width: LayoutSettings.horizontalPadding),
-            CarouselCard(
-              title: "Climate Action",
-              explanation:
-                  "Continue to help turning the wheels and fight climate change",
-              onTap: model.showNotImplementedSnackbar,
-              //
-            ),
-            SizedBox(width: LayoutSettings.horizontalPadding),
-            CarouselCard(
-              title: "Health and Development",
-              explanation: "Have an impact and help people in need",
-              onTap: model.showNotImplementedSnackbar,
-              backgroundColor: MyColors.paletteTurquoise,
-            ),
-            SizedBox(width: LayoutSettings.horizontalPadding),
-            CarouselCard(
-              title: "Poverty",
-              explanation: "Help people in need",
-              onTap: model.showNotImplementedSnackbar,
-              backgroundColor: MyColors.palettePurple,
-            ),
-            SizedBox(width: LayoutSettings.horizontalPadding),
-          ],
-        ));
-  }
-}
-
-class FeaturedAppsCarousel extends StatelessWidget {
-  final dynamic model;
-
-  const FeaturedAppsCarousel({Key? key, this.model}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          SizedBox(width: LayoutSettings.horizontalPadding),
-          CarouselCard(
-            title: "Marketplace",
-            explanation: "Sell items in exchange for Good Dollars",
-            onTap: () => model
-                .navigateToSingleFeaturedAppView(FeaturedAppType.Marketplace),
-          ),
-          SizedBox(width: LayoutSettings.horizontalPadding),
-          CarouselCard(
-            title: "Sportsbetting",
-            explanation: "Bet with friends and win Good Gollars",
-            onTap: model.showNotImplementedSnackbar,
-            backgroundColor: MyColors.paletteTurquoise,
-          ),
-          SizedBox(width: LayoutSettings.horizontalPadding),
-          CarouselCard(
-            title: "Your Application",
-            explanation:
-                "This could be your application that leverages the Good Wallet to do good",
-            onTap: model.showNotImplementedSnackbar,
-            backgroundColor: MyColors.palettePurple,
-          ),
-          SizedBox(width: LayoutSettings.horizontalPadding),
-        ],
-      ),
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      shrinkWrap: true,
+      itemCount: min(friends.length + 1, 10),
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return Row(
+            children: [
+              horizontalSpaceSmall,
+              AddFriendCTARound(onPressed: onAddFriendPressed),
+            ],
+          );
+        } else {
+          int indexReal = index - 1;
+          return Row(
+            children: [
+              horizontalSpaceSmall,
+              CallToActionButtonRoundInitials(
+                  color: MyColors.paletteBlue.withOpacity(0.9),
+                  onPressed: () => onPressed(friends[indexReal].uid),
+                  name: friends[indexReal].fullName),
+            ],
+          );
+        }
+      },
     );
   }
 }

@@ -302,9 +302,8 @@ class AddFriendCTARound extends StatelessWidget {
               child: CircleAvatar(
                 radius: 30,
                 backgroundColor: ColorSettings.backgroundColor,
-                child: Text("+",
-                    style: textTheme(context).headline5!.copyWith(
-                        fontSize: 28, color: ColorSettings.primaryColor)),
+                child: Icon(Icons.add,
+                    size: 28, color: ColorSettings.primaryColor),
               ),
             ),
             Padding(

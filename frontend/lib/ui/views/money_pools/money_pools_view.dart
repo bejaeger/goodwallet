@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
@@ -69,37 +70,11 @@ class MoneyPoolsView extends StatelessWidget {
                             child: Container(
                               height: 100,
                               width: screenWidth(context) * 0.8,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                shrinkWrap: true,
-                                itemCount: min(model.friends.length + 1, 10),
-                                itemBuilder: (context, index) {
-                                  if (index >= min(model.friends.length, 9)) {
-                                    return Row(
-                                      children: [
-                                        horizontalSpaceSmall,
-                                        AddFriendCTARound(
-                                            onPressed: model
-                                                .navigateToFindFriendsView),
-                                      ],
-                                    );
-                                  } else {
-                                    return Row(
-                                      children: [
-                                        horizontalSpaceSmall,
-                                        CallToActionButtonRoundInitials(
-                                            color: MyColors.paletteBlue
-                                                .withOpacity(0.9),
-                                            onPressed: () => model
-                                                .navigateToPublicProfileView(
-                                                    model.friends[index].uid),
-                                            name:
-                                                model.friends[index].fullName),
-                                      ],
-                                    );
-                                  }
-                                },
-                              ),
+                              child: FriendsList(
+                                  friends: model.friends,
+                                  onPressed: model.navigateToPublicProfileView,
+                                  onAddFriendPressed:
+                                      model.navigateToFindFriendsView),
                             ),
                           ),
                           verticalSpaceRegular,
@@ -271,6 +246,49 @@ class MoneyPoolsView extends StatelessWidget {
             ),
           ),
         );
+      },
+    );
+  }
+}
+
+class FriendsList extends StatelessWidget {
+  final List<User> friends;
+  final void Function(String) onPressed;
+  final void Function() onAddFriendPressed;
+
+  const FriendsList({
+    Key? key,
+    required this.friends,
+    required this.onPressed,
+    required this.onAddFriendPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      shrinkWrap: true,
+      itemCount: min(friends.length + 1, 10),
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return Row(
+            children: [
+              horizontalSpaceSmall,
+              AddFriendCTARound(onPressed: onAddFriendPressed),
+            ],
+          );
+        } else {
+          int indexReal = index - 1;
+          return Row(
+            children: [
+              horizontalSpaceSmall,
+              CallToActionButtonRoundInitials(
+                  color: MyColors.paletteBlue.withOpacity(0.9),
+                  onPressed: () => onPressed(friends[indexReal].uid),
+                  name: friends[indexReal].fullName),
+            ],
+          );
+        }
       },
     );
   }

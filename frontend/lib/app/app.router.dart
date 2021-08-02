@@ -12,6 +12,7 @@ import 'package:stacked/stacked.dart';
 import '../datamodels/money_pools/base/money_pool.dart';
 import '../datamodels/transfers/bookkeeping/recipient_info.dart';
 import '../datamodels/transfers/bookkeeping/sender_info.dart';
+import '../datamodels/user/user.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/search_type.dart';
 import '../enums/transfer_type.dart';
@@ -32,6 +33,7 @@ import '../ui/views/money_pools/money_pools_view.dart';
 import '../ui/views/money_pools/single_money_pool_view.dart';
 import '../ui/views/payments/payment_view_webhook.dart';
 import '../ui/views/payments/payments_view.dart';
+import '../ui/views/profile/account_view.dart';
 import '../ui/views/profile/profile_view_mobile.dart';
 import '../ui/views/profile/public_profile/public_profile_view_mobile.dart';
 import '../ui/views/projects/favorite_projects_view.dart';
@@ -39,6 +41,7 @@ import '../ui/views/projects/projects_for_area_view.dart';
 import '../ui/views/projects/projects_view.dart';
 import '../ui/views/projects/single_project_view_mobile.dart';
 import '../ui/views/qrcode/qrcode_view_mobile.dart';
+import '../ui/views/search_view/search_view.dart';
 import '../ui/views/settings/settings_view.dart';
 import '../ui/views/startup_logic/startup_logic_view.dart';
 import '../ui/views/transaction_history/transfers_history_view.dart';
@@ -65,6 +68,7 @@ class Routes {
   static const String qRCodeViewMobile = '/q-rcode-view-mobile';
   static const String startUpLogicView = '/';
   static const String exploreView = '/explore-view';
+  static const String searchView = '/search-view';
   static const String transferFundsAmountView = '/transfer-funds-amount-view';
   static const String disburseMoneyPoolView = '/disburse-money-pool-view';
   static const String transfersHistoryView = '/transfers-history-view';
@@ -76,6 +80,7 @@ class Routes {
   static const String settingsView = '/settings-view';
   static const String publicProfileViewMobile = '/public-profile-view-mobile';
   static const String friendsView = '/friends-view';
+  static const String accountView = '/account-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -95,6 +100,7 @@ class Routes {
     qRCodeViewMobile,
     startUpLogicView,
     exploreView,
+    searchView,
     transferFundsAmountView,
     disburseMoneyPoolView,
     transfersHistoryView,
@@ -106,6 +112,7 @@ class Routes {
     settingsView,
     publicProfileViewMobile,
     friendsView,
+    accountView,
   };
 }
 
@@ -131,6 +138,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.qRCodeViewMobile, page: QRCodeViewMobile),
     RouteDef(Routes.startUpLogicView, page: StartUpLogicView),
     RouteDef(Routes.exploreView, page: ExploreView),
+    RouteDef(Routes.searchView, page: SearchView),
     RouteDef(Routes.transferFundsAmountView, page: TransferFundsAmountView),
     RouteDef(Routes.disburseMoneyPoolView, page: DisburseMoneyPoolView),
     RouteDef(Routes.transfersHistoryView, page: TransfersHistoryView),
@@ -142,6 +150,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.settingsView, page: SettingsView),
     RouteDef(Routes.publicProfileViewMobile, page: PublicProfileViewMobile),
     RouteDef(Routes.friendsView, page: FriendsView),
+    RouteDef(Routes.accountView, page: AccountView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -309,6 +318,19 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    SearchView: (data) {
+      var args = data.getArgs<SearchViewArguments>(
+        orElse: () => SearchViewArguments(),
+      );
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => SearchView(
+          key: args.key,
+          searchType: args.searchType,
+          autofocus: args.autofocus,
+        ),
+        settings: data,
+      );
+    },
     TransferFundsAmountView: (data) {
       var args = data.getArgs<TransferFundsAmountViewArguments>(nullOk: false);
       return MaterialPageRoute<dynamic>(
@@ -393,8 +415,20 @@ class StackedRouter extends RouterBase {
       );
     },
     FriendsView: (data) {
+      var args = data.getArgs<FriendsViewArguments>(
+        orElse: () => FriendsViewArguments(),
+      );
       return MaterialPageRoute<dynamic>(
-        builder: (context) => const FriendsView(),
+        builder: (context) => FriendsView(
+          key: args.key,
+          friends: args.friends,
+        ),
+        settings: data,
+      );
+    },
+    AccountView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const AccountView(),
         settings: data,
       );
     },
@@ -493,6 +527,15 @@ class ExploreViewArguments {
       {this.key, this.searchType = SearchType.Explore, this.autofocus = false});
 }
 
+/// SearchView arguments holder class
+class SearchViewArguments {
+  final Key? key;
+  final SearchType searchType;
+  final bool autofocus;
+  SearchViewArguments(
+      {this.key, this.searchType = SearchType.Explore, this.autofocus = false});
+}
+
 /// TransferFundsAmountView arguments holder class
 class TransferFundsAmountViewArguments {
   final Key? key;
@@ -534,4 +577,11 @@ class PublicProfileViewMobileArguments {
   final Key? key;
   final String uid;
   PublicProfileViewMobileArguments({this.key, required this.uid});
+}
+
+/// FriendsView arguments holder class
+class FriendsViewArguments {
+  final Key? key;
+  final List<User>? friends;
+  FriendsViewArguments({this.key, this.friends});
 }

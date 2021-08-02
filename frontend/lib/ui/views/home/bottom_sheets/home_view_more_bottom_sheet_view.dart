@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/layout_widgets/bottom_sheet_layout.dart';
+import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/views/home/bottom_sheets/home_view_more_bottom_sheet_viewmodel.dart';
 import 'package:stacked/stacked.dart';
@@ -23,22 +24,22 @@ class HomeViewMoreBottomSheetView extends StatelessWidget {
           ? Center(child: CircularProgressIndicator())
           : BottomSheetLayout(
               buttons: [
-                BottomSheetListEntry(
-                  completer: completer,
-                  responseData: model.navigateToExploreView,
-                  title: "Find friends",
-                  description: "Raise and give together",
-                  icon: Image.asset(ImageIconPaths.huggingPeople),
-                ),
+                // BottomSheetListEntry(
+                //   completer: completer,
+                //   responseData: model.navigateToExploreView,
+                //   title: "Find friends",
+                //   description: "Raise and give together",
+                //   icon: Image.asset(ImageIconPaths.huggingPeople),
+                // ),
                 //Harguilar
                 BottomSheetListEntry(
                   completer: completer,
-                  responseData: model.navigateToStripeView,
-                  title: "Send Money With Stripe",
-                  description: "Raise Money For people in need",
-                  icon: Image.asset(ImageIconPaths.agreeingHands),
+                  responseData: model.navigateToCommitMoneyView,
+                  title: "Commit money for good causes",
+                  description: "Pledge money and give later",
+                  icon: Image.asset(ImageIconPaths.agreeingHands,
+                      color: ColorSettings.greyTextColor),
                 ),
-
                 BottomSheetListEntry(
                   completer: completer,
                   responseData: model.showNotImplementedSnackbar,
@@ -49,12 +50,20 @@ class HomeViewMoreBottomSheetView extends StatelessWidget {
                 ),
                 BottomSheetListEntry(
                   completer: completer,
-                  responseData: model.showNotImplementedSnackbar,
-                  title: "Checkout our featured apps",
-                  description:
-                      "Raise effortlessly on multiple connected platforms",
-                  icon: Image.asset(ImageIconPaths.appsAroundGlobus),
+                  responseData: model.navigateToStripeView,
+                  title: "Send Money With Stripe",
+                  description: "Raise Money For people in need",
+                  icon: Image.asset(ImageIconPaths.agreeingHands),
                 ),
+
+                // BottomSheetListEntry(
+                //   completer: completer,
+                //   responseData: model.showNotImplementedSnackbar,
+                //   title: "Checkout our featured apps",
+                //   description:
+                //       "Raise effortlessly on multiple connected platforms",
+                //   icon: Image.asset(ImageIconPaths.appsAroundGlobus),
+                // ),
                 //     BottomSheetListEntry(
                 //       completer: completer,
                 //       responseData: model.navigateToCausesView,

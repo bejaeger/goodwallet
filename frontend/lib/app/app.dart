@@ -26,6 +26,7 @@ import 'package:good_wallet/ui/views/money_pools/money_pools_viewmodel.dart';
 import 'package:good_wallet/ui/views/money_pools/single_money_pool_view.dart';
 import 'package:good_wallet/ui/views/payments/payment_view_webhook.dart';
 import 'package:good_wallet/ui/views/payments/payments_view.dart';
+import 'package:good_wallet/ui/views/profile/account_view.dart';
 import 'package:good_wallet/ui/views/profile/profile_view_mobile.dart';
 import 'package:good_wallet/ui/views/profile/public_profile/public_profile_view_mobile.dart';
 import 'package:good_wallet/ui/views/projects/favorite_projects_view.dart';
@@ -33,6 +34,7 @@ import 'package:good_wallet/ui/views/projects/projects_for_area_view.dart';
 import 'package:good_wallet/ui/views/projects/projects_view.dart';
 import 'package:good_wallet/ui/views/projects/single_project_view_mobile.dart';
 import 'package:good_wallet/ui/views/qrcode/qrcode_view_mobile.dart';
+import 'package:good_wallet/ui/views/search_view/search_view.dart';
 import 'package:good_wallet/ui/views/settings/settings_view.dart';
 import 'package:good_wallet/ui/views/startup_logic/startup_logic_view.dart';
 import 'package:good_wallet/ui/views/transaction_history/transfers_history_view.dart';
@@ -65,6 +67,8 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: QRCodeViewMobile),
     MaterialRoute(page: StartUpLogicView, initial: true),
     MaterialRoute(page: ExploreView),
+    MaterialRoute(page: SearchView),
+
     MaterialRoute(page: TransferFundsAmountView),
     MaterialRoute(page: DisburseMoneyPoolView),
     MaterialRoute(page: TransfersHistoryView),
@@ -76,6 +80,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: SettingsView),
     MaterialRoute(page: PublicProfileViewMobile),
     MaterialRoute(page: FriendsView),
+    MaterialRoute(page: AccountView),
   ],
   dependencies: [
     // Services

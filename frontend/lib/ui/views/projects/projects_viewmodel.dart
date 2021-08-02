@@ -56,6 +56,8 @@ class ProjectsViewModel extends ProjectsBaseViewModel {
   }
 
   void navigateToProfileView() {
-    _navigationService!.navigateTo(Routes.profileViewMobile);
+    _navigationService!.navigateTo(Routes.publicProfileViewMobile,
+        arguments: PublicProfileViewMobileArguments(uid: currentUser.uid));
+    //_navigationService!.navigateTo(Routes.profileViewMobile);
   }
 }

@@ -1,28 +1,35 @@
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/bottom_sheet_type.dart';
 import 'package:good_wallet/enums/dialog_type.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
+import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/services/transfers_history/transfers_history_service.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
-import 'package:good_wallet/ui/views/common_viewmodels/transfer_base_model.dart';
+import 'package:good_wallet/services/user/user_service.dart';
+import 'package:good_wallet/ui/views/common_viewmodels/social_functions_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
 
-class HomeViewModel extends TransferBaseViewModel {
+class HomeViewModel extends SocialFunctionsViewModel {
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
   final DialogService? _dialogService = locator<DialogService>();
   final NavigationService? _navigationService = locator<NavigationService>();
   final QRCodeService? _qrCodeService = locator<QRCodeService>();
+  final UserService? _userService = locator<UserService>();
   final TransfersHistoryService? _transfersManager =
       locator<TransfersHistoryService>();
   final log = getLogger("home_viewmodel.dart");
+  final MoneyPoolsService? _moneyPoolsService = locator<MoneyPoolsService>();
+  final SnackbarService? _snackbarService = locator<SnackbarService>();
 
   // get latest outgoing peer 2 peer transfers used in send money bottom sheet view
   // Need to add listeners otherwise this will be empty
@@ -46,6 +53,12 @@ class HomeViewModel extends TransferBaseViewModel {
   List<MoneyTransfer> get latestTransfers =>
       _transfersManager!.getTransfers(config: _queryConfigLatestTransfers);
 
+  List<User> get friends => _userService!.friends;
+
+  List<MoneyPool> get moneyPools => _moneyPoolsService!.moneyPools;
+  List<MoneyPool> get moneyPoolsInvitedTo =>
+      _moneyPoolsService!.moneyPoolsInvitedTo;
+
   // Listen to streams of latest donations and transactions to be displayed
   // instantly when pulling up bottom sheets
   Future listenToData() async {
@@ -53,8 +66,11 @@ class HomeViewModel extends TransferBaseViewModel {
     _transfersManager!
         .addTransferDataListener(config: _queryConfigTransfersToPeers);
     _transfersManager!.addTransferDataListener(config: _queryConfigDonations);
-    await _transfersManager!
+    Future? one = _transfersManager!
         .addTransferDataListener(config: _queryConfigLatestTransfers);
+    Future? two = _moneyPoolsService!.listenToMoneyPools(uid: currentUser.uid);
+    Future? three = listenToFriends();
+    await Future.wait([one as Future<dynamic>, two as Future<dynamic>, three]);
     setBusy(false);
   }
 
@@ -204,11 +220,53 @@ class HomeViewModel extends TransferBaseViewModel {
   }
 
   void navigateToProfileViewMobile() {
-    _navigationService!.navigateTo(Routes.profileViewMobile);
+    _navigationService!.navigateTo(Routes.publicProfileViewMobile,
+        arguments: PublicProfileViewMobileArguments(uid: currentUser.uid));
+    //    _navigationService!.navigateTo(Routes.publicProfileViewMobile);
   }
 
   Future showDialog() async {
     await _dialogService!.showDialog(title: "DIAALOG SUPER!");
+  }
+
+  Future navigateToSingleMoneyPoolView(MoneyPool moneyPool) async {
+    await _navigationService!.navigateTo(Routes.singleMoneyPoolView,
+        arguments: SingleMoneyPoolViewArguments(moneyPool: moneyPool));
+  }
+
+  void navigateToCreateMoneyPoolView() {
+    _navigationService!.navigateTo(Routes.createMoneyPoolIntroView);
+  }
+
+  Future showInvitationBottomSheet(int index) async {
+    var sheetResponse = await _bottomSheetService!.showCustomSheet(
+      variant: BottomSheetType.MoneyPoolInvitation,
+      data: moneyPoolsInvitedTo[index],
+      barrierDismissible: true,
+    );
+    if (sheetResponse != null) {
+      log.i("Response data from bottom sheet: ${sheetResponse.responseData}");
+      if (sheetResponse.responseData is Function) sheetResponse.responseData();
+
+      if (sheetResponse.confirmed) {
+        setBusy(true);
+        // accepted invitation
+        bool success = await _moneyPoolsService!.acceptInvitation(
+            currentUser.uid, currentUser.fullName, moneyPoolsInvitedTo[index]);
+        if (success is String)
+          _snackbarService!.showSnackbar(
+              title: "Invitation could not be accepted",
+              message: success as String);
+        else
+          _snackbarService!.showSnackbar(message: "Accepted invitation");
+        setBusy(false);
+      } else {
+        // devlined invitation
+        await _moneyPoolsService!
+            .declineInvitation(currentUser.uid, moneyPoolsInvitedTo[index]);
+        _snackbarService!.showSnackbar(message: "Declined invitation");
+      }
+    }
   }
 
   @override

@@ -7,15 +7,12 @@ import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
-import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/social_functions_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class ExploreViewModel extends SocialFunctionsViewModel {
+class SearchViewModel extends SocialFunctionsViewModel {
   List<PublicUserInfo> userInfoList = [];
-  final SnackbarService? _snackbarService = locator<SnackbarService>();
-  final UserService? _userService = locator<UserService>();
 
   final CollectionReference _usersCollectionReference =
       FirebaseFirestore.instance.collection("users");

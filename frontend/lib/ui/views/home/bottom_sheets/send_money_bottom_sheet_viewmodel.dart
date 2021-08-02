@@ -18,8 +18,8 @@ class SendMoneyBottomSheetViewModel extends BaseModel {
   final log = getLogger("send_money_bottom_sheet_viewmodel.dart");
 
   void navigateToSearchViewMobile() {
-    _navigationService!.navigateTo(Routes.exploreView,
-        arguments: ExploreViewArguments(
+    _navigationService!.navigateTo(Routes.searchView,
+        arguments: SearchViewArguments(
             searchType: SearchType.UserToTransferTo, autofocus: true));
   }
 

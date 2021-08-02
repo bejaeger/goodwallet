@@ -19,7 +19,7 @@ class FriendsViewModel extends SocialFunctionsViewModel {
       setBusy(true);
       await _userService!.addOrRemoveFriend(uid: map["uid"]);
       log.i("Removed friend");
-      await fetchFriends();
+      await listenToFriends();
       _snackbarService!.showSnackbar(
           title: "Removed friend.",
           message: "",
@@ -39,6 +39,6 @@ class FriendsViewModel extends SocialFunctionsViewModel {
 
   // Search View needs to be made more flexible!
   void navigateToSearchView() {
-    _navigationService!.navigateTo(Routes.exploreView);
+    _navigationService!.navigateTo(Routes.searchView);
   }
 }

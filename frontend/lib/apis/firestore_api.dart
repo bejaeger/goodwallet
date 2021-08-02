@@ -90,7 +90,7 @@ class FirestoreApi {
           message: "User statistics document has no data.",
         );
       } else {
-        log.i("Readaing document: ${docRef.data()}");
+        log.i("Reading document: ${docRef.data()}");
         final UserStatistics userStats =
             UserStatistics.fromJson(docRef.data()!);
         return userStats;
@@ -106,7 +106,7 @@ class FirestoreApi {
   }
 
   ///////////////////////////////////////////////////////
-  // Get user statistics streams
+  // Get user streams
   Stream<UserStatistics> getUserSummaryStatisticsStream({required String uid}) {
     return getUserSummaryStatisticsDocument(uid: uid).snapshots().map((event) {
       if (!event.exists || event.data() == null) {
@@ -116,6 +116,31 @@ class FirestoreApi {
                 "Something must have failed before when creating user account. This is likely due to some backwards-compatibility-breaking updates to the data models or firestore collection setup.");
       }
       return UserStatistics.fromJson(event.data()!);
+    });
+  }
+
+  Future updateUserData({required User user}) async {
+    try {
+      await usersCollection
+          .doc(user.uid)
+          .set(user.toJson(), SetOptions(merge: true));
+    } catch (e) {
+      throw FirestoreApiException(
+          message:
+              "Unknown expection when updating user settings in users collection",
+          devDetails: '$e');
+    }
+  }
+
+  Stream<User> getUserStream({required String uid}) {
+    return usersCollection.doc(uid).snapshots().map((event) {
+      if (!event.exists || event.data() == null) {
+        throw FirestoreApiException(
+            message: "User document not valid!",
+            devDetails:
+                "Something must have failed before when creating user account. This is likely due to some backwards-compatibility-breaking updates to the data models or firestore collection setup.");
+      }
+      return User.fromJson(event.data()!);
     });
   }
 
@@ -539,20 +564,6 @@ class FirestoreApi {
       throw FirestoreApiException(
           message:
               "Unknown expection when adding project to projects collection",
-          devDetails: '$e');
-    }
-  }
-
-  // Functions handling project favorites
-  Future updateUserData({required User user}) async {
-    try {
-      await usersCollection
-          .doc(user.uid)
-          .set(user.toJson(), SetOptions(merge: true));
-    } catch (e) {
-      throw FirestoreApiException(
-          message:
-              "Unknown expection when updating user settings in users collection",
           devDetails: '$e');
     }
   }

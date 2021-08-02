@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/style_settings.dart';
 import 'package:good_wallet/ui/views/friends/friends_viewmodel.dart';
@@ -8,16 +9,18 @@ import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class FriendsView extends StatelessWidget {
-  const FriendsView({Key? key}) : super(key: key);
+  final List<User>? friends;
+  const FriendsView({Key? key, this.friends}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<FriendsViewModel>.reactive(
       viewModelBuilder: () => FriendsViewModel(),
-      onModelReady: (model) => model.fetchFriends(),
+      onModelReady: (model) => model.listenToFriends(friendsPreloaded: friends),
       builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
         child: RefreshIndicator(
-          onRefresh: () async => await model.fetchFriends(),
+          onRefresh: () async =>
+              await Future.delayed(Duration(milliseconds: 200)),
           child: ListView(
             children: [
               CustomAppBarSmall(title: "Your Friends"),

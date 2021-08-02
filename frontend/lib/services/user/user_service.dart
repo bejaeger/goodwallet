@@ -36,6 +36,11 @@ class UserService {
       BehaviorSubject<UserStatistics>.seeded(getEmptyUserStatistics());
   UserStatistics? get userStats => userStatsSubject.value;
 
+  // store list of friends
+  // map of list of money pools with money Pool id as key
+  List<User> friends = [];
+  StreamSubscription? _userDataStreamSubscription;
+
   // current user with all our custom data attached to it
   late User _currentUser;
   // Get current user
@@ -260,19 +265,40 @@ class UserService {
   }
 
   // TODO: make this a stream of users that is listened to in the  viewmodel!
-  Future<List<User>> fetchFriends() async {
+  // need two streams. Stream of list with friends Ids. Whenevre that updates the
+  // stream holding the list of friends will update too.
+
+  Future listenToFriends() async {
+    if (_userDataStreamSubscription == null) {
+      var completer = Completer<void>();
+      Stream userStream = _firestoreApi.getUserStream(uid: currentUser.uid);
+      _userDataStreamSubscription = userStream.listen((event) async {
+        await updateFriends();
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+        log.v("Listened to ${friends.length} friends");
+      });
+      return completer.future;
+    }
+  }
+
+  Future updateFriends() async {
     List<String>? friendsIds = _currentUser.userSettings.friendsIds;
-    List<User> friends = [];
+    List<User> tmpFriends = [];
+    List<String> previousFriendsIds = friends.map((e) => e.uid).toList();
     if (friendsIds != null) {
       for (var id in friendsIds) {
-        log.i("getting user data with id $id");
-        User? tmpUser = await _firestoreApi.getUser(uid: id);
-        if (tmpUser != null) {
-          friends.add(tmpUser);
+        if (!previousFriendsIds.contains(id)) {
+          log.i("getting user data with id $id");
+          User? tmpUser = await _firestoreApi.getUser(uid: id);
+          if (tmpUser != null) {
+            tmpFriends.add(tmpUser);
+          }
         }
       }
     }
-    return friends;
+    friends = tmpFriends;
   }
 
   ///////////////////////////////////////////////////
@@ -283,6 +309,9 @@ class UserService {
     // cancel user stream subscription
     userStreamSubscription?.cancel();
     userStreamSubscription = null;
+    // cancel user stream subscription
+    _userDataStreamSubscription?.cancel();
+    _userDataStreamSubscription = null;
     // clear wallet
     userStatsSubject.add(getEmptyUserStatistics());
     // set current user to null
