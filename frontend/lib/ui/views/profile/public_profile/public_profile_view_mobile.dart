@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/datamodels/causes/project.dart';
+import 'package:good_wallet/datamodels/user/statistics/supported_project_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/profile/public_profile/public_profile_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
+import 'package:good_wallet/ui/widgets/causes/global_giving_project_card.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/ui/widgets/good_wallet_card.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/string_utils.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
+import 'package:shimmer/shimmer.dart';
 
 class PublicProfileViewMobile extends StatelessWidget {
   final String uid;
@@ -22,7 +26,7 @@ class PublicProfileViewMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<PublicProfileViewModel>.reactive(
       viewModelBuilder: () => PublicProfileViewModel(),
-      onModelReady: (model) async => await model.fetchUserData(uid),
+      onModelReady: (model) async => await model.listenAndFetchData(uid),
       builder: (context, model, child) {
         return ConstrainedWidthWithScaffoldLayout(
           child: ListView(
@@ -36,39 +40,41 @@ class PublicProfileViewMobile extends StatelessWidget {
                           child: Icon(Icons.settings,
                               color: ColorSettings.pageTitleColor, size: 25))
                       : null),
-              Column(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      verticalSpaceSmall,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(width: LayoutSettings.horizontalPadding),
-                          _buildProfileImage(model.user!.fullName),
-                          horizontalSpaceMedium,
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+              model.isBusy
+                  ? Center(child: CircularProgressIndicator())
+                  : Column(
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            verticalSpaceSmall,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                _buildFullName(context, model.user!),
-                                _buildStatus(context),
+                                SizedBox(
+                                    width: LayoutSettings.horizontalPadding),
+                                _buildProfileImage(model.user!.fullName),
+                                horizontalSpaceMedium,
+                                Flexible(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _buildFullName(context, model.user!),
+                                      _buildStatus(context),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
 
-                      // if (model.otherUserStats != null)
-                      //   _buildStatContainer(
-                      //       context, model.otherUserStats!),
-                    ],
-                  ),
-                  verticalSpaceRegular,
-                  model.isBusy
-                      ? Center(child: CircularProgressIndicator())
-                      : Column(
+                            // if (model.otherUserStats != null)
+                            //   _buildStatContainer(
+                            //       context, model.otherUserStats!),
+                          ],
+                        ),
+                        verticalSpaceRegular,
+                        Column(
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -159,16 +165,26 @@ class PublicProfileViewMobile extends StatelessWidget {
                             verticalSpaceMedium,
                             if (model.isCurrentUsersProfile)
                               Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SectionHeader(title: "Favorite Charities"),
-                                  Text("To be continued"),
+                                  SectionHeader(
+                                      title: "Your supported projects"),
+                                  verticalSpaceSmall,
+                                  Container(
+                                    height: 160,
+                                    child: ProjectsList(
+                                      projects: model.supportedProjects,
+                                      onProjectPressed:
+                                          model.navigateToSingleProjectScreen,
+                                    ),
+                                  )
                                 ],
                               ),
                           ],
                         ),
-                  verticalSpaceLarge,
-                ],
-              ),
+                        verticalSpaceLarge,
+                      ],
+                    ),
             ],
           ),
         );
@@ -218,5 +234,51 @@ class PublicProfileViewMobile extends StatelessWidget {
           width: screenWidth(context, percentage: 0.7),
           child: Center(child: Text("This profile is private"))),
     );
+  }
+}
+
+class ProjectsList extends StatelessWidget {
+  final List<SupportedProjectStatistics> projects;
+  final void Function(String) onProjectPressed;
+  final void Function()? onAllProjectsPressed;
+
+  const ProjectsList(
+      {Key? key,
+      required this.projects,
+      required this.onProjectPressed,
+      this.onAllProjectsPressed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return projects.length == 0
+        ? Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: LayoutSettings.horizontalPadding),
+            child: Text("Make your first donation"),
+          )
+        : GridView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: ScrollPhysics(),
+            shrinkWrap: true,
+            padding: const EdgeInsets.only(
+                left: LayoutSettings.horizontalPadding,
+                right: LayoutSettings.horizontalPadding,
+                bottom: 8.0),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              childAspectRatio: 1,
+              //crossAxisSpacing: 15,
+              mainAxisSpacing: 15,
+              crossAxisCount: 1,
+            ),
+            itemCount: projects.length,
+            itemBuilder: (context, index) {
+              return GlobalGivingProjectCardWithFunding(
+                totalDonated: projects[index].totalDonations,
+                displayArea: false,
+                project: projects[index],
+                onTap: () => onProjectPressed(projects[index].projectInfo.id),
+              );
+            });
   }
 }

@@ -1,2 +1,2 @@
 /// The type of dialog to show
-enum DialogType { Stats }
+enum DialogType { Stats, Donation }

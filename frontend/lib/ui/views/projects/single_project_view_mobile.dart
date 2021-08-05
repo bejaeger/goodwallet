@@ -57,7 +57,8 @@ class SingleProjectViewMobile extends StatelessWidget {
                             CallToActionButtonRectangular(
                                 maxWidth: screenWidthPercentage(context,
                                     percentage: 0.45),
-                                color: ColorSettings.primaryColor,
+                                color:
+                                    ColorSettings.primaryColor.withOpacity(0.8),
                                 title: "Donate",
                                 onPressed: () =>
                                     model.navigateToTransferFundAmountView(

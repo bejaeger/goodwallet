@@ -39,7 +39,7 @@ class SectionHeader extends StatelessWidget {
                 textButtonText,
                 style: textTheme(context)
                     .headline6!
-                    .copyWith(color: ColorSettings.primaryColor, fontSize: 17),
+                    .copyWith(color: ColorSettings.primaryColor, fontSize: 16),
               ),
             ),
           if (trailingIcon != null) trailingIcon!,

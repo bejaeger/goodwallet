@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/layout_widgets/bottom_sheet_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
+import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/bottom_sheets/give_bottom_sheet_viewmodel.dart';
+import 'package:good_wallet/ui/views/profile/public_profile/public_profile_view_mobile.dart';
 import 'package:good_wallet/ui/widgets/carousel_card.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
@@ -27,45 +29,24 @@ class GiveBottomSheetView extends StatelessWidget {
       builder: (context, model, child) => model.isBusy
           ? Center(child: CircularProgressIndicator())
           : BottomSheetLayout(
-              title: "Give",
+              title: "Give to your favorite cause",
               widgetBeforeButtons: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  if (model.latestDonations.length > 0)
-                    SectionHeader(
-                      title: "Recently supported",
-                      onTextButtonTap: model.navigateToCausesView,
-                      textButtonText: "All projects",
-                    ),
-                  if (model.latestDonations.length > 0)
+                  // if (model.latestDonations.length > 0)
+                  //   SectionHeader(
+                  //     title: "Supported projects",
+                  //     //onTextButtonTap: model.navigateToCausesView,
+                  //     //textButtonText: "All projects",
+                  //   ),
+                  // verticalSpaceSmall,
+                  if (model.supportedProjects.length > 0)
                     Container(
-                      height: 130,
+                      height: 140,
                       width: screenWidthPercentage(context, percentage: 1),
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        itemCount: model.latestDonations.length,
-                        itemBuilder: (context, index) {
-                          final data = model.latestDonations[index];
-                          return Row(
-                            children: [
-                              SizedBox(width: LayoutSettings.horizontalPadding),
-                              CarouselCard(
-                                title: data.transferDetails.recipientName,
-                                explanationAlignment: Alignment.bottomLeft,
-                                backgroundImage: data.maybeMap(
-                                    donation: (value) =>
-                                        value.projectInfo.imagePath != null
-                                            ? NetworkImage(
-                                                value.projectInfo.imagePath!)
-                                            : null,
-                                    orElse: () => null),
-                                onTap: () => model
-                                    .navigateToTransferFundsAmountView(data),
-                                //
-                              ),
-                            ],
-                          );
-                        },
+                      child: ProjectsList(
+                        projects: model.supportedProjects,
+                        onProjectPressed: model.navigateToSingleProjectScreen,
                       ),
                     ),
                 ],
@@ -80,12 +61,11 @@ class GiveBottomSheetView extends StatelessWidget {
                 // ),
                 BottomSheetListEntry(
                   completer: completer,
-                  responseData: model.showNotImplementedSnackbar,
-                  title: "Disaster relieve package",
-                  description:
-                      "Schedule donation and invite friends to contribute",
-                  icon: Icon(Icons.local_hospital_rounded,
-                      size: 32, color: MyColors.lightRed),
+                  responseData: model.navigateToCausesView,
+                  title: "Browse all social projects",
+                  // description:
+                  //     "Schedule donation and invite friends to contribute",
+                  icon: Image.asset(ImageIconPaths.appsAroundGlobus),
                 ),
               ],
             ),

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
-import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
@@ -12,13 +11,10 @@ import 'package:good_wallet/ui/shared/money_transfers/money_transfer_style_helpe
 import 'package:good_wallet/ui/shared/money_transfers/transfer_list_tile.dart';
 import 'package:good_wallet/ui/views/home/home_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
-import 'package:good_wallet/ui/widgets/carousel_card.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
-import 'package:good_wallet/ui/widgets/good_wallet_card.dart';
 import 'package:good_wallet/ui/widgets/money_pool_preview.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/ui/widgets/stats_card.dart';
-import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
@@ -68,12 +64,12 @@ class HomeViewMobile extends StatelessWidget {
                   CustomSliverAppBar(
                     titleSize: 25,
                     title: "Hi " + model.currentUser.fullName,
-                    onSecondRightIconPressed: model.navigateToProfileViewMobile,
-                    secondRightIcon: Icon(
-                      Icons.person,
-                      color: ColorSettings.pageTitleColor,
-                      size: 28,
-                    ),
+                    // onSecondRightIconPressed: model.navigateToProfileViewMobile,
+                    // secondRightIcon: Icon(
+                    //   Icons.person,
+                    //   color: ColorSettings.pageTitleColor,
+                    //   size: 28,
+                    // ),
                     onRightIconPressed: model.navigateToNotificationsView,
                     rightIcon: Icon(Icons.notifications_none_rounded,
                         color: ColorSettings.pageTitleColor, size: 28),
@@ -118,7 +114,35 @@ class HomeViewMobile extends StatelessWidget {
 
                               verticalSpaceSmall,
                               SectionHeader(
-                                title: "Your Friends",
+                                title: "Impact Pools",
+                                textButtonText: "See all",
+                                onTextButtonTap: model.navigateToMoneyPoolsView,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // MoneyPoolAvailableFundCard(
+                                  //   currentFunds: 0.0,
+                                  //   onTopUpPressed:
+                                  //       model.navigateToTransferFundAmountView,
+                                  // ),
+                                  if (model.moneyPoolsInvitedTo.length > 0)
+                                    showInviteNotification(context, model),
+                                  if (model.moneyPoolsInvitedTo.length > 0)
+                                    verticalSpaceSmall,
+                                  Container(
+                                    height: 150,
+                                    child: MoneyPoolsList(
+                                        moneyPools: model.moneyPools,
+                                        onMoneyPoolPressed:
+                                            model.navigateToSingleMoneyPoolView,
+                                        onCreateNewPressed: model
+                                            .navigateToCreateMoneyPoolView),
+                                  ),
+                                ],
+                              ),
+                              SectionHeader(
+                                title: "Friends",
                                 textButtonText: "See all",
                                 onTextButtonTap: model.navigateToFriendsView,
                               ),
@@ -162,84 +186,6 @@ class HomeViewMobile extends StatelessWidget {
                               //verticalSpaceTiny,
                               //_sendMoneyButton(context, model),
                               //verticalSpaceTiny,
-                              SectionHeader(
-                                title: "Your Impact Pools",
-                                textButtonText: "See all",
-                                onTextButtonTap:
-                                    model.showNotImplementedSnackbar,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // MoneyPoolAvailableFundCard(
-                                  //   currentFunds: 0.0,
-                                  //   onTopUpPressed:
-                                  //       model.navigateToTransferFundAmountView,
-                                  // ),
-                                  if (model.moneyPoolsInvitedTo.length > 0)
-                                    showInviteNotification(context, model),
-                                  if (model.moneyPoolsInvitedTo.length > 0)
-                                    verticalSpaceSmall,
-                                  Container(
-                                    height: 150,
-                                    child: ListView.builder(
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.horizontal,
-                                        physics: ScrollPhysics(),
-                                        itemCount: model.moneyPools.length + 1,
-                                        itemBuilder: (context, index) {
-                                          double width =
-                                              (screenWidthWithoutPadding(
-                                                              context) -
-                                                          25) /
-                                                      2 -
-                                                  20;
-                                          if (index == 0) {
-                                            return Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                horizontalSpaceMedium,
-                                                MoneyPoolPreview(
-                                                  height: 140,
-                                                  width: width,
-                                                  squaredLayout: true,
-                                                  moneyPool: null,
-                                                  onTap: (MoneyPool pool) => model
-                                                      .navigateToSingleMoneyPoolView(
-                                                          pool),
-                                                  onCreateMoneyPoolTapped: model
-                                                      .navigateToCreateMoneyPoolView,
-                                                ),
-                                                horizontalSpaceMedium,
-                                              ],
-                                            );
-                                          } else {
-                                            int indexReal = index - 1;
-                                            return Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                MoneyPoolPreview(
-                                                  height: 140,
-                                                  width: width,
-                                                  moneyPool: model
-                                                      .moneyPools[indexReal],
-                                                  squaredLayout: true,
-                                                  onTap: (MoneyPool pool) => model
-                                                      .navigateToSingleMoneyPoolView(
-                                                          pool),
-                                                  onCreateMoneyPoolTapped: model
-                                                      .navigateToCreateMoneyPoolView,
-                                                ),
-                                                horizontalSpaceMedium,
-                                              ],
-                                            );
-                                          }
-                                        }),
-                                  ),
-                                ],
-                              ),
 
                               SectionHeader(
                                   title: "Recent Activities",
@@ -508,6 +454,63 @@ class HomeViewMobile extends StatelessWidget {
   }
 }
 
+class MoneyPoolsList extends StatelessWidget {
+  final List<MoneyPool> moneyPools;
+  final void Function(MoneyPool) onMoneyPoolPressed;
+  final void Function() onCreateNewPressed;
+  const MoneyPoolsList({
+    Key? key,
+    required this.moneyPools,
+    required this.onMoneyPoolPressed,
+    required this.onCreateNewPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        physics: ScrollPhysics(),
+        itemCount: moneyPools.length + 1,
+        itemBuilder: (context, index) {
+          double width = (screenWidthWithoutPadding(context) - 25) / 2 - 20;
+          if (index >= moneyPools.length) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                MoneyPoolPreview(
+                  height: 140,
+                  width: width,
+                  squaredLayout: true,
+                  moneyPool: null,
+                  onTap: onMoneyPoolPressed,
+                  onCreateMoneyPoolTapped: onCreateNewPressed,
+                ),
+                horizontalSpaceMedium,
+              ],
+            );
+          } else {
+            //int indexReal = index - 1;
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (index == 0) horizontalSpaceMedium,
+                MoneyPoolPreview(
+                  height: 140,
+                  width: width,
+                  moneyPool: moneyPools[index],
+                  squaredLayout: true,
+                  onTap: onMoneyPoolPressed,
+                  onCreateMoneyPoolTapped: onCreateNewPressed,
+                ),
+                horizontalSpaceMedium,
+              ],
+            );
+          }
+        });
+  }
+}
+
 class StatisticsDisplay extends StatelessWidget {
   final dynamic model;
 
@@ -564,7 +567,7 @@ class FriendsList extends StatelessWidget {
       shrinkWrap: true,
       itemCount: min(friends.length + 1, 10),
       itemBuilder: (context, index) {
-        if (index == 0) {
+        if (index == min(friends.length, 9)) {
           return Row(
             children: [
               horizontalSpaceSmall,
@@ -572,14 +575,13 @@ class FriendsList extends StatelessWidget {
             ],
           );
         } else {
-          int indexReal = index - 1;
           return Row(
             children: [
               horizontalSpaceSmall,
               CallToActionButtonRoundInitials(
                   color: MyColors.paletteBlue.withOpacity(0.9),
-                  onPressed: () => onPressed(friends[indexReal].uid),
-                  name: friends[indexReal].fullName),
+                  onPressed: () => onPressed(friends[index].uid),
+                  name: friends[index].fullName),
             ],
           );
         }

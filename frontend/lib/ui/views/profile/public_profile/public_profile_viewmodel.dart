@@ -1,12 +1,14 @@
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/datamodels/causes/concise_info/concise_project_info.dart';
+import 'package:good_wallet/datamodels/causes/project.dart';
+import 'package:good_wallet/datamodels/user/statistics/supported_project_statistics.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/dialog_type.dart';
-import 'package:good_wallet/services/money_pools/money_pools_service.dart';
+import 'package:good_wallet/services/projects/projects_service.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
-import 'package:good_wallet/services/transfers_history/transfers_history_service.dart';
 import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/social_functions_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -18,6 +20,7 @@ class PublicProfileViewModel extends SocialFunctionsViewModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final QRCodeService? _qrCodeService = locator<QRCodeService>();
   final UserService? _userService = locator<UserService>();
+  final ProjectsService? _projectsService = locator<ProjectsService>();
 
   final log = getLogger("public_profile_viewmodel.dart");
   User? user;
@@ -27,10 +30,23 @@ class PublicProfileViewModel extends SocialFunctionsViewModel {
   bool get isCurrentUsersProfile =>
       _uid != null ? _uid == currentUser.uid : false;
 
+  List<Project> get favoriteProjects => _projectsService!.getProjectsWithIds(
+      projectIds: currentUser.userSettings.favoriteProjectIds);
+
+  List<SupportedProjectStatistics> get supportedProjects =>
+      _userService!.getSupportedProjects();
+
+  // Starting money pool listener. Should only ever be called once!
+  Future listenAndFetchData(String uid) async {
+    setBusy(true);
+    await _projectsService!.listenToProjects(uid: currentUser.uid);
+    await fetchUserData(uid);
+    setBusy(false);
+  }
+
   Future fetchUserData(String uid) async {
     _uid = uid;
     setBusy(true);
-    print(" What is happening!?)");
     if (isCurrentUsersProfile) {
       user = currentUser;
     } else {
@@ -77,5 +93,10 @@ class PublicProfileViewModel extends SocialFunctionsViewModel {
   void navigateToQRCodeView() {
     _navigationService!.navigateTo(Routes.qRCodeViewMobile,
         arguments: QRCodeViewMobileArguments(initialIndex: 1));
+  }
+
+  Future navigateToSingleProjectScreen(String projectId) async {
+    await _navigationService!.navigateTo(Routes.singleProjectViewMobile,
+        arguments: SingleProjectViewMobileArguments(projectId: projectId));
   }
 }

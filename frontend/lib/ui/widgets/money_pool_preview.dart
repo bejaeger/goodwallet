@@ -93,7 +93,7 @@ class MoneyPoolPreview extends StatelessWidget {
                           moneyPool!.contributingUserIds.length == 1
                               ? "${moneyPool!.contributingUserIds.length} member"
                               : "${moneyPool!.contributingUserIds.length} members",
-                          style: textTheme(context).bodyText1),
+                          style: textTheme(context).bodyText2),
                     ),
                 ],
               ),

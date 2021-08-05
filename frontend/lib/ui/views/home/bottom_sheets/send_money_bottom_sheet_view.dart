@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/ui/layout_widgets/bottom_sheet_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_icon_paths.dart';
+import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/home/bottom_sheets/send_money_bottom_sheet_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
@@ -31,23 +33,10 @@ class SendMoneyBottomSheetView extends StatelessWidget {
             ? request.customData.length > 0
                 ? Container(
                     height: 100,
-                    width: screenWidth(context) * 0.8,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: model.latestTransactions.length,
-                      itemBuilder: (context, index) => Row(
-                        children: [
-                          horizontalSpaceSmall,
-                          CallToActionButtonRoundInitials(
-                              color: MyColors.paletteBlue.withOpacity(0.9),
-                              onPressed: () =>
-                                  model.navigateToTransferFundsAmountView(
-                                      model.latestTransactions[index]),
-                              name: model.latestTransactions[index]
-                                  .transferDetails.recipientName),
-                        ],
-                      ),
+                    width: screenWidth(context),
+                    child: UserList(
+                      latestTransactions: model.latestTransactions,
+                      onUserPressed: model.navigateToTransferFundsAmountView,
                     ),
                   )
                 : null
@@ -65,6 +54,39 @@ class SendMoneyBottomSheetView extends StatelessWidget {
             title: "Scan user QR code",
             icon: Image.asset(ImageIconPaths.qrcodeScan),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class UserList extends StatelessWidget {
+  final List<MoneyTransfer> latestTransactions;
+  final void Function(MoneyTransfer) onUserPressed;
+  //final void Function() onAllUsers;
+
+  const UserList({
+    Key? key,
+    required this.latestTransactions,
+    required this.onUserPressed,
+    //required this.onAllUsers,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.only(left: LayoutSettings.horizontalPadding),
+      scrollDirection: Axis.horizontal,
+      shrinkWrap: true,
+      itemCount: latestTransactions.length,
+      itemBuilder: (context, index) => Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CallToActionButtonRoundInitials(
+              color: MyColors.paletteBlue.withOpacity(0.9),
+              onPressed: () => onUserPressed(latestTransactions[index]),
+              name: latestTransactions[index].transferDetails.recipientName),
+          horizontalSpaceTiny,
         ],
       ),
     );

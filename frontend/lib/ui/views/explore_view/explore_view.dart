@@ -43,19 +43,17 @@ class ExploreView extends StatelessWidget {
           key: PageStorageKey('storage-key'),
           physics: AlwaysScrollableScrollPhysics(),
           slivers: [
-            CustomSliverAppBarSmall(
-                forceElevated: false,
-                title: title,
-                onSecondRightIconPressed: searchType == SearchType.Explore
-                    ? model.navigateToProfileView
-                    : null,
-                secondRightIcon: searchType == SearchType.Explore
-                    ? Icon(
-                        Icons.person,
-                        color: ColorSettings.pageTitleColor,
-                        size: 28,
-                      )
-                    : null),
+            CustomSliverAppBarSmall(forceElevated: false, title: title),
+            // onSecondRightIconPressed: searchType == SearchType.Explore
+            //     ? model.navigateToProfileView
+            //     : null,
+            // secondRightIcon: searchType == SearchType.Explore
+            //     ? Icon(
+            //         Icons.person,
+            //         color: ColorSettings.pageTitleColor,
+            //         size: 28,
+            //       )
+            //     : null),
             SliverToBoxAdapter(
               child: Column(
                 children: [
@@ -96,13 +94,13 @@ class ExploreView extends StatelessWidget {
                       ],
                     ),
                   ),
-                  verticalSpaceMedium,
+                  verticalSpaceRegular,
                   SectionHeader(
                     title: "Featured apps",
                     onTextButtonTap: model.showNotImplementedSnackbar,
                   ),
                   FeaturedAppsCarousel(model: model),
-                  verticalSpaceMedium,
+                  verticalSpaceRegular,
                   SectionHeader(
                     title: "Newsletter",
                     // onTextButtonTap: model.showNotImplementedSnackbar,

@@ -234,6 +234,10 @@ class HomeViewModel extends SocialFunctionsViewModel {
         arguments: SingleMoneyPoolViewArguments(moneyPool: moneyPool));
   }
 
+  void navigateToMoneyPoolsView() {
+    _navigationService!.navigateTo(Routes.moneyPoolsView);
+  }
+
   void navigateToCreateMoneyPoolView() {
     _navigationService!.navigateTo(Routes.createMoneyPoolIntroView);
   }

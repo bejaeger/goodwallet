@@ -23,6 +23,9 @@ class HomeViewMoreBottomSheetView extends StatelessWidget {
       builder: (context, model, child) => model.isBusy
           ? Center(child: CircularProgressIndicator())
           : BottomSheetLayout(
+              // description:
+              //     "Give the gift of giving: Your sent funds become charitable-only",
+              //title: "Pledge now, donate later",
               buttons: [
                 // BottomSheetListEntry(
                 //   completer: completer,
@@ -47,6 +50,15 @@ class HomeViewMoreBottomSheetView extends StatelessWidget {
                   description:
                       "To send micro-payments without extra transaction fee",
                   icon: Image.asset(ImageIconPaths.holdingHands),
+                ),
+                BottomSheetListEntry(
+                  completer: completer,
+                  responseData: model.navigateToQRCodeView,
+                  title: "Get paid to raise money",
+                  description:
+                      "Raise money for good causes by accepting payments into your wallet",
+                  icon: Image.asset(ImageIconPaths.agreeingHands,
+                      color: ColorSettings.primaryColor),
                 ),
                 BottomSheetListEntry(
                   completer: completer,

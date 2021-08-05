@@ -9,6 +9,8 @@ import 'package:good_wallet/ui/widgets/causes/global_giving_project_card.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/ui/widgets/search_text_field.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
+import 'package:good_wallet/ui/widgets/small_wallet_card.dart';
+import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
@@ -33,13 +35,31 @@ class ProjectsView extends StatelessWidget {
                 onRightIconPressed: model.navigateToFavoritesView,
                 rightIcon: Icon(Icons.favorite_border_rounded,
                     color: ColorSettings.pageTitleColor, size: 28),
+
+                // show little wallet
+                // onSecondRightIconPressed: model.showNotImplementedSnackbar,
+                // secondRightIcon: Column(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   mainAxisSize: MainAxisSize.min,
+                //   children: [
+                //     Icon(Icons.account_balance_wallet,
+                //         color: ColorSettings.blackTextColor),
+                //     Text(
+                //       formatAmount(model.userStats.currentBalance),
+                //       style: textTheme(context)
+                //           .bodyText2!
+                //           .copyWith(fontWeight: FontWeight.bold, fontSize: 12),
+                //     ),
+                //   ],
+                // ),
+
                 // Temporarily allow DAN to push new projects to firebase
-                onSecondRightIconPressed: model.navigateToProfileView,
-                secondRightIcon: Icon(
-                  Icons.person,
-                  color: ColorSettings.pageTitleColor,
-                  size: 28,
-                ),
+                // onSecondRightIconPressed: model.navigateToProfileView,
+                // secondRightIcon: Icon(
+                //   Icons.person,
+                //   color: ColorSettings.pageTitleColor,
+                //   size: 28,
+                // ),
                 // onSecondRightIconPressed:
                 //     model.currentUser.uid == "ptWSWNPX4xRyVsb6jwjPfff5C2B3"
                 //         ? model.pushGlobalGivingProjectsToFirestore

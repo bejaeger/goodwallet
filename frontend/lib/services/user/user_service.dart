@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/datamodels/user/statistics/supported_project_statistics.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/datamodels/user/user_settings.dart';
@@ -232,6 +233,16 @@ class UserService {
     return add;
   }
 
+  List<SupportedProjectStatistics> getSupportedProjects() {
+    if (userStats == null) return [];
+    return userStats!.donationStatistics.when(
+        (totalDonations, supportedProjects, monthlyDonations) {
+      supportedProjects
+          .sort((a, b) => b.totalDonations.compareTo(a.totalDonations));
+      return supportedProjects;
+    }, empty: (totalDonations, supportedProjects, monthlyDonations) => []);
+  }
+
   bool isFriend({required String uid}) {
     List<String>? friendsIds = _currentUser.userSettings.friendsIds;
     if (friendsIds == null) {
@@ -288,6 +299,7 @@ class UserService {
     List<User> tmpFriends = [];
     List<String> previousFriendsIds = friends.map((e) => e.uid).toList();
     if (friendsIds != null) {
+      // add friends to but only read documents of new friends
       for (var id in friendsIds) {
         if (!previousFriendsIds.contains(id)) {
           log.i("getting user data with id $id");
@@ -297,8 +309,14 @@ class UserService {
           }
         }
       }
+      // remove friends
+      for (var id in previousFriendsIds) {
+        if (!friendsIds.contains(id)) {
+          friends.removeWhere((element) => element.uid == id);
+        }
+      }
     }
-    friends = tmpFriends;
+    friends.addAll(tmpFriends);
   }
 
   ///////////////////////////////////////////////////

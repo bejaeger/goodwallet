@@ -24,6 +24,11 @@ class HomeViewMoreBottomSheetViewModel extends BaseModel {
             type: TransferType.User2OwnGoodWallet));
   }
 
+  void navigateToQRCodeView() {
+    _navigationService!.navigateTo(Routes.qRCodeViewMobile,
+        arguments: QRCodeViewMobileArguments(initialIndex: 1));
+  }
+
   void navigateToStripeView() {
     try {
       _navigationService!.navigateTo(

@@ -3,8 +3,10 @@ import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
+import 'package:good_wallet/datamodels/user/statistics/supported_project_statistics.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
+import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -14,6 +16,10 @@ class GiveBottomSheetViewModel extends BaseModel {
   final SnackbarService? _snackbarService = locator<SnackbarService>();
   final List<MoneyTransfer> latestDonations;
   GiveBottomSheetViewModel({required this.latestDonations});
+  final UserService? _userService = locator<UserService>();
+
+  List<SupportedProjectStatistics> get supportedProjects =>
+      _userService!.getSupportedProjects();
 
   final log = getLogger("give_bottom_sheet_viewmodel.dart");
 
@@ -49,5 +55,10 @@ class GiveBottomSheetViewModel extends BaseModel {
         recipientInfo: userInfo!,
       ),
     );
+  }
+
+  Future navigateToSingleProjectScreen(String projectId) async {
+    await _navigationService!.navigateTo(Routes.singleProjectViewMobile,
+        arguments: SingleProjectViewMobileArguments(projectId: projectId));
   }
 }

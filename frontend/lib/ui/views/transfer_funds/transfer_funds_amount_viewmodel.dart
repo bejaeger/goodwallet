@@ -4,6 +4,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 //import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/datamodels/helpers/money_transfer_status_model.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
@@ -11,6 +12,8 @@ import 'package:good_wallet/datamodels/transfers/transfer_details.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
+import 'package:good_wallet/enums/dialog_type.dart';
+import 'package:good_wallet/enums/donation_dialog_status.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
@@ -226,21 +229,21 @@ class TransferFundsAmountViewModel extends FormViewModel {
     } else {
       amount = num.parse(amountValue!);
       if (type == TransferType.User2OwnPrepaidFund)
-        // await handleTopUpPayment();
-        await createStripePayment();
+        await handleTopUpPayment();
+      //await createStripePayment();
       else if (type == TransferType.User2UserSent) {
         //await createStripePayment();
         await handleTransfer(type: type);
       } else if (type == TransferType.User2Project) {
-        await createStripePayment();
-        //await handleTransfer(type: type);
+        //await createStripePayment();
+        await handleTransfer(type: type);
       } else if (type == TransferType.User2MoneyPool) {
-        await createStripePayment();
-        //await handleTransfer(type: type);
+        //await createStripePayment();
+        await handleTransfer(type: type);
       } else {
-        await createStripePayment();
-/*         _snackbarService!.showSnackbar(
-            title: "Not yet implemented.", message: "I know... it's sad"); */
+        //await createStripePayment();
+        _snackbarService!.showSnackbar(
+            title: "Not yet implemented.", message: "I know... it's sad");
       }
     }
   }
@@ -341,9 +344,15 @@ class TransferFundsAmountViewModel extends FormViewModel {
   }
 
   Future handleTransfer({required TransferType type}) async {
+    // -----------------------------------------------------
+    // First we need to ask for the payment method and
+    // will also ask for a final confirmation
+    // For now, it's only test payments allowed
     SheetResponse? sheetResponse =
         await _showPaymentMethodBottomSheet(type: type);
-    if (sheetResponse?.confirmed == false) {
+    if (sheetResponse?.confirmed == true) {
+      await _showAndAwaitSnackbar("Not supported at the moment, sorry!");
+    } else {
       // Ask for another final confirmation
       SheetResponse? finalConfirmation =
           await _showFinalConfirmationBottomSheet();
@@ -354,40 +363,72 @@ class TransferFundsAmountViewModel extends FormViewModel {
         return;
       }
 
-      // FOR now, implemented dummy payment processing here
-      setBusy(true);
+      // -----------------------------------------------------
+      // We create a completer and parse it to the pop-up window.
+      // The pop-up window shows a progress indicator and
+      // displays a success or error dialog when the completer is completed
+      // in _processsPayment.
+      var moneyTransferCompleter = Completer<TransferDialogStatus>();
+
       try {
-        final data = prepareTransferData();
-
-        await _dummyPaymentService.processTransfer(moneyTransfer: data);
-
-        log.i("Processed transfer: $data");
+        _processPayment(moneyTransferCompleter);
       } catch (e) {
-        if (e is MoneyTransferException) {
-          await _showFailureDialog(e.prettyDetails);
-        } else if (e is UserServiceException) {
-          await _showFailureDialog(e.prettyDetails);
-        } else if (e is FirestoreApiException) {
-          await _showFailureDialog(e.prettyDetails);
-        } else {
-          rethrow;
-        }
-        setBusy(false);
-        clearTillFirstAndShowHomeScreen();
-        return;
+        log.wtf("Something very mysterious went wrong, error thrown: $e");
+        moneyTransferCompleter.complete(TransferDialogStatus.error);
       }
-      await _showAndAwaitSnackbar("Success! You are great :)");
-      setBusy(false);
+      dynamic dialogResult = await _showDonationDialog(
+          moneyTransferCompleter: moneyTransferCompleter, type: type);
 
-      if (type == TransferType.User2MoneyPool) {
-        // navigate back to money pool
-        navigateBack();
+      // -----------------------------------------------------
+      // Handle user input after success or error of transfer!
+      // Navigation depends on user input and transfer type;
+      if (dialogResult!.confirmed) {
+        if (type == TransferType.User2MoneyPool) {
+          // navigate back to money pool
+          navigateBack();
+        } else {
+          // clear view
+          clearTillFirstAndShowHomeScreen();
+        }
+        return;
       } else {
-        // clear view
-        clearTillFirstAndShowHomeScreen();
+        if (type == TransferType.User2Project) {
+          // navigate back to money pool
+          clearTillFirstAndShowProjectsView();
+        } else {
+          // clear view
+          clearTillFirstAndShowHomeScreen();
+        }
       }
-    } else if (sheetResponse?.confirmed == true) {
-      await _showAndAwaitSnackbar("Not supported at the moment, sorry!");
+
+      return;
+    }
+  }
+
+  Future _processPayment(
+      Completer<TransferDialogStatus> moneyTransferCompleter) async {
+    // FOR now, implemented dummy payment processing here
+    try {
+      final data = prepareTransferData();
+
+      await _dummyPaymentService.processTransfer(moneyTransfer: data);
+
+      log.i("Processed transfer: $data");
+
+      // the completion event will be listened to in the pop-up dialog
+      moneyTransferCompleter.complete(TransferDialogStatus.success);
+    } catch (e) {
+      log.e("Error when processing payment, error thrown $e");
+      if (e is MoneyTransferException) {
+        moneyTransferCompleter.complete(TransferDialogStatus.error);
+      } else if (e is UserServiceException) {
+        moneyTransferCompleter.complete(TransferDialogStatus.error);
+      } else if (e is FirestoreApiException) {
+        moneyTransferCompleter.complete(TransferDialogStatus.error);
+      } else {
+        rethrow;
+      }
+      return;
     }
   }
 
@@ -451,7 +492,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
     String description = "OR add new payment method +";
     if (type != null && type == TransferType.User2Project) {
       description =
-          "To keep growing and reach more people, the Good Wallet Foundation will take a default 5\% of your donation. You are free to choose a any other amount (NOT YET IMPLEMENTED). Thank you for your support!";
+          "We take 5\% of your donation. Please choose a any other amount. Thank you for your support!";
     }
     return await _bottomSheetService!.showBottomSheet(
         title: "Select Payment Method",
@@ -476,6 +517,22 @@ class TransferFundsAmountViewModel extends FormViewModel {
       confirmButtonTitle: 'Yes',
       cancelButtonTitle: 'No',
     );
+  }
+
+  Future _showDonationDialog(
+      {required Completer<TransferDialogStatus> moneyTransferCompleter,
+      required TransferType type}) async {
+    log.i("We are starting the dialog");
+    final dialogResult = await _dialogService!.showCustomDialog(
+      variant: DialogType.Donation,
+      data: {
+        "moneyTransferStatus": MoneyTransferStatusModel(
+          futureStatus: moneyTransferCompleter.future,
+          type: type,
+        )
+      },
+    );
+    return dialogResult;
   }
 
   String getSenderInfoString(senderInfo) {
@@ -513,6 +570,12 @@ class TransferFundsAmountViewModel extends FormViewModel {
     _navigationService!.clearTillFirstAndShow(Routes.layoutTemplateViewMobile,
         arguments: LayoutTemplateViewMobileArguments(
             initialBottomNavBarIndex: BottomNavigatorIndex.Home.index));
+  }
+
+  void clearTillFirstAndShowProjectsView() {
+    _navigationService!.clearTillFirstAndShow(Routes.layoutTemplateViewMobile,
+        arguments: LayoutTemplateViewMobileArguments(
+            initialBottomNavBarIndex: BottomNavigatorIndex.Give.index));
   }
 
   Future navigateToSingleProjectScreen({required String projectId}) async {

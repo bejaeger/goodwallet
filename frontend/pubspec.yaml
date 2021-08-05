@@ -70,6 +70,7 @@ dependencies:
   logger: ^1.0.0
   flutter_signin_button: ^2.0.0
   shimmer_animation: ^2.0.0
+  shimmer: ^2.0.0
 
   persistent_bottom_nav_bar: ^4.0.2
   freezed_annotation: ^0.14.1
