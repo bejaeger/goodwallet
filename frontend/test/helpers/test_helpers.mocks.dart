@@ -443,9 +443,22 @@ class MockFirestoreApi extends _i1.Mock implements _i20.FirestoreApi {
               returnValue: Stream<List<_i9.Project>>.empty())
       as _i15.Stream<List<_i9.Project>>);
   @override
+  _i15.Future<bool> isProjectInDatabase({num? globalGivingId}) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #isProjectInDatabase, [], {#globalGivingId: globalGivingId}),
+          returnValue: Future<bool>.value(false)) as _i15.Future<bool>);
+  @override
   _i15.Future<dynamic> createProject({_i9.Project? project}) => (super
       .noSuchMethod(Invocation.method(#createProject, [], {#project: project}),
           returnValue: Future<dynamic>.value()) as _i15.Future<dynamic>);
+  @override
+  _i15.Future<List<_i9.Project?>> queryProjects({String? queryString}) =>
+      (super.noSuchMethod(
+          Invocation.method(#queryProjects, [], {#queryString: queryString}),
+          returnValue:
+              Future<List<_i9.Project?>>.value(<_i9.Project?>[])) as _i15
+          .Future<List<_i9.Project?>>);
   @override
   _i10.CollectionReference getUserStatisticsCollection({String? uid}) =>
       (super.noSuchMethod(

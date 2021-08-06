@@ -100,6 +100,10 @@ class ProjectsService {
     return project;
   }
 
+  Future<List<Project?>> queryProjects({required String queryString}) async {
+    return await _firestoreApi.queryProjects(queryString: queryString);
+  }
+
   ///////////////////////////////////////////////////////
   /// Temporary extras
 

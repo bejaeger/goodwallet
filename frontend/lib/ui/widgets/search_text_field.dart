@@ -7,6 +7,9 @@ class GreySearchTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final void Function(String)? onChanged;
   final void Function()? onSuffixIconPressed;
+  final void Function()? onTap;
+  final TextEditingController? controller;
+
   final String hintText;
   final bool autofocus;
 
@@ -17,6 +20,8 @@ class GreySearchTextField extends StatelessWidget {
     this.hintText = "Search",
     this.autofocus = false,
     this.onSuffixIconPressed,
+    this.onTap,
+    this.controller,
   }) : super(key: key);
 
   @override
@@ -31,6 +36,8 @@ class GreySearchTextField extends StatelessWidget {
           color: ColorSettings.textFieldBackground,
         ),
         child: TextField(
+          controller: controller,
+          onTap: onTap,
           autofocus: autofocus,
           textAlignVertical: TextAlignVertical.center,
           focusNode: textFieldFocusNode,

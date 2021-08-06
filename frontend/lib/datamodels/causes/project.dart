@@ -21,6 +21,18 @@ class Project with _$Project {
       return id;
   }
 
+  static List<String> _checkIfSearchKeywordsAreSet(
+      List<String>? searchKeywords) {
+    if (searchKeywords == null) {
+      throw DataModelException(
+          message:
+              "Project: You can't serialize Project data that still has no 'nameSearch' attached!",
+          devDetails:
+              "Please provide a 'nameSearch' which will be used to query project names with Firestore queries");
+    } else
+      return searchKeywords;
+  }
+
   @JsonSerializable(explicitToJson: true)
   factory Project({
     required String name,
@@ -41,6 +53,10 @@ class Project with _$Project {
     Organization? organization,
     num? fundingCurrent,
     num? fundingGoal,
+    @JsonKey(
+      toJson: Project._checkIfSearchKeywordsAreSet,
+    )
+        List<String>? nameSearch,
   }) = _Project;
 
   factory Project.fromJson(Map<String, dynamic> json) =>

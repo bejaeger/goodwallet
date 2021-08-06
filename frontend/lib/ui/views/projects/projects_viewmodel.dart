@@ -14,6 +14,8 @@ class ProjectsViewModel extends ProjectsBaseViewModel {
   final ProjectsService? _projectsService = locator<ProjectsService>();
   final GlobalGivingApi? _globalGivingAPIservice = locator<GlobalGivingApi>();
 
+  bool isSearchBarFocused = false;
+  List<Project> projectQueryList = [];
   List<Project> get projects => _projectsService!.projects;
   List<Project> get projectUniqueAreas =>
       _projectsService!.getProjectsUniqueArea();
@@ -47,10 +49,36 @@ class ProjectsViewModel extends ProjectsBaseViewModel {
     return _projectsService!.getGoodWalletFundsInfo();
   }
 
+  void parseQueryProjects(List<Project> queryProjects) {
+    projectQueryList = queryProjects;
+  }
+
+  Future queryProjects(String query) async {
+    if (query.isEmpty) {
+      projectQueryList = [];
+      notifyListeners();
+      return;
+    }
+    setBusy(true);
+    projectQueryList = [];
+    List<Project?> tmpProjectList =
+        await _projectsService!.queryProjects(queryString: query);
+    for (dynamic project in tmpProjectList) {
+      if (project != null) projectQueryList.add(project!);
+    }
+    log.i("Queried projects and found ${projectQueryList.length} matches");
+    setBusy(false);
+  }
+
+  void setFocus() {
+    isSearchBarFocused = !isSearchBarFocused;
+    log.wtf("Tapped search bar!");
+  }
+
   //////////////////////////////////////////////////
   /// Navigations
   ///
-  Future navigateToProjectForAreaView({required String area}) async {
+  Future navigateToProjectForAreaView(String area) async {
     await _navigationService!.navigateTo(Routes.projectsForAreaView,
         arguments: ProjectsForAreaViewArguments(area: area));
   }

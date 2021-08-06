@@ -363,8 +363,11 @@ class StackedRouter extends RouterBase {
       );
     },
     ProjectsView: (data) {
+      var args = data.getArgs<ProjectsViewArguments>(
+        orElse: () => ProjectsViewArguments(),
+      );
       return MaterialPageRoute<dynamic>(
-        builder: (context) => const ProjectsView(),
+        builder: (context) => ProjectsView(key: args.key),
         settings: data,
       );
     },
@@ -564,6 +567,12 @@ class DisburseMoneyPoolViewArguments {
   final Key? key;
   final MoneyPool moneyPool;
   DisburseMoneyPoolViewArguments({this.key, required this.moneyPool});
+}
+
+/// ProjectsView arguments holder class
+class ProjectsViewArguments {
+  final Key? key;
+  ProjectsViewArguments({this.key});
 }
 
 /// ProjectsForAreaView arguments holder class

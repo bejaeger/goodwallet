@@ -33,7 +33,9 @@ class _$ProjectTearOff {
       num? globalGivingProjectId,
       Organization? organization,
       num? fundingCurrent,
-      num? fundingGoal}) {
+      num? fundingGoal,
+      @JsonKey(toJson: Project._checkIfSearchKeywordsAreSet)
+          List<String>? nameSearch}) {
     return _Project(
       name: name,
       id: id,
@@ -47,6 +49,7 @@ class _$ProjectTearOff {
       organization: organization,
       fundingCurrent: fundingCurrent,
       fundingGoal: fundingGoal,
+      nameSearch: nameSearch,
     );
   }
 
@@ -73,6 +76,8 @@ mixin _$Project {
   Organization? get organization => throw _privateConstructorUsedError;
   num? get fundingCurrent => throw _privateConstructorUsedError;
   num? get fundingGoal => throw _privateConstructorUsedError;
+  @JsonKey(toJson: Project._checkIfSearchKeywordsAreSet)
+  List<String>? get nameSearch => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -85,7 +90,8 @@ abstract class $ProjectCopyWith<$Res> {
       _$ProjectCopyWithImpl<$Res>;
   $Res call(
       {String name,
-      @JsonKey(name: "id", toJson: Project._checkIfIdIsSet) String id,
+      @JsonKey(name: "id", toJson: Project._checkIfIdIsSet)
+          String id,
       String area,
       CauseType causeType,
       String? imageUrl,
@@ -95,7 +101,9 @@ abstract class $ProjectCopyWith<$Res> {
       num? globalGivingProjectId,
       Organization? organization,
       num? fundingCurrent,
-      num? fundingGoal});
+      num? fundingGoal,
+      @JsonKey(toJson: Project._checkIfSearchKeywordsAreSet)
+          List<String>? nameSearch});
 
   $OrganizationCopyWith<$Res>? get organization;
 }
@@ -122,6 +130,7 @@ class _$ProjectCopyWithImpl<$Res> implements $ProjectCopyWith<$Res> {
     Object? organization = freezed,
     Object? fundingCurrent = freezed,
     Object? fundingGoal = freezed,
+    Object? nameSearch = freezed,
   }) {
     return _then(_value.copyWith(
       name: name == freezed
@@ -172,6 +181,10 @@ class _$ProjectCopyWithImpl<$Res> implements $ProjectCopyWith<$Res> {
           ? _value.fundingGoal
           : fundingGoal // ignore: cast_nullable_to_non_nullable
               as num?,
+      nameSearch: nameSearch == freezed
+          ? _value.nameSearch
+          : nameSearch // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 
@@ -194,7 +207,8 @@ abstract class _$ProjectCopyWith<$Res> implements $ProjectCopyWith<$Res> {
   @override
   $Res call(
       {String name,
-      @JsonKey(name: "id", toJson: Project._checkIfIdIsSet) String id,
+      @JsonKey(name: "id", toJson: Project._checkIfIdIsSet)
+          String id,
       String area,
       CauseType causeType,
       String? imageUrl,
@@ -204,7 +218,9 @@ abstract class _$ProjectCopyWith<$Res> implements $ProjectCopyWith<$Res> {
       num? globalGivingProjectId,
       Organization? organization,
       num? fundingCurrent,
-      num? fundingGoal});
+      num? fundingGoal,
+      @JsonKey(toJson: Project._checkIfSearchKeywordsAreSet)
+          List<String>? nameSearch});
 
   @override
   $OrganizationCopyWith<$Res>? get organization;
@@ -233,6 +249,7 @@ class __$ProjectCopyWithImpl<$Res> extends _$ProjectCopyWithImpl<$Res>
     Object? organization = freezed,
     Object? fundingCurrent = freezed,
     Object? fundingGoal = freezed,
+    Object? nameSearch = freezed,
   }) {
     return _then(_Project(
       name: name == freezed
@@ -283,6 +300,10 @@ class __$ProjectCopyWithImpl<$Res> extends _$ProjectCopyWithImpl<$Res>
           ? _value.fundingGoal
           : fundingGoal // ignore: cast_nullable_to_non_nullable
               as num?,
+      nameSearch: nameSearch == freezed
+          ? _value.nameSearch
+          : nameSearch // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -304,7 +325,9 @@ class _$_Project implements _Project {
       this.globalGivingProjectId,
       this.organization,
       this.fundingCurrent,
-      this.fundingGoal});
+      this.fundingGoal,
+      @JsonKey(toJson: Project._checkIfSearchKeywordsAreSet)
+          this.nameSearch});
 
   factory _$_Project.fromJson(Map<String, dynamic> json) =>
       _$_$_ProjectFromJson(json);
@@ -335,10 +358,13 @@ class _$_Project implements _Project {
   final num? fundingCurrent;
   @override
   final num? fundingGoal;
+  @override
+  @JsonKey(toJson: Project._checkIfSearchKeywordsAreSet)
+  final List<String>? nameSearch;
 
   @override
   String toString() {
-    return 'Project(name: $name, id: $id, area: $area, causeType: $causeType, imageUrl: $imageUrl, contactUrl: $contactUrl, summary: $summary, totalDonations: $totalDonations, globalGivingProjectId: $globalGivingProjectId, organization: $organization, fundingCurrent: $fundingCurrent, fundingGoal: $fundingGoal)';
+    return 'Project(name: $name, id: $id, area: $area, causeType: $causeType, imageUrl: $imageUrl, contactUrl: $contactUrl, summary: $summary, totalDonations: $totalDonations, globalGivingProjectId: $globalGivingProjectId, organization: $organization, fundingCurrent: $fundingCurrent, fundingGoal: $fundingGoal, nameSearch: $nameSearch)';
   }
 
   @override
@@ -377,7 +403,10 @@ class _$_Project implements _Project {
                     .equals(other.fundingCurrent, fundingCurrent)) &&
             (identical(other.fundingGoal, fundingGoal) ||
                 const DeepCollectionEquality()
-                    .equals(other.fundingGoal, fundingGoal)));
+                    .equals(other.fundingGoal, fundingGoal)) &&
+            (identical(other.nameSearch, nameSearch) ||
+                const DeepCollectionEquality()
+                    .equals(other.nameSearch, nameSearch)));
   }
 
   @override
@@ -394,7 +423,8 @@ class _$_Project implements _Project {
       const DeepCollectionEquality().hash(globalGivingProjectId) ^
       const DeepCollectionEquality().hash(organization) ^
       const DeepCollectionEquality().hash(fundingCurrent) ^
-      const DeepCollectionEquality().hash(fundingGoal);
+      const DeepCollectionEquality().hash(fundingGoal) ^
+      const DeepCollectionEquality().hash(nameSearch);
 
   @JsonKey(ignore: true)
   @override
@@ -410,7 +440,8 @@ class _$_Project implements _Project {
 abstract class _Project implements Project {
   factory _Project(
       {required String name,
-      @JsonKey(name: "id", toJson: Project._checkIfIdIsSet) String id,
+      @JsonKey(name: "id", toJson: Project._checkIfIdIsSet)
+          String id,
       required String area,
       required CauseType causeType,
       String? imageUrl,
@@ -420,7 +451,9 @@ abstract class _Project implements Project {
       num? globalGivingProjectId,
       Organization? organization,
       num? fundingCurrent,
-      num? fundingGoal}) = _$_Project;
+      num? fundingGoal,
+      @JsonKey(toJson: Project._checkIfSearchKeywordsAreSet)
+          List<String>? nameSearch}) = _$_Project;
 
   factory _Project.fromJson(Map<String, dynamic> json) = _$_Project.fromJson;
 
@@ -449,6 +482,9 @@ abstract class _Project implements Project {
   num? get fundingCurrent => throw _privateConstructorUsedError;
   @override
   num? get fundingGoal => throw _privateConstructorUsedError;
+  @override
+  @JsonKey(toJson: Project._checkIfSearchKeywordsAreSet)
+  List<String>? get nameSearch => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$ProjectCopyWith<_Project> get copyWith =>

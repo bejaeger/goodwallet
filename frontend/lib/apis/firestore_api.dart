@@ -590,6 +590,16 @@ class FirestoreApi {
     }
   }
 
+  Future<List<Project?>> queryProjects({required String queryString}) async {
+    QuerySnapshot snapshot = await projectsCollection
+        .where("nameSearch", arrayContains: queryString.toLowerCase())
+        .get();
+    List<Project?> projects = snapshot.docs.map((DocumentSnapshot doc) {
+      if (doc.data() != null) return Project.fromJson(doc.data()!);
+    }).toList();
+    return projects;
+  }
+
   /////////////////////////////////////////////////////////
   // Collection's getter
   CollectionReference getUserStatisticsCollection({required String uid}) {

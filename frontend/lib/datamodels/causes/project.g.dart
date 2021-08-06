@@ -22,6 +22,9 @@ _$_Project _$_$_ProjectFromJson(Map<String, dynamic> json) {
         : Organization.fromJson(json['organization'] as Map<String, dynamic>),
     fundingCurrent: json['fundingCurrent'] as num?,
     fundingGoal: json['fundingGoal'] as num?,
+    nameSearch: (json['nameSearch'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
   );
 }
 
@@ -39,6 +42,7 @@ Map<String, dynamic> _$_$_ProjectToJson(_$_Project instance) =>
       'organization': instance.organization?.toJson(),
       'fundingCurrent': instance.fundingCurrent,
       'fundingGoal': instance.fundingGoal,
+      'nameSearch': Project._checkIfSearchKeywordsAreSet(instance.nameSearch),
     };
 
 K _$enumDecode<K, V>(

@@ -5,6 +5,8 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/constants/constants.dart';
 import 'package:good_wallet/data/global_giving_api_aux_data.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
+import 'package:good_wallet/exceptions/global_giving_api_exception.dart';
+import 'package:good_wallet/utils/string_utils.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'dart:math';
@@ -29,11 +31,19 @@ class GlobalGivingApi {
   Future pushGlobalGivingProjectsToFirestore() async {
     // TODO: Take list of projects and fetch 10 projects for each request.
 
-    String projectIdsString = kGlobalGivingProjectIds.join(",");
-    final projectList =
-        await getProjectsFromIds(projectIdsString: projectIdsString);
-    for (dynamic project in projectList) {
-      _firestoreApi.createProject(project: project);
+    try {
+      String projectIdsString = kGlobalGivingProjectIds.join(",");
+      final projectList =
+          await getProjectsFromIds(projectIdsString: projectIdsString);
+      for (dynamic project in projectList) {
+        List<String> nameSearch = getListOfKeywordsFromString(project.name);
+        Project newProject = project.copyWith(nameSearch: nameSearch);
+        _firestoreApi.createProject(project: newProject);
+      }
+    } catch (e) {
+      throw GlobalGivingApiException(
+          message: "Could not add projects to firestore",
+          devDetails: "Error thrown: $e");
     }
   }
 

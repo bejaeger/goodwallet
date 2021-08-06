@@ -16,6 +16,7 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
   final bool isFavorite;
   final bool displayArea;
   final bool showDescription;
+  final bool small;
 
   GlobalGivingProjectCardMobile(
       {required this.project,
@@ -23,7 +24,8 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
       this.onFavoriteTapped,
       this.displayArea = false,
       this.isFavorite = false,
-      this.showDescription = false});
+      this.showDescription = false,
+      this.small = false});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -65,7 +67,7 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
                     //stops: [0.0, 1.0],
                     colors: [
                       Colors.transparent,
-                      MyColors.black54.withOpacity(0.4)
+                      MyColors.black54.withOpacity(0.8)
                     ],
                   ),
                 ),
@@ -114,7 +116,9 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
                       displayArea ? project.area : project.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: textTheme(context).headline5,
+                      style: textTheme(context)
+                          .headline5!
+                          .copyWith(fontSize: small ? 16 : 20),
                     ),
                   ),
                 ),

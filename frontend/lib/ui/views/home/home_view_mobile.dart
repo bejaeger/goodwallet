@@ -47,7 +47,7 @@ class HomeViewMobile extends StatelessWidget {
                           width: 2, color: ColorSettings.primaryColor)),
                   elevation: 15,
                   backgroundColor: Colors.white,
-                  child: Icon(Icons.favorite,
+                  child: Icon(Icons.send_rounded,
                       size: 28,
                       color: ColorSettings.primaryColor.withOpacity(1)),
                   onPressed: model.showSendMoneyBottomSheet,
