@@ -32,7 +32,7 @@ class FriendsView extends StatelessWidget {
                       color: ColorSettings.pageTitleColor, size: 25),
                 ),
               ),
-              verticalSpaceRegular,
+              verticalSpaceSmall,
               model.isBusy
                   ? Center(child: CircularProgressIndicator())
                   : Padding(

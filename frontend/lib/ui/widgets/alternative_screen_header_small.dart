@@ -30,10 +30,15 @@ class AlternativeScreenHeaderSmall extends StatelessWidget {
         ),
         Text(
           title,
-          style: textTheme(context).bodyText2!.copyWith(fontSize: 16),
+          style: textTheme(context).headline4!.copyWith(fontSize: 16),
         ),
-        Icon(Icons.help_outline_rounded,
-            color: ColorSettings.blackHeadlineColor),
+        IconButton(
+          onPressed: onHelpIconPressed,
+          padding: EdgeInsets.zero,
+          alignment: Alignment.centerRight,
+          icon: Icon(Icons.help_outline_rounded,
+              color: ColorSettings.blackHeadlineColor),
+        ),
       ],
     );
   }

@@ -1,5 +1,6 @@
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
+import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked/stacked.dart';
@@ -12,7 +13,8 @@ class RaiseMoneyBottomSheetViewModel extends BaseModel {
   Future navigateToAcceptPaymentsView() async {
     log.i("Clicked navigating to accept payments view (not yet implemented!)");
     await _navigationService!.navigateTo(Routes.qRCodeViewMobile,
-        arguments: QRCodeViewMobileArguments(initialIndex: 1));
+        arguments: QRCodeViewMobileArguments(
+            initialIndex: 1, searchType: SearchType.None));
   }
 
   Future navigateToManageMoneyPoolsView() async {

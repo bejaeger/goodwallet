@@ -295,6 +295,8 @@ class StackedRouter extends RouterBase {
         builder: (context) => QRCodeViewMobile(
           key: args.key,
           initialIndex: args.initialIndex,
+          searchType: args.searchType,
+          showSwitchToSearch: args.showSwitchToSearch,
         ),
         settings: data,
       );
@@ -515,7 +517,13 @@ class MoneyPoolsViewArguments {
 class QRCodeViewMobileArguments {
   final Key? key;
   final int initialIndex;
-  QRCodeViewMobileArguments({this.key, this.initialIndex = 0});
+  final SearchType? searchType;
+  final bool showSwitchToSearch;
+  QRCodeViewMobileArguments(
+      {this.key,
+      this.initialIndex = 0,
+      this.searchType,
+      this.showSwitchToSearch = true});
 }
 
 /// ExploreView arguments holder class

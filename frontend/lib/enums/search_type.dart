@@ -6,4 +6,5 @@ enum SearchType {
   MoneyPool,
   Explore,
   FindFriends,
+  None,
 }

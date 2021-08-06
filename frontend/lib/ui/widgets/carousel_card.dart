@@ -88,8 +88,10 @@ class CarouselCard extends StatelessWidget {
                       ),
                     Align(
                       alignment: Alignment.topRight,
-                      child: Icon(Icons.arrow_forward_ios,
-                          color: ColorSettings.whiteTextColor, size: 20),
+                      child: onTap == null
+                          ? null
+                          : Icon(Icons.arrow_forward_ios,
+                              color: ColorSettings.whiteTextColor, size: 20),
                     ),
                     Align(
                       alignment: Alignment.topLeft,

@@ -148,6 +148,22 @@ class HomeViewModel extends SocialFunctionsViewModel {
     }
   }
 
+  Future showRaisedFundsStatsDialog() async {
+    await _dialogService!.showCustomDialog(
+      barrierDismissible: true,
+      variant: DialogType.RaisedFundsStats,
+      data: userStats,
+    );
+  }
+
+  Future showDonationStatsDialog() async {
+    await _dialogService!.showCustomDialog(
+      barrierDismissible: true,
+      variant: DialogType.DonationStats,
+      data: userStats,
+    );
+  }
+
   //////////////////////////////////////////////////////////
   /// Navigation
   ///
@@ -156,12 +172,6 @@ class HomeViewModel extends SocialFunctionsViewModel {
     await _navigationService!.replaceWith(Routes.layoutTemplateViewMobile,
         arguments: LayoutTemplateViewMobileArguments(
             initialBottomNavBarIndex: BottomNavigatorIndex.Give.index));
-  }
-
-  Future navigateToSingleFeaturedAppView(FeaturedAppType type) async {
-    log.i("Navigating to single featured app view");
-    await _navigationService!.navigateTo(Routes.singleFeaturedAppView,
-        arguments: SingleFeaturedAppViewArguments(type: type));
   }
 
   Future navigateToSettingsView() async {
@@ -178,19 +188,8 @@ class HomeViewModel extends SocialFunctionsViewModel {
     _navigationService!.navigateTo(Routes.inAppNotificationsView);
   }
 
-  void navigateToQRCodeView() {
-    _navigationService!.navigateTo(Routes.qRCodeViewMobile,
-        arguments: QRCodeViewMobileArguments(initialIndex: 1));
-  }
-
   void navigateToProfileView() {
     _navigationService!.navigateTo(Routes.profileViewMobile);
-  }
-
-  Future navigateToAcceptPaymentsView() async {
-    log.i("Clicked navigating to accept payments view (not yet implemented!)");
-    await _navigationService!.navigateTo(Routes.qRCodeViewMobile,
-        arguments: QRCodeViewMobileArguments(initialIndex: 1));
   }
 
   Future navigateToCreateMoneyPoolsView() async {

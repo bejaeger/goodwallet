@@ -3,10 +3,13 @@ import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/causes/concise_info/concise_project_info.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
+import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/datamodels/user/statistics/supported_project_statistics.dart';
 import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/dialog_type.dart';
+import 'package:good_wallet/enums/search_type.dart';
+import 'package:good_wallet/services/money_pools/money_pools_service.dart';
 import 'package:good_wallet/services/projects/projects_service.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/user/user_service.dart';
@@ -21,11 +24,12 @@ class PublicProfileViewModel extends SocialFunctionsViewModel {
   final QRCodeService? _qrCodeService = locator<QRCodeService>();
   final UserService? _userService = locator<UserService>();
   final ProjectsService? _projectsService = locator<ProjectsService>();
+  final MoneyPoolsService? _moneyPoolsService = locator<MoneyPoolsService>();
 
   final log = getLogger("public_profile_viewmodel.dart");
   User? user;
   UserStatistics? otherUserStats;
-
+  List<MoneyPool> get moneyPools => _moneyPoolsService!.moneyPools;
   String? _uid;
   bool get isCurrentUsersProfile =>
       _uid != null ? _uid == currentUser.uid : false;
@@ -73,10 +77,9 @@ class PublicProfileViewModel extends SocialFunctionsViewModel {
   Future showStatsDialog(User user, UserStatistics userStats) async {
     await _dialogService!.showCustomDialog(
       barrierDismissible: true,
-      variant: DialogType
-          .Stats, // Which builder you'd like to call that was assigned in the builders function above.
+      variant: DialogType.Stats,
       title: user.fullName + "'s Impact",
-      customData: userStats,
+      data: userStats,
     );
   }
 
@@ -92,11 +95,16 @@ class PublicProfileViewModel extends SocialFunctionsViewModel {
 
   void navigateToQRCodeView() {
     _navigationService!.navigateTo(Routes.qRCodeViewMobile,
-        arguments: QRCodeViewMobileArguments(initialIndex: 1));
+        arguments: QRCodeViewMobileArguments(
+            initialIndex: 1, searchType: SearchType.None));
   }
 
   Future navigateToSingleProjectScreen(String projectId) async {
     await _navigationService!.navigateTo(Routes.singleProjectViewMobile,
         arguments: SingleProjectViewMobileArguments(projectId: projectId));
+  }
+
+  void navigateToAllMoneyPoolsView() {
+    _navigationService!.navigateTo(Routes.moneyPoolsView);
   }
 }

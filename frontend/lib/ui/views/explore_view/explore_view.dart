@@ -8,8 +8,6 @@ import 'package:good_wallet/ui/widgets/carousel_card.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/ui/widgets/search_text_field.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
-import 'package:good_wallet/ui/widgets/user_list_tile.dart';
-import 'package:good_wallet/utils/string_utils.dart';
 import 'package:good_wallet/utils/debouncer.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -20,7 +18,7 @@ import 'explore_viewmodel.dart';
 class ExploreView extends StatelessWidget {
   final SearchType searchType;
   final bool autofocus;
-  final _debouncer = Debouncer(milliseconds: 10);
+  final _debouncer = Debouncer(milliseconds: 100);
 
   ExploreView(
       {Key? key, this.searchType = SearchType.Explore, this.autofocus = false})
@@ -78,6 +76,7 @@ class ExploreView extends StatelessWidget {
                           //   padding: const EdgeInsets.only(right: 8.0),
                           //   child: Text("\$0"),
                           // ),
+
                           trailing: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
                             child: Text("\$1000"),
@@ -96,13 +95,13 @@ class ExploreView extends StatelessWidget {
                   ),
                   verticalSpaceRegular,
                   SectionHeader(
-                    title: "Featured apps",
+                    title: "Our envisioned apps",
                     onTextButtonTap: model.showNotImplementedSnackbar,
                   ),
                   FeaturedAppsCarousel(model: model),
                   verticalSpaceRegular,
                   SectionHeader(
-                    title: "Newsletter",
+                    title: "Feed",
                     // onTextButtonTap: model.showNotImplementedSnackbar,
                   ),
                   verticalSpaceSmall,
@@ -133,34 +132,34 @@ class FeaturedAppsCarousel extends StatelessWidget {
         children: [
           SizedBox(width: LayoutSettings.horizontalPadding),
           CarouselCard(
-            title: newsFeed ? "We're looking for you" : "Marketplace",
+            title: newsFeed ? "Are you a developer?" : "Marketplace",
             explanation: newsFeed
-                ? "Help us build applications that leverage the Good Wallet"
+                ? "We're looking for you! Help us build applications that leverage the Good Wallet. Reach out to info@the-good-wallet.com!"
                 : "Sell items in exchange for Good Dollars",
             onTap: newsFeed
-                ? () => null
+                ? null
                 : () => model.navigateToSingleFeaturedAppView(
                     FeaturedAppType.Marketplace),
             backgroundColor: newsFeed
-                ? MyColors.palettePurple.withOpacity(0.8)
-                : MyColors.paletteBlue,
+                ? ColorSettings.primaryColor.withOpacity(0.5)
+                : MyColors.paletteBlue.withOpacity(0.8),
           ),
           SizedBox(width: LayoutSettings.horizontalPadding),
           if (!newsFeed)
             CarouselCard(
-              title: "Sportsbetting",
-              explanation: "Bet with friends and win Good Gollars",
-              onTap: model.showNotImplementedSnackbar,
-              backgroundColor: MyColors.paletteTurquoise,
+              title: "Loyalty Program",
+              explanation:
+                  "A purely philanthropic loyalty program where you get cashback in your Good Wallet",
+              onTap: null,
+              backgroundColor: MyColors.palettePurple.withOpacity(0.8),
             ),
           if (!newsFeed) SizedBox(width: LayoutSettings.horizontalPadding),
           if (!newsFeed)
             CarouselCard(
-              title: "Your Application",
-              explanation:
-                  "This could be your application that leverages the Good Wallet to do good",
-              onTap: model.showNotImplementedSnackbar,
-              backgroundColor: MyColors.palettePurple,
+              title: "Sportsbetting",
+              explanation: "Bet with friends and win Good Gollars",
+              onTap: null,
+              backgroundColor: MyColors.paletteTurquoise.withOpacity(0.8),
             ),
           SizedBox(width: LayoutSettings.horizontalPadding),
         ],

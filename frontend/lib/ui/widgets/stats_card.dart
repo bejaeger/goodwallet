@@ -10,7 +10,8 @@ class StatsCard extends StatelessWidget {
   final String? title;
   final String? subtitle;
   final String buttonText;
-  final void Function()? onPressed;
+  final void Function()? onButtonPressed;
+  final void Function()? onCardPressed;
 
   const StatsCard(
       {Key? key,
@@ -18,58 +19,61 @@ class StatsCard extends StatelessWidget {
       this.height: 130,
       this.title,
       this.subtitle,
-      this.onPressed,
-      this.buttonText = "Donate"})
+      this.onButtonPressed,
+      this.buttonText = "Donate",
+      this.onCardPressed})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed,
+      onTap: onCardPressed,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),
         elevation: 4,
         child: Container(
-            height: height,
-            child: Stack(
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        if (title != null)
-                          Text(
-                            title!,
-                            style: textTheme(context).bodyText2!.copyWith(
-                                  fontSize: 18,
-                                ),
-                          ), //verticalSpaceTiny,
+          height: height,
+          child: Stack(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      if (title != null)
                         Text(
-                          formatAmount(statistic),
+                          title!,
+                          style: textTheme(context).bodyText2!.copyWith(
+                                fontSize: 18,
+                              ),
+                        ), //verticalSpaceTiny,
+                      Text(
+                        formatAmount(statistic),
+                        maxLines: 1,
+                        style: textTheme(context).headline2!.copyWith(
+                              fontSize: 28,
+                            ),
+                      ),
+                      if (subtitle != null)
+                        Text(
+                          subtitle!,
                           maxLines: 1,
-                          style: textTheme(context).headline2!.copyWith(
-                                fontSize: 28,
+                          style: textTheme(context).bodyText2!.copyWith(
+                                fontSize: 13,
                               ),
                         ),
-                        if (subtitle != null)
-                          Text(
-                            subtitle!,
-                            maxLines: 1,
-                            style: textTheme(context).bodyText2!.copyWith(
-                                  fontSize: 13,
-                                ),
-                          ),
-                      ],
-                    ),
-                    Container(height: 30),
-                  ],
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
+                    ],
+                  ),
+                  Container(height: 30),
+                ],
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: GestureDetector(
+                  onTap: onButtonPressed,
                   child: Container(
                       alignment: Alignment.center,
                       height: 35,
@@ -82,8 +86,10 @@ class StatsCard extends StatelessWidget {
                               .headline5!
                               .copyWith(fontSize: 16))),
                 ),
-              ],
-            )),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

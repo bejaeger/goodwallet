@@ -53,18 +53,16 @@ class ProjectsView extends StatelessWidget {
                 //   ],
                 // ),
 
-                // Temporarily allow DAN to push new projects to firebase
-                // onSecondRightIconPressed: model.navigateToProfileView,
-                // secondRightIcon: Icon(
-                //   Icons.person,
-                //   color: ColorSettings.pageTitleColor,
-                //   size: 28,
-                // ),
-                // onSecondRightIconPressed:
-                //     model.currentUser.uid == "ptWSWNPX4xRyVsb6jwjPfff5C2B3"
-                //         ? model.pushGlobalGivingProjectsToFirestore
-                //         : null,
-                // secondRightIcon: Icon(Icons.plus_one, size: 28),
+                // =============================================>>>>
+                // Temporarily allow user Dan to push new projects to firebase
+
+                onSecondRightIconPressed:
+                    model.currentUser.uid == "ptWSWNPX4xRyVsb6jwjPfff5C2B3"
+                        ? model.pushGlobalGivingProjectsToFirestore
+                        : null,
+                secondRightIcon: Icon(Icons.plus_one, size: 28),
+                //
+                // <<<< =============================================
               ),
               SliverToBoxAdapter(
                 child: GreySearchTextField(hintText: "Search Projects"),

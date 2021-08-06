@@ -19,7 +19,15 @@ class SearchViewModel extends SocialFunctionsViewModel {
   final NavigationService? _navigationService = locator<NavigationService>();
   final log = getLogger("search_viewmodel.dart");
 
-  void selectUserAndProceed(int index, SearchType searchType) {
+  SearchType searchType = SearchType.Explore;
+
+  SearchViewModel({required SearchType? searchTypeIn}) {
+    if (searchTypeIn != null) {
+      searchType = searchTypeIn;
+    }
+  }
+
+  void selectUserAndProceed(int index) {
     final uid = userInfoList[index].uid;
     log.i("Selected user with id = $uid");
     if (searchType == SearchType.UserToTransferTo) {
@@ -59,9 +67,18 @@ class SearchViewModel extends SocialFunctionsViewModel {
   /////////////////////////////////////////////////
   /// Navigation
 
-  void navigateToScanQRCodeView() {
-    _navigationService!.navigateTo(Routes.qRCodeViewMobile,
-        arguments: QRCodeViewMobileArguments(initialIndex: 0));
+  Future navigateToScanQRCodeView() async {
+    dynamic publicUserInfo = await _navigationService!.navigateTo(
+        Routes.qRCodeViewMobile,
+        arguments: QRCodeViewMobileArguments(
+            initialIndex: 0,
+            searchType: searchType,
+            showSwitchToSearch: false));
+    if (publicUserInfo is PublicUserInfo) {
+      log.i("QR code scanned, navigate further");
+      // TODO: invite user! We pop screen and handle the rest in single_money_pool_viewmodel!
+      _navigationService!.back(result: publicUserInfo);
+    }
   }
 
   void navigateToProfileView() {

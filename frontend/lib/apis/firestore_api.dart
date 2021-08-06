@@ -554,17 +554,39 @@ class FirestoreApi {
     }
   }
 
+  Future<bool> isProjectInDatabase({required num globalGivingId}) async {
+    QuerySnapshot snapshot = await projectsCollection
+        .where("globalGivingProjectId", isEqualTo: globalGivingId)
+        .get();
+    return snapshot.docs.length > 0;
+  }
+
   ///  Listen to projects collection
   Future createProject({required Project project}) async {
-    try {
-      final docRef = projectsCollection.doc();
-      final newProject = project.copyWith(id: docRef.id);
-      await docRef.set(newProject.toJson());
-    } catch (e) {
-      throw FirestoreApiException(
-          message:
-              "Unknown expection when adding project to projects collection",
-          devDetails: '$e');
+    if (project.globalGivingProjectId == null) {
+      log.wtf(
+          "Can't add project to firestore database without global giving id!");
+      return;
+    }
+    // check if project is already present
+    bool isAvailable = await isProjectInDatabase(
+        globalGivingId: project.globalGivingProjectId!);
+    if (isAvailable) {
+      log.w(
+          "Project with name ${project.name} already found in database, not adding a second one");
+    } else {
+      try {
+        log.i(
+            "Project with name ${project.name} not yet present in database. Adding it now!");
+        final docRef = projectsCollection.doc();
+        final newProject = project.copyWith(id: docRef.id);
+        await docRef.set(newProject.toJson());
+      } catch (e) {
+        throw FirestoreApiException(
+            message:
+                "Unknown expection when trying to add project to projects collection",
+            devDetails: '$e');
+      }
     }
   }
 

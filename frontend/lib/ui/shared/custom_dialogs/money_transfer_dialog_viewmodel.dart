@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:good_wallet/datamodels/helpers/money_transfer_status_model.dart';
-import 'package:good_wallet/enums/donation_dialog_status.dart';
+import 'package:good_wallet/enums/money_transfer_dialog_status.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/base_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';

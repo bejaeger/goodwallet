@@ -24,6 +24,7 @@ class DisburseMoneyPoolViewModel extends BaseModel {
   final MoneyPoolsService? _moneyPoolsService = locator<MoneyPoolsService>();
   final NavigationService? _navigationService = locator<NavigationService>();
   final SnackbarService? _snackbarService = locator<SnackbarService>();
+  final DialogService _dialogService = locator<DialogService>();
   final DummyPaymentService? _dummyPaymentService =
       locator<DummyPaymentService>();
   // Available balance
@@ -228,6 +229,15 @@ class DisburseMoneyPoolViewModel extends BaseModel {
       title: "Would you like to continue to use this money pool or delete it?",
       confirmButtonTitle: 'Continue usage',
       cancelButtonTitle: 'Delete',
+    );
+  }
+
+  Future showHelpDialog() async {
+    return await _dialogService.showDialog(
+      title: "Disburse the money pool",
+      description:
+          "Split up the money pool into individual users; You can make the splitting as fine as you wish, no transaction fees apply here. You can also continue to use the money pool after the disbursement if you want.",
+      dialogPlatform: DialogPlatform.Material,
     );
   }
 }

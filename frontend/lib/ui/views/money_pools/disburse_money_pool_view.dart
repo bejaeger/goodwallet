@@ -32,8 +32,10 @@ class DisburseMoneyPoolView extends StatelessWidget {
                 physics: AlwaysScrollableScrollPhysics(),
                 children: [
                   AlternativeScreenHeaderSmall(
-                      title: "Select Payouts",
-                      onBackButtonPressed: model.navigateBack),
+                    title: "Select Payouts",
+                    onBackButtonPressed: model.navigateBack,
+                    onHelpIconPressed: () => model.showHelpDialog(),
+                  ),
                   verticalSpaceSmall,
                   Column(
                     children: [

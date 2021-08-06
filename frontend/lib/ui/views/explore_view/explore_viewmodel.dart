@@ -4,6 +4,7 @@ import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/recipient_info.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/sender_info.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
+import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
@@ -79,5 +80,11 @@ class ExploreViewModel extends SocialFunctionsViewModel {
             type: TransferType.User2UserSent,
             recipientInfo: RecipientInfo.user(
                 name: userInfoList[index].name, id: userInfoList[index].uid)));
+  }
+
+  Future navigateToSingleFeaturedAppView(FeaturedAppType type) async {
+    log.i("Navigating to single featured app view");
+    await _navigationService!.navigateTo(Routes.singleFeaturedAppView,
+        arguments: SingleFeaturedAppViewArguments(type: type));
   }
 }

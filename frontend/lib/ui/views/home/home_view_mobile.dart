@@ -36,10 +36,10 @@ class HomeViewMobile extends StatelessWidget {
         builder: (context, model, child) {
           return Scaffold(
             floatingActionButton: Container(
-              height: 70,
-              width: 70,
+              height: 80,
+              width: 80,
               child: Padding(
-                padding: const EdgeInsets.all(6.0),
+                padding: const EdgeInsets.all(10.0),
                 child: FloatingActionButton(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(90),
@@ -95,7 +95,9 @@ class HomeViewMobile extends StatelessWidget {
                                               model.userStats.currentBalance,
                                           subtitle: "Your Balance",
                                           buttonText: "Add Funds",
-                                          onPressed: model
+                                          onCardPressed:
+                                              model.showRaisedFundsStatsDialog,
+                                          onButtonPressed: model
                                               .showHomeViewMoreBottomSheet),
                                     ),
                                     horizontalSpaceRegular,
@@ -104,7 +106,9 @@ class HomeViewMobile extends StatelessWidget {
                                         statistic: model.userStats
                                             .donationStatistics.totalDonations,
                                         subtitle: "Total Donations",
-                                        onPressed:
+                                        onCardPressed:
+                                            model.showDonationStatsDialog,
+                                        onButtonPressed:
                                             model.showDonationBottomSheet,
                                       ),
                                     ),
@@ -473,7 +477,7 @@ class MoneyPoolsList extends StatelessWidget {
         physics: ScrollPhysics(),
         itemCount: moneyPools.length + 1,
         itemBuilder: (context, index) {
-          double width = (screenWidthWithoutPadding(context) - 25) / 2 - 20;
+          double width = (screenWidthWithoutPadding(context) - 25) / 2 - 15;
           if (index >= moneyPools.length) {
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,

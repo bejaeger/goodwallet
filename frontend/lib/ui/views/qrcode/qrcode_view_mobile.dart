@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/ui/layout_widgets/tabbar_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
@@ -13,19 +14,31 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:stacked/stacked.dart';
 
 class QRCodeViewMobile extends StatelessWidget {
+  final SearchType? searchType;
+  final bool showSwitchToSearch;
+
   final int initialIndex;
-  const QRCodeViewMobile({Key? key, this.initialIndex = 0}) : super(key: key);
+  const QRCodeViewMobile(
+      {Key? key,
+      this.initialIndex = 0,
+      this.searchType,
+      this.showSwitchToSearch = true})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<QRCodeViewModel>.reactive(
-      viewModelBuilder: () => QRCodeViewModel(),
+      viewModelBuilder: () => QRCodeViewModel(searchTypeIn: searchType),
       builder: (context, model, child) => TabBarLayout(
           initialIndex: initialIndex,
           title: "QR Code",
-          titleTrailingWidget: IconButton(
-              icon: Icon(Icons.search_rounded),
-              onPressed: model.navigateToSearchViewMobile),
+          titleTrailingWidget: searchType == SearchType.None
+              ? null
+              : showSwitchToSearch
+                  ? IconButton(
+                      icon: Icon(Icons.search_rounded),
+                      onPressed: model.navigateToSearchViewMobile)
+                  : null,
           tabs: [
             SizedBox(
               width: screenWidth(context) * 0.4,

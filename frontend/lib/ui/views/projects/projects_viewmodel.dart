@@ -40,7 +40,7 @@ class ProjectsViewModel extends ProjectsBaseViewModel {
 
   void pushGlobalGivingProjectsToFirestore() {
     log.i("Adding project info to firestore");
-    _globalGivingAPIservice!.getProjectsOfTheMonth(addToFirestore: true);
+    _globalGivingAPIservice!.pushGlobalGivingProjectsToFirestore();
   }
 
   List<Project> getGoodWalletFundsInfo() {

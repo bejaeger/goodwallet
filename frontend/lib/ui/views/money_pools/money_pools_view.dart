@@ -38,6 +38,7 @@ class MoneyPoolsView extends StatelessWidget {
                 secondRightIcon: Icon(Icons.add_box_outlined,
                     color: ColorSettings.pageTitleColor, size: 28),
               ),
+              SliverToBoxAdapter(child: SizedBox(height: 15)),
               model.isBusy
                   ? SliverToBoxAdapter(
                       child: Center(

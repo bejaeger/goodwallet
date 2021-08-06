@@ -26,7 +26,7 @@ class TransfersHistoryView extends StatelessWidget {
               CustomSliverAppBarSmall(
                 title: "Recent Activities",
               ),
-              SliverToBoxAdapter(child: SizedBox(height: 18)),
+              SliverToBoxAdapter(child: SizedBox(height: 15)),
               model.transfers == null || model.transfers!.isEmpty
                   ? model.isBusy
                       ? SliverToBoxAdapter(

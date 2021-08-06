@@ -31,7 +31,7 @@ class SearchView extends StatelessWidget {
                 : "Explore";
     final textFieldFocusNode = FocusNode();
     return ViewModelBuilder<SearchViewModel>.reactive(
-      viewModelBuilder: () => SearchViewModel(),
+      viewModelBuilder: () => SearchViewModel(searchTypeIn: searchType),
       builder: (context, model, child) => ConstrainedWidthWithScaffoldLayout(
         child: CustomScrollView(
           key: PageStorageKey('storage-key'),
@@ -57,9 +57,9 @@ class SearchView extends StatelessWidget {
                   GreySearchTextField(
                     focusNode: textFieldFocusNode,
                     autofocus: autofocus,
-                    onSuffixIconPressed: () {
+                    onSuffixIconPressed: () async {
                       textFieldFocusNode.unfocus();
-                      model.navigateToScanQRCodeView();
+                      await model.navigateToScanQRCodeView();
                     },
                     onChanged: (String pattern) async {
                       // await model.queryUsers(pattern);
@@ -91,7 +91,7 @@ class SearchView extends StatelessWidget {
                       ],
                       onTilePressed: () {
                         textFieldFocusNode.unfocus();
-                        model.selectUserAndProceed(index, searchType);
+                        model.selectUserAndProceed(index);
                       },
                     ),
                   );

@@ -119,6 +119,21 @@ class PublicProfileViewMobile extends StatelessWidget {
                                         fontSize: 16,
                                         color: MyColors.paletteBlue),
                                   ),
+                                if (model.isCurrentUsersProfile)
+                                  Flexible(
+                                    flex: 5,
+                                    child: CallToActionButtonRectangular(
+                                        title:
+                                            "${model.moneyPools.length} Impact Pools",
+                                        onPressed: () =>
+                                            model.navigateToAllMoneyPoolsView(),
+                                        maxWidth: screenWidth(context,
+                                            percentage: 0.33),
+                                        minHeight: 20,
+                                        maxHeight: 40,
+                                        fontSize: 16,
+                                        color: MyColors.paletteBlue),
+                                  ),
                               ],
                             ),
                             verticalSpaceMedium,

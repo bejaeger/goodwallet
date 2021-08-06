@@ -55,8 +55,8 @@ class TransferFundsAmountView extends StatelessWidget
         String headline = recipientInfo != null
             ? recipientInfo!.maybeMap(
                 donation: (value) => "#Give",
-                user: (value) => "GiveTheGiftOfGiving",
-                moneyPool: (value) => "#RaiseTogehter",
+                user: (value) => "#GiveTheGiftOfGiving",
+                moneyPool: (value) => "#RaiseTogether",
                 orElse: () => "#CommitForGood",
               )
             : "#CommitForGood";
@@ -68,7 +68,10 @@ class TransferFundsAmountView extends StatelessWidget
             child: Column(
               children: [
                 AlternativeScreenHeaderSmall(
-                    title: headline, onBackButtonPressed: model.navigateBack),
+                  title: headline,
+                  onBackButtonPressed: model.navigateBack,
+                  onHelpIconPressed: () => model.showHelpDialog(type),
+                ),
                 verticalSpaceRegular,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,

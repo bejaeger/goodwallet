@@ -9,7 +9,11 @@ void setupDialogUi() {
   final builders = {
     DialogType.Stats: (context, sheetRequest, completer) =>
         StatsDialog(request: sheetRequest, completer: completer),
-    DialogType.Donation: (context, sheetRequest, completer) =>
+    DialogType.RaisedFundsStats: (context, sheetRequest, completer) =>
+        RaisedFundsStatsDialog(request: sheetRequest, completer: completer),
+    DialogType.DonationStats: (context, sheetRequest, completer) =>
+        DonationStatsDialog(request: sheetRequest, completer: completer),
+    DialogType.MoneyTransfer: (context, sheetRequest, completer) =>
         MoneyTransferDialogView(request: sheetRequest, completer: completer),
   };
   dialogService.registerCustomDialogBuilders(builders);

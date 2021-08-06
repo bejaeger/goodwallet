@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:good_wallet/enums/donation_dialog_status.dart';
+import 'package:good_wallet/enums/money_transfer_dialog_status.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/custom_dialogs/money_transfer_dialog_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';

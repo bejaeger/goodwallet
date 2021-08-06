@@ -25,7 +25,8 @@ class SendMoneyBottomSheetViewModel extends BaseModel {
 
   void navigateToScanQRCodeView() {
     _navigationService!.navigateTo(Routes.qRCodeViewMobile,
-        arguments: QRCodeViewMobileArguments(initialIndex: 0));
+        arguments: QRCodeViewMobileArguments(
+            initialIndex: 0, searchType: SearchType.UserToTransferTo));
   }
 
   void navigateToTransferFundsAmountView(MoneyTransfer previousTransaction) {

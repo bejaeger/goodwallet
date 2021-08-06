@@ -13,7 +13,7 @@ import 'package:good_wallet/datamodels/user/statistics/user_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/enums/bottom_navigator_index.dart';
 import 'package:good_wallet/enums/dialog_type.dart';
-import 'package:good_wallet/enums/donation_dialog_status.dart';
+import 'package:good_wallet/enums/money_transfer_dialog_status.dart';
 import 'package:good_wallet/enums/money_source.dart';
 import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
@@ -501,10 +501,33 @@ class TransferFundsAmountViewModel extends FormViewModel {
         cancelButtonTitle: "Test Payment");
   }
 
-  Future _showFailureDialog(String? message) async {
+  Future showHelpDialog(TransferType type) async {
+    late String title;
+    late String description;
+    if (type == TransferType.User2OwnPrepaidFund) {
+      title = "Commit For Good";
+      description =
+          "You can commit money to your Good Wallet at any time. Then you can take all the time and space you need to decide on the causes you want to support.";
+    } else if (type == TransferType.User2UserSent) {
+      title = "Give the gift of giving";
+      description =
+          "Send money into someone else's Good Wallet to give them the gift to make an impact and donate the money to a good cause that is close their hearts.";
+    } else if (type == TransferType.User2Project) {
+      title = "Donate to a good cause";
+      description =
+          "Forward money to a cause of your choice. Thank you for making an impact!";
+    } else if (type == TransferType.User2MoneyPool) {
+      title = "Raise together!";
+      description =
+          "By paying into our Impact Pools you automatically make an impact; because the money will eventually be invested in one of our good causes.";
+    } else {
+      title = "Ooopss";
+      description =
+          "You should not end up here, please let the developers know ;)";
+    }
     return await _dialogService!.showDialog(
-      title: 'Error',
-      description: message,
+      title: title,
+      description: description,
       dialogPlatform: DialogPlatform.Material,
     );
   }
@@ -524,7 +547,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       required TransferType type}) async {
     log.i("We are starting the dialog");
     final dialogResult = await _dialogService!.showCustomDialog(
-      variant: DialogType.Donation,
+      variant: DialogType.MoneyTransfer,
       data: {
         "moneyTransferStatus": MoneyTransferStatusModel(
           futureStatus: moneyTransferCompleter.future,
