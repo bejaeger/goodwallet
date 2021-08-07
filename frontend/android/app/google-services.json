@@ -15,6 +15,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "855330401923-4na694jgbg9usna2d4hkk2j7bl4e82jm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gooddollarsmarketplace",
+            "certificate_hash": "9143d99df449414d2761af19d7b2af0d4f9766b5"
+          }
+        },
+        {
+          "client_id": "855330401923-lnvn6bdadarqi61kppbmf4d2ec4s7ud3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gooddollarsmarketplace",
+            "certificate_hash": "2fe513c776c71a69a68c487bc5515ee31077d1dc"
+          }
+        },
+        {
+          "client_id": "855330401923-no57plijh40edg5vh7add5uh73fmfmcv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gooddollarsmarketplace",
+            "certificate_hash": "e409de13ff91940cfc7b236268498da5aa1b9834"
+          }
+        },
+        {
           "client_id": "855330401923-n89celo077epl6cseeeuj8assqdc6j4d.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -30,6 +54,13 @@
             {
               "client_id": "855330401923-k5sbtnl7727hkvmgria429l408jr70ql.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "855330401923-i10vivl2bpgk7mi2nkvrbjhr0auiv7na.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "gooddollarsmarketplace"
+              }
             }
           ]
         }

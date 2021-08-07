@@ -9,6 +9,7 @@ import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/setup_bottom_sheet_ui.dart';
 import 'package:good_wallet/ui/shared/setup_dialog_ui.dart';
+import 'package:good_wallet/ui/shared/setup_snackbar_ui.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:good_wallet/utils/unfocuser.dart';
 import 'package:logger/logger.dart';
@@ -39,6 +40,7 @@ void main() async {
     setupLocator();
     setupDialogUi();
     setupBottomSheetUi();
+    setupSnackbarUi();
     Logger.level = Level.verbose;
     runApp(MyApp());
   } catch (e) {
@@ -87,9 +89,9 @@ class MyThemeData {
     return ThemeData(
       fontFamily: 'Roboto',
       // colors form here https://material.io/resources/color/#!/?view.left=0&view.right=1&primary.color=941305
-      primaryColor: Color(0xFF941305),
-      primaryColorLight: Color(0xFFcc492f), // light red
-      primaryColorDark: Color(0xFF600000), // dark red
+      primaryColor: ColorSettings.primaryColor,
+      primaryColorLight: ColorSettings.primaryColorLight,
+      primaryColorDark: ColorSettings.primaryColorDark,
       backgroundColor: Colors.grey[100],
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(

@@ -9,9 +9,11 @@ class GreySearchTextField extends StatelessWidget {
   final void Function()? onSuffixIconPressed;
   final void Function()? onTap;
   final TextEditingController? controller;
+  final Widget? suffixIcon;
 
   final String hintText;
   final bool autofocus;
+  final bool readOnly;
 
   const GreySearchTextField({
     Key? key,
@@ -22,6 +24,8 @@ class GreySearchTextField extends StatelessWidget {
     this.onSuffixIconPressed,
     this.onTap,
     this.controller,
+    this.readOnly = false,
+    this.suffixIcon,
   }) : super(key: key);
 
   @override
@@ -36,6 +40,7 @@ class GreySearchTextField extends StatelessWidget {
           color: ColorSettings.textFieldBackground,
         ),
         child: TextField(
+          readOnly: readOnly,
           controller: controller,
           onTap: onTap,
           autofocus: autofocus,
@@ -51,20 +56,22 @@ class GreySearchTextField extends StatelessWidget {
               prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
               suffixIcon: onSuffixIconPressed != null
                   // workaround otherwise text field will be focused
-                  ? GestureDetector(
-                      child:
-                          Icon(Icons.qr_code_scanner, color: Colors.grey[800]),
-                      onTap: () {
-                        // Unfocus all focus nodes
-                        textFieldFocusNode.unfocus();
-                        // // Disable text field's focus node request
-                        textFieldFocusNode.canRequestFocus = false;
-                        onSuffixIconPressed!();
-                        //Enable the text field's focus node request after some delay
-                        Future.delayed(Duration(milliseconds: 100), () {
-                          textFieldFocusNode.canRequestFocus = true;
-                        });
-                      })
+                  ? suffixIcon != null
+                      ? suffixIcon
+                      : GestureDetector(
+                          child: Icon(Icons.qr_code_scanner,
+                              color: Colors.grey[800]),
+                          onTap: () {
+                            // Unfocus all focus nodes
+                            textFieldFocusNode.unfocus();
+                            // // Disable text field's focus node request
+                            textFieldFocusNode.canRequestFocus = false;
+                            onSuffixIconPressed!();
+                            //Enable the text field's focus node request after some delay
+                            Future.delayed(Duration(milliseconds: 100), () {
+                              textFieldFocusNode.canRequestFocus = true;
+                            });
+                          })
                   : null),
           style: textTheme(context)
               .bodyText2!

@@ -35,17 +35,14 @@ class StartUpLogicViewModel extends BaseViewModel {
           _userStateSubscription?.cancel();
         }
         if (state == UserStatus.SignedOut) {
-          _navigationService!.replaceWith(
-            Routes.loginView,
-          );
           _userStateSubscription?.cancel();
+          _userStateSubscription = null;
+          _navigationService!.clearStackAndShow(Routes.loginView);
         }
         if (state == UserStatus.SignedInNotInitialized) {
           log.wtf(
               "Found user in SignedInNotInitialized state. Please check the code, this is bad!");
-          _navigationService!.replaceWith(
-            Routes.loginView,
-          );
+          _navigationService!.clearStackAndShow(Routes.loginView);
         }
         // cancel afterwards
       },

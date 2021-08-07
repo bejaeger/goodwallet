@@ -1,6 +1,7 @@
 import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/app/app.router.dart';
 import 'package:good_wallet/services/money_pools/money_pools_service.dart';
+import 'package:good_wallet/services/projects/projects_service.dart';
 import 'package:good_wallet/services/qrcode/qrcode_service.dart';
 import 'package:good_wallet/services/transfers_history/transfers_history_service.dart';
 import 'package:good_wallet/services/user/user_service.dart';
@@ -12,6 +13,7 @@ class AccountViewModel extends BaseModel {
   final QRCodeService? _qrCodeService = locator<QRCodeService>();
   final UserService? _userService = locator<UserService>();
   final MoneyPoolsService? _moneyPoolsService = locator<MoneyPoolsService>();
+  final ProjectsService? _projectsService = locator<ProjectsService>();
   final TransfersHistoryService? _transfersManager =
       locator<TransfersHistoryService>();
 
@@ -23,16 +25,14 @@ class AccountViewModel extends BaseModel {
     _navigationService!.navigateTo(Routes.settingsView);
   }
 
-  Future navigateToLoginView() async {
-    _navigationService!.clearStackAndShow(Routes.loginView);
-  }
-
   Future logout() async {
     setBusy(true);
     _moneyPoolsService!.clearData();
     _transfersManager!.clearData();
+    _projectsService!.clearData();
+
     await _userService!.handleLogoutEvent();
-    await navigateToLoginView();
+    _navigationService!.clearStackAndShow(Routes.loginView);
     setBusy(false);
   }
 }

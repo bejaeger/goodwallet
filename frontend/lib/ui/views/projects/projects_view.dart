@@ -23,7 +23,7 @@ class ProjectsView extends StatefulWidget {
 }
 
 class _ProjectsViewState extends State<ProjectsView> {
-  final _debouncer = Debouncer(milliseconds: 300);
+  final _debouncer = Debouncer(milliseconds: 200);
   final textFieldFocusNode = FocusNode();
   final textFieldController = TextEditingController();
   List<Project> queryProjects = [];
@@ -42,22 +42,6 @@ class _ProjectsViewState extends State<ProjectsView> {
       viewModelBuilder: () => ProjectsViewModel(),
       onModelReady: (model) async {
         await model.listenToData();
-        model.parseQueryProjects(queryProjects);
-        keyboardVisibilityController.onChange.listen((bool visible) async {
-          if (visible == true) {
-            showSearchProjectsView = true;
-            setState(() {});
-          }
-          if (visible == false) {
-            if (model.projectQueryList.length == 0) {
-              textFieldController.clear();
-              showSearchProjectsView = false;
-              setState(() {});
-              await Future.delayed(Duration(milliseconds: 200));
-              textFieldFocusNode.unfocus();
-            }
-          }
-        });
       },
       builder: (context, model, child) => WillPopScope(
         onWillPop: () {
@@ -101,11 +85,11 @@ class _ProjectsViewState extends State<ProjectsView> {
                   // =============================================>>>>
                   // Temporarily allow user Dan to push new projects to firebase
 
-                  // onSecondRightIconPressed:
-                  //     model.currentUser.uid == "ptWSWNPX4xRyVsb6jwjPfff5C2B3"
-                  //         ? model.pushGlobalGivingProjectsToFirestore
-                  //         : null,
-                  // secondRightIcon: Icon(Icons.plus_one, size: 28),
+                  onSecondRightIconPressed:
+                      model.currentUser.uid == "ptWSWNPX4xRyVsb6jwjPfff5C2B3"
+                          ? model.pushGlobalGivingProjectsToFirestore
+                          : null,
+                  secondRightIcon: Icon(Icons.plus_one, size: 28),
                   //
                   // <<<< =============================================
                 ),
@@ -115,7 +99,8 @@ class _ProjectsViewState extends State<ProjectsView> {
                     hintText: "Search Projects",
                     focusNode: textFieldFocusNode,
                     autofocus: false,
-                    onTap: model.setFocus,
+                    readOnly: true,
+                    onTap: model.navigateToProjectsSearchView,
                     onChanged: (String pattern) async {
                       // await model.queryUsers(pattern);
                       _debouncer.run(() async {
@@ -133,68 +118,41 @@ class _ProjectsViewState extends State<ProjectsView> {
                           CircularProgressIndicator(),
                         ],
                       )))
-                    : showSearchProjectsView
-                        ? model.projectQueryList.length == 0
-                            ? SliverToBoxAdapter(
-                                child: Padding(
+                    : SliverList(
+                        delegate: SliverChildListDelegate(
+                          [
+                            verticalSpaceRegular,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SectionHeader(title: "User Top Picks"),
+                                verticalSpaceTiny,
+                                ProjectsTopPicksCarousel(
+                                    projects: model.projectTopPicks,
+                                    onPressed:
+                                        model.navigateToSingleProjectScreen),
+                                verticalSpaceRegular,
+                                SectionHeader(title: "All Areas"),
+                                verticalSpaceTiny,
+                                Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal:
                                           LayoutSettings.horizontalPadding),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      verticalSpaceRegular,
-                                      Text("No projects found"),
-                                    ],
+                                  child: ProjectAreasGrid(
+                                    projectUniqueAreas:
+                                        model.projectUniqueAreas,
+                                    goodWalletFunds:
+                                        model.getGoodWalletFundsInfo(),
+                                    onPressed:
+                                        model.navigateToProjectForAreaView,
                                   ),
                                 ),
-                              )
-                            : ListOfProjectsLayout(
-                                projects: model.projectQueryList,
-                                isBusy: model.isBusy,
-                                showNotImplementedNotification:
-                                    model.showNotImplementedSnackbar,
-                                onProjectTapped:
-                                    model.navigateToSingleProjectScreen,
-                                onFavoriteTapped: model.addOrRemoveFavorite,
-                                isFavorite: model.isFavoriteProject,
-                              )
-                        : SliverList(
-                            delegate: SliverChildListDelegate(
-                              [
-                                verticalSpaceSmall,
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SectionHeader(title: "User Top Picks"),
-                                    verticalSpaceTiny,
-                                    ProjectsTopPicksCarousel(
-                                        projects: model.projectTopPicks,
-                                        onPressed: model
-                                            .navigateToSingleProjectScreen),
-                                    verticalSpaceRegular,
-                                    SectionHeader(title: "All Areas"),
-                                    verticalSpaceTiny,
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal:
-                                              LayoutSettings.horizontalPadding),
-                                      child: ProjectAreasGrid(
-                                        projectUniqueAreas:
-                                            model.projectUniqueAreas,
-                                        goodWalletFunds:
-                                            model.getGoodWalletFundsInfo(),
-                                        onPressed:
-                                            model.navigateToProjectForAreaView,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                verticalSpaceLarge,
                               ],
                             ),
-                          ),
+                            verticalSpaceLarge,
+                          ],
+                        ),
+                      ),
               ],
             ),
           ),
@@ -238,7 +196,7 @@ class ProjectAreasGrid extends StatelessWidget {
           displayArea: true,
           project: data,
           small: true,
-          onTap: () => onPressed!(data.area),
+          onTap: () => onPressed(data.area),
         );
       },
     );

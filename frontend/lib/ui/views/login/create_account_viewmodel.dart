@@ -46,6 +46,7 @@ class CreateAccountViewModel extends AuthenticationViewModel {
                 uid: user.uid,
                 fullName: fullNameValue ?? (user.displayName ?? ""),
                 email: user.email ?? "",
+                newUser: true,
                 userSettings: UserSettings()),
           );
         } catch (e) {

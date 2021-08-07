@@ -24,6 +24,8 @@ class User with _$User {
     required String fullName,
     required String email,
     required UserSettings userSettings,
+    @Default(false)
+        bool newUser,
     @JsonKey(
       toJson: User._checkIfKeywordsAreSet,
     )
@@ -41,6 +43,7 @@ User getEmptyUser() {
     uid: "",
     fullName: "",
     email: "",
+    newUser: false,
     userSettings: UserSettings(
       favoriteProjectIds: [],
     ),

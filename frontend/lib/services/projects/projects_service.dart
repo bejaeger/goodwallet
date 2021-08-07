@@ -128,4 +128,12 @@ class ProjectsService {
           imageUrl: ImagePath.workNextToCreek),
     ];
   }
+
+  //--------------------------------------
+  // Clean-up
+
+  void clearData() {
+    _projectsStreamSubscription?.cancel();
+    _projectsStreamSubscription = null;
+  }
 }

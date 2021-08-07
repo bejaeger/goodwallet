@@ -28,6 +28,7 @@ class MoneyPoolPreview extends StatelessWidget {
       return GestureDetector(
         onTap: () => onTap(moneyPool!),
         child: Card(
+          //color: Color(0xFFfed8b1),
           margin: const EdgeInsets.all(0.0),
           elevation: 2.0,
           //color: MyColors.paletteBlue.withOpacity(0.8),
@@ -44,26 +45,36 @@ class MoneyPoolPreview extends StatelessWidget {
                 children: [
                   verticalSpaceSmall,
                   Align(
-                    alignment: Alignment.topLeft,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                    alignment: Alignment.topCenter,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          moneyPool!.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: textTheme(context)
-                              .headline6!
-                              .copyWith(fontSize: 18),
+                        Flexible(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                moneyPool!.name,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: textTheme(context)
+                                    .headline6!
+                                    .copyWith(fontSize: 18),
+                              ),
+                              // Padding(
+                              //   padding: const EdgeInsets.only(left: 10.0, right: 40.0),
+                              //   child: Divider(
+                              //     thickness: 2,
+                              //     color: ColorSettings.greyTextColor,
+                              //   ),
+                              // ),
+                            ],
+                          ),
                         ),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(left: 10.0, right: 40.0),
-                        //   child: Divider(
-                        //     thickness: 2,
-                        //     color: ColorSettings.greyTextColor,
-                        //   ),
-                        // ),
+                        Icon(Icons.arrow_forward_ios,
+                            color: ColorSettings.blackTextColor, size: 20),
                       ],
                     ),
                   ),
@@ -81,11 +92,11 @@ class MoneyPoolPreview extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Icon(Icons.arrow_forward_ios,
-                        color: ColorSettings.blackTextColor, size: 20),
-                  ),
+                  // Align(
+                  //   alignment: Alignment.topRight,
+                  //   child: Icon(Icons.arrow_forward_ios,
+                  //       color: ColorSettings.blackTextColor, size: 20),
+                  // ),
                   if (!squaredLayout)
                     Align(
                       alignment: Alignment.bottomRight,
@@ -105,6 +116,7 @@ class MoneyPoolPreview extends StatelessWidget {
       return GestureDetector(
         onTap: onCreateMoneyPoolTapped,
         child: Card(
+          //color: Color(0xFFfed8b1),
           margin: const EdgeInsets.all(0.0),
           elevation: 2.0,
           shape: RoundedRectangleBorder(

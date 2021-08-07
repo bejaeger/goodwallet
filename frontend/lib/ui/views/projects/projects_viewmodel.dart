@@ -14,13 +14,12 @@ class ProjectsViewModel extends ProjectsBaseViewModel {
   final ProjectsService? _projectsService = locator<ProjectsService>();
   final GlobalGivingApi? _globalGivingAPIservice = locator<GlobalGivingApi>();
 
-  bool isSearchBarFocused = false;
   List<Project> projectQueryList = [];
   List<Project> get projects => _projectsService!.projects;
   List<Project> get projectUniqueAreas =>
       _projectsService!.getProjectsUniqueArea();
   List<Project>? projectTopPicks;
-
+  bool isNew = true;
   final log = getLogger("projects_viewmodel.dart");
 
   // Starting money pool listener. Should only ever be called once!
@@ -29,6 +28,10 @@ class ProjectsViewModel extends ProjectsBaseViewModel {
     await _projectsService!.listenToProjects(uid: currentUser.uid);
     projectTopPicks = await _projectsService!.getProjectTopPicks();
     setBusy(false);
+  }
+
+  void reset() {
+    isNew = true;
   }
 
   Project getProjectWithName({required String name}) {
@@ -54,12 +57,13 @@ class ProjectsViewModel extends ProjectsBaseViewModel {
   }
 
   Future queryProjects(String query) async {
-    if (query.isEmpty) {
+    if (query == "") {
+      isNew = true;
       projectQueryList = [];
       notifyListeners();
       return;
     }
-    setBusy(true);
+    isNew = false;
     projectQueryList = [];
     List<Project?> tmpProjectList =
         await _projectsService!.queryProjects(queryString: query);
@@ -67,12 +71,7 @@ class ProjectsViewModel extends ProjectsBaseViewModel {
       if (project != null) projectQueryList.add(project!);
     }
     log.i("Queried projects and found ${projectQueryList.length} matches");
-    setBusy(false);
-  }
-
-  void setFocus() {
-    isSearchBarFocused = !isSearchBarFocused;
-    log.wtf("Tapped search bar!");
+    notifyListeners();
   }
 
   //////////////////////////////////////////////////
@@ -81,6 +80,10 @@ class ProjectsViewModel extends ProjectsBaseViewModel {
   Future navigateToProjectForAreaView(String area) async {
     await _navigationService!.navigateTo(Routes.projectsForAreaView,
         arguments: ProjectsForAreaViewArguments(area: area));
+  }
+
+  Future navigateToProjectsSearchView() async {
+    await _navigationService!.navigateTo(Routes.projectsSearchView);
   }
 
   void navigateToProfileView() {

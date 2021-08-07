@@ -279,6 +279,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
   Future changePaymentMethod() async {
     if (type == TransferType.User2MoneyPool) {
       SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
+          barrierDismissible: true,
           title: "Select Payment Method",
           description: "OR add new payment method +",
           confirmButtonTitle: "Bank Account",
@@ -304,6 +305,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
 
     if (type == TransferType.User2Project) {
       SheetResponse? sheetResponse = await _bottomSheetService!.showBottomSheet(
+          barrierDismissible: true,
           title: "Select Payment Method",
           description: "OR add new payment method +",
           confirmButtonTitle: "Bank Account",
@@ -334,10 +336,10 @@ class TransferFundsAmountViewModel extends FormViewModel {
   Future handleTopUpPayment() async {
     SheetResponse? sheetResponse = await _showPaymentMethodBottomSheet();
     log.i("Response data from bottom sheet: ${sheetResponse?.confirmed}");
-    if (sheetResponse?.confirmed == false) {
+    if (sheetResponse?.confirmed == true) {
       // FOR now, implemented dummy payment processing here
       showNotYetImplementedSnackbar();
-    } else {
+    } else if (sheetResponse?.confirmed == false) {
       // Properly add Gpay / Credit card pay / ...
       showNotYetImplementedSnackbar();
     }
@@ -350,9 +352,9 @@ class TransferFundsAmountViewModel extends FormViewModel {
     // For now, it's only test payments allowed
     SheetResponse? sheetResponse =
         await _showPaymentMethodBottomSheet(type: type);
-    if (sheetResponse?.confirmed == true) {
+    if (sheetResponse?.confirmed == false) {
       await _showAndAwaitSnackbar("Not supported at the moment, sorry!");
-    } else {
+    } else if (sheetResponse?.confirmed == true) {
       // Ask for another final confirmation
       SheetResponse? finalConfirmation =
           await _showFinalConfirmationBottomSheet();
@@ -361,48 +363,48 @@ class TransferFundsAmountViewModel extends FormViewModel {
         setBusy(false);
         navigateBack();
         return;
-      }
+      } else if (finalConfirmation?.confirmed == true) {
+        // -----------------------------------------------------
+        // We create a completer and parse it to the pop-up window.
+        // The pop-up window shows a progress indicator and
+        // displays a success or error dialog when the completer is completed
+        // in _processsPayment.
+        var moneyTransferCompleter = Completer<TransferDialogStatus>();
 
-      // -----------------------------------------------------
-      // We create a completer and parse it to the pop-up window.
-      // The pop-up window shows a progress indicator and
-      // displays a success or error dialog when the completer is completed
-      // in _processsPayment.
-      var moneyTransferCompleter = Completer<TransferDialogStatus>();
-
-      try {
-        _processPayment(moneyTransferCompleter);
-      } catch (e) {
-        log.wtf("Something very mysterious went wrong, error thrown: $e");
-        moneyTransferCompleter.complete(TransferDialogStatus.error);
-      }
-      dynamic dialogResult = await _showDonationDialog(
-          moneyTransferCompleter: moneyTransferCompleter, type: type);
-
-      // -----------------------------------------------------
-      // Handle user input after success or error of transfer!
-      // Navigation depends on user input and transfer type;
-      if (dialogResult!.confirmed) {
-        if (type == TransferType.User2MoneyPool) {
-          // navigate back to money pool
-          navigateBack();
-        } else {
-          // clear view
-          clearTillFirstAndShowHomeScreen();
+        try {
+          _processPayment(moneyTransferCompleter);
+        } catch (e) {
+          log.wtf("Something very mysterious went wrong, error thrown: $e");
+          moneyTransferCompleter.complete(TransferDialogStatus.error);
         }
-        return;
-      } else {
-        if (type == TransferType.User2Project) {
-          // navigate back to money pool
-          clearTillFirstAndShowProjectsView();
+        dynamic dialogResult = await _showDonationDialog(
+            moneyTransferCompleter: moneyTransferCompleter, type: type);
+
+        // -----------------------------------------------------
+        // Handle user input after success or error of transfer!
+        // Navigation depends on user input and transfer type;
+        if (dialogResult!.confirmed) {
+          if (type == TransferType.User2MoneyPool) {
+            // navigate back to money pool
+            navigateBack();
+          } else {
+            // clear view
+            clearTillFirstAndShowHomeScreen();
+          }
+          return;
         } else {
-          // clear view
-          clearTillFirstAndShowHomeScreen();
+          if (type == TransferType.User2Project) {
+            // navigate back to money pool
+            clearTillFirstAndShowProjectsView();
+          } else {
+            // clear view
+            clearTillFirstAndShowHomeScreen();
+          }
         }
       }
-
       return;
     }
+    // barrier has been dismissed, nothing todo
   }
 
   Future _processPayment(
@@ -489,16 +491,18 @@ class TransferFundsAmountViewModel extends FormViewModel {
   }
 
   Future _showPaymentMethodBottomSheet({TransferType? type}) async {
-    String description = "OR add new payment method +";
+    String description =
+        "This version does not have any actual payment processors integrated, just continue with test payment ;)";
     if (type != null && type == TransferType.User2Project) {
       description =
           "We take 5\% of your donation. Please choose a any other amount. Thank you for your support!";
     }
     return await _bottomSheetService!.showBottomSheet(
+        barrierDismissible: true,
         title: "Select Payment Method",
         description: description,
-        confirmButtonTitle: "Credit Card / Google Pay",
-        cancelButtonTitle: "Test Payment");
+        confirmButtonTitle: "Test Payment");
+    //cancelButtonTitle: "Test Payment");
   }
 
   Future showHelpDialog(TransferType type) async {
@@ -534,6 +538,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
 
   Future _showFinalConfirmationBottomSheet() async {
     return await _bottomSheetService!.showBottomSheet(
+      barrierDismissible: true,
       title: 'Confirmation',
       description:
           "Are you sure you would like to send ${formatAmount(amount, true)}${getSenderInfoString(senderInfo)}${getRecipientInfoString(recipientInfo)}?",

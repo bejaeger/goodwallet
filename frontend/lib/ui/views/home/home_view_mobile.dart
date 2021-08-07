@@ -15,6 +15,7 @@ import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
 import 'package:good_wallet/ui/widgets/money_pool_preview.dart';
 import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/ui/widgets/stats_card.dart';
+import 'package:good_wallet/utils/string_utils.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
@@ -26,20 +27,22 @@ class HomeViewMobile extends StatelessWidget {
     return ViewModelBuilder<HomeViewModel>.reactive(
         viewModelBuilder: () => HomeViewModel(),
         onModelReady: (model) async {
-          if (showDialog)
+          if (model.currentUser.newUser) {
             SchedulerBinding.instance?.addPostFrameCallback((timeStamp) async {
-              await model.showDialog();
+              await model.showFirstLoginDialog();
+              model.setNewUserPropertyToFalse();
             });
+          }
           model.listenToData();
           return;
         },
         builder: (context, model, child) {
           return Scaffold(
             floatingActionButton: Container(
-              height: 80,
-              width: 80,
+              height: 75,
+              width: 75,
               child: Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.only(left: 12.0, bottom: 12),
                 child: FloatingActionButton(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(90),
@@ -63,7 +66,7 @@ class HomeViewMobile extends StatelessWidget {
                 slivers: [
                   CustomSliverAppBar(
                     titleSize: 25,
-                    title: "Hi " + model.currentUser.fullName,
+                    title: "Hi " + getFirstName(model.currentUser.fullName),
                     // onSecondRightIconPressed: model.navigateToProfileViewMobile,
                     // secondRightIcon: Icon(
                     //   Icons.person,
@@ -84,9 +87,10 @@ class HomeViewMobile extends StatelessWidget {
                           delegate: SliverChildListDelegate(
                             [
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal:
-                                        LayoutSettings.horizontalPadding),
+                                padding: const EdgeInsets.only(
+                                    left: LayoutSettings.horizontalPadding,
+                                    right: LayoutSettings.horizontalPadding,
+                                    top: 10),
                                 child: Row(
                                   children: [
                                     Expanded(
@@ -195,19 +199,13 @@ class HomeViewMobile extends StatelessWidget {
                                   title: "Recent Activities",
                                   onTextButtonTap:
                                       model.navigateToTransfersHistoryView),
-                              if (model.latestTransfers.length == 0) ...[
-                                Divider(
-                                  color: Colors.grey[500],
-                                  thickness: 0.5,
+                              if (model.latestTransfers.length == 0)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal:
+                                          LayoutSettings.horizontalPadding),
+                                  child: Text("Make your first transfer :)"),
                                 ),
-                                ListTile(
-                                    title: Text(
-                                        "+ Make your first donation or send money")),
-                                Divider(
-                                  color: Colors.grey[500],
-                                  thickness: 0.5,
-                                ),
-                              ],
                               if (model.latestTransfers.length > 0)
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -483,7 +481,7 @@ class MoneyPoolsList extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 MoneyPoolPreview(
-                  height: 140,
+                  height: 150,
                   width: width,
                   squaredLayout: true,
                   moneyPool: null,
@@ -500,7 +498,7 @@ class MoneyPoolsList extends StatelessWidget {
               children: [
                 if (index == 0) horizontalSpaceMedium,
                 MoneyPoolPreview(
-                  height: 140,
+                  height: 150,
                   width: width,
                   moneyPool: moneyPools[index],
                   squaredLayout: true,

@@ -144,6 +144,7 @@ class UserService {
                 uid: user.uid,
                 fullName: user.displayName ?? "",
                 email: user.email ?? "",
+                newUser: true,
                 userSettings: UserSettings()),
           );
           _currentUser = nowPopulatedUser;
@@ -175,6 +176,11 @@ class UserService {
             "User data could not be created in our databank. Please try again later or contact support with error messaage: ${e.toString()}",
       );
     }
+  }
+
+  Future setNewUserPropertyToFalse({required User user}) async {
+    User newUser = user.copyWith(newUser: false);
+    _firestoreApi.updateUserData(user: newUser);
   }
 
   ///////////////////////////////////////////////////////////////

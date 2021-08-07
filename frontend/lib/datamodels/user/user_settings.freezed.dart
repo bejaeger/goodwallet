@@ -25,7 +25,7 @@ class _$UserSettingsTearOff {
       List<String>? friendsIds,
       bool showEmail = true,
       bool showSummaryStatistics = true,
-      bool showDetailedStatistics = false}) {
+      bool showDetailedStatistics = true}) {
     return _UserSettings(
       favoriteProjectIds: favoriteProjectIds,
       friendsIds: friendsIds,
@@ -177,7 +177,7 @@ class _$_UserSettings implements _UserSettings {
       this.friendsIds,
       this.showEmail = true,
       this.showSummaryStatistics = true,
-      this.showDetailedStatistics = false});
+      this.showDetailedStatistics = true});
 
   factory _$_UserSettings.fromJson(Map<String, dynamic> json) =>
       _$_$_UserSettingsFromJson(json);
@@ -192,7 +192,7 @@ class _$_UserSettings implements _UserSettings {
   @JsonKey(defaultValue: true)
   @override
   final bool showSummaryStatistics;
-  @JsonKey(defaultValue: false)
+  @JsonKey(defaultValue: true)
   @override
   final bool showDetailedStatistics;
 

@@ -124,6 +124,7 @@ class TransferFundsAmountView extends StatelessWidget
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Flexible(
+                            flex: 2,
                             child: Text(
                               "\$",
                               style: textTheme(context).bodyText2!.copyWith(
@@ -132,7 +133,9 @@ class TransferFundsAmountView extends StatelessWidget
                             ),
                           ),
                           Flexible(
+                            flex: 1,
                             child: TextField(
+                              cursorColor: ColorSettings.blackHeadlineColor,
                               focusNode: amountFocusNode,
                               controller: amountController,
                               keyboardType: TextInputType.number,
@@ -141,6 +144,22 @@ class TransferFundsAmountView extends StatelessWidget
                                   fontSize: 35,
                                   color: ColorSettings.blackHeadlineColor),
                               autofocus: true,
+                              decoration: InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: ColorSettings.blackHeadlineColor,
+                                      width: 0.0),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: ColorSettings.blackHeadlineColor,
+                                      width: 0.0),
+                                ),
+                                // disabledBorder: InputBorder.none,
+                                // enabledBorder: InputBorder.none,
+                                // focusedBorder: InputBorder.none,
+                                // border: InputBorder.none,
+                              ),
                             ),
                           ),
                         ],

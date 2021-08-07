@@ -16,7 +16,7 @@ _$_UserSettings _$_$_UserSettingsFromJson(Map<String, dynamic> json) {
         .toList(),
     showEmail: json['showEmail'] as bool? ?? true,
     showSummaryStatistics: json['showSummaryStatistics'] as bool? ?? true,
-    showDetailedStatistics: json['showDetailedStatistics'] as bool? ?? false,
+    showDetailedStatistics: json['showDetailedStatistics'] as bool? ?? true,
   );
 }
 

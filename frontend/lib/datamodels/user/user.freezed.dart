@@ -25,6 +25,7 @@ class _$UserTearOff {
       required String fullName,
       required String email,
       required UserSettings userSettings,
+      bool newUser = false,
       @JsonKey(toJson: User._checkIfKeywordsAreSet)
           List<String>? searchKeywords}) {
     return _User(
@@ -32,6 +33,7 @@ class _$UserTearOff {
       fullName: fullName,
       email: email,
       userSettings: userSettings,
+      newUser: newUser,
       searchKeywords: searchKeywords,
     );
   }
@@ -50,6 +52,7 @@ mixin _$User {
   String get fullName => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   UserSettings get userSettings => throw _privateConstructorUsedError;
+  bool get newUser => throw _privateConstructorUsedError;
   @JsonKey(toJson: User._checkIfKeywordsAreSet)
   List<String>? get searchKeywords => throw _privateConstructorUsedError;
 
@@ -67,6 +70,7 @@ abstract class $UserCopyWith<$Res> {
       String fullName,
       String email,
       UserSettings userSettings,
+      bool newUser,
       @JsonKey(toJson: User._checkIfKeywordsAreSet)
           List<String>? searchKeywords});
 
@@ -87,6 +91,7 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
     Object? fullName = freezed,
     Object? email = freezed,
     Object? userSettings = freezed,
+    Object? newUser = freezed,
     Object? searchKeywords = freezed,
   }) {
     return _then(_value.copyWith(
@@ -106,6 +111,10 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
           ? _value.userSettings
           : userSettings // ignore: cast_nullable_to_non_nullable
               as UserSettings,
+      newUser: newUser == freezed
+          ? _value.newUser
+          : newUser // ignore: cast_nullable_to_non_nullable
+              as bool,
       searchKeywords: searchKeywords == freezed
           ? _value.searchKeywords
           : searchKeywords // ignore: cast_nullable_to_non_nullable
@@ -131,6 +140,7 @@ abstract class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
       String fullName,
       String email,
       UserSettings userSettings,
+      bool newUser,
       @JsonKey(toJson: User._checkIfKeywordsAreSet)
           List<String>? searchKeywords});
 
@@ -153,6 +163,7 @@ class __$UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
     Object? fullName = freezed,
     Object? email = freezed,
     Object? userSettings = freezed,
+    Object? newUser = freezed,
     Object? searchKeywords = freezed,
   }) {
     return _then(_User(
@@ -172,6 +183,10 @@ class __$UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
           ? _value.userSettings
           : userSettings // ignore: cast_nullable_to_non_nullable
               as UserSettings,
+      newUser: newUser == freezed
+          ? _value.newUser
+          : newUser // ignore: cast_nullable_to_non_nullable
+              as bool,
       searchKeywords: searchKeywords == freezed
           ? _value.searchKeywords
           : searchKeywords // ignore: cast_nullable_to_non_nullable
@@ -189,6 +204,7 @@ class _$_User implements _User {
       required this.fullName,
       required this.email,
       required this.userSettings,
+      this.newUser = false,
       @JsonKey(toJson: User._checkIfKeywordsAreSet) this.searchKeywords});
 
   factory _$_User.fromJson(Map<String, dynamic> json) =>
@@ -202,13 +218,16 @@ class _$_User implements _User {
   final String email;
   @override
   final UserSettings userSettings;
+  @JsonKey(defaultValue: false)
+  @override
+  final bool newUser;
   @override
   @JsonKey(toJson: User._checkIfKeywordsAreSet)
   final List<String>? searchKeywords;
 
   @override
   String toString() {
-    return 'User(uid: $uid, fullName: $fullName, email: $email, userSettings: $userSettings, searchKeywords: $searchKeywords)';
+    return 'User(uid: $uid, fullName: $fullName, email: $email, userSettings: $userSettings, newUser: $newUser, searchKeywords: $searchKeywords)';
   }
 
   @override
@@ -225,6 +244,9 @@ class _$_User implements _User {
             (identical(other.userSettings, userSettings) ||
                 const DeepCollectionEquality()
                     .equals(other.userSettings, userSettings)) &&
+            (identical(other.newUser, newUser) ||
+                const DeepCollectionEquality()
+                    .equals(other.newUser, newUser)) &&
             (identical(other.searchKeywords, searchKeywords) ||
                 const DeepCollectionEquality()
                     .equals(other.searchKeywords, searchKeywords)));
@@ -237,6 +259,7 @@ class _$_User implements _User {
       const DeepCollectionEquality().hash(fullName) ^
       const DeepCollectionEquality().hash(email) ^
       const DeepCollectionEquality().hash(userSettings) ^
+      const DeepCollectionEquality().hash(newUser) ^
       const DeepCollectionEquality().hash(searchKeywords);
 
   @JsonKey(ignore: true)
@@ -256,6 +279,7 @@ abstract class _User implements User {
       required String fullName,
       required String email,
       required UserSettings userSettings,
+      bool newUser,
       @JsonKey(toJson: User._checkIfKeywordsAreSet)
           List<String>? searchKeywords}) = _$_User;
 
@@ -269,6 +293,8 @@ abstract class _User implements User {
   String get email => throw _privateConstructorUsedError;
   @override
   UserSettings get userSettings => throw _privateConstructorUsedError;
+  @override
+  bool get newUser => throw _privateConstructorUsedError;
   @override
   @JsonKey(toJson: User._checkIfKeywordsAreSet)
   List<String>? get searchKeywords => throw _privateConstructorUsedError;

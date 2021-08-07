@@ -14,7 +14,7 @@ import 'package:stacked/stacked.dart';
 class SearchView extends StatelessWidget {
   final SearchType searchType;
   final bool autofocus;
-  final _debouncer = Debouncer(milliseconds: 300);
+  final _debouncer = Debouncer(milliseconds: 200);
 
   SearchView(
       {Key? key, this.searchType = SearchType.Explore, this.autofocus = false})

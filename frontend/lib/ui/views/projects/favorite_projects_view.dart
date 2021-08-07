@@ -32,10 +32,10 @@ class FavoriteProjectsView extends StatelessWidget {
                             children: [
                               SizedBox(
                                 height: screenHeightPercentage(context,
-                                    percentage: 0.2),
+                                    percentage: 0.1),
                               ),
                               Text("You don't have any favorites selected",
-                                  style: textTheme(context).headline6),
+                                  style: textTheme(context).bodyText2),
                             ],
                           ),
                         )

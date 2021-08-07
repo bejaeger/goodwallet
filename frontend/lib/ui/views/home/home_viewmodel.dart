@@ -70,7 +70,11 @@ class HomeViewModel extends SocialFunctionsViewModel {
         .addTransferDataListener(config: _queryConfigLatestTransfers);
     Future? two = _moneyPoolsService!.listenToMoneyPools(uid: currentUser.uid);
     Future? three = listenToFriends();
-    await Future.wait([one as Future<dynamic>, two as Future<dynamic>, three]);
+    List<Future<dynamic>> listOfFutures = [];
+    if (one != null) listOfFutures.add(one);
+    if (two != null) listOfFutures.add(two);
+    listOfFutures.add(three);
+    await Future.wait(listOfFutures);
     setBusy(false);
   }
 
@@ -79,6 +83,10 @@ class HomeViewModel extends SocialFunctionsViewModel {
     // so far we listen to the wallet with a stream
     await Future.delayed(Duration(milliseconds: 200));
     notifyListeners();
+  }
+
+  Future setNewUserPropertyToFalse() async {
+    _userService!.setNewUserPropertyToFalse(user: currentUser);
   }
 
   ///////////////////////////////////
@@ -224,8 +232,10 @@ class HomeViewModel extends SocialFunctionsViewModel {
     //    _navigationService!.navigateTo(Routes.publicProfileViewMobile);
   }
 
-  Future showDialog() async {
-    await _dialogService!.showDialog(title: "DIAALOG SUPER!");
+  Future showFirstLoginDialog() async {
+    await _dialogService!.showCustomDialog(
+      variant: DialogType.Onboarding,
+    );
   }
 
   Future navigateToSingleMoneyPoolView(MoneyPool moneyPool) async {

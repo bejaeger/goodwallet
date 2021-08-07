@@ -24,3 +24,8 @@ List<String> getListOfKeywordsFromString(String? str) {
   }
   return searchKeywords;
 }
+
+String getFirstName(String name) {
+  List<String> splitName = name.split(" ");
+  return splitName[0];
+}

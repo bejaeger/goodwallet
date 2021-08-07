@@ -554,26 +554,32 @@ class FirestoreApi {
     }
   }
 
-  Future<bool> isProjectInDatabase({required num globalGivingId}) async {
+  Future<List<QueryDocumentSnapshot>> getProjectsWithGlobalGivingId(
+      {required num globalGivingId}) async {
     QuerySnapshot snapshot = await projectsCollection
         .where("globalGivingProjectId", isEqualTo: globalGivingId)
         .get();
-    return snapshot.docs.length > 0;
+    return snapshot.docs;
   }
 
-  ///  Listen to projects collection
-  Future createProject({required Project project}) async {
+  ///  create or update project document in database
+  Future createOrUpdateProject({required Project project}) async {
     if (project.globalGivingProjectId == null) {
       log.wtf(
           "Can't add project to firestore database without global giving id!");
       return;
     }
     // check if project is already present
-    bool isAvailable = await isProjectInDatabase(
+    List<QueryDocumentSnapshot> docs = await getProjectsWithGlobalGivingId(
         globalGivingId: project.globalGivingProjectId!);
-    if (isAvailable) {
-      log.w(
-          "Project with name ${project.name} already found in database, not adding a second one");
+    if (docs.length > 1) {
+      log.wtf(
+          "This is weird: Project with name ${project.name} already found more than one time in the database. This should not be the case, please check!");
+      return;
+    } else if (docs.length == 1) {
+      log.i("Project document found in database, updating it!");
+      final newProject = project.copyWith(id: docs[0].id);
+      projectsCollection.doc(docs[0].id).update(newProject.toJson());
     } else {
       try {
         log.i(

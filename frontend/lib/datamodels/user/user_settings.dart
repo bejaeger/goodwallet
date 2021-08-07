@@ -10,7 +10,7 @@ class UserSettings with _$UserSettings {
     List<String>? friendsIds,
     @Default(true) bool showEmail,
     @Default(true) bool showSummaryStatistics,
-    @Default(false) bool showDetailedStatistics,
+    @Default(true) bool showDetailedStatistics,
   }) = _UserSettings;
 
   factory UserSettings.fromJson(Map<String, dynamic> json) =>

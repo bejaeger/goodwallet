@@ -38,6 +38,7 @@ import '../ui/views/profile/profile_view_mobile.dart';
 import '../ui/views/profile/public_profile/public_profile_view_mobile.dart';
 import '../ui/views/projects/favorite_projects_view.dart';
 import '../ui/views/projects/projects_for_area_view.dart';
+import '../ui/views/projects/projects_search_view.dart';
 import '../ui/views/projects/projects_view.dart';
 import '../ui/views/projects/single_project_view_mobile.dart';
 import '../ui/views/qrcode/qrcode_view_mobile.dart';
@@ -81,6 +82,7 @@ class Routes {
   static const String publicProfileViewMobile = '/public-profile-view-mobile';
   static const String friendsView = '/friends-view';
   static const String accountView = '/account-view';
+  static const String projectsSearchView = '/projects-search-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -113,6 +115,7 @@ class Routes {
     publicProfileViewMobile,
     friendsView,
     accountView,
+    projectsSearchView,
   };
 }
 
@@ -151,6 +154,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.publicProfileViewMobile, page: PublicProfileViewMobile),
     RouteDef(Routes.friendsView, page: FriendsView),
     RouteDef(Routes.accountView, page: AccountView),
+    RouteDef(Routes.projectsSearchView, page: ProjectsSearchView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -363,11 +367,8 @@ class StackedRouter extends RouterBase {
       );
     },
     ProjectsView: (data) {
-      var args = data.getArgs<ProjectsViewArguments>(
-        orElse: () => ProjectsViewArguments(),
-      );
       return MaterialPageRoute<dynamic>(
-        builder: (context) => ProjectsView(key: args.key),
+        builder: (context) => const ProjectsView(),
         settings: data,
       );
     },
@@ -434,6 +435,12 @@ class StackedRouter extends RouterBase {
     AccountView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => const AccountView(),
+        settings: data,
+      );
+    },
+    ProjectsSearchView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const ProjectsSearchView(),
         settings: data,
       );
     },
@@ -567,12 +574,6 @@ class DisburseMoneyPoolViewArguments {
   final Key? key;
   final MoneyPool moneyPool;
   DisburseMoneyPoolViewArguments({this.key, required this.moneyPool});
-}
-
-/// ProjectsView arguments holder class
-class ProjectsViewArguments {
-  final Key? key;
-  ProjectsViewArguments({this.key});
 }
 
 /// ProjectsForAreaView arguments holder class

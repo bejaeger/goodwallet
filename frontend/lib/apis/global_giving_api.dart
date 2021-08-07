@@ -36,9 +36,11 @@ class GlobalGivingApi {
       final projectList =
           await getProjectsFromIds(projectIdsString: projectIdsString);
       for (dynamic project in projectList) {
-        List<String> nameSearch = getListOfKeywordsFromString(project.name);
+        String nameForKeywords =
+            "${project.name} ${project.area} ${project.organization.name}";
+        List<String> nameSearch = getListOfKeywordsFromString(nameForKeywords);
         Project newProject = project.copyWith(nameSearch: nameSearch);
-        _firestoreApi.createProject(project: newProject);
+        _firestoreApi.createOrUpdateProject(project: newProject);
       }
     } catch (e) {
       throw GlobalGivingApiException(

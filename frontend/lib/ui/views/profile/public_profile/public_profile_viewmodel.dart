@@ -52,6 +52,7 @@ class PublicProfileViewModel extends SocialFunctionsViewModel {
     _uid = uid;
     setBusy(true);
     if (isCurrentUsersProfile) {
+      log.i("User is looking at his own profile");
       user = currentUser;
     } else {
       user = await _firestoreApi.getUser(uid: uid);
@@ -60,13 +61,16 @@ class PublicProfileViewModel extends SocialFunctionsViewModel {
       log.wtf("User could not be found!");
       _navigationService!.back(result: false);
     }
-    if (user!.userSettings.showDetailedStatistics == true) {
+    if (user!.userSettings.showDetailedStatistics == true ||
+        isCurrentUsersProfile) {
       otherUserStats = await _firestoreApi.getUserSummaryStatistics(uid: uid);
       if (otherUserStats == null) {
         log.wtf(
             "Something went terribly wrong, user summary stats could not be fetched!");
         _navigationService!.back(result: false);
       }
+    } else {
+      log.i("User does not share his statistics");
     }
     await _userService!.listenToFriends();
     setBusy(false);

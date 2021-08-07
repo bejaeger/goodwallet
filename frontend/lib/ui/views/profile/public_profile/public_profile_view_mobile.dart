@@ -137,7 +137,8 @@ class PublicProfileViewMobile extends StatelessWidget {
                               ],
                             ),
                             verticalSpaceMedium,
-                            if (model.otherUserStats == null)
+                            if (model.otherUserStats == null &&
+                                !model.isCurrentUsersProfile)
                               _buildPrivateProfileDisclaimer(context),
                             Padding(
                               padding:
@@ -270,7 +271,7 @@ class ProjectsList extends StatelessWidget {
         ? Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: LayoutSettings.horizontalPadding),
-            child: Text("Make your first donation"),
+            child: Text(" Make your first donation"),
           )
         : GridView.builder(
             scrollDirection: Axis.horizontal,
