@@ -67,7 +67,7 @@ class PaymentViewModel extends FormViewModel {
     } else if (double.parse(amountValue!) > 1000) {
       log.i("Amount = ${double.parse(amountValue!)}  > 1000");
       setCustomValidationMessage(
-          "Are you sure you want to top up as much as ${formatAmount(double.parse(amountValue!), true)}");
+          "Are you sure you want to top up as much as ${formatAmount(double.parse(amountValue!), userInput: true)}");
     }
 
     return customValidationMessage == null;

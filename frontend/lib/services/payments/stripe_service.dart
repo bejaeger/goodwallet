@@ -2,16 +2,24 @@ import 'dart:convert';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:good_wallet/app/app.locator.dart';
 import 'package:good_wallet/constants/constants.dart';
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
+import 'package:good_wallet/flavor_config.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 
+// Not in use at the moment
+//
+
 class StripeService {
+  final FlavorConfigProvider _flavorConfigProvider =
+      locator<FlavorConfigProvider>();
   final log = getLogger('StripeService');
+
   static String apiBase = 'https://api.stripe.com/v1';
   static String paymentApiUrl = '${StripeService.apiBase}/payment_intents';
   //convert the payment URL to URI
@@ -25,6 +33,7 @@ class StripeService {
     'Content-Type': 'application/x-www-form-urlencoded'
   };
 
+  // DEPRECATED. Handled in backend
   ///NEW PLUGIN STARTS HERES.
   Future<String> createSetupIntentOnBackend(String email) async {
     final url = Uri.parse('$paymentApiUri/payment_intents');
@@ -228,8 +237,10 @@ class StripeService {
     try {
       log.i("Calling restful server function bookkeepMoneyTransfer");
 
-      Uri url = Uri.http(AUTHORITY,
-          p.join(URIPATHPREPEND, "transfers-api/bookkeepmoneytransfer"));
+      Uri url = Uri.https(
+          _flavorConfigProvider.authority,
+          p.join(_flavorConfigProvider.uripathprepend,
+              "transfers-api/bookkeepmoneytransfer"));
       http.Response? response = await http.post(url,
           body: json.encode(moneyTransfer.toJson()),
           headers: {"Accept": "application/json"});

@@ -3,6 +3,9 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 const stripe = require('stripe')(functions.config().stripe.secret); 
 
+// ---------------------------------------
+// For Future reference, not in use at the moment
+
 //Create User Payment Intent
 exports.onStripeCreatePaymentIntent = functions.https.onCall(async (data, context) => {
   console.log("creating Payment Intent");

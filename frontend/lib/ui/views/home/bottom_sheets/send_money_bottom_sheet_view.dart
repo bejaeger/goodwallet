@@ -26,9 +26,8 @@ class SendMoneyBottomSheetView extends StatelessWidget {
       viewModelBuilder: () =>
           SendMoneyBottomSheetViewModel(latestTransactions: request.customData),
       builder: (context, model, child) => BottomSheetLayout(
-        description:
-            "Give the gift of giving: Your sent funds become charitable-only",
-        title: "Gift Good Dollars",
+        description: "Your sent funds become charitable-only",
+        title: "Give the Gift of Giving",
         widgetBeforeButtons: request.customData != null
             ? request.customData.length > 0
                 ? Container(
@@ -83,7 +82,7 @@ class UserList extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           CallToActionButtonRoundInitials(
-              color: MyColors.paletteBlue.withOpacity(0.9),
+              color: MyColors.niceColors[index % 4],
               onPressed: () => onUserPressed(latestTransactions[index]),
               name: latestTransactions[index].transferDetails.recipientName),
           horizontalSpaceTiny,

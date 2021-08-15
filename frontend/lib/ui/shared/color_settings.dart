@@ -41,6 +41,7 @@ class MyColors {
 
   // @see https://colorpalettes.net/color-palette-1849/
   static const Color paletteBlue = Color(0xFF145b9c);
+
   static const Color paletteBlack = Color(0xFF030303);
   static const Color paletteGrey = Color(0xFF747d90);
   static const Color paletteGreen = Color(0xFF008301);
@@ -51,4 +52,16 @@ class MyColors {
 
   static const Color gold = Color(0xFFfc8a00);
   static const Color softRed = Color(0xFFff5f37);
+
+  static const Color niceOrange = Color(0xFFE6B97F);
+  static const Color niceLightRed = Color(0xFFDD9C8B);
+  static const Color niceBeige = Color(0xFFC1B193);
+  static const Color niceBlue = Color(0xFF3E7FC5);
+
+  static const List<Color> niceColors = [
+    niceOrange,
+    niceLightRed,
+    niceBeige,
+    niceBlue,
+  ];
 }

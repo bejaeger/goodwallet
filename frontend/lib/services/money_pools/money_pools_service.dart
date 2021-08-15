@@ -6,8 +6,9 @@ import 'dart:async';
 
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
+import 'package:good_wallet/constants/constants.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
-import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
+import 'package:good_wallet/datamodels/money_pools/messages/message.dart';
 import 'package:good_wallet/datamodels/money_pools/users/contributing_user.dart';
 import 'package:good_wallet/datamodels/user/public_user_info.dart';
 import 'package:good_wallet/utils/logger.dart';
@@ -29,8 +30,8 @@ class MoneyPoolsService {
 
   // list of money pool payouts and their subscriptions
   // String will become the money pool id
-  Map<String, List<MoneyPoolPayout>> moneyPoolPayouts = {};
-  Map<String, StreamSubscription?> _moneyPoolPayoutsStreamSubscriptions = {};
+  Map<String, List<Message>> moneyPoolMessages = {};
+  Map<String, StreamSubscription?> _moneyPoolMessagesStreamSubscriptions = {};
 
   void init({required String uid}) {
     // This function is called in startup logic viewmodel
@@ -163,5 +164,69 @@ class MoneyPoolsService {
     _moneyPoolsInvitedToStreamSubscription = null;
 
     log.i("Cleared lists of money pools");
+  }
+
+  ////////////////////////////////////////////////////////////
+  // Message board
+
+  Future addMessageToMoneyPool(
+      {required String mpid, required Message message}) async {
+    try {
+      await _firestoreApi.addMessageToMoneyPool(mpid: mpid, message: message);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // adds listener to money pool message collection
+  // allows to wait for the first emission of the stream via the completer
+  void addMoneyPoolMessagesListener(
+      {required String mpid,
+      required Completer<void> completer,
+      void Function()? callback}) {
+    if (_moneyPoolMessagesStreamSubscriptions[mpid] == null) {
+      final snapshot = _firestoreApi.getMoneyPoolMessagesStream(mpid: mpid);
+      //var completer = Completer<void>();
+      _moneyPoolMessagesStreamSubscriptions[mpid] = snapshot.listen((snapshot) {
+        snapshot.sort((a, b) {
+          if (b.createdAt != null && a.createdAt != null) {
+            return b.createdAt.compareTo(a.createdAt);
+          } else {
+            return 0;
+          }
+        });
+        moneyPoolMessages[mpid] = snapshot;
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+        if (callback != null) callback();
+        log.v(
+            "Listened to ${moneyPoolMessages[mpid]!.length} moneyPoolMessages");
+      });
+      //return completer.future;
+    } else {
+      log.w(
+          "Money pool payout stream already listened to, not adding another listener");
+      completer.complete();
+    }
+  }
+
+  // Get transfers for config. Using this function makes only sense
+  // if a listener has been added with addTransferDataListener, seebe low
+  List<Message> getMoneyPoolMessages({required String mpid}) {
+    if (!moneyPoolMessages.containsKey(mpid)) {
+      log.w(
+          "Did not find any messages for money pool with id $mpid. If you expect any messsages you probably forgot to add a listener with 'addMoneyPoolMessagesListener()'. Returning empty list");
+      return [];
+    } else {
+      return moneyPoolMessages[mpid]!;
+    }
+  }
+
+  // pause the listener
+  void cancelMoneyPoolMessageListener({required String mpid}) {
+    log.v("Pause transfer data listener with config: '$mpid'");
+    _moneyPoolMessagesStreamSubscriptions[mpid]?.cancel();
+    _moneyPoolMessagesStreamSubscriptions[mpid] = null;
   }
 }

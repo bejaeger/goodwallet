@@ -19,20 +19,20 @@ class CreateMoneyPoolIntroView extends StatelessWidget {
         title: "Together we can make an impact",
         description:
             "Raise funds together as a group and freely choose how to distribute the money between users eventually.",
-        backgroundColor: ColorSettings.primaryColor.withOpacity(0.9),
+        backgroundColor: ColorSettings.primaryColor.withOpacity(0.8),
       ),
       CreateMoneyPoolInfoPage(
         title: "Raise the stakes for your games!",
         description:
             "Leverage money pools for your next poker game, bets with friends, or collect funds as a prize to be won at your next beerpong tournament.",
-        backgroundColor: MyColors.paletteTurquoise.withOpacity(0.9),
+        backgroundColor: MyColors.paletteTurquoise.withOpacity(0.8),
       ),
       CreateMoneyPoolInfoPage(
         title: "Challenge your friends!",
         description:
             "Be creative and make your friends add funds when pre-defined scenarios occur. For example, "
             "every time you do a workout, the others have to add money. ",
-        backgroundColor: MyColors.palettePurple.withOpacity(0.9),
+        backgroundColor: MyColors.palettePurple.withOpacity(0.8),
       ),
     ];
     return pages;
@@ -107,12 +107,12 @@ class CreateMoneyPoolIntroView extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(0.0),
                         elevation: 0.0,
-                        primary: MyColors.paletteGreen.withOpacity(0.9)),
+                        primary: MyColors.paletteGreen.withOpacity(0.8)),
                     child: Padding(
                       padding: const EdgeInsets.only(
                           top: 12.0, bottom: 12.0, left: 20.0, right: 20.0),
                       child: Text(
-                        "Start money pool",
+                        "Start Impact Pool",
                         style: textTheme(context).headline5!.copyWith(
                             fontSize: 18, color: ColorSettings.whiteTextColor),
                       ),

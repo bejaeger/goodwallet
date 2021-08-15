@@ -37,12 +37,14 @@ class _$MoneyTransferTearOff {
       dynamic createdAt = "",
       TransferStatus status = TransferStatus.Initialized,
       TransferType type = TransferType.User2User,
+      bool? pledge,
       @JsonKey(name: "transferId") String transferId = "placeholder"}) {
     return Peer2PeerTransfer(
       transferDetails: transferDetails,
       createdAt: createdAt,
       status: status,
       type: type,
+      pledge: pledge,
       transferId: transferId,
     );
   }
@@ -124,6 +126,7 @@ mixin _$MoneyTransfer {
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
+            bool? pledge,
             @JsonKey(name: "transferId") String transferId)
         peer2peer,
     required TResult Function(
@@ -160,6 +163,7 @@ mixin _$MoneyTransfer {
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
+            bool? pledge,
             @JsonKey(name: "transferId") String transferId)?
         peer2peer,
     TResult Function(
@@ -291,6 +295,7 @@ abstract class $Peer2PeerTransferCopyWith<$Res>
       dynamic createdAt,
       TransferStatus status,
       TransferType type,
+      bool? pledge,
       @JsonKey(name: "transferId") String transferId});
 
   @override
@@ -314,6 +319,7 @@ class _$Peer2PeerTransferCopyWithImpl<$Res>
     Object? createdAt = freezed,
     Object? status = freezed,
     Object? type = freezed,
+    Object? pledge = freezed,
     Object? transferId = freezed,
   }) {
     return _then(Peer2PeerTransfer(
@@ -333,6 +339,10 @@ class _$Peer2PeerTransferCopyWithImpl<$Res>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as TransferType,
+      pledge: pledge == freezed
+          ? _value.pledge
+          : pledge // ignore: cast_nullable_to_non_nullable
+              as bool?,
       transferId: transferId == freezed
           ? _value.transferId
           : transferId // ignore: cast_nullable_to_non_nullable
@@ -350,6 +360,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
       this.createdAt = "",
       this.status = TransferStatus.Initialized,
       this.type = TransferType.User2User,
+      this.pledge,
       @JsonKey(name: "transferId") this.transferId = "placeholder"})
       : super._();
 
@@ -368,12 +379,14 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
   @override
   final TransferType type;
   @override
+  final bool? pledge;
+  @override
   @JsonKey(name: "transferId")
   final String transferId;
 
   @override
   String toString() {
-    return 'MoneyTransfer.peer2peer(transferDetails: $transferDetails, createdAt: $createdAt, status: $status, type: $type, transferId: $transferId)';
+    return 'MoneyTransfer.peer2peer(transferDetails: $transferDetails, createdAt: $createdAt, status: $status, type: $type, pledge: $pledge, transferId: $transferId)';
   }
 
   @override
@@ -390,6 +403,8 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
                 const DeepCollectionEquality().equals(other.status, status)) &&
             (identical(other.type, type) ||
                 const DeepCollectionEquality().equals(other.type, type)) &&
+            (identical(other.pledge, pledge) ||
+                const DeepCollectionEquality().equals(other.pledge, pledge)) &&
             (identical(other.transferId, transferId) ||
                 const DeepCollectionEquality()
                     .equals(other.transferId, transferId)));
@@ -402,6 +417,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
       const DeepCollectionEquality().hash(createdAt) ^
       const DeepCollectionEquality().hash(status) ^
       const DeepCollectionEquality().hash(type) ^
+      const DeepCollectionEquality().hash(pledge) ^
       const DeepCollectionEquality().hash(transferId);
 
   @JsonKey(ignore: true)
@@ -417,6 +433,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
+            bool? pledge,
             @JsonKey(name: "transferId") String transferId)
         peer2peer,
     required TResult Function(
@@ -445,7 +462,8 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
             @JsonKey(name: "transferId") String transferId)
         moneyPoolPayoutTransfer,
   }) {
-    return peer2peer(transferDetails, createdAt, status, type, transferId);
+    return peer2peer(
+        transferDetails, createdAt, status, type, pledge, transferId);
   }
 
   @override
@@ -456,6 +474,7 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
+            bool? pledge,
             @JsonKey(name: "transferId") String transferId)?
         peer2peer,
     TResult Function(
@@ -486,7 +505,8 @@ class _$Peer2PeerTransfer extends Peer2PeerTransfer {
     required TResult orElse(),
   }) {
     if (peer2peer != null) {
-      return peer2peer(transferDetails, createdAt, status, type, transferId);
+      return peer2peer(
+          transferDetails, createdAt, status, type, pledge, transferId);
     }
     return orElse();
   }
@@ -531,6 +551,7 @@ abstract class Peer2PeerTransfer extends MoneyTransfer {
       dynamic createdAt,
       TransferStatus status,
       TransferType type,
+      bool? pledge,
       @JsonKey(name: "transferId") String transferId}) = _$Peer2PeerTransfer;
   const Peer2PeerTransfer._() : super._();
 
@@ -545,6 +566,7 @@ abstract class Peer2PeerTransfer extends MoneyTransfer {
   TransferStatus get status => throw _privateConstructorUsedError;
   @override
   TransferType get type => throw _privateConstructorUsedError;
+  bool? get pledge => throw _privateConstructorUsedError;
   @override
   @JsonKey(name: "transferId")
   String get transferId => throw _privateConstructorUsedError;
@@ -709,6 +731,7 @@ class _$Donation extends Donation {
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
+            bool? pledge,
             @JsonKey(name: "transferId") String transferId)
         peer2peer,
     required TResult Function(
@@ -749,6 +772,7 @@ class _$Donation extends Donation {
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
+            bool? pledge,
             @JsonKey(name: "transferId") String transferId)?
         peer2peer,
     TResult Function(
@@ -1009,6 +1033,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
+            bool? pledge,
             @JsonKey(name: "transferId") String transferId)
         peer2peer,
     required TResult Function(
@@ -1049,6 +1074,7 @@ class _$MoneyPoolContribution extends MoneyPoolContribution {
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
+            bool? pledge,
             @JsonKey(name: "transferId") String transferId)?
         peer2peer,
     TResult Function(
@@ -1326,6 +1352,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
+            bool? pledge,
             @JsonKey(name: "transferId") String transferId)
         peer2peer,
     required TResult Function(
@@ -1366,6 +1393,7 @@ class _$MoneyPoolPayoutTransfer extends MoneyPoolPayoutTransfer {
             dynamic createdAt,
             TransferStatus status,
             TransferType type,
+            bool? pledge,
             @JsonKey(name: "transferId") String transferId)?
         peer2peer,
     TResult Function(

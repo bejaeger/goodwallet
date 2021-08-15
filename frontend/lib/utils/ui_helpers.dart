@@ -8,6 +8,7 @@ const Widget horizontalSpaceTiny = SizedBox(width: 5.0);
 const Widget horizontalSpaceSmall = SizedBox(width: 10.0);
 const Widget horizontalSpaceRegular = SizedBox(width: 18.0);
 const Widget horizontalSpaceMedium = SizedBox(width: 25.0);
+const Widget horizontalSpaceLarge = SizedBox(width: 50.0);
 
 const Widget verticalSpaceTiny = SizedBox(height: 5.0);
 const Widget verticalSpaceSmall = SizedBox(height: 10.0);
@@ -68,10 +69,22 @@ TextTheme textTheme(BuildContext context) => Theme.of(context).textTheme;
 String formatDate(DateTime timestamp) {
   return DateFormat.MMMEd().format(timestamp);
 }
+
+String formatDateShort(DateTime? timestamp) {
+  if (timestamp != null) {
+    return DateFormat.MMMd().add_jm().format(timestamp);
+  } else {
+    return "";
+  }
+}
+
+String formatDateVeryShort(DateTime timestamp) {
+  return DateFormat.yM().format(timestamp);
+}
+
 String formatDateDetails(DateTime timestamp) {
   return DateFormat.yMd().add_jm().format(timestamp);
 }
-
 
 class CenteredView extends StatelessWidget {
   final maxWidth;

@@ -15,6 +15,7 @@ _$Peer2PeerTransfer _$_$Peer2PeerTransferFromJson(Map<String, dynamic> json) {
         TransferStatus.Initialized,
     type: _$enumDecodeNullable(_$TransferTypeEnumMap, json['type']) ??
         TransferType.User2User,
+    pledge: json['pledge'] as bool?,
     transferId: json['transferId'] as String,
   );
 }
@@ -26,6 +27,7 @@ Map<String, dynamic> _$_$Peer2PeerTransferToJson(
       'createdAt': instance.createdAt,
       'status': _$TransferStatusEnumMap[instance.status],
       'type': _$TransferTypeEnumMap[instance.type],
+      'pledge': instance.pledge,
       'transferId': instance.transferId,
     };
 

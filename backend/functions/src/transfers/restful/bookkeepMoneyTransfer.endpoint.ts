@@ -85,12 +85,23 @@ export default new Post((request: Request, response: Response) => {
                 // can run batch here (cause we only need write operations) 
                 // batch hasa the advantage that it works offline
                 const batch = db.batch();
-                batch.set(docRef, data);
                 const recipientId = transferDetails["recipientId"];
                 const senderId = transferDetails["senderId"];
                 const amount = transferDetails["amount"];
-                gwBookkeeper.updateStatsOnUser2UserTransfer(batch, recipientId, senderId, amount)
-                    .catch(() => log("Error: Could not add updates of user to user transfer documents to batch commit)"));
+
+                // Need to distinguish one more case here, that is
+                // commitment transfers, where the user pledges
+                // money to his own Good Wallet, from money 
+                // sent from user A to user B 
+                if (senderId == recipientId) {
+                    gwBookkeeper.updateStatsOnUser2OwnGoodWalletTransfer(batch, senderId, amount).catch(() => log("Error: Could not add updates of user to own good wallet transfer documents to batch commit)"));
+                    // Add field to money transfer document to easily identify that this was a pledge
+                    data["pledge"] = true;
+                } else {
+                    gwBookkeeper.updateStatsOnUser2UserSentTransfer(batch, recipientId, senderId, amount)
+                        .catch(() => log("Error: Could not add updates of user to user transfer documents to batch commit)"));
+                }
+                batch.set(docRef, data);
 
                 // await all async calls
                 await batch.commit();

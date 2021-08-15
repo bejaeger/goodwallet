@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "gooddollarsmarketplace"
+    "default": "gooddollarsmarketplace",
+    "test-project": "the-good-wallet-test-env"
   }
 }

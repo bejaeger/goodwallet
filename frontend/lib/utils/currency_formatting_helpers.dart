@@ -1,4 +1,5 @@
 import 'package:good_wallet/utils/logger.dart';
+import 'package:good_wallet/utils/other_helpers.dart';
 import 'package:intl/intl.dart';
 
 final log = getLogger("currency_formating_service.dart");
@@ -11,12 +12,19 @@ final String defaultLocale = "en-US";
 // In firestore we store currencies multiplied by 100
 // so we need to divide them by 100 again
 // (if they are non-zero-decimal currencies)
-String formatAmount(amount, [userInput = false]) {
+String formatAmount(amount,
+    {bool userInput = false,
+    bool showDollarSign = true,
+    bool showDecimals = true}) {
   num returnAmount = (isNonZeroDecimalCurrency() && userInput == false)
       ? (amount / 100)
       : amount;
-  return NumberFormat.simpleCurrency(locale: defaultLocale)
-      .format(returnAmount);
+  var returnValue =
+      NumberFormat.simpleCurrency(locale: defaultLocale).format(returnAmount);
+  if (!showDollarSign) returnValue = returnValue.replaceAll("\$", "");
+  if (!showDecimals && isNonZeroDecimalCurrency())
+    returnValue = removeLastCharacters(returnValue, removeNumber: 3);
+  return returnValue;
 }
 
 // Format amount for stripe that takes it in cents

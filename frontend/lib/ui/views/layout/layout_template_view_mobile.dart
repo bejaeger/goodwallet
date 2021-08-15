@@ -121,7 +121,7 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
       ),
       PersistentBottomNavBarItem(
         icon: Icon(
-          Icons.favorite,
+          Icons.volunteer_activism,
         ),
         iconSize: Style.bottomNavigationBarIconSize,
         //title: ("Projects"),
@@ -162,18 +162,15 @@ class _LayoutTemplateViewMobileState extends State<LayoutTemplateViewMobile> {
       //   activeColorPrimary: ColorSettings.primaryColor,
       //   inactiveColorPrimary: ColorSettings.greyTextColor,
       // ),
-
       PersistentBottomNavBarItem(
         iconSize: Style.bottomNavigationBarIconSize,
-
         icon: Icon(
-          Icons.search_rounded,
+          Icons.forum,
         ),
         //title: ("Profile"),
         activeColorPrimary: ColorSettings.primaryColor,
         inactiveColorPrimary: ColorSettings.greyTextColor!,
       ),
-
       PersistentBottomNavBarItem(
         iconSize: Style.bottomNavigationBarIconSize,
         icon: Icon(

@@ -7,6 +7,8 @@ admin.initializeApp();
 
 const db = admin.firestore();
 
+
+
 if (process.env.FUNCTIONS_EMULATOR) {
   console.log('We are running emulators locally.');
 

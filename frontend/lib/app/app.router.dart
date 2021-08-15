@@ -10,8 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 import '../datamodels/money_pools/base/money_pool.dart';
+import '../datamodels/money_pools/users/contributing_user.dart';
 import '../datamodels/transfers/bookkeeping/recipient_info.dart';
 import '../datamodels/transfers/bookkeeping/sender_info.dart';
+import '../datamodels/user/public_user_info.dart';
 import '../datamodels/user/user.dart';
 import '../enums/featured_app_type.dart';
 import '../enums/search_type.dart';
@@ -29,6 +31,7 @@ import '../ui/views/login/login_view.dart';
 import '../ui/views/money_pools/create_money_pool_form_view.dart';
 import '../ui/views/money_pools/create_money_pool_intro_view.dart';
 import '../ui/views/money_pools/disburse_money_pool_view.dart';
+import '../ui/views/money_pools/members_view/members_list_view.dart';
 import '../ui/views/money_pools/money_pools_view.dart';
 import '../ui/views/money_pools/single_money_pool_view.dart';
 import '../ui/views/payments/payment_view_webhook.dart';
@@ -83,6 +86,7 @@ class Routes {
   static const String friendsView = '/friends-view';
   static const String accountView = '/account-view';
   static const String projectsSearchView = '/projects-search-view';
+  static const String membersListView = '/members-list-view';
   static const all = <String>{
     welcomeView,
     walletView,
@@ -116,6 +120,7 @@ class Routes {
     friendsView,
     accountView,
     projectsSearchView,
+    membersListView,
   };
 }
 
@@ -155,6 +160,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.friendsView, page: FriendsView),
     RouteDef(Routes.accountView, page: AccountView),
     RouteDef(Routes.projectsSearchView, page: ProjectsSearchView),
+    RouteDef(Routes.membersListView, page: MembersListView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -444,6 +450,21 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    MembersListView: (data) {
+      var args = data.getArgs<MembersListViewArguments>(nullOk: false);
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => MembersListView(
+          key: args.key,
+          invitedUsers: args.invitedUsers,
+          contributingUsers: args.contributingUsers,
+          currentUserId: args.currentUserId,
+          adminId: args.adminId,
+          onInviteMemberPressed: args.onInviteMemberPressed,
+          adminName: args.adminName,
+        ),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -602,4 +623,23 @@ class FriendsViewArguments {
   final Key? key;
   final List<User>? friends;
   FriendsViewArguments({this.key, this.friends});
+}
+
+/// MembersListView arguments holder class
+class MembersListViewArguments {
+  final Key? key;
+  final List<PublicUserInfo>? invitedUsers;
+  final List<ContributingUser> contributingUsers;
+  final String currentUserId;
+  final String adminId;
+  final void Function()? onInviteMemberPressed;
+  final String adminName;
+  MembersListViewArguments(
+      {this.key,
+      this.invitedUsers,
+      required this.contributingUsers,
+      required this.currentUserId,
+      required this.adminId,
+      this.onInviteMemberPressed,
+      required this.adminName});
 }

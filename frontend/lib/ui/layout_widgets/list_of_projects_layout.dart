@@ -35,7 +35,7 @@ class ListOfProjectsLayout extends StatelessWidget {
                 ConstrainedWidthLayout(
                   child: Column(
                     children: [
-                      verticalSpaceRegular,
+                      verticalSpaceSmall,
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: LayoutSettings.horizontalPadding),

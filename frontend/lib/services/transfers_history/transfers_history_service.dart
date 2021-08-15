@@ -71,14 +71,17 @@ class TransfersHistoryService {
   // More generic class to listen to firestore collections for updates.
   // callback can be used to provide notifyListeners from the viewmodel
   // to the service
-  Future<void>? addTransferDataListener(
-      {required MoneyTransferQueryConfig config}) {
+  void addTransferDataListener(
+      {required MoneyTransferQueryConfig config,
+      required Completer<void> completer,
+      void Function()? callback}) {
     config = returnMassagedConfig(config);
 
     if (_transfersSubscriptions.containsKey(config)) {
       log.v(
           "Stream with config '$config' already listened to, resuming it in case it has been paused!");
       _transfersSubscriptions[config]?.resume();
+      completer.complete();
     } else {
       log.i("Setting up listener for transfers with config $config.");
       Stream<List<MoneyTransfer>> snapshot;
@@ -86,7 +89,7 @@ class TransfersHistoryService {
         snapshot = getTransferDataStream(config: config);
 
         // listen to combined stream and add transactions to controller
-        var completer = Completer<void>();
+        //var completer = Completer<void>();
         _transfersSubscriptions[config] = snapshot.listen(
           (transactions) {
             // Option to make the list unique!
@@ -96,15 +99,20 @@ class TransfersHistoryService {
             } else {
               latestTransfers[config] = transactions;
             }
+            // if (!completer.isCompleted) {
+            //   completer.complete();
+            // }
             if (!completer.isCompleted) {
               completer.complete();
             }
+            if (callback != null) callback();
             log.v(
                 "Listened to ${transactions.length} transfers with config $config. Max returns were specified with ${config.maxNumberReturns}");
           },
         );
-        return completer.future;
+        //return completer.future;
       } catch (e) {
+        completer.complete();
         rethrow;
       }
     }
@@ -152,21 +160,26 @@ class TransfersHistoryService {
   /// Money Pools
 
   // listen to money pool payouts
-  Future<void>? addMoneyPoolPayoutListener({required String mpid}) async {
+  void addMoneyPoolPayoutListener(
+      {required String mpid,
+      required Completer<void> completer,
+      void Function()? callback}) {
     if (_moneyPoolPayoutsStreamSubscriptions[mpid] == null) {
       final snapshot = _firestoreApi.getMoneyPoolPayoutsStream(mpid: mpid);
-      var completer = Completer<void>();
+      //var completer = Completer<void>();
       _moneyPoolPayoutsStreamSubscriptions[mpid] = snapshot.listen((snapshot) {
         moneyPoolPayouts[mpid] = snapshot;
         if (!completer.isCompleted) {
           completer.complete();
         }
+        if (callback != null) callback();
         log.v("Listened to ${moneyPoolPayouts[mpid]!.length} moneyPoolPayouts");
       });
-      return completer.future;
+      //return completer.future;
     } else {
       log.w(
           "Money pool payout stream already listened to, not adding another listener");
+      completer.complete();
     }
   }
 

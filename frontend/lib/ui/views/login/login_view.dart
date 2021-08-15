@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 import './login_viewmodel.dart';
 import 'package:good_wallet/ui/views/login/login_view.form.dart';
@@ -24,8 +23,8 @@ class LoginView extends StatelessWidget with $LoginView {
       builder: (context, model, child) => Scaffold(
         body: AuthenticationLayout(
           busy: model.isBusy,
-          onCreateAccountTapped: () => model.navigateToCreateAccount(),
-          onDummyLoginTapped: () => model.saveData(AuthenticationMethod.dummy),
+          onCreateAccountTapped: model.navigateToCreateAccount,
+          onDummyLoginTapped: model.onDummyLoginTapped(),
           onMainButtonTapped: () => model.saveData(AuthenticationMethod.Email),
           validationMessage: model.validationMessage,
           title: 'Welcome to the \nGood Wallet',
@@ -59,6 +58,7 @@ class LoginView extends StatelessWidget with $LoginView {
           onForgotPassword: () {},
           onGoogleButtonTapped: () =>
               model.saveData(AuthenticationMethod.google),
+          releaseName: model.releaseName,
           // onFacebookButtonTapped: () =>
           //     model.runAuthentication(AuthenticationMethod.facebook),
           // onAppleButtonTapped: () =>

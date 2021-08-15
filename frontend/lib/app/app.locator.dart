@@ -14,6 +14,7 @@ import 'package:stacked_services/stacked_services.dart';
 
 import '../apis/firestore_api.dart';
 import '../apis/global_giving_api.dart';
+import '../flavor_config.dart';
 import '../services/money_pools/money_pools_service.dart';
 import '../services/payments/dummy_payment_service.dart';
 import '../services/payments/stripe_service.dart';
@@ -46,6 +47,7 @@ void setupLocator({String? environment, EnvironmentFilter? environmentFilter}) {
   locator.registerLazySingleton(() => QRCodeService());
   locator.registerLazySingleton(() => MoneyPoolsViewModel());
   locator.registerLazySingleton(() => WalletViewModel());
+  locator.registerLazySingleton(() => FlavorConfigProvider());
   locator.registerSingleton(FirestoreApi());
   locator.registerSingleton(DummyPaymentService());
   locator.registerSingleton(UserService());

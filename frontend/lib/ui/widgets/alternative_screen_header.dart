@@ -67,7 +67,7 @@ class AlternativeScreenHeader extends StatelessWidget {
                 alignment:
                     alignCenter ? Alignment.center : Alignment.centerLeft,
                 child: SizedBox(
-                  width: screenWidthWithoutPadding(context, percentage: 0.7),
+                  width: screenWidthWithoutPadding(context, percentage: 0.8),
                   child: Text(
                     description!,
                     textAlign: alignCenter ? TextAlign.center : TextAlign.left,

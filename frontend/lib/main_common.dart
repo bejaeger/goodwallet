@@ -17,16 +17,15 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:url_strategy/url_strategy.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
-import 'package:flutter_stripe/flutter_stripe.dart';
-import 'constants/constants.dart';
+import 'flavor_config.dart';
 
 const bool USE_EMULATOR = false;
 
-void main() async {
+void mainCommon(Flavor flavor) async {
   final log = getLogger("main.dart");
-  print("Load dot env");
+  log.i("Load dot env");
   // await DotEnv.load(fileName: ".env");
-  print("Loaded dot env");
+  log.i("Loaded dot env");
   //Stripe.publishableKey = DotEnv.env['STRIPE_API_KEY']!;
 
   try {
@@ -42,7 +41,13 @@ void main() async {
     setupBottomSheetUi();
     setupSnackbarUi();
     Logger.level = Level.verbose;
-    runApp(MyApp());
+
+    // configure services that need settings dependent on flavor
+    final FlavorConfigProvider flavorConfigProvider =
+        locator<FlavorConfigProvider>();
+    flavorConfigProvider.configure(flavor);
+
+    runApp(MyApp(appName: flavorConfigProvider.appName));
   } catch (e) {
     print("ERROR: App main function failed with error: ${e.toString()}");
   }
@@ -61,15 +66,20 @@ Future _connectToFirebaseEmulator() async {
 }
 
 class MyApp extends StatelessWidget {
+  final String appName;
   // This widget is the root of your application.
   final log = getLogger("main.dart");
+  MyApp({Key? key, required this.appName}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     log.i("Building MaterialApp...");
     return Unfocuser(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+
+        // TODO: Get title from flavour
         title: appName,
+
         navigatorKey: StackedService.navigatorKey,
         onGenerateRoute: StackedRouter().onGenerateRoute,
         theme: MyThemeData.myTheme(),

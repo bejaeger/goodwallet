@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
+import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/money_pools/money_pools_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/custom_app_bar_small.dart';
@@ -76,15 +77,24 @@ class MoneyPoolsList extends StatelessWidget {
   final List<MoneyPool> moneyPools;
   final void Function(MoneyPool) onMoneyPoolPressed;
   final void Function() onCreateNewPressed;
-  const MoneyPoolsList({
+  MoneyPoolsList({
     Key? key,
     required this.moneyPools,
     required this.onMoneyPoolPressed,
     required this.onCreateNewPressed,
   }) : super(key: key);
 
+  List<String> images = [
+    ImagePath.fourPeopleLaughing,
+    ImagePath.threePeopleAtTable,
+    ImagePath.twoPeopleOnCouch,
+  ];
+
+  Random random = new Random();
+
   @override
   Widget build(BuildContext context) {
+    int imageIndex = random.nextInt(3);
     return ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
@@ -95,12 +105,15 @@ class MoneyPoolsList extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               MoneyPoolPreview(
-                height: 140,
+                width: screenWidth(context),
+                imagePath: images[imageIndex],
+                maxLinesTitle: 1,
+                height: 190,
                 moneyPool: moneyPools[index],
                 onTap: onMoneyPoolPressed,
                 onCreateMoneyPoolTapped: onCreateNewPressed,
               ),
-              verticalSpaceSmall,
+              verticalSpaceRegular,
             ],
           );
         });

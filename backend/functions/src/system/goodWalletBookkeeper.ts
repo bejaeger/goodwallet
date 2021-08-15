@@ -22,7 +22,8 @@ export class GoodWalletBookkeeper {
         this.dbManager = new FirestoreManager(db);
     }
 
-    async updateStatsOnUser2UserTransfer(batch: any, recipientId: string, senderId: string, amount: string) {
+    // update Statistics when user A sends money to user B
+    async updateStatsOnUser2UserSentTransfer(batch: any, recipientId: string, senderId: string, amount: string) {
         log("Entering bookkeepOnUser2UserTransfer()");
 
         const increment = admin.firestore.FieldValue.increment(amount);
@@ -30,15 +31,30 @@ export class GoodWalletBookkeeper {
         const docRefSender = this.dbManager.getUserSummaryStatisticsDocument(senderId);
 
         batch.update(docRefSender, {
-            "moneyTransferStatistics.totalSentToPeers": increment // 1. increment totalSentToPeers
+            "moneyTransferStatistics.totalSentToPeers": increment // 2. increment totalSentToPeers
         });
         batch.update(docRefRecipient, {
-            currentBalance: increment,
-            "moneyTransferStatistics.totalRaised": increment, // 2. Increment totalRaised
-            "moneyTransferStatistics.totalRaisedViaPeer2Peer": increment // 3. Increment totalRaisedViaPeer2Peer
+            currentBalance: increment, // 1. increment currentBalance!
+            "moneyTransferStatistics.totalRaised": increment, // 3. Increment totalRaised
+            "moneyTransferStatistics.totalRaisedViaPeer2Peer": increment // 4. Increment totalRaisedViaPeer2Peer
         });
 
     }
+
+    // update statistics when user pledges money to his own Good Wallet
+    async updateStatsOnUser2OwnGoodWalletTransfer(batch: any, senderId: string, amount: string) {
+        log("Entering bookkeepOnUser2UserOwnGoodWalletTransfer()");
+
+        const increment = admin.firestore.FieldValue.increment(amount);
+        const docRefSender = this.dbManager.getUserSummaryStatisticsDocument(senderId);
+
+        batch.update(docRefSender, {
+            currentBalance: increment, // 1. increment currentBalance!
+            "moneyTransferStatistics.totalPledged": increment, // 2. Increment totalPledged
+        });
+
+    }
+
 
     // update summary statistics in model DonationStatistics
     async updateStatsOnDonation(transaction: any, uid: string, amountToAdd: number, sourceType: string, projectInfo: any) {
@@ -48,7 +64,7 @@ export class GoodWalletBookkeeper {
         const userDocRef = this.dbManager.getUserSummaryStatisticsDocument(uid);
         const userDoc = await transaction.get(userDocRef);
 
-        const globalStatsDocRef = this.dbManager.getGlobalStatsDocument();
+        const globalStatsDocRef = await this.dbManager.getGlobalStatsDocument();
         const globalStatsDoc = await transaction.get(globalStatsDocRef);
 
         // validate documents
@@ -304,6 +320,8 @@ export class GoodWalletBookkeeper {
     // Helper and validating functions
 
     private hasEnoughBalance(currentBalance: number, amountToDeduct: number) {
-        return currentBalance > amountToDeduct;
+        log(`amountToDeduct: ${amountToDeduct}`);
+        log(`currentBalance: ${currentBalance}`);
+        return Math.abs(amountToDeduct) <= currentBalance;
     }
 }

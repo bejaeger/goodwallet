@@ -63,6 +63,18 @@ class SingleProjectViewModel extends ProjectsBaseViewModel {
             recipientInfo: recipientInfo));
   }
 
+  double? getFundingPercentage() {
+    if (project!.fundingCurrent != null && project!.fundingGoal != null) {
+      log.i("current funding: ${project!.fundingCurrent}");
+      log.i("funding goal: ${project!.fundingGoal}");
+      return (project!.fundingCurrent! / project!.fundingGoal! * 100)
+          .clamp(0.0, 100)
+          .roundToDouble();
+    } else {
+      return null;
+    }
+  }
+
   Future showAmountTooHighDialog(String donationAmount) async {
     await _dialogService!.showConfirmationDialog(
       title: 'Donation Amount Too High',

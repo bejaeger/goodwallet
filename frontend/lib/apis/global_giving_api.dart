@@ -1,11 +1,9 @@
-import 'dart:ffi';
-
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
-import 'package:good_wallet/constants/constants.dart';
 import 'package:good_wallet/data/global_giving_api_aux_data.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/exceptions/global_giving_api_exception.dart';
+import 'package:good_wallet/utils/other_helpers.dart';
 import 'package:good_wallet/utils/string_utils.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -29,23 +27,26 @@ class GlobalGivingApi {
   final _firestoreApi = locator<FirestoreApi>();
 
   Future pushGlobalGivingProjectsToFirestore() async {
-    // TODO: Take list of projects and fetch 10 projects for each request.
-
-    try {
-      String projectIdsString = kGlobalGivingProjectIds.join(",");
-      final projectList =
-          await getProjectsFromIds(projectIdsString: projectIdsString);
-      for (dynamic project in projectList) {
-        String nameForKeywords =
-            "${project.name} ${project.area} ${project.organization.name}";
-        List<String> nameSearch = getListOfKeywordsFromString(nameForKeywords);
-        Project newProject = project.copyWith(nameSearch: nameSearch);
-        _firestoreApi.createOrUpdateProject(project: newProject);
+    List<List<String>> chunksOfProjectIds =
+        getChunksOfList<String>(kGlobalGivingProjectIds, size: 10);
+    for (var chunk in chunksOfProjectIds) {
+      try {
+        String projectIdsString = chunk.join(",");
+        final projectList =
+            await getProjectsFromIds(projectIdsString: projectIdsString);
+        for (dynamic project in projectList) {
+          String nameForKeywords =
+              "${project.name} ${project.area} ${project.organization.name}";
+          List<String> nameSearch =
+              getListOfKeywordsFromString(nameForKeywords);
+          Project newProject = project.copyWith(nameSearch: nameSearch);
+          _firestoreApi.createOrUpdateProject(project: newProject);
+        }
+      } catch (e) {
+        throw GlobalGivingApiException(
+            message: "Could not add projects to firestore",
+            devDetails: "Error thrown: $e");
       }
-    } catch (e) {
-      throw GlobalGivingApiException(
-          message: "Could not add projects to firestore",
-          devDetails: "Error thrown: $e");
     }
   }
 

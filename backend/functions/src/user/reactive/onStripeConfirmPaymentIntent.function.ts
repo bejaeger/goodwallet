@@ -1,7 +1,9 @@
 import * as functions from 'firebase-functions';
 //import admin = require('firebase-admin');
 
-//admin.initializeApp();
+// ------------------------------------------------
+// For Future reference, not in use at the moment
+
 
 const stripe = require('stripe')(functions.config().stripe.testkey); 
 // const stripe = require("stripe")(

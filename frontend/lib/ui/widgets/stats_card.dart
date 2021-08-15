@@ -30,7 +30,7 @@ class StatsCard extends StatelessWidget {
       onTap: onCardPressed,
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(25.0),
         ),
         elevation: 4,
         child: Container(
@@ -76,9 +76,9 @@ class StatsCard extends StatelessWidget {
                   onTap: onButtonPressed,
                   child: Container(
                       alignment: Alignment.center,
-                      height: 35,
+                      height: 40,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16.0),
+                        borderRadius: BorderRadius.circular(25.0),
                         color: ColorSettings.primaryColor.withOpacity(0.8),
                       ),
                       child: Text(buttonText,

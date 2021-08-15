@@ -62,7 +62,8 @@ class MoneyTransferDialogViewModel extends BaseModel {
         mainButtonTitle = "Go Back";
       } else {
         title = "Success!!";
-        description = "You are the best";
+        description = "You are the best!";
+        mainButtonTitle = "Go Back";
       }
     } else {
       title = "Warning";

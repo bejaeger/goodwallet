@@ -27,6 +27,9 @@ class UserService {
   final FirebaseAuthenticationService? _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
 
+  DateTime? userCreationTime;
+  DateTime? get getUserCreationTime => userCreationTime;
+
   // subject to keep track of initialization of user
   BehaviorSubject<UserStatus> userStateSubject =
       BehaviorSubject<UserStatus>.seeded(UserStatus.Unknown);
@@ -36,6 +39,10 @@ class UserService {
   BehaviorSubject<UserStatistics> userStatsSubject =
       BehaviorSubject<UserStatistics>.seeded(getEmptyUserStatistics());
   UserStatistics? get userStats => userStatsSubject.value;
+
+  StreamSubscription? _totalDonationsGlobalStreamSubscription;
+  BehaviorSubject<num> totalDonationsGlobalSubject = BehaviorSubject.seeded(0);
+  num totalDonationsGlobal = 0;
 
   // store list of friends
   // map of list of money pools with money Pool id as key
@@ -128,6 +135,7 @@ class UserService {
   // populating current user
   Future _syncOrCreateUserAccount({required firebase.User user}) async {
     try {
+      userCreationTime = user.metadata.creationTime;
       final populatedUser = await _firestoreApi.getUser(uid: user.uid);
       if (populatedUser != null) {
         _currentUser = populatedUser;
@@ -325,6 +333,36 @@ class UserService {
     friends.addAll(tmpFriends);
   }
 
+  Future getTotalDonationsGlobal() async {
+    final globalStats = await _firestoreApi.getGlobalStatistics();
+    return globalStats.totalDonations;
+  }
+
+  /// Setting up user stats listener
+  Future<void>? listenToGlobalStats() async {
+    if (_totalDonationsGlobalStreamSubscription == null) {
+      try {
+        var completer = Completer<void>();
+        final stream = _firestoreApi.getGlobalStatisticsStream();
+        _totalDonationsGlobalStreamSubscription = stream.listen((stats) {
+          if (stats == null) {
+            log.wtf("Stats document is null! This should not happen");
+          } else {
+            totalDonationsGlobal = stats.totalDonations;
+            totalDonationsGlobalSubject.add(stats.totalDonations);
+          }
+          if (!completer.isCompleted) {
+            completer.complete();
+          }
+          log.v("Listened Global stats");
+        });
+        return completer.future;
+      } catch (e) {
+        rethrow;
+      }
+    }
+  }
+
   ///////////////////////////////////////////////////
   // Clean up
 
@@ -333,15 +371,20 @@ class UserService {
     // cancel user stream subscription
     userStreamSubscription?.cancel();
     userStreamSubscription = null;
-    // cancel user stream subscription
+    // cancel user stream subscription and reset friends array
     _userDataStreamSubscription?.cancel();
     _userDataStreamSubscription = null;
+    friends = [];
+    //
+    _totalDonationsGlobalStreamSubscription?.cancel();
+    _totalDonationsGlobalStreamSubscription = null;
     // clear wallet
     userStatsSubject.add(getEmptyUserStatistics());
     // set current user to null
     _currentUser = getEmptyUser();
     // actually log out from firebase
     await _firebaseAuthenticationService!.logout();
+    userCreationTime = null;
     // set auth state to signed out
     userStateSubject.add(UserStatus.SignedOut);
   }

@@ -2,13 +2,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // when running on production backend
-const String AUTHORITY =
+const String AUTHORITYDEV =
     "us-central1-gooddollarsmarketplace.cloudfunctions.net";
-const String URIPATHPREPEND = "";
+const String URIPATHPREPENDDEV = "";
 
-// When running with the firebase emulator
-// const String AUTHORITY = "192.168.1.69:5001";
-// const String URIPATH = "gooddollarsmarketplace/us-central1";
+// when running on production backend
+const String AUTHORITYPROD =
+    "us-central1-the-good-wallet-test-env.cloudfunctions.net";
+const String URIPATHPREPENDPROD = "";
+
+// Limit of number of messages that are read from database in money pools
+const int kNumberOfMessagesLimit = 50;
 
 final CollectionReference usersCollection =
     FirebaseFirestore.instance.collection('users');
@@ -20,9 +24,11 @@ final CollectionReference moneyPoolPayoutsCollection =
     FirebaseFirestore.instance.collection("moneyPoolPayouts");
 final CollectionReference moneyPoolsCollection =
     FirebaseFirestore.instance.collection('moneyPools');
+final String moneyPoolMessagesDocumentKey = "messages";
+
 final CollectionReference projectsCollection =
     FirebaseFirestore.instance.collection('projects');
-final appName = 'The Good Dollars Marketplace';
+final appName = 'The Good Wallet';
 final CollectionReference globalStatsCollection =
     FirebaseFirestore.instance.collection("globalStats");
 ////////////////////////////////////////////////////////

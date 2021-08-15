@@ -1,5 +1,6 @@
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/apis/global_giving_api.dart';
+import 'package:good_wallet/flavor_config.dart';
 import 'package:good_wallet/services/payments/stripe_service.dart';
 import 'package:good_wallet/services/transfers_history/transfers_history_service.dart';
 import 'package:good_wallet/services/money_pools/money_pools_service.dart';
@@ -21,6 +22,7 @@ import 'package:good_wallet/ui/views/login/login_view.dart';
 import 'package:good_wallet/ui/views/money_pools/create_money_pool_form_view.dart';
 import 'package:good_wallet/ui/views/money_pools/create_money_pool_intro_view.dart';
 import 'package:good_wallet/ui/views/money_pools/disburse_money_pool_view.dart';
+import 'package:good_wallet/ui/views/money_pools/members_view/members_list_view.dart';
 import 'package:good_wallet/ui/views/money_pools/money_pools_view.dart';
 import 'package:good_wallet/ui/views/money_pools/money_pools_viewmodel.dart';
 import 'package:good_wallet/ui/views/money_pools/single_money_pool_view.dart';
@@ -83,6 +85,7 @@ import 'package:stacked_services/stacked_services.dart';
     MaterialRoute(page: FriendsView),
     MaterialRoute(page: AccountView),
     MaterialRoute(page: ProjectsSearchView),
+    MaterialRoute(page: MembersListView),
   ],
   dependencies: [
     // Services
@@ -103,7 +106,7 @@ import 'package:stacked_services/stacked_services.dart';
     // View Models
     LazySingleton(classType: MoneyPoolsViewModel),
     LazySingleton(classType: WalletViewModel),
-
+    LazySingleton(classType: FlavorConfigProvider),
     // We don't really need local storage atm! (will need this for local search history for example)
     // Presolve(
     //   classType: LocalStorageService,

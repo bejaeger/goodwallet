@@ -142,6 +142,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
   Future<void> displayPaymentSheet() async {
     setBusy(true);
     try {
+      // presents UI component to add credit card details
       await Stripe.instance.presentPaymentSheet(
           parameters: PresentPaymentSheetParameters(
               clientSecret: paymentIntentData!['paymentIntent'],
@@ -231,7 +232,9 @@ class TransferFundsAmountViewModel extends FormViewModel {
       if (type == TransferType.User2OwnPrepaidFund)
         await handleTopUpPayment();
       //await createStripePayment();
-      else if (type == TransferType.User2UserSent) {
+      else if (type == TransferType.User2OwnGoodWallet) {
+        await handleTransfer(type: type);
+      } else if (type == TransferType.User2UserSent) {
         //await createStripePayment();
         await handleTransfer(type: type);
       } else if (type == TransferType.User2Project) {
@@ -263,8 +266,9 @@ class TransferFundsAmountViewModel extends FormViewModel {
     } else if (double.parse(amountValue!) > 1000) {
       log.i("Amount = ${double.parse(amountValue!)}  > 1000");
       setCustomValidationMessage(
-          "Are you sure you want to top up as much as ${formatAmount(double.parse(amountValue!), true)}");
-    } else if (type == TransferType.User2Project &&
+          "Are you sure you want to top up as much as ${formatAmount(double.parse(amountValue!), userInput: true)}");
+    } else if ((type == TransferType.User2Project &&
+            senderInfo.moneySource != MoneySource.Bank) &&
         scaleAmountForStripe(double.parse(amountValue!)) >
             userStats.currentBalance) {
       setCustomValidationMessage(
@@ -492,10 +496,11 @@ class TransferFundsAmountViewModel extends FormViewModel {
 
   Future _showPaymentMethodBottomSheet({TransferType? type}) async {
     String description =
-        "This version does not have any actual payment processors integrated, just continue with test payment ;)";
+        "This version does not have any actual payment processors integrated, just continue with test payment ;). ";
     if (type != null && type == TransferType.User2Project) {
       description =
-          "We take 5\% of your donation. Please choose a any other amount. Thank you for your support!";
+          "We take 5\% of your donation. Please choose any other amount." +
+              description;
     }
     return await _bottomSheetService!.showBottomSheet(
         barrierDismissible: true,
@@ -509,9 +514,9 @@ class TransferFundsAmountViewModel extends FormViewModel {
     late String title;
     late String description;
     if (type == TransferType.User2OwnPrepaidFund) {
-      title = "Commit For Good";
+      title = "Add Funds to avoid fees";
       description =
-          "You can commit money to your Good Wallet at any time. Then you can take all the time and space you need to decide on the causes you want to support.";
+          "You can add money to a Fund from which you can pay into Impact Pools or other user's Good Wallets without further transaction fees.";
     } else if (type == TransferType.User2UserSent) {
       title = "Give the gift of giving";
       description =
@@ -524,6 +529,10 @@ class TransferFundsAmountViewModel extends FormViewModel {
       title = "Raise together!";
       description =
           "By paying into our Impact Pools you automatically make an impact; because the money will eventually be invested in one of our good causes.";
+    } else if (type == TransferType.User2OwnGoodWallet) {
+      title = "Commit money for good";
+      description =
+          "Commit money into your Good Wallet and decide on a cause later.";
     } else {
       title = "Ooopss";
       description =
@@ -541,7 +550,7 @@ class TransferFundsAmountViewModel extends FormViewModel {
       barrierDismissible: true,
       title: 'Confirmation',
       description:
-          "Are you sure you would like to send ${formatAmount(amount, true)}${getSenderInfoString(senderInfo)}${getRecipientInfoString(recipientInfo)}?",
+          "Are you sure you would like to send ${formatAmount(amount, userInput: true)}${getSenderInfoString(senderInfo)}${getRecipientInfoString(recipientInfo)}?",
       confirmButtonTitle: 'Yes',
       cancelButtonTitle: 'No',
     );

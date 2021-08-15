@@ -40,6 +40,7 @@ class MoneyTransfer with _$MoneyTransfer {
         TransferStatus status,
     @Default(TransferType.User2User)
         TransferType type,
+    bool? pledge,
     @JsonKey(
       name: "transferId",
       //toJson: MoneyTransfer._checkIftransferIdIsSet,

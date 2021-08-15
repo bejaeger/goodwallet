@@ -25,7 +25,7 @@ abstract class TransferBaseViewModel extends BaseModel {
     final String date =
         DateFormat.yMd().add_jm().format(transfer.createdAt.toDate());
     return await _dialogService!.showDialog(
-      title: "Transfer details:",
+      title: "Details",
       description:
           "From: $senderName\nTo: $recipientName\nAmount: $amount\nDate: $date\nSource: $source",
     );

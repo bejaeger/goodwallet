@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "Flutter Web (port 7000)",
+        "name": "Web (port 7000)",
         "request": "launch",
         "type": "dart",
         "args": [
@@ -10,18 +10,39 @@
           "7000",
           "--device-id",
           "chrome",
+          "-t",
+          "fontend/lib/main_prod.dart",
         ],
         "flutterMode": "debug",
       },
       { 
-        "name": "Flutter Mobile",
-        "program": "frontend/lib/main.dart",
+        "name": "Mobile Dev",
+        "program": "frontend/lib/main_dev.dart",
         "request": "launch",
         "type": "dart",
         "flutterMode": "debug",
+        "args": [
+          "--flavor", 
+          "dev",
+          "-t",
+          "lib/main_dev.dart",
+        ],
+      },    
+      { 
+        "name": "Mobile Prod",
+        "program": "frontend/lib/main_prod.dart",
+        "request": "launch",
+        "type": "dart",
+        "args": [
+          "--flavor", 
+          "prod",
+          "-t",
+          "lib/main_prod.dart",
+        ],
+        "flutterMode": "debug",
       },    
       {
-        "name": "Flutter Emulator",
+        "name": "Emulator",
         "request": "launch",
         "type": "dart",
         "args": [

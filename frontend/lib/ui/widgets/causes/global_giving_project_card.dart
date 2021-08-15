@@ -6,6 +6,7 @@ import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 // Widget to preview global giving projects
 
@@ -40,6 +41,13 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
+              if (project.imageUrl != null &&
+                  project.causeType == CauseType.GlobalGivingProject)
+                FadeInImage.memoryNetwork(
+                    fadeInDuration: Duration(milliseconds: 200),
+                    placeholder: kTransparentImage,
+                    image: project.imageUrl!,
+                    fit: BoxFit.cover),
               if (project.imageUrl != null)
                 Container(
                   decoration: BoxDecoration(
@@ -48,16 +56,15 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
                         end: Alignment.bottomRight,
                         colors: [
                           Colors.transparent,
-                          MyColors.black87.withOpacity(0.5)
+                          MyColors.black54.withOpacity(0.2)
                         ],
                       ),
-                      image: DecorationImage(
-                        image: project.causeType ==
-                                CauseType.GlobalGivingProject
-                            ? NetworkImage(project.imageUrl!) as ImageProvider
-                            : AssetImage(project.imageUrl!) as ImageProvider,
-                        fit: BoxFit.cover,
-                      )),
+                      image: project.causeType != CauseType.GlobalGivingProject
+                          ? DecorationImage(
+                              image: AssetImage(project.imageUrl!),
+                              fit: BoxFit.cover,
+                            )
+                          : null),
                 ),
               DecoratedBox(
                 decoration: BoxDecoration(
@@ -67,7 +74,7 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
                     //stops: [0.0, 1.0],
                     colors: [
                       Colors.transparent,
-                      MyColors.black54.withOpacity(0.8)
+                      MyColors.black54.withOpacity(0.5)
                     ],
                   ),
                 ),
@@ -100,7 +107,7 @@ class GlobalGivingProjectCardMobile extends StatelessWidget {
                         isFavorite ? Icons.favorite : Icons.favorite_border,
                         size: 25,
                         color: isFavorite
-                            ? ColorSettings.primaryColorDark
+                            ? ColorSettings.primaryColor
                             : ColorSettings.whiteTextColor),
                     onPressed: onFavoriteTapped,
                   ),

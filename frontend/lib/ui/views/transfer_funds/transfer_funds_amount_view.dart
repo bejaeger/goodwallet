@@ -10,6 +10,7 @@ import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_view.f
 import 'package:good_wallet/ui/views/transfer_funds/transfer_funds_amount_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/alternative_screen_header_small.dart';
 import 'package:good_wallet/ui/widgets/call_to_action_button.dart';
+import 'package:good_wallet/ui/widgets/small_button_with_background.dart';
 import 'package:good_wallet/ui/widgets/transfer_funds/transfer_funds.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
@@ -66,6 +67,7 @@ class TransferFundsAmountView extends StatelessWidget
             padding: const EdgeInsets.symmetric(
                 horizontal: LayoutSettings.horizontalPadding),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 AlternativeScreenHeaderSmall(
                   title: headline,
@@ -165,7 +167,26 @@ class TransferFundsAmountView extends StatelessWidget
                         ],
                       ),
                     ),
-                    verticalSpaceLarge,
+                    if (type == TransferType.User2Project ||
+                        type == TransferType.MoneyPool2User)
+                      Container(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(
+                            left: LayoutSettings.horizontalPadding, top: 20),
+                        child: SmallButtonWithBackground(
+                          title: "Change Source",
+                          onPressed: () async {
+                            await model.changePaymentMethod();
+                          },
+                          textColor: ColorSettings.blackHeadlineColor,
+                          backgroundColor: ColorSettings.greyTextColor!,
+                          width: 140,
+                        ),
+                      ),
+                    if (type != TransferType.User2Project &&
+                        type != TransferType.MoneyPool2User)
+                      verticalSpaceMedium,
+                    verticalSpaceMedium,
                     if (model.customValidationMessage != null)
                       Text(
                         model.customValidationMessage!,
@@ -187,19 +208,6 @@ class TransferFundsAmountView extends StatelessWidget
                               await model.showBottomSheetAndProcessPayment();
                             },
                           ),
-                    if (type == TransferType.User2Project ||
-                        type == TransferType.MoneyPool2User)
-                      TextButton(
-                        onPressed: () async {
-                          await model.changePaymentMethod();
-                        },
-                        child: Text(
-                          "Change Payment Source",
-                          style: textTheme(context)
-                              .headline4!
-                              .copyWith(fontSize: 16),
-                        ),
-                      ),
                   ],
                 ),
               ],

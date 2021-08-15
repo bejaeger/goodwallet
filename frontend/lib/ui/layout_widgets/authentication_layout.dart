@@ -18,6 +18,7 @@ class AuthenticationLayout extends StatelessWidget {
   final void Function()? onGoogleButtonTapped;
   final void Function()? onAppleButtonTapped;
   final String? validationMessage;
+  final String? releaseName;
   final bool busy;
 
   const AuthenticationLayout({
@@ -36,6 +37,7 @@ class AuthenticationLayout extends StatelessWidget {
     this.onDummyLoginTapped,
     this.onGoogleButtonTapped,
     this.onAppleButtonTapped,
+    this.releaseName,
   }) : super(key: key);
 
   @override
@@ -187,6 +189,8 @@ class AuthenticationLayout extends StatelessWidget {
                 onPressed: onAppleButtonTapped!,
               ),
             verticalSpaceLarge,
+            if (releaseName != null)
+              Center(child: Text("Release - " + releaseName!)),
           ],
         ),
       ),

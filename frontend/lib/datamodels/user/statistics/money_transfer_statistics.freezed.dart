@@ -33,6 +33,7 @@ class _$MoneyTransferStatisticsTearOff {
       {required num totalSentToPeers,
       num totalSentToMoneyPools = 0,
       required num totalRaised,
+      required num totalPledged,
       required num totalRaisedViaMoneyPool,
       required num totalRaisedViaPeer2Peer,
       required num totalRaisedViaSubsidiaryApp}) {
@@ -40,6 +41,7 @@ class _$MoneyTransferStatisticsTearOff {
       totalSentToPeers: totalSentToPeers,
       totalSentToMoneyPools: totalSentToMoneyPools,
       totalRaised: totalRaised,
+      totalPledged: totalPledged,
       totalRaisedViaMoneyPool: totalRaisedViaMoneyPool,
       totalRaisedViaPeer2Peer: totalRaisedViaPeer2Peer,
       totalRaisedViaSubsidiaryApp: totalRaisedViaSubsidiaryApp,
@@ -50,6 +52,7 @@ class _$MoneyTransferStatisticsTearOff {
       {num totalSentToPeers = 0,
       num totalSentToMoneyPools = 0,
       num totalRaised = 0,
+      num totalPledged = 0,
       num totalRaisedViaMoneyPool = 0,
       num totalRaisedViaPeer2Peer = 0,
       num totalRaisedViaSubsidiaryApp = 0}) {
@@ -57,6 +60,7 @@ class _$MoneyTransferStatisticsTearOff {
       totalSentToPeers: totalSentToPeers,
       totalSentToMoneyPools: totalSentToMoneyPools,
       totalRaised: totalRaised,
+      totalPledged: totalPledged,
       totalRaisedViaMoneyPool: totalRaisedViaMoneyPool,
       totalRaisedViaPeer2Peer: totalRaisedViaPeer2Peer,
       totalRaisedViaSubsidiaryApp: totalRaisedViaSubsidiaryApp,
@@ -76,6 +80,7 @@ mixin _$MoneyTransferStatistics {
   num get totalSentToPeers => throw _privateConstructorUsedError;
   num get totalSentToMoneyPools => throw _privateConstructorUsedError;
   num get totalRaised => throw _privateConstructorUsedError;
+  num get totalPledged => throw _privateConstructorUsedError;
   num get totalRaisedViaMoneyPool => throw _privateConstructorUsedError;
   num get totalRaisedViaPeer2Peer => throw _privateConstructorUsedError;
   num get totalRaisedViaSubsidiaryApp => throw _privateConstructorUsedError;
@@ -86,6 +91,7 @@ mixin _$MoneyTransferStatistics {
             num totalSentToPeers,
             num totalSentToMoneyPools,
             num totalRaised,
+            num totalPledged,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)
@@ -94,6 +100,7 @@ mixin _$MoneyTransferStatistics {
             num totalSentToPeers,
             num totalSentToMoneyPools,
             num totalRaised,
+            num totalPledged,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)
@@ -106,6 +113,7 @@ mixin _$MoneyTransferStatistics {
             num totalSentToPeers,
             num totalSentToMoneyPools,
             num totalRaised,
+            num totalPledged,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)?
@@ -114,6 +122,7 @@ mixin _$MoneyTransferStatistics {
             num totalSentToPeers,
             num totalSentToMoneyPools,
             num totalRaised,
+            num totalPledged,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)?
@@ -149,6 +158,7 @@ abstract class $MoneyTransferStatisticsCopyWith<$Res> {
       {num totalSentToPeers,
       num totalSentToMoneyPools,
       num totalRaised,
+      num totalPledged,
       num totalRaisedViaMoneyPool,
       num totalRaisedViaPeer2Peer,
       num totalRaisedViaSubsidiaryApp});
@@ -168,6 +178,7 @@ class _$MoneyTransferStatisticsCopyWithImpl<$Res>
     Object? totalSentToPeers = freezed,
     Object? totalSentToMoneyPools = freezed,
     Object? totalRaised = freezed,
+    Object? totalPledged = freezed,
     Object? totalRaisedViaMoneyPool = freezed,
     Object? totalRaisedViaPeer2Peer = freezed,
     Object? totalRaisedViaSubsidiaryApp = freezed,
@@ -184,6 +195,10 @@ class _$MoneyTransferStatisticsCopyWithImpl<$Res>
       totalRaised: totalRaised == freezed
           ? _value.totalRaised
           : totalRaised // ignore: cast_nullable_to_non_nullable
+              as num,
+      totalPledged: totalPledged == freezed
+          ? _value.totalPledged
+          : totalPledged // ignore: cast_nullable_to_non_nullable
               as num,
       totalRaisedViaMoneyPool: totalRaisedViaMoneyPool == freezed
           ? _value.totalRaisedViaMoneyPool
@@ -212,6 +227,7 @@ abstract class _$MoneyTransferStatisticsCopyWith<$Res>
       {num totalSentToPeers,
       num totalSentToMoneyPools,
       num totalRaised,
+      num totalPledged,
       num totalRaisedViaMoneyPool,
       num totalRaisedViaPeer2Peer,
       num totalRaisedViaSubsidiaryApp});
@@ -234,6 +250,7 @@ class __$MoneyTransferStatisticsCopyWithImpl<$Res>
     Object? totalSentToPeers = freezed,
     Object? totalSentToMoneyPools = freezed,
     Object? totalRaised = freezed,
+    Object? totalPledged = freezed,
     Object? totalRaisedViaMoneyPool = freezed,
     Object? totalRaisedViaPeer2Peer = freezed,
     Object? totalRaisedViaSubsidiaryApp = freezed,
@@ -250,6 +267,10 @@ class __$MoneyTransferStatisticsCopyWithImpl<$Res>
       totalRaised: totalRaised == freezed
           ? _value.totalRaised
           : totalRaised // ignore: cast_nullable_to_non_nullable
+              as num,
+      totalPledged: totalPledged == freezed
+          ? _value.totalPledged
+          : totalPledged // ignore: cast_nullable_to_non_nullable
               as num,
       totalRaisedViaMoneyPool: totalRaisedViaMoneyPool == freezed
           ? _value.totalRaisedViaMoneyPool
@@ -274,6 +295,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
       {required this.totalSentToPeers,
       this.totalSentToMoneyPools = 0,
       required this.totalRaised,
+      required this.totalPledged,
       required this.totalRaisedViaMoneyPool,
       required this.totalRaisedViaPeer2Peer,
       required this.totalRaisedViaSubsidiaryApp});
@@ -289,6 +311,8 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
   @override
   final num totalRaised;
   @override
+  final num totalPledged;
+  @override
   final num totalRaisedViaMoneyPool;
   @override
   final num totalRaisedViaPeer2Peer;
@@ -297,7 +321,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
 
   @override
   String toString() {
-    return 'MoneyTransferStatistics(totalSentToPeers: $totalSentToPeers, totalSentToMoneyPools: $totalSentToMoneyPools, totalRaised: $totalRaised, totalRaisedViaMoneyPool: $totalRaisedViaMoneyPool, totalRaisedViaPeer2Peer: $totalRaisedViaPeer2Peer, totalRaisedViaSubsidiaryApp: $totalRaisedViaSubsidiaryApp)';
+    return 'MoneyTransferStatistics(totalSentToPeers: $totalSentToPeers, totalSentToMoneyPools: $totalSentToMoneyPools, totalRaised: $totalRaised, totalPledged: $totalPledged, totalRaisedViaMoneyPool: $totalRaisedViaMoneyPool, totalRaisedViaPeer2Peer: $totalRaisedViaPeer2Peer, totalRaisedViaSubsidiaryApp: $totalRaisedViaSubsidiaryApp)';
   }
 
   @override
@@ -313,6 +337,9 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
             (identical(other.totalRaised, totalRaised) ||
                 const DeepCollectionEquality()
                     .equals(other.totalRaised, totalRaised)) &&
+            (identical(other.totalPledged, totalPledged) ||
+                const DeepCollectionEquality()
+                    .equals(other.totalPledged, totalPledged)) &&
             (identical(
                     other.totalRaisedViaMoneyPool, totalRaisedViaMoneyPool) ||
                 const DeepCollectionEquality().equals(
@@ -334,6 +361,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
       const DeepCollectionEquality().hash(totalSentToPeers) ^
       const DeepCollectionEquality().hash(totalSentToMoneyPools) ^
       const DeepCollectionEquality().hash(totalRaised) ^
+      const DeepCollectionEquality().hash(totalPledged) ^
       const DeepCollectionEquality().hash(totalRaisedViaMoneyPool) ^
       const DeepCollectionEquality().hash(totalRaisedViaPeer2Peer) ^
       const DeepCollectionEquality().hash(totalRaisedViaSubsidiaryApp);
@@ -351,6 +379,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
             num totalSentToPeers,
             num totalSentToMoneyPools,
             num totalRaised,
+            num totalPledged,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)
@@ -359,6 +388,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
             num totalSentToPeers,
             num totalSentToMoneyPools,
             num totalRaised,
+            num totalPledged,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)
@@ -368,6 +398,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
         totalSentToPeers,
         totalSentToMoneyPools,
         totalRaised,
+        totalPledged,
         totalRaisedViaMoneyPool,
         totalRaisedViaPeer2Peer,
         totalRaisedViaSubsidiaryApp);
@@ -380,6 +411,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
             num totalSentToPeers,
             num totalSentToMoneyPools,
             num totalRaised,
+            num totalPledged,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)?
@@ -388,6 +420,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
             num totalSentToPeers,
             num totalSentToMoneyPools,
             num totalRaised,
+            num totalPledged,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)?
@@ -399,6 +432,7 @@ class _$_MoneyTransferStatistics implements _MoneyTransferStatistics {
           totalSentToPeers,
           totalSentToMoneyPools,
           totalRaised,
+          totalPledged,
           totalRaisedViaMoneyPool,
           totalRaisedViaPeer2Peer,
           totalRaisedViaSubsidiaryApp);
@@ -440,6 +474,7 @@ abstract class _MoneyTransferStatistics implements MoneyTransferStatistics {
       {required num totalSentToPeers,
       num totalSentToMoneyPools,
       required num totalRaised,
+      required num totalPledged,
       required num totalRaisedViaMoneyPool,
       required num totalRaisedViaPeer2Peer,
       required num totalRaisedViaSubsidiaryApp}) = _$_MoneyTransferStatistics;
@@ -453,6 +488,8 @@ abstract class _MoneyTransferStatistics implements MoneyTransferStatistics {
   num get totalSentToMoneyPools => throw _privateConstructorUsedError;
   @override
   num get totalRaised => throw _privateConstructorUsedError;
+  @override
+  num get totalPledged => throw _privateConstructorUsedError;
   @override
   num get totalRaisedViaMoneyPool => throw _privateConstructorUsedError;
   @override
@@ -477,6 +514,7 @@ abstract class _$EmptyMoneyTransferStatisticsCopyWith<$Res>
       {num totalSentToPeers,
       num totalSentToMoneyPools,
       num totalRaised,
+      num totalPledged,
       num totalRaisedViaMoneyPool,
       num totalRaisedViaPeer2Peer,
       num totalRaisedViaSubsidiaryApp});
@@ -500,6 +538,7 @@ class __$EmptyMoneyTransferStatisticsCopyWithImpl<$Res>
     Object? totalSentToPeers = freezed,
     Object? totalSentToMoneyPools = freezed,
     Object? totalRaised = freezed,
+    Object? totalPledged = freezed,
     Object? totalRaisedViaMoneyPool = freezed,
     Object? totalRaisedViaPeer2Peer = freezed,
     Object? totalRaisedViaSubsidiaryApp = freezed,
@@ -516,6 +555,10 @@ class __$EmptyMoneyTransferStatisticsCopyWithImpl<$Res>
       totalRaised: totalRaised == freezed
           ? _value.totalRaised
           : totalRaised // ignore: cast_nullable_to_non_nullable
+              as num,
+      totalPledged: totalPledged == freezed
+          ? _value.totalPledged
+          : totalPledged // ignore: cast_nullable_to_non_nullable
               as num,
       totalRaisedViaMoneyPool: totalRaisedViaMoneyPool == freezed
           ? _value.totalRaisedViaMoneyPool
@@ -540,6 +583,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
       {this.totalSentToPeers = 0,
       this.totalSentToMoneyPools = 0,
       this.totalRaised = 0,
+      this.totalPledged = 0,
       this.totalRaisedViaMoneyPool = 0,
       this.totalRaisedViaPeer2Peer = 0,
       this.totalRaisedViaSubsidiaryApp = 0});
@@ -558,6 +602,9 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
   final num totalRaised;
   @JsonKey(defaultValue: 0)
   @override
+  final num totalPledged;
+  @JsonKey(defaultValue: 0)
+  @override
   final num totalRaisedViaMoneyPool;
   @JsonKey(defaultValue: 0)
   @override
@@ -568,7 +615,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
 
   @override
   String toString() {
-    return 'MoneyTransferStatistics.empty(totalSentToPeers: $totalSentToPeers, totalSentToMoneyPools: $totalSentToMoneyPools, totalRaised: $totalRaised, totalRaisedViaMoneyPool: $totalRaisedViaMoneyPool, totalRaisedViaPeer2Peer: $totalRaisedViaPeer2Peer, totalRaisedViaSubsidiaryApp: $totalRaisedViaSubsidiaryApp)';
+    return 'MoneyTransferStatistics.empty(totalSentToPeers: $totalSentToPeers, totalSentToMoneyPools: $totalSentToMoneyPools, totalRaised: $totalRaised, totalPledged: $totalPledged, totalRaisedViaMoneyPool: $totalRaisedViaMoneyPool, totalRaisedViaPeer2Peer: $totalRaisedViaPeer2Peer, totalRaisedViaSubsidiaryApp: $totalRaisedViaSubsidiaryApp)';
   }
 
   @override
@@ -584,6 +631,9 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
             (identical(other.totalRaised, totalRaised) ||
                 const DeepCollectionEquality()
                     .equals(other.totalRaised, totalRaised)) &&
+            (identical(other.totalPledged, totalPledged) ||
+                const DeepCollectionEquality()
+                    .equals(other.totalPledged, totalPledged)) &&
             (identical(
                     other.totalRaisedViaMoneyPool, totalRaisedViaMoneyPool) ||
                 const DeepCollectionEquality().equals(
@@ -605,6 +655,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
       const DeepCollectionEquality().hash(totalSentToPeers) ^
       const DeepCollectionEquality().hash(totalSentToMoneyPools) ^
       const DeepCollectionEquality().hash(totalRaised) ^
+      const DeepCollectionEquality().hash(totalPledged) ^
       const DeepCollectionEquality().hash(totalRaisedViaMoneyPool) ^
       const DeepCollectionEquality().hash(totalRaisedViaPeer2Peer) ^
       const DeepCollectionEquality().hash(totalRaisedViaSubsidiaryApp);
@@ -622,6 +673,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
             num totalSentToPeers,
             num totalSentToMoneyPools,
             num totalRaised,
+            num totalPledged,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)
@@ -630,6 +682,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
             num totalSentToPeers,
             num totalSentToMoneyPools,
             num totalRaised,
+            num totalPledged,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)
@@ -639,6 +692,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
         totalSentToPeers,
         totalSentToMoneyPools,
         totalRaised,
+        totalPledged,
         totalRaisedViaMoneyPool,
         totalRaisedViaPeer2Peer,
         totalRaisedViaSubsidiaryApp);
@@ -651,6 +705,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
             num totalSentToPeers,
             num totalSentToMoneyPools,
             num totalRaised,
+            num totalPledged,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)?
@@ -659,6 +714,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
             num totalSentToPeers,
             num totalSentToMoneyPools,
             num totalRaised,
+            num totalPledged,
             num totalRaisedViaMoneyPool,
             num totalRaisedViaPeer2Peer,
             num totalRaisedViaSubsidiaryApp)?
@@ -670,6 +726,7 @@ class _$_EmptyMoneyTransferStatistics implements _EmptyMoneyTransferStatistics {
           totalSentToPeers,
           totalSentToMoneyPools,
           totalRaised,
+          totalPledged,
           totalRaisedViaMoneyPool,
           totalRaisedViaPeer2Peer,
           totalRaisedViaSubsidiaryApp);
@@ -712,6 +769,7 @@ abstract class _EmptyMoneyTransferStatistics
       {num totalSentToPeers,
       num totalSentToMoneyPools,
       num totalRaised,
+      num totalPledged,
       num totalRaisedViaMoneyPool,
       num totalRaisedViaPeer2Peer,
       num totalRaisedViaSubsidiaryApp}) = _$_EmptyMoneyTransferStatistics;
@@ -725,6 +783,8 @@ abstract class _EmptyMoneyTransferStatistics
   num get totalSentToMoneyPools => throw _privateConstructorUsedError;
   @override
   num get totalRaised => throw _privateConstructorUsedError;
+  @override
+  num get totalPledged => throw _privateConstructorUsedError;
   @override
   num get totalRaisedViaMoneyPool => throw _privateConstructorUsedError;
   @override

@@ -15,51 +15,49 @@ import 'package:stacked_services/stacked_services.dart';
 
 class ExploreViewModel extends SocialFunctionsViewModel {
   List<PublicUserInfo> userInfoList = [];
-  final SnackbarService? _snackbarService = locator<SnackbarService>();
-  final UserService? _userService = locator<UserService>();
-
-  final CollectionReference _usersCollectionReference =
-      FirebaseFirestore.instance.collection("users");
   final NavigationService? _navigationService = locator<NavigationService>();
+  final UserService _userService = locator<UserService>();
   final log = getLogger("search_viewmodel.dart");
 
-  void selectUserAndProceed(int index, SearchType searchType) {
-    final uid = userInfoList[index].uid;
-    log.i("Selected user with id = $uid");
-    if (searchType == SearchType.UserToTransferTo) {
-      navigateToTransferView(uid, index);
-      log.i("Navigate to transferFundsAmountView");
-    } else if (searchType == SearchType.UserToInviteToMP) {
-      log.i("Navigate back");
-      // TODO: invite user! We pop screen and handle the rest in single_money_pool_viewmodel!
-      _navigationService!.back(result: userInfoList[index]);
-    } else if (searchType == SearchType.Explore ||
-        searchType == SearchType.FindFriends) {
-      log.i("Navigate to public profile view");
-      navigateToPublicProfileView(uid);
-    }
+  int animationDurationInMs = 2000;
+  int delayDurationinMs = 100;
+
+  //num get actualTotalDonationsGlobal => _userService.totalDonationsGlobal;
+
+  num getAmountToAddPerStep(totalDonations) {
+    return totalDonations / (animationDurationInMs / delayDurationinMs);
   }
 
-  Future queryUsers(String query) async {
-    QuerySnapshot foundUsers = await _usersCollectionReference
-        .where("searchKeywords", arrayContains: query.toLowerCase())
-        .get();
-    userInfoList = foundUsers.docs.map((DocumentSnapshot doc) {
-      return PublicUserInfo(
-          name: doc.get("fullName"),
-          uid: doc.get("uid"),
-          email: doc.get("email"));
-    }).toList();
-    log.i("Queried users and found ${userInfoList.length} matches");
+  num runningTotalDonationsGlobal = 0;
+  Future fetchTotalDonationsGlobal() async {
+    setBusy(true);
+
+    // Could also set up listener here.
+    // But we probably don't want to do that considering that there will be
+    // a large number writes to the summary document so this would be
+    // read every time, which will cause a lot of reads!
+    // Add a refresh button instead :)
+    // await _userService.listenToGlobalStats();
+
+    num tmpTotalDonations = await _userService.getTotalDonationsGlobal();
+    num toAddPerStep = getAmountToAddPerStep(tmpTotalDonations);
+    while (runningTotalDonationsGlobal < tmpTotalDonations) {
+      runningTotalDonationsGlobal += toAddPerStep;
+      await Future.delayed(Duration(milliseconds: delayDurationinMs));
+      notifyListeners();
+    }
+
+    // _userService.totalDonationsGlobalSubject.listen((value) {
+    //   runningTotalDonationsGlobal = value;
+    //   notifyListeners();
+    // });
+    setBusy(false);
+  }
+
+  Future refresh() async {
+    runningTotalDonationsGlobal = await _userService.getTotalDonationsGlobal();
     notifyListeners();
   }
-
-  Future onSelected(Map<String, dynamic> map) async {
-    if (map.containsKey("uid")) {
-      navigateToPublicProfileView(map["uid"]);
-    }
-  }
-
   /////////////////////////////////////////////////
   /// Navigation
 

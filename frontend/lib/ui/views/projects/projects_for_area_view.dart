@@ -33,6 +33,7 @@ class ProjectsForAreaView extends StatelessWidget {
                   onFavoriteTapped: model.addOrRemoveFavorite,
                   isFavorite: model.isFavoriteProject,
                 ),
+                SliverToBoxAdapter(child: SizedBox(height: 50)),
               ],
             ),
           );

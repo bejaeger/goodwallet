@@ -1,4 +1,5 @@
 import { firestore } from 'firebase-admin';
+import { FakeDataPopulator } from './fakeDataPopulator';
 
 // enable short hand for console.log()
 // function log(message: string) { console.log(`FirestoreCollectionHandler | ${message}`); }
@@ -24,8 +25,17 @@ export class FirestoreManager {
         return this.db.collection("moneyPools").doc(moneyPoolId);
     }
 
-    getGlobalStatsDocument() {
-        return this.db.collection("globalStats").doc('summaryStats');
+    async getGlobalStatsDocument() {
+        let docRef = this.db.collection("globalStats").doc('summaryStats');
+        if (docRef == null) {
+            // this seems to be the very first time the database is used. 
+            // That's a rare event. Congratulations that you read this.
+            // Let's push the summary stat document:
+            const populator = new FakeDataPopulator(this.db);
+            await populator.addEmptyGlobalStatsDocument();
+            docRef = this.db.collection("globalStats").doc('summaryStats');
+        }
+        return docRef;
     }
 
     createMoneyPoolPayoutDocument() {

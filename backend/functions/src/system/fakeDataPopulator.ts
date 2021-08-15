@@ -68,6 +68,16 @@ export class FakeDataPopulator {
     await this.dbManager.addGlobalStatsData(globalStats);
   }
 
+  async addEmptyGlobalStatsDocument() {
+    log('add empty globalStats doc');
+    let globalStats = {
+      'totalDonations': 0,
+      'supportedProjects': [],
+      'projectTopPicksIds': [],
+    }
+    await this.dbManager.addGlobalStatsData(globalStats);
+  }
+
   private async generateMoneyPools() {
     log('generateMoneyPools');
     let moneyPool = {
@@ -133,6 +143,7 @@ export class FakeDataPopulator {
   private async generateUserStatistics(userId: string, zero: boolean = false) {
     //log(`generateUserStatistics userId:${userId}`);
     let totalRaised = faker.datatype.number(1000);
+    let totalPledged = faker.datatype.number(1000);
     let totalRaisedViaMoneyPool = faker.datatype.number(totalRaised);
     let totalRaisedViaPeer2Peer = faker.datatype.number(totalRaised - totalRaisedViaMoneyPool);
     let totalRaisedViaSubsidiaryApp = totalRaised - totalRaisedViaMoneyPool - totalRaisedViaPeer2Peer;
@@ -148,6 +159,7 @@ export class FakeDataPopulator {
       'moneyTransferStatistics': {
         'runtimeType': 'default',
         'totalRaised': zero ? 0 : totalRaised,
+        'totalPledged': zero ? 0 : totalPledged,
         'totalSentToPeers': zero ? 0 : faker.datatype.number(100000),
         'totalSentToMoneyPools': zero ? 0 : faker.datatype.number(100000),
         'totalRaisedViaMoneyPool': zero ? 0 : totalRaisedViaMoneyPool,

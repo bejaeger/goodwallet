@@ -4,6 +4,7 @@ import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/money_pools/create_money_pool_form_viewmodel.dart';
 import 'package:good_wallet/ui/widgets/alternative_screen_header.dart';
+import 'package:good_wallet/ui/widgets/search_text_field.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
@@ -34,7 +35,7 @@ class CreateMoneyPoolFormView extends StatelessWidget
                       title: "Give it a name",
                       onBackButtonPressed: model.navigateBack,
                       description:
-                          "Add a name and describe the goal of this money pool",
+                          "Add a name and describe the goal or rule for this money pool. For example, pledge 5\$ every time I win against you in spikeball",
                     ),
                     Card(
                       margin: const EdgeInsets.all(0.0),
@@ -43,26 +44,26 @@ class CreateMoneyPoolFormView extends StatelessWidget
                         child: Column(
                           children: [
                             TextField(
-                              decoration: InputDecoration(labelText: 'Name'),
                               controller: nameController,
+                              decoration: InputDecoration(labelText: "Name"),
                             ),
                             TextField(
                               decoration: InputDecoration(
-                                labelText: 'Description (optional)',
+                                labelText: "Description",
                               ),
                               minLines: 4,
                               maxLines: 10,
                               controller: descriptionController,
                             ),
                             verticalSpaceMediumLarge,
-                            CheckboxListTile(
-                                contentPadding: const EdgeInsets.all(0.0),
-                                controlAffinity:
-                                    ListTileControlAffinity.leading,
-                                title: Text("Display raised amount"),
-                                value: model.isShowBalanceChecked,
-                                onChanged: (value) =>
-                                    model.setIsShowBalanceChecked(value))
+                            // CheckboxListTile(
+                            //     contentPadding: const EdgeInsets.all(0.0),
+                            //     controlAffinity:
+                            //         ListTileControlAffinity.leading,
+                            //     title: Text("Display raised amount"),
+                            //     value: model.isShowBalanceChecked,
+                            //     onChanged: (value) =>
+                            //         model.setIsShowBalanceChecked(value))
                             // with custom text
                           ],
                         ),

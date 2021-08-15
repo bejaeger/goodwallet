@@ -8,6 +8,7 @@ import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dar
 import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
 import 'package:good_wallet/exceptions/money_transfer_exception.dart';
+import 'package:good_wallet/flavor_config.dart';
 import 'package:good_wallet/services/payments/stripe_service.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:http/http.dart' as http;
@@ -21,8 +22,9 @@ import 'package:path/path.dart' as p;
 
 class DummyPaymentService {
   final log = getLogger("dummy_payment_service.dart");
-  final FirestoreApi _firestoreApi = locator<FirestoreApi>();
   final _stripeService = locator<StripeService>();
+  final FlavorConfigProvider _flavorConfigProvider =
+      locator<FlavorConfigProvider>();
 
   Future processTransfer({required MoneyTransfer moneyTransfer}) async {
     try {
@@ -96,8 +98,10 @@ class DummyPaymentService {
     data = data.copyWith(moneyPool: data.moneyPool.copyWith(createdAt: ""));
 
     try {
-      Uri url = Uri.http(AUTHORITY,
-          p.join(URIPATHPREPEND, "transfers-api/bookkeepmoneypoolpayout"));
+      Uri url = Uri.https(
+          _flavorConfigProvider.authority,
+          p.join(_flavorConfigProvider.uripathprepend,
+              "transfers-api/bookkeepmoneypoolpayout"));
       http.Response? response = await http.post(url,
           body: json.encode(data.toJson()),
           headers: {"Accept": "application/json"});

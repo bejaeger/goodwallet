@@ -100,14 +100,10 @@ class _ProjectsSearchViewState extends State<ProjectsSearchView> {
                           autofocus: true,
                           onSuffixIconPressed: () {
                             textFieldController.clear();
+                            textFieldFocusNode.requestFocus();
                           },
-                          suffixIcon: GestureDetector(
-                              child: Icon(Icons.close,
-                                  size: 24, color: Colors.grey[800]),
-                              onTap: () {
-                                textFieldController.clear();
-                                textFieldFocusNode.requestFocus();
-                              }),
+                          suffixIcon: Icon(Icons.close,
+                              size: 24, color: Colors.grey[800]),
                           onChanged: (String pattern) async {
                             // await model.queryUsers(pattern);
                             _debouncer.run(() async {

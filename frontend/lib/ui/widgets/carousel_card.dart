@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 // Carousel card to be used in carousels see e.g. home view
 
@@ -12,6 +13,7 @@ class CarouselCard extends StatelessWidget {
   final Alignment? imageAlignment;
   final Alignment explanationAlignment;
   final ImageProvider? backgroundImage;
+  final String? backgroundImageUrl;
 
   const CarouselCard(
       {Key? key,
@@ -21,7 +23,8 @@ class CarouselCard extends StatelessWidget {
       this.backgroundColor = MyColors.paletteBlue,
       this.imageAlignment,
       this.explanationAlignment = Alignment.centerLeft,
-      this.backgroundImage})
+      this.backgroundImage,
+      this.backgroundImageUrl})
       : super(key: key);
 
   @override
@@ -39,38 +42,43 @@ class CarouselCard extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        backgroundColor.withOpacity(0.8),
-                        backgroundColor.withOpacity(0.8)
-                      ],
-                    ),
-                    image: backgroundImage != null
-                        ? DecorationImage(
-                            image: backgroundImage!,
-                            fit: BoxFit.cover,
-                            alignment: imageAlignment ?? Alignment.center,
-                          )
-                        : null),
-              ),
-              if (backgroundImage != null)
-                DecoratedBox(
+              if (backgroundImageUrl != null)
+                FadeInImage.memoryNetwork(
+                    placeholder: kTransparentImage,
+                    image: backgroundImageUrl!,
+                    fit: BoxFit.cover),
+
+              if (backgroundImageUrl == null)
+                Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      //stops: [0.0, 1.0],
-                      colors: [
-                        MyColors.black87.withOpacity(0.7),
-                        Colors.transparent,
-                      ],
-                    ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [backgroundColor, backgroundColor],
+                      ),
+                      image: backgroundImage != null
+                          ? DecorationImage(
+                              image: backgroundImage!,
+                              fit: BoxFit.cover,
+                              alignment: imageAlignment ?? Alignment.center,
+                            )
+                          : null),
+                ),
+              //if (backgroundImage != null)
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    //stops: [0.0, 1.0],
+                    colors: [
+                      MyColors.black87.withOpacity(0.4),
+                      Colors.transparent,
+                      MyColors.black87.withOpacity(0.4),
+                    ],
                   ),
                 ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Stack(

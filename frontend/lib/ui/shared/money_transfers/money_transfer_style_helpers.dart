@@ -18,14 +18,21 @@ TransferHistoryEntryStyle getTransactionsCorrespondingToTypeHistoryEntryStyle(
       icon: Icon(Icons.favorite, color: ColorSettings.whiteTextColor, size: 22),
     ),
     peer2peer: (value) => TransferHistoryEntryStyle(
-      color: value.transferDetails.senderId == uid
-          ? MyColors.paletteBlue
-          : MyColors.paletteTurquoise,
-      descriptor:
-          value.transferDetails.senderId == uid ? "Gifted to" : "Received from",
-      nameToDisplay: value.transferDetails.senderId == uid
-          ? value.transferDetails.recipientName
-          : value.transferDetails.senderName,
+      color: (value.pledge != null && value.pledge == true)
+          ? MyColors.primaryRed
+          : value.transferDetails.senderId == uid
+              ? MyColors.paletteBlue
+              : MyColors.paletteTurquoise,
+      descriptor: (value.pledge != null && value.pledge == true)
+          ? "Committed for good"
+          : value.transferDetails.senderId == uid
+              ? "Gifted to"
+              : "Received from",
+      nameToDisplay: (value.pledge != null && value.pledge == true)
+          ? "Pledged to your Good Wallet"
+          : value.transferDetails.senderId == uid
+              ? value.transferDetails.recipientName
+              : value.transferDetails.senderName,
       icon: Image.asset(ImageIconPaths.huggingPeople,
           height: 18, color: ColorSettings.whiteTextColor),
     ),

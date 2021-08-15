@@ -152,6 +152,7 @@ class CustomSliverAppBar extends StatelessWidget {
   final Widget? secondRightIcon;
   final bool pinned;
   final PreferredSize? bottom;
+  final double expandedHeight;
 
   const CustomSliverAppBar(
       {Key? key,
@@ -162,7 +163,8 @@ class CustomSliverAppBar extends StatelessWidget {
       this.pinned = true,
       this.bottom,
       this.onSecondRightIconPressed,
-      this.secondRightIcon})
+      this.secondRightIcon,
+      this.expandedHeight = LayoutSettings.minAppBarHeight * 1.7})
       : super(key: key);
 
   @override
@@ -224,7 +226,7 @@ class CustomSliverAppBar extends StatelessWidget {
         ],
       ),
       titleSpacing: 20,
-      expandedHeight: LayoutSettings.minAppBarHeight * 1.7,
+      expandedHeight: expandedHeight,
       collapsedHeight: LayoutSettings.minAppBarHeight,
       backgroundColor: ColorSettings.backgroundColor,
       elevation: 2.0,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/datamodels/user/statistics/supported_project_statistics.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
@@ -14,7 +13,6 @@ import 'package:good_wallet/ui/widgets/section_header.dart';
 import 'package:good_wallet/utils/string_utils.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
-import 'package:shimmer/shimmer.dart';
 
 class PublicProfileViewMobile extends StatelessWidget {
   final String uid;
@@ -29,177 +27,197 @@ class PublicProfileViewMobile extends StatelessWidget {
       onModelReady: (model) async => await model.listenAndFetchData(uid),
       builder: (context, model, child) {
         return ConstrainedWidthWithScaffoldLayout(
-          child: ListView(
-            children: [
-              CustomAppBarSmall(
-                  title: model.isCurrentUsersProfile ? "Your Profile" : "",
-                  forceElevated: false,
-                  rightWidget: model.isCurrentUsersProfile
-                      ? GestureDetector(
-                          onTap: model.navigateToAccountView,
-                          child: Icon(Icons.settings,
-                              color: ColorSettings.pageTitleColor, size: 25))
-                      : null),
+          child: CustomScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            slivers: [
+              CustomSliverAppBarSmall(
+                title: model.isCurrentUsersProfile ? "Your Profile" : "",
+                forceElevated: false,
+                onRightIconPressed: model.navigateToAccountView,
+                rightIcon: Icon(Icons.settings,
+                    color: ColorSettings.pageTitleColor, size: 25),
+              ),
+              // rightWidget: model.isCurrentUsersProfile
+              //     ? GestureDetector(
+              //         onTap: model.navigateToAccountView,
+              //         child: Icon(Icons.settings,
+              //             color: ColorSettings.pageTitleColor, size: 25))
+              //     : null),
               model.isBusy
-                  ? Center(child: CircularProgressIndicator())
-                  : Column(
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            verticalSpaceSmall,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                    width: LayoutSettings.horizontalPadding),
-                                _buildProfileImage(model.user!.fullName),
-                                horizontalSpaceMedium,
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      _buildFullName(context, model.user!),
-                                      _buildStatus(context),
-                                    ],
+                  ? SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          verticalSpaceMedium,
+                          CircularProgressIndicator()
+                        ],
+                      ),
+                    )
+                  : SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              verticalSpaceSmall,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                      width: LayoutSettings.horizontalPadding),
+                                  _buildProfileImage(model.user!.fullName),
+                                  horizontalSpaceMedium,
+                                  Flexible(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        _buildFullName(context, model.user!),
+                                        if (model.getUserCreationTime() != null)
+                                        _buildStatus(context, model.getUserCreationTime()!),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
 
-                            // if (model.otherUserStats != null)
-                            //   _buildStatContainer(
-                            //       context, model.otherUserStats!),
-                          ],
-                        ),
-                        verticalSpaceRegular,
-                        Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                    width: LayoutSettings.horizontalPadding),
-                                Flexible(
-                                  flex: 5,
-                                  child: CallToActionButtonRectangular(
-                                      isOutlineButton: true,
-                                      title: model.isCurrentUsersProfile
-                                          ? "${model.friends.length} Friends"
-                                          : model.isFriend(uid)
-                                              ? "Remove Friend"
-                                              : "Add Friend",
-                                      onPressed: model.isCurrentUsersProfile
-                                          ? () => model.navigateToFriendsView(
-                                              friends: model.friends)
-                                          : () => model.addOrRemoveFriend(uid),
-                                      maxWidth:
-                                          screenWidth(context, percentage: 0.3),
-                                      minHeight: 20,
-                                      maxHeight: 40,
-                                      fontSize: 16,
-                                      color: model.isFriend(uid)
-                                          ? MyColors.paletteGrey
-                                          : MyColors.paletteBlue),
-                                ),
-                                Spacer(flex: 1),
-                                if (!model.isCurrentUsersProfile)
+                              // if (model.otherUserStats != null)
+                              //   _buildStatContainer(
+                              //       context, model.otherUserStats!),
+                            ],
+                          ),
+                          verticalSpaceRegular,
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                      width: LayoutSettings.horizontalPadding),
                                   Flexible(
                                     flex: 5,
                                     child: CallToActionButtonRectangular(
-                                        title: "Send Money",
-                                        onPressed: () => model
-                                            .navigateToTransferViewWithUser(
-                                                model.user!),
+                                        isOutlineButton: true,
+                                        title: model.isCurrentUsersProfile
+                                            ? "${model.friends.length} Friends"
+                                            : model.isFriend(uid)
+                                                ? "Remove Friend"
+                                                : "Add Friend",
+                                        onPressed: model.isCurrentUsersProfile
+                                            ? () => model.navigateToFriendsView(
+                                                friends: model.friends)
+                                            : () =>
+                                                model.addOrRemoveFriend(uid),
                                         maxWidth: screenWidth(context,
                                             percentage: 0.3),
                                         minHeight: 20,
                                         maxHeight: 40,
                                         fontSize: 16,
-                                        color: MyColors.paletteBlue),
+                                        color: model.isFriend(uid)
+                                            ? MyColors.paletteGrey
+                                            : MyColors.paletteBlue),
                                   ),
-                                if (model.isCurrentUsersProfile)
-                                  Flexible(
-                                    flex: 5,
-                                    child: CallToActionButtonRectangular(
-                                        title:
-                                            "${model.moneyPools.length} Impact Pools",
-                                        onPressed: () =>
-                                            model.navigateToAllMoneyPoolsView(),
-                                        maxWidth: screenWidth(context,
-                                            percentage: 0.33),
-                                        minHeight: 20,
-                                        maxHeight: 40,
-                                        fontSize: 16,
-                                        color: MyColors.paletteBlue),
-                                  ),
-                              ],
-                            ),
-                            verticalSpaceMedium,
-                            if (model.otherUserStats == null &&
-                                !model.isCurrentUsersProfile)
-                              _buildPrivateProfileDisclaimer(context),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 25.0),
-                              child: Column(
-                                children: [
-                                  if (model.otherUserStats != null)
-                                    GoodWalletCard(
-                                        onCardTap: () => model.showStatsDialog(
-                                            model.user!, model.otherUserStats!),
-                                        currentBalance: model
-                                            .otherUserStats!.currentBalance,
-                                        totalDonations: model.otherUserStats!
-                                            .donationStatistics.totalDonations,
-                                        totalRaised: model
-                                            .otherUserStats!
-                                            .moneyTransferStatistics
-                                            .totalRaised,
-                                        totalGifted: model
-                                            .otherUserStats!
-                                            .moneyTransferStatistics
-                                            .totalSentToPeers,
-                                        userInfo: model.getQRCodeUserInfoString(
-                                            model.user!),
-                                        onQRCodeTap: model.isCurrentUsersProfile
-                                            ? model.navigateToQRCodeView
-                                            : () => null,
-                                        margins: 0.0,
-                                        showQRCode: model.isCurrentUsersProfile,
-                                        titleWidthPercentage: 0.6,
-                                        highlightTotalDonations: true,
-                                        title: model.isCurrentUsersProfile
-                                            ? "Your Impact"
-                                            : model.user!.fullName +
-                                                "'s Impact"),
-                                  verticalSpaceSmall,
-                                ],
-                              ),
-                            ),
-                            verticalSpaceMedium,
-                            if (model.isCurrentUsersProfile)
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SectionHeader(
-                                      title: "Your supported projects"),
-                                  verticalSpaceSmall,
-                                  Container(
-                                    height: 160,
-                                    child: ProjectsList(
-                                      projects: model.supportedProjects,
-                                      onProjectPressed:
-                                          model.navigateToSingleProjectScreen,
+                                  Spacer(flex: 1),
+                                  if (!model.isCurrentUsersProfile)
+                                    Flexible(
+                                      flex: 5,
+                                      child: CallToActionButtonRectangular(
+                                          title: "Send Money",
+                                          onPressed: () => model
+                                              .navigateToTransferViewWithUser(
+                                                  model.user!),
+                                          maxWidth: screenWidth(context,
+                                              percentage: 0.3),
+                                          minHeight: 20,
+                                          maxHeight: 40,
+                                          fontSize: 16,
+                                          color: MyColors.paletteBlue),
                                     ),
-                                  )
+                                  if (model.isCurrentUsersProfile)
+                                    Flexible(
+                                      flex: 5,
+                                      child: CallToActionButtonRectangular(
+                                          title:
+                                              "${model.moneyPools.length} Impact Pools",
+                                          onPressed: () => model
+                                              .navigateToAllMoneyPoolsView(),
+                                          maxWidth: screenWidth(context,
+                                              percentage: 0.33),
+                                          minHeight: 20,
+                                          maxHeight: 40,
+                                          fontSize: 16,
+                                          color: MyColors.paletteBlue),
+                                    ),
                                 ],
                               ),
-                          ],
-                        ),
-                        verticalSpaceLarge,
-                      ],
+                              verticalSpaceMedium,
+                              if (model.otherUserStats == null &&
+                                  !model.isCurrentUsersProfile)
+                                _buildPrivateProfileDisclaimer(context),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25.0),
+                                child: Column(
+                                  children: [
+                                    if (model.otherUserStats != null)
+                                      GoodWalletCard(
+                                          onCardTap: () => model.showStatsDialog(
+                                              model.user!,
+                                              model.otherUserStats!),
+                                          currentBalance: model
+                                              .otherUserStats!.currentBalance,
+                                          totalDonations: model
+                                              .otherUserStats!
+                                              .donationStatistics
+                                              .totalDonations,
+                                          totalRaised: model
+                                              .otherUserStats!
+                                              .moneyTransferStatistics
+                                              .totalRaised,
+                                          totalGifted: model
+                                              .otherUserStats!
+                                              .moneyTransferStatistics
+                                              .totalSentToPeers,
+                                          userInfo: model.getQRCodeUserInfoString(
+                                              model.user!),
+                                          onQRCodeTap:
+                                              model.isCurrentUsersProfile
+                                                  ? model.navigateToQRCodeView
+                                                  : () => null,
+                                          margins: 0.0,
+                                          showQRCode:
+                                              model.isCurrentUsersProfile,
+                                          titleWidthPercentage: 0.6,
+                                          highlightTotalDonations: true,
+                                          title: model.isCurrentUsersProfile
+                                              ? "Your Impact"
+                                              : model.user!.fullName + "'s Impact"),
+                                    verticalSpaceSmall,
+                                  ],
+                                ),
+                              ),
+                              verticalSpaceMedium,
+                              if (model.isCurrentUsersProfile)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SectionHeader(
+                                        title: "Your supported projects"),
+                                    verticalSpaceRegular,
+                                    Container(
+                                      height: 160,
+                                      child: ProjectsList(
+                                        projects: model.supportedProjects,
+                                        onProjectPressed:
+                                            model.navigateToSingleProjectScreen,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                            ],
+                          ),
+                          verticalSpaceLarge,
+                        ],
+                      ),
                     ),
             ],
           ),
@@ -237,9 +255,9 @@ class PublicProfileViewMobile extends StatelessWidget {
     );
   }
 
-  Widget _buildStatus(BuildContext context) {
+  Widget _buildStatus(BuildContext context, DateTime userCreationTime) {
     return Text(
-      "Member since 7/21",
+      "Member since "+formatDateVeryShort(userCreationTime),
     );
   }
 

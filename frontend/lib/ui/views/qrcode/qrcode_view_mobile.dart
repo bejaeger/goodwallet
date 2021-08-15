@@ -184,7 +184,7 @@ class MyQRCode extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(90.0),
           child: Image.network(
-            ImagePath.profilePicURL,
+            ImagePath.profileBackgroundURL,
             fit: BoxFit.cover,
           ),
         ),

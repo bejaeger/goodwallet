@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:good_wallet/enums/transfer_type.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_icon_paths.dart';
 import 'package:good_wallet/utils/currency_formatting_helpers.dart';
 import 'package:good_wallet/utils/string_utils.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
+
+import '../small_button_with_background.dart';
 
 Widget bankInstituteIcon(BuildContext context) {
   return Column(
@@ -28,6 +31,7 @@ Widget goodWalletIcon(BuildContext context, [num? balance]) {
       if (balance != null)
         Text("Available: " + formatAmount(balance),
             style: textTheme(context).bodyText2),
+
     ],
   );
 }

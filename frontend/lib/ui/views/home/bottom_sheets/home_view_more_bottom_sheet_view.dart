@@ -41,32 +41,31 @@ class HomeViewMoreBottomSheetView extends StatelessWidget {
                   title: "Commit money for good causes",
                   description: "Pledge money and give later",
                   icon: Image.asset(ImageIconPaths.agreeingHands,
-                      color: ColorSettings.greyTextColor),
+                      color: MyColors.paletteBlue),
                 ),
+                // BottomSheetListEntry(
+                //   completer: completer,
+                //   responseData: model.showNotImplementedSnackbar,
+                //   title: "Top-up prepaid fund",
+                //   description:
+                //       "To send micro-payments without extra transaction fee",
+                //   icon: Image.asset(ImageIconPaths.holdingHands),
+                // ),
                 BottomSheetListEntry(
-                  completer: completer,
-                  responseData: model.showNotImplementedSnackbar,
-                  title: "Top-up prepaid fund",
-                  description:
-                      "To send micro-payments without extra transaction fee",
-                  icon: Image.asset(ImageIconPaths.holdingHands),
-                ),
-                BottomSheetListEntry(
-                  completer: completer,
-                  responseData: model.navigateToQRCodeView,
-                  title: "Get paid to raise money",
-                  description:
-                      "Raise money for good causes by accepting payments into your wallet",
-                  icon: Image.asset(ImageIconPaths.agreeingHands,
-                      color: ColorSettings.primaryColor),
-                ),
-                BottomSheetListEntry(
-                  completer: completer,
-                  responseData: model.navigateToStripeView,
-                  title: "Send Money With Stripe",
-                  description: "Raise Money For people in need",
-                  icon: Image.asset(ImageIconPaths.agreeingHands),
-                ),
+                    completer: completer,
+                    responseData: model.navigateToQRCodeView,
+                    title: "Fundraise by getting paid",
+                    description:
+                        "Raise money for good causes by accepting payments into your wallet",
+                    icon: Icon(Icons.volunteer_activism,
+                        size: 34, color: ColorSettings.primaryColorDark)),
+                // BottomSheetListEntry(
+                //   completer: completer,
+                //   responseData: model.navigateToStripeView,
+                //   title: "Send Money With Stripe",
+                //   description: "Raise Money For people in need",
+                //   icon: Image.asset(ImageIconPaths.agreeingHands),
+                // ),
 
                 // BottomSheetListEntry(
                 //   completer: completer,

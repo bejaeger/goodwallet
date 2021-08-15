@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_wallet/enums/featured_app_type.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
+import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/featured_applications/single_featured_app_viewmodel.dart';
 import 'package:good_wallet/ui/views/home/home_custom_app_bar_view.dart';
@@ -35,7 +36,7 @@ class SingleFeaturedAppView extends StatelessWidget {
               ),
               flexibleSpace: FlexibleSpaceBar(
                 background: Image.network(
-                  "https://burst.shopifycdn.com/photos/hands-hold-red-apple.jpg?width=373&format=pjpg&exif=0&iptc=0",
+                  ImagePath.marketPlaceImageURL,
                   fit: BoxFit.cover,
                 ),
               ),

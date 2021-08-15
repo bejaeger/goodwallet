@@ -11,7 +11,7 @@ void setupSnackbarUi() {
     backgroundColor: ColorSettings.blackTextColor!,
     textColor: ColorSettings.whiteTextColor!,
     titleColor: ColorSettings.whiteTextColor!,
-    messageColor: ColorSettings.whiteTextColor!,
-    mainButtonTextColor: ColorSettings.whiteTextColor,
+    //messageColor: ColorSettings.whiteTextColor!,
+    // mainButtonTextColor: ColorSettings.whiteTextColor,
   ));
 }

@@ -1,12 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:good_wallet/constants/constants.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
-import 'package:good_wallet/datamodels/money_pools/base/concise_money_pool_info.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
+import 'package:good_wallet/datamodels/money_pools/messages/message.dart';
 import 'package:good_wallet/datamodels/money_pools/payouts/money_pool_payout.dart';
 import 'package:good_wallet/datamodels/statistics/global_statistics.dart';
 import 'package:good_wallet/datamodels/transfers/bookkeeping/money_transfer_query_config.dart';
@@ -170,6 +169,34 @@ class FirestoreApi {
       throw FirestoreApiException(
         message: 'Failed to json de-serialize global stats',
         devDetails: '$error',
+      );
+    }
+  }
+
+  //////////////////////////////////////////////////////
+  // Get global statistics stream
+  Stream<GlobalStatistics?> getGlobalStatisticsStream() {
+    final Stream<DocumentSnapshot> snapshot =
+        globalStatsCollection.doc("summaryStats").snapshots();
+    try {
+      Stream<GlobalStatistics?> stream = snapshot.map((event) {
+        if (!event.exists) {
+          log.e("snapshot does not exist");
+          return null;
+        }
+        if (event.data() == null) {
+          log.e("No data found within document");
+          return null;
+        }
+        return GlobalStatistics.fromJson(event.data()!);
+      });
+      return stream;
+    } catch (e) {
+      log.e("Could not retrieve stream of global stats document");
+      throw FirestoreApiException(
+        message: 'Failed to get global stats stream',
+        devDetails:
+            "Something went wrong when trying to return a stream of the global stats document",
       );
     }
   }
@@ -501,13 +528,46 @@ class FirestoreApi {
 
   // deletes money pool documents
   // TODO: probably we want to call a cloud function instead
-  Future deleteMoneyPool(String moneyPoolId) async {
+  Future deleteMoneyPool(String mpid) async {
     try {
-      await moneyPoolsCollection.doc(moneyPoolId).delete();
+      await moneyPoolsCollection.doc(mpid).delete();
     } catch (e) {
       throw FirestoreApiException(
           message:
               "Unusual expection when trying to delete the money pool document",
+          devDetails: '$e');
+    }
+  }
+
+  // Add money pool message
+  Future addMessageToMoneyPool(
+      {required String mpid, required Message message}) async {
+    try {
+      await getMoneyPoolMessagesCollection(moneyPoolId: mpid)
+          .add(message.toJson());
+    } catch (e) {
+      log.e("Error when adding message to money pool, error thrown: $e");
+      throw FirestoreApiException(
+          message:
+              "Unusual expection when trying to add a message to the money pool message board",
+          devDetails: '$e');
+    }
+  }
+
+  // Add money pool message
+  Stream<List<Message>> getMoneyPoolMessagesStream(
+      {required String mpid, int limit = kNumberOfMessagesLimit}) {
+    try {
+      final returnStream = getMoneyPoolMessagesCollection(moneyPoolId: mpid)
+          .orderBy("createdAt", descending: true)
+          .limit(limit)
+          .snapshots()
+          .map((event) =>
+              event.docs.map((doc) => Message.fromJson(doc.data())).toList());
+      return returnStream;
+    } catch (e) {
+      throw FirestoreApiException(
+          message: "Unknown expection when creating money pool messages stream",
           devDetails: '$e');
     }
   }
@@ -617,5 +677,12 @@ class FirestoreApi {
         .doc(uid)
         .collection(userStatisticsCollectionKey)
         .doc(userSummaryStatisticsDocumentKey);
+  }
+
+  CollectionReference getMoneyPoolMessagesCollection(
+      {required String moneyPoolId}) {
+    return moneyPoolsCollection
+        .doc(moneyPoolId)
+        .collection(moneyPoolMessagesDocumentKey);
   }
 }

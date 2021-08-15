@@ -6,6 +6,7 @@ import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/datamodels/user/user.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_icon_paths.dart';
+import 'package:good_wallet/ui/shared/image_paths.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/shared/money_transfers/money_transfer_style_helpers.dart';
 import 'package:good_wallet/ui/shared/money_transfers/transfer_list_tile.dart';
@@ -18,6 +19,7 @@ import 'package:good_wallet/ui/widgets/stats_card.dart';
 import 'package:good_wallet/utils/string_utils.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class HomeViewMobile extends StatelessWidget {
   final bool showDialog;
@@ -65,6 +67,7 @@ class HomeViewMobile extends StatelessWidget {
                 physics: ScrollPhysics(),
                 slivers: [
                   CustomSliverAppBar(
+                    expandedHeight: 100,
                     titleSize: 25,
                     title: "Hi " + getFirstName(model.currentUser.fullName),
                     // onSecondRightIconPressed: model.navigateToProfileViewMobile,
@@ -86,11 +89,12 @@ class HomeViewMobile extends StatelessWidget {
                       : SliverList(
                           delegate: SliverChildListDelegate(
                             [
+                              verticalSpaceSmall,
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    left: LayoutSettings.horizontalPadding,
-                                    right: LayoutSettings.horizontalPadding,
-                                    top: 10),
+                                  left: LayoutSettings.horizontalPadding,
+                                  right: LayoutSettings.horizontalPadding,
+                                ),
                                 child: Row(
                                   children: [
                                     Expanded(
@@ -98,7 +102,7 @@ class HomeViewMobile extends StatelessWidget {
                                           statistic:
                                               model.userStats.currentBalance,
                                           subtitle: "Your Balance",
-                                          buttonText: "Add Funds",
+                                          buttonText: "Pledge",
                                           onCardPressed:
                                               model.showRaisedFundsStatsDialog,
                                           onButtonPressed: model
@@ -119,11 +123,9 @@ class HomeViewMobile extends StatelessWidget {
                                   ],
                                 ),
                               ),
-
-                              verticalSpaceSmall,
+                              verticalSpaceRegular,
                               SectionHeader(
                                 title: "Impact Pools",
-                                textButtonText: "See all",
                                 onTextButtonTap: model.navigateToMoneyPoolsView,
                               ),
                               Column(
@@ -138,74 +140,34 @@ class HomeViewMobile extends StatelessWidget {
                                     showInviteNotification(context, model),
                                   if (model.moneyPoolsInvitedTo.length > 0)
                                     verticalSpaceSmall,
-                                  Container(
-                                    height: 150,
-                                    child: MoneyPoolsList(
-                                        moneyPools: model.moneyPools,
-                                        onMoneyPoolPressed:
-                                            model.navigateToSingleMoneyPoolView,
-                                        onCreateNewPressed: model
+                                  if (model.moneyPools.length > 0)
+                                    Container(
+                                      height: 260,
+                                      child: MoneyPoolsList(
+                                          moneyPools: model.moneyPools,
+                                          onMoneyPoolPressed: model
+                                              .navigateToSingleMoneyPoolView,
+                                          onCreateNewPressed: model
+                                              .navigateToCreateMoneyPoolView),
+                                    ),
+                                  if (model.moneyPools.length == 0)
+                                    LargeButton(
+                                        imageUrl:
+                                            ImagePath.profileBackgroundURL,
+                                        title: "Create An Impact Pool",
+                                        onPressed: model
                                             .navigateToCreateMoneyPoolView),
-                                  ),
+
+                                  verticalSpaceSmall,
                                 ],
                               ),
-                              SectionHeader(
-                                title: "Friends",
-                                textButtonText: "See all",
-                                onTextButtonTap: model.navigateToFriendsView,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal:
-                                        LayoutSettings.horizontalPadding),
-                                child: Container(
-                                  height: 100,
-                                  width: screenWidth(context) * 0.8,
-                                  child: FriendsList(
-                                      friends: model.friends,
-                                      onPressed:
-                                          model.navigateToPublicProfileView,
-                                      onAddFriendPressed:
-                                          model.navigateToFindFriendsView),
-                                ),
-                              ),
-                              // _sendMoneyButton(context, model),
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.start,
-                              //   children: [
-                              //     SizedBox(
-                              //         width: LayoutSettings.horizontalPadding),
-                              //     Column(
-                              //       crossAxisAlignment:
-                              //           CrossAxisAlignment.start,
-                              //       children: [
-                              //         //verticalSpaceSmall,
-                              //         // Text("Hi " + model.currentUser.fullName,
-                              //         //     style: textTheme(context).headline4),
-                              //         verticalSpaceRegular,
-                              //         callToActionButtons(context, model),
-                              //         verticalSpaceRegular,
-                              //       ],
-                              //     ),
-                              //     SizedBox(
-                              //         width: LayoutSettings.horizontalPadding),
-                              //   ],
-                              // ),
-                              //verticalSpaceTiny,
-                              //_sendMoneyButton(context, model),
-                              //verticalSpaceTiny,
-
-                              SectionHeader(
-                                  title: "Recent Activities",
-                                  onTextButtonTap:
-                                      model.navigateToTransfersHistoryView),
-                              if (model.latestTransfers.length == 0)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal:
-                                          LayoutSettings.horizontalPadding),
-                                  child: Text("Make your first transfer :)"),
-                                ),
+                              if (model.latestTransfers.length > 0)
+                                SectionHeader(
+                                    title: "Recent Activities",
+                                    onTextButtonTap:
+                                        model.navigateToTransfersHistoryView),
+                              if (model.latestTransfers.length > 0)
+                                verticalSpaceTiny,
                               if (model.latestTransfers.length > 0)
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -254,6 +216,38 @@ class HomeViewMobile extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                              verticalSpaceRegular,
+                              SectionHeader(
+                                title: "Friends",
+                                onTextButtonTap: model.navigateToFriendsView,
+                              ),
+                              verticalSpaceTiny,
+                              if (model.friends.length == 0)
+                                LargeButton(
+                                  onPressed: model.navigateToFindFriendsView,
+                                  title: "Add You First Friend",
+                                  backgroundColor: MyColors.niceLightRed,
+                                  imagePath: ImagePath.peopleHoldingHands,
+                                ),
+                              if (model.friends.length > 0)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal:
+                                          LayoutSettings.horizontalPadding),
+                                  child: Container(
+                                    height: 100,
+                                    width: screenWidth(context) * 0.8,
+                                    child: FriendsList(
+                                        friends: model.friends,
+                                        onPressed:
+                                            model.navigateToPublicProfileView,
+                                        onAddFriendPressed:
+                                            model.navigateToFindFriendsView),
+                                  ),
+                                ),
+                              // _sendMoneyButton(context, model),
+                              verticalSpaceSmall,
+
                               verticalSpaceMassive,
                             ],
                           ),
@@ -456,16 +450,109 @@ class HomeViewMobile extends StatelessWidget {
   }
 }
 
+class LargeButton extends StatelessWidget {
+  final void Function() onPressed;
+  final String title;
+  final String? imageUrl;
+  final String? imagePath;
+  final Color backgroundColor;
+  const LargeButton({
+    Key? key,
+    required this.onPressed,
+    required this.title,
+    this.backgroundColor = MyColors.niceOrange,
+    this.imageUrl,
+    this.imagePath,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: LayoutSettings.horizontalPadding),
+      child: GestureDetector(
+        onTap: onPressed,
+        child: Container(
+          height: 90,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.0),
+            color: backgroundColor,
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 4,
+                color: Colors.black12,
+                spreadRadius: 1,
+                offset: Offset(1, 2),
+              )
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              if (imageUrl != null)
+                Container(
+                  width: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16.0),
+                    child: FadeInImage.memoryNetwork(
+                        fadeInDuration: Duration(milliseconds: 200),
+                        placeholder: kTransparentImage,
+                        image: imageUrl!,
+                        fit: BoxFit.fitHeight),
+                  ),
+                ),
+              if (imagePath != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Container(
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      image: DecorationImage(
+                        fit: BoxFit.fitWidth,
+                        image: AssetImage(
+                          imagePath!,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              Text(
+                title,
+                style: textTheme(context)
+                    .headline5!
+                    .copyWith(fontSize: 18, color: Colors.white),
+              ),
+              Icon(Icons.arrow_forward_ios, color: Colors.white),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class MoneyPoolsList extends StatelessWidget {
   final List<MoneyPool> moneyPools;
   final void Function(MoneyPool) onMoneyPoolPressed;
   final void Function() onCreateNewPressed;
-  const MoneyPoolsList({
+  MoneyPoolsList({
     Key? key,
     required this.moneyPools,
     required this.onMoneyPoolPressed,
     required this.onCreateNewPressed,
   }) : super(key: key);
+
+  List<String> images = [
+    ImagePath.fourPeopleLaughing,
+    ImagePath.threePeopleAtTable,
+    ImagePath.twoPeopleOnCouch,
+  ];
+
+  Random random = new Random();
 
   @override
   Widget build(BuildContext context) {
@@ -481,10 +568,12 @@ class MoneyPoolsList extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 MoneyPoolPreview(
-                  height: 150,
+                  imagePath: images[random.nextInt(3)],
+                  height: 240,
                   width: width,
                   squaredLayout: true,
-                  moneyPool: null,
+                  showCreateNew: true,
+                  moneyPool: moneyPools[0],
                   onTap: onMoneyPoolPressed,
                   onCreateMoneyPoolTapped: onCreateNewPressed,
                 ),
@@ -498,7 +587,8 @@ class MoneyPoolsList extends StatelessWidget {
               children: [
                 if (index == 0) horizontalSpaceMedium,
                 MoneyPoolPreview(
-                  height: 150,
+                  imagePath: images[random.nextInt(3)],
+                  height: 240,
                   width: width,
                   moneyPool: moneyPools[index],
                   squaredLayout: true,
@@ -571,6 +661,7 @@ class FriendsList extends StatelessWidget {
       itemBuilder: (context, index) {
         if (index == min(friends.length, 9)) {
           return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               horizontalSpaceSmall,
               AddFriendCTARound(onPressed: onAddFriendPressed),
@@ -581,7 +672,7 @@ class FriendsList extends StatelessWidget {
             children: [
               horizontalSpaceSmall,
               CallToActionButtonRoundInitials(
-                  color: MyColors.paletteBlue.withOpacity(0.9),
+                  color: MyColors.niceColors[index % 4],
                   onPressed: () => onPressed(friends[index].uid),
                   name: friends[index].fullName),
             ],

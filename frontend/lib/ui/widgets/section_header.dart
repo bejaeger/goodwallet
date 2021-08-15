@@ -13,13 +13,15 @@ class SectionHeader extends StatelessWidget {
   final String title;
   final String textButtonText;
   final Widget? trailingIcon;
+  final double titleSize;
 
   const SectionHeader(
       {Key? key,
       required this.title,
       this.onTextButtonTap,
-      this.textButtonText = "See all",
-      this.trailingIcon})
+      this.textButtonText = "SEE ALL",
+      this.trailingIcon,
+      this.titleSize = 20})
       : super(key: key);
 
   @override
@@ -31,17 +33,26 @@ class SectionHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title,
-              style: textTheme(context).headline6!.copyWith(fontSize: 20)),
+              style: textTheme(context).headline6!.copyWith(
+                  fontSize: titleSize,
+                  color: ColorSettings.blackHeadlineColor)),
           if (onTextButtonTap != null)
-            TextButton(
-              onPressed: onTextButtonTap,
-              child: Text(
-                textButtonText,
-                style: textTheme(context)
-                    .headline6!
-                    .copyWith(color: ColorSettings.primaryColor, fontSize: 16),
-              ),
-            ),
+            IconButton(
+                onPressed: onTextButtonTap,
+                icon: Icon(
+                  Icons.more_horiz,
+                  size: 28,
+                  color: ColorSettings.blackHeadlineColor,
+                )),
+          // TextButton(
+          //   onPressed: onTextButtonTap,
+          //   child: Text(
+          //     textButtonText,
+          //     style: textTheme(context)
+          //         .headline6!
+          //         .copyWith(color: ColorSettings.greyTextColor, fontSize: 14),
+          //   ),
+          // ),
           if (trailingIcon != null) trailingIcon!,
         ],
       ),

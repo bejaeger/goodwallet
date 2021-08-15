@@ -18,6 +18,7 @@ import 'package:good_wallet/services/user/user_service.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/social_functions_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:good_wallet/utils/logger.dart';
+import 'dart:async';
 
 class HomeViewModel extends SocialFunctionsViewModel {
   final BottomSheetService? _bottomSheetService = locator<BottomSheetService>();
@@ -62,19 +63,24 @@ class HomeViewModel extends SocialFunctionsViewModel {
   // Listen to streams of latest donations and transactions to be displayed
   // instantly when pulling up bottom sheets
   Future listenToData() async {
+    Completer completerOne = Completer<void>();
+    Completer completerTwo = Completer<void>();
+    Completer completerThree = Completer<void>();
+    _transfersManager!.addTransferDataListener(
+        config: _queryConfigTransfersToPeers, completer: completerOne);
+    _transfersManager!.addTransferDataListener(
+        config: _queryConfigDonations, completer: completerTwo);
+    _transfersManager!.addTransferDataListener(
+        config: _queryConfigLatestTransfers, completer: completerThree);
+    _moneyPoolsService!.listenToMoneyPools(uid: currentUser.uid);
+
     setBusy(true);
-    _transfersManager!
-        .addTransferDataListener(config: _queryConfigTransfersToPeers);
-    _transfersManager!.addTransferDataListener(config: _queryConfigDonations);
-    Future? one = _transfersManager!
-        .addTransferDataListener(config: _queryConfigLatestTransfers);
-    Future? two = _moneyPoolsService!.listenToMoneyPools(uid: currentUser.uid);
-    Future? three = listenToFriends();
-    List<Future<dynamic>> listOfFutures = [];
-    if (one != null) listOfFutures.add(one);
-    if (two != null) listOfFutures.add(two);
-    listOfFutures.add(three);
-    await Future.wait(listOfFutures);
+    await Future.wait([
+      completerOne.future,
+      completerTwo.future,
+      completerThree.future,
+      listenToFriends()
+    ]);
     setBusy(false);
   }
 
@@ -264,6 +270,7 @@ class HomeViewModel extends SocialFunctionsViewModel {
       if (sheetResponse.confirmed) {
         setBusy(true);
         // accepted invitation
+        dynamic moneyPool = moneyPoolsInvitedTo[index];
         bool success = await _moneyPoolsService!.acceptInvitation(
             currentUser.uid, currentUser.fullName, moneyPoolsInvitedTo[index]);
         if (success is String)
@@ -272,7 +279,9 @@ class HomeViewModel extends SocialFunctionsViewModel {
               message: success as String);
         else
           _snackbarService!.showSnackbar(message: "Accepted invitation");
+        await Future.delayed(Duration(seconds: 2));
         setBusy(false);
+        await navigateToSingleMoneyPoolView(moneyPool);
       } else {
         // devlined invitation
         await _moneyPoolsService!

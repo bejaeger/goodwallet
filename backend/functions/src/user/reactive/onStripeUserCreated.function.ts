@@ -4,7 +4,7 @@ const admin = require("firebase-admin");
 const db = admin.firestore();
 
 //import stripe from 'stripe';
-const stripe = require('stripe')(functions.config().stripe.testkey); 
+const stripe = require('stripe')(functions.config().stripe.secret); 
 
 exports.onStripeUserCreated = functions.auth.user().onCreate(async (user) => {
   const customer = await stripe.customers.create({

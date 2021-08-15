@@ -10,7 +10,7 @@ class GreySearchTextField extends StatelessWidget {
   final void Function()? onTap;
   final TextEditingController? controller;
   final Widget? suffixIcon;
-
+  final bool showPrefixIcon;
   final String hintText;
   final bool autofocus;
   final bool readOnly;
@@ -26,6 +26,7 @@ class GreySearchTextField extends StatelessWidget {
     this.controller,
     this.readOnly = false,
     this.suffixIcon,
+    this.showPrefixIcon = true,
   }) : super(key: key);
 
   @override
@@ -51,13 +52,21 @@ class GreySearchTextField extends StatelessWidget {
               hintStyle: textTheme(context)
                   .bodyText2!
                   .copyWith(fontSize: 16, color: Colors.grey[400]),
-              contentPadding: EdgeInsets.only(bottom: 10),
+              contentPadding: showPrefixIcon
+                  ? EdgeInsets.only(bottom: 10)
+                  : EdgeInsets.only(bottom: 10, left: 10),
               border: InputBorder.none,
-              prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
+              prefixIcon: showPrefixIcon
+                  ? Icon(Icons.search, color: Colors.grey[400])
+                  : null,
               suffixIcon: onSuffixIconPressed != null
                   // workaround otherwise text field will be focused
                   ? suffixIcon != null
-                      ? suffixIcon
+                      ? GestureDetector(
+                          child: suffixIcon,
+                          onTap: () {
+                            onSuffixIconPressed!();
+                          })
                       : GestureDetector(
                           child: Icon(Icons.qr_code_scanner,
                               color: Colors.grey[800]),

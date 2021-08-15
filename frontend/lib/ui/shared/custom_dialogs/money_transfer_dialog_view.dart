@@ -24,6 +24,7 @@ class MoneyTransferDialogView extends StatelessWidget {
         viewModelBuilder: () => MoneyTransferDialogViewModel(),
         onModelReady: (model) => model.waitForTransfer(request: request),
         builder: (context, model, child) => Dialog(
+              elevation: 0,
               backgroundColor: Colors.transparent,
               child: _BasicDialogContent(
                 request: request,
@@ -55,11 +56,7 @@ class _BasicDialogContent extends StatelessWidget {
         duration: Duration(milliseconds: 500),
         opacity: model.isBusy ? 0.0 : 1.0,
         child: model.isBusy
-            ? Container(
-                color: Colors.transparent,
-                width: 50,
-                height: 50,
-                child: CircularProgressIndicator())
+            ? Container()
             : Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.topCenter,
@@ -133,11 +130,14 @@ class _BasicDialogContent extends StatelessWidget {
               ),
       ),
       if (model.isBusy)
-        Container(
+        Center(
+          child: Container(
             color: Colors.transparent,
-            width: screenWidth(context, percentage: 0.7),
+            width: 50,
             height: 50,
-            child: CircularProgressIndicator())
+            child: CircularProgressIndicator(),
+          ),
+        ),
     ]);
   }
 

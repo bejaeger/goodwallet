@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:good_wallet/datamodels/causes/project.dart';
 import 'package:good_wallet/ui/layout_widgets/constrained_width_layout.dart';
-import 'package:good_wallet/ui/layout_widgets/list_of_projects_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/projects/projects_viewmodel.dart';
@@ -85,11 +84,11 @@ class _ProjectsViewState extends State<ProjectsView> {
                   // =============================================>>>>
                   // Temporarily allow user Dan to push new projects to firebase
 
-                  onSecondRightIconPressed:
-                      model.currentUser.uid == "ptWSWNPX4xRyVsb6jwjPfff5C2B3"
-                          ? model.pushGlobalGivingProjectsToFirestore
-                          : null,
-                  secondRightIcon: Icon(Icons.plus_one, size: 28),
+                  // onSecondRightIconPressed:
+                  //     model.currentUser.uid == model.testUserId
+                  //         ? model.pushGlobalGivingProjectsToFirestore
+                  //         : null,
+                  // secondRightIcon: Icon(Icons.plus_one, size: 28),
                   //
                   // <<<< =============================================
                 ),
@@ -125,7 +124,7 @@ class _ProjectsViewState extends State<ProjectsView> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SectionHeader(title: "User Top Picks"),
+                                SectionHeader(title: "User Favorites"),
                                 verticalSpaceTiny,
                                 ProjectsTopPicksCarousel(
                                     projects: model.projectTopPicks,
@@ -228,6 +227,7 @@ class ProjectsTopPicksCarousel extends StatelessWidget {
                     title: project.organization?.name ?? project.name,
                     explanation: project.name,
                     explanationAlignment: Alignment.bottomLeft,
+                    backgroundImageUrl: project.imageUrl,
                     backgroundImage: project.imageUrl != null
                         ? NetworkImage(project.imageUrl!)
                         : null,

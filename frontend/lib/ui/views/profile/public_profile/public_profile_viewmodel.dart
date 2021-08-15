@@ -87,6 +87,10 @@ class PublicProfileViewModel extends SocialFunctionsViewModel {
     );
   }
 
+  DateTime? getUserCreationTime() {
+    return _userService!.getUserCreationTime;
+  }
+
   String getQRCodeUserInfoString(User user) {
     return _qrCodeService!.getEncodedUserInfo(user);
   }

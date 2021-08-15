@@ -6,6 +6,7 @@ import 'package:good_wallet/services/transfers_history/transfers_history_service
 import 'package:good_wallet/ui/views/common_viewmodels/transfer_base_model.dart';
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'dart:async';
 
 class TransfersHistoryViewModel extends TransferBaseViewModel {
   final TransfersHistoryService? _transfersManager =
@@ -21,7 +22,10 @@ class TransfersHistoryViewModel extends TransferBaseViewModel {
 
   Future listenToData() async {
     setBusy(true);
-    await _transfersManager!.addTransferDataListener(config: _transferConfig);
+    Completer completer = Completer<void>();
+    _transfersManager!
+        .addTransferDataListener(config: _transferConfig, completer: completer);
+    await completer.future;
     setBusy(false);
   }
 
