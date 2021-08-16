@@ -63,27 +63,27 @@ class DummyPaymentService {
     await _stripeService.initPaymentSheet(amount: amount, currency: currency);
   }
 
-  initStripePayment() {
-    try {
-      StripeService.init();
-    } catch (e) {
-      log.e("Couldn't process money pool payout: ${e.toString()}");
-      throw FirestoreApiException(
-          message: "Something failed when pushing the data to Firestore",
-          devDetails:
-              "This should not happen and is due to an error on the Firestore side or the datamodels that were being pushed!",
-          prettyDetails:
-              "An internal error occured on our side, please apologize and try again later.");
-    }
-  }
+  // initStripePayment() {
+  //   try {
+  //     StripeService.init();
+  //   } catch (e) {
+  //     log.e("Couldn't process money pool payout: ${e.toString()}");
+  //     throw FirestoreApiException(
+  //         message: "Something failed when pushing the data to Firestore",
+  //         devDetails:
+  //             "This should not happen and is due to an error on the Firestore side or the datamodels that were being pushed!",
+  //         prettyDetails:
+  //             "An internal error occured on our side, please apologize and try again later.");
+  //   }
+  // }
 
-  payNewCard(
-      {required String amount,
-      required String currency,
-      required String customer}) {
-    StripeService.payWithNewCard(
-        amount: amount, currency: currency, customer: customer);
-  }
+  // payNewCard(
+  //     {required String amount,
+  //     required String currency,
+  //     required String customer}) {
+  //   StripeService.payWithNewCard(
+  //       amount: amount, currency: currency, customer: customer);
+  // }
 
   // adds payout data to firestore which will trigger a cloud function
   // to update all the good wallets

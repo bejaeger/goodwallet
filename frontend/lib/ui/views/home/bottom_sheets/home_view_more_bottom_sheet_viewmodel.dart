@@ -26,7 +26,8 @@ class HomeViewMoreBottomSheetViewModel extends BaseModel {
 
   void navigateToQRCodeView() {
     _navigationService!.navigateTo(Routes.qRCodeViewMobile,
-        arguments: QRCodeViewMobileArguments(initialIndex: 1));
+        arguments: QRCodeViewMobileArguments(
+            initialIndex: 1, showSwitchToSearch: false));
   }
 
   void navigateToStripeView() {

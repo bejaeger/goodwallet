@@ -30,13 +30,12 @@ class HomeViewMobile extends StatelessWidget {
         viewModelBuilder: () => HomeViewModel(),
         onModelReady: (model) async {
           if (model.currentUser.newUser) {
+            model.setNewUserPropertyToFalse();
             SchedulerBinding.instance?.addPostFrameCallback((timeStamp) async {
               await model.showFirstLoginDialog();
-              model.setNewUserPropertyToFalse();
             });
           }
           model.listenToData();
-          return;
         },
         builder: (context, model, child) {
           return Scaffold(
@@ -225,7 +224,7 @@ class HomeViewMobile extends StatelessWidget {
                               if (model.friends.length == 0)
                                 LargeButton(
                                   onPressed: model.navigateToFindFriendsView,
-                                  title: "Add You First Friend",
+                                  title: "Add Your First Friend",
                                   backgroundColor: MyColors.niceLightRed,
                                   imagePath: ImagePath.peopleHoldingHands,
                                 ),

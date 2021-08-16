@@ -6,7 +6,7 @@ import 'package:good_wallet/enums/authentication_method.dart';
 import 'package:good_wallet/flavor_config.dart';
 import 'package:good_wallet/ui/views/common_viewmodels/authentication_viewmodel.dart';
 import 'package:good_wallet/utils/logger.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+// import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 import 'package:good_wallet/ui/views/login/login_view.form.dart';
 
@@ -57,7 +57,7 @@ class LoginViewModel extends AuthenticationViewModel {
   }
 
   void navigateToCreateAccount() {
-    navigationService!.navigateTo(Routes.createAccountView);
+    navigationService!.replaceWith(Routes.createAccountView);
   }
 
   bool isPwShown = false;

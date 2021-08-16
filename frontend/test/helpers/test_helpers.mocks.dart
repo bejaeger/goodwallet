@@ -340,13 +340,14 @@ class MockMoneyPoolsService extends _i1.Mock implements _i17.MoneyPoolsService {
               #addMessageToMoneyPool, [], {#mpid: mpid, #message: message}),
           returnValue: Future<dynamic>.value()) as _i15.Future<dynamic>);
   @override
-  _i15.Future<void>? addMoneyPoolMessagesListener(
-          {String? mpid, void Function()? callback}) =>
-      (super.noSuchMethod(
-              Invocation.method(#addMoneyPoolMessagesListener, [],
-                  {#mpid: mpid, #callback: callback}),
-              returnValueForMissingStub: Future<void>.value())
-          as _i15.Future<void>?);
+  void addMoneyPoolMessagesListener(
+          {String? mpid,
+          _i15.Completer<void>? completer,
+          void Function()? callback}) =>
+      super.noSuchMethod(
+          Invocation.method(#addMoneyPoolMessagesListener, [],
+              {#mpid: mpid, #completer: completer, #callback: callback}),
+          returnValueForMissingStub: null);
   @override
   List<_i18.Message> getMoneyPoolMessages({String? mpid}) => (super
       .noSuchMethod(Invocation.method(#getMoneyPoolMessages, [], {#mpid: mpid}),

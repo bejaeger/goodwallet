@@ -8,7 +8,6 @@ import 'package:good_wallet/datamodels/transfers/money_transfer.dart';
 import 'package:good_wallet/exceptions/firestore_api_exception.dart';
 import 'package:good_wallet/flavor_config.dart';
 import 'package:good_wallet/utils/logger.dart';
-import 'package:stripe_payment/stripe_payment.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 
@@ -71,13 +70,13 @@ class StripeService {
 
   //NEW PLUGIN ENDS
 
-  static init() {
-    StripePayment.setOptions(StripeOptions(
-        publishableKey:
-            'pk_test_51HsIjGKMG1WPogVfkBOAiW59LeE9tjOleUdOAShJjTavXqj16ionV9t3pJrhzSML1UDEqQ0xqfNYKLxlqC3J9Jvq00Mm2DkWjz',
-        merchantId: 'Harguilar Nhanga',
-        androidPayMode: 'Test'));
-  }
+  // static init() {
+  //   StripePayment.setOptions(StripeOptions(
+  //       publishableKey:
+  //           'pk_test_51HsIjGKMG1WPogVfkBOAiW59LeE9tjOleUdOAShJjTavXqj16ionV9t3pJrhzSML1UDEqQ0xqfNYKLxlqC3J9Jvq00Mm2DkWjz',
+  //       merchantId: 'Harguilar Nhanga',
+  //       androidPayMode: 'Test'));
+  // }
 
   Map<String, dynamic>? get getPaymentSheetData => _paymentSheetData;
 
@@ -107,38 +106,38 @@ class StripeService {
   static final HttpsCallable CREATE_INTENT =
       FirebaseFunctions.instance.httpsCallable('onStripeCreatePaymentIntent');
 
-  static Future<StripeTransactionResponse?> payWithNewCard(
-      {required String amount,
-      required String currency,
-      required String customer}) async {
-    try {
-      var paymentMethod = await StripePayment.paymentRequestWithCardForm(
-          CardFormPaymentRequest());
+  // static Future<StripeTransactionResponse?> payWithNewCard(
+  //     {required String amount,
+  //     required String currency,
+  //     required String customer}) async {
+  //   try {
+  //     var paymentMethod = await StripePayment.paymentRequestWithCardForm(
+  //         CardFormPaymentRequest());
 
-      var paymentIntent = await _createPaymentIntent(
-          amount: amount,
-          currency: currency,
-          customer: customer,
-          paymentMethod: paymentMethod.card!);
+  //     var paymentIntent = await _createPaymentIntent(
+  //         amount: amount,
+  //         currency: currency,
+  //         customer: customer,
+  //         paymentMethod: paymentMethod.card!);
 
-      var response = StripePayment.confirmPaymentIntent(PaymentIntent(
-          clientSecret: paymentIntent!['client_secret'],
-          paymentMethodId: paymentMethod.id));
+  //     var response = StripePayment.confirmPaymentIntent(PaymentIntent(
+  //         clientSecret: paymentIntent!['client_secret'],
+  //         paymentMethodId: paymentMethod.id));
 
-      StripeService.CREATE_INTENT.call(<String, dynamic>{
-        'amount': amount,
-        'currency': 'USD',
-        'paymentMethod': paymentMethod.card
-      });
+  //     StripeService.CREATE_INTENT.call(<String, dynamic>{
+  //       'amount': amount,
+  //       'currency': 'USD',
+  //       'paymentMethod': paymentMethod.card
+  //     });
 
-      return StripeTransactionResponse(
-          message: 'Transaction Successfull', success: true);
-    } catch (error) {
-      return StripeTransactionResponse(
-          message: 'Transaction $error', success: true);
-    }
-    return null;
-  }
+  //     return StripeTransactionResponse(
+  //         message: 'Transaction Successfull', success: true);
+  //   } catch (error) {
+  //     return StripeTransactionResponse(
+  //         message: 'Transaction $error', success: true);
+  //   }
+  //   return null;
+  // }
 
   //New Version of The Package
   Future<Map<String, dynamic>?> _createTestPaymentSheet(

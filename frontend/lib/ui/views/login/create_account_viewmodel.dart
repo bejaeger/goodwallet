@@ -11,13 +11,11 @@ import 'package:good_wallet/ui/views/common_viewmodels/authentication_viewmodel.
 import 'package:good_wallet/utils/logger.dart';
 import 'package:stacked_firebase_auth/src/firebase_authentication_service.dart';
 import 'package:good_wallet/ui/views/login/create_account_view.form.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+// import 'package:flutter/foundation.dart' show kIsWeb;
 
 class CreateAccountViewModel extends AuthenticationViewModel {
   CreateAccountViewModel()
-      : super(
-            successRoute:
-                kIsWeb ? Routes.walletView : Routes.layoutTemplateViewMobile);
+      : super(successRoute: Routes.layoutTemplateViewMobile);
 
   final FirebaseAuthenticationService? _firebaseAuthenticationService =
       locator<FirebaseAuthenticationService>();
@@ -71,4 +69,7 @@ class CreateAccountViewModel extends AuthenticationViewModel {
   }
 
   void navigateBack() => navigationService!.back();
+
+  void replaceWithLoginView() =>
+      navigationService!.replaceWith(Routes.loginView);
 }

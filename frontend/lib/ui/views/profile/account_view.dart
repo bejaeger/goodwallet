@@ -36,7 +36,7 @@ class AccountView extends StatelessWidget {
                       SizedBox(
                           width: screenWidth(context, percentage: 0.7),
                           child: Text(
-                              "The following is not yet implemented but shown to get a grasp of what we plan to do")),
+                              "The following is not yet implemented but shown to get a grasp of what we plan to add")),
                       verticalSpaceMedium,
                       ProfileListItem(
                         title: "Payment Methods",

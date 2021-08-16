@@ -22,7 +22,7 @@ class CreateAccountView extends StatelessWidget with $CreateAccountView {
           body: AuthenticationLayout(
         busy: model.isBusy,
         onMainButtonTapped: () => model.saveData(AuthenticationMethod.Email),
-        onBackPressed: model.navigateBack,
+        onBackPressed: model.replaceWithLoginView,
         validationMessage: model.validationMessage,
         title: 'Create Account',
         subtitle: 'Enter your name, email and password for sign up.',

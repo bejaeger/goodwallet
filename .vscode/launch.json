@@ -48,6 +48,8 @@
         "args": [
           "--device-id",
           "emulator-5554",
+          "-t", 
+          "lib/main_dev.dart",
         ],
         "flutterMode": "debug",
       },    

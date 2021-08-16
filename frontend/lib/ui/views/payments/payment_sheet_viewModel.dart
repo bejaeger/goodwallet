@@ -33,23 +33,23 @@ class PaymentViewModel extends FormViewModel {
 
   initPayment() {
     setBusy(true);
-    try {
-      _dummyPaymentService.initStripePayment();
-    } catch (e) {
-      print(e.toString());
-    }
+    // try {
+    //   _dummyPaymentService.initStripePayment();
+    // } catch (e) {
+    //   print(e.toString());
+    // }
     setBusy(false);
     notifyListeners();
   }
 
-  void payNewCard({required String amount, required String currency}) {
-    var response = _dummyPaymentService.payNewCard(
-        amount: amount, currency: currency, customer: currentUser.email);
-    _snackbarService.showSnackbar(
-        title: "Error Message.",
-        message: "Error: ${response.message}",
-        duration: Duration(seconds: 2));
-  }
+  // void payNewCard({required String amount, required String currency}) {
+  //   var response = _dummyPaymentService.payNewCard(
+  //       amount: amount, currency: currency, customer: currentUser.email);
+  //   _snackbarService.showSnackbar(
+  //       title: "Error Message.",
+  //       message: "Error: ${response.message}",
+  //       duration: Duration(seconds: 2));
+  // }
 
   // Validate user input, very important function, TODO: should be unit tested!
   bool isValidData() {

@@ -92,6 +92,7 @@ class HomeViewModel extends SocialFunctionsViewModel {
   }
 
   Future setNewUserPropertyToFalse() async {
+    log.i("Setting 'new user' property to false");
     _userService!.setNewUserPropertyToFalse(user: currentUser);
   }
 
