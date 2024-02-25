@@ -63,11 +63,11 @@ class FlavorConfigProvider {
   String get releaseName {
     switch (this.flavor) {
       case Flavor.dev:
-        return "In Development";
+        return "Dev";
       case Flavor.prod:
         return "Alpha v1.0";
       default:
-        return "In Development";
+        return "Dev";
     }
   }
 }

@@ -6,7 +6,6 @@ import 'dart:async';
 
 import 'package:good_wallet/apis/firestore_api.dart';
 import 'package:good_wallet/app/app.locator.dart';
-import 'package:good_wallet/constants/constants.dart';
 import 'package:good_wallet/datamodels/money_pools/base/money_pool.dart';
 import 'package:good_wallet/datamodels/money_pools/messages/message.dart';
 import 'package:good_wallet/datamodels/money_pools/users/contributing_user.dart';

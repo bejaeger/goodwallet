@@ -6,7 +6,6 @@ import 'package:good_wallet/enums/search_type.dart';
 import 'package:good_wallet/ui/layout_widgets/tabbar_layout.dart';
 import 'package:good_wallet/ui/shared/color_settings.dart';
 import 'package:good_wallet/ui/shared/image_paths.dart';
-import 'package:good_wallet/ui/shared/layout_settings.dart';
 import 'package:good_wallet/ui/views/qrcode/qrcode_viewmodel.dart';
 import 'package:good_wallet/utils/ui_helpers.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';

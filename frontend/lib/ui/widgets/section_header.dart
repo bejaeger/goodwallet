@@ -1,4 +1,4 @@
-// Heading for section with text button on the right
+// Heading for section with  button on the right
 //
 //
 //

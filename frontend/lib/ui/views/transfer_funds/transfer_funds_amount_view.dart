@@ -205,6 +205,7 @@ class TransferFundsAmountView extends StatelessWidget
                                 screenWidthPercentage(context, percentage: 0.6),
                             title: "Send",
                             onPressed: () async {
+                              amountFocusNode.unfocus();
                               await model.showBottomSheetAndProcessPayment();
                             },
                           ),

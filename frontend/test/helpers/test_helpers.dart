@@ -15,6 +15,7 @@ import 'package:stacked_services/stacked_services.dart';
 
 import 'test_helpers.mocks.dart';
 
+
 @GenerateMocks([], customMocks: [
   // our services registered with get_it
   MockSpec<UserService>(returnNullOnMissingStub: true),
